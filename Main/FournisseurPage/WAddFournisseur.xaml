@@ -1,0 +1,269 @@
+﻿<Window x:Class="Superete.Main.FournisseurPage.WAddFournisseur"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:wpfui="http://schemas.devexpress.com/winfx/2008/xaml/presentation"
+        Title="Update Fournisseur" Height="500" Width="600"
+        WindowStartupLocation="CenterScreen"
+        ResizeMode="NoResize"
+        WindowStyle="None"
+        AllowsTransparency="True"
+        Background="Transparent"
+       
+        >
+
+    <Border Background="White" CornerRadius="15" Padding="30">
+        <Border.Effect>
+            <DropShadowEffect Color="Black" Direction="315" ShadowDepth="10" Opacity="0.3" BlurRadius="15"/>
+        </Border.Effect>
+
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+
+            <!-- Header -->
+            <Grid Grid.Row="0" Margin="0,0,0,30">
+                <TextBlock Text="Update Fournisseur" 
+                          FontSize="24" 
+                          FontWeight="Bold" 
+                          Foreground="#2E3440"
+                          HorizontalAlignment="Left"
+                          VerticalAlignment="Center"
+                          
+                           />
+                <Button x:Name="CloseButton" 
+                       Content="✕" 
+                       Width="30" 
+                       Height="30"
+                       HorizontalAlignment="Right"
+                       Background="Transparent"
+                       BorderThickness="0"
+                       FontSize="16"
+                       Foreground="#8B5A5A"
+                       Cursor="Hand"
+                          Click="CancelButton_Click"
+                      >
+                    <Button.Style>
+                        <Style TargetType="Button">
+                            <Setter Property="Template">
+                                <Setter.Value>
+                                    <ControlTemplate TargetType="Button">
+                                        <Border Background="{TemplateBinding Background}" 
+                                               CornerRadius="15">
+                                            <ContentPresenter HorizontalAlignment="Center" 
+                                                            VerticalAlignment="Center"/>
+                                        </Border>
+                                    </ControlTemplate>
+                                </Setter.Value>
+                            </Setter>
+                            <Style.Triggers>
+                                <Trigger Property="IsMouseOver" Value="True">
+                                    <Setter Property="Background" Value="#FFE5E5"/>
+                                </Trigger>
+                            </Style.Triggers>
+                        </Style>
+                    </Button.Style>
+                </Button>
+            </Grid>
+
+            <!-- Form Content -->
+            <Grid Grid.Row="1">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+
+                <!-- Fournisseur Name -->
+                <StackPanel Grid.Row="0" Margin="0,0,0,20">
+                    <TextBlock Text="Fournisseur Name:" FontWeight="SemiBold" FontSize="14" Foreground="#2E3440" Margin="0,0,0,8"/>
+                    <TextBox x:Name="NameTextBox"
+                            Height="45"
+                            Padding="15,10"
+                            FontSize="14"
+                            BorderThickness="2"
+                            BorderBrush="#E5E7EB"
+                            Background="#F9FAFB">
+                        <TextBox.Style>
+                            <Style TargetType="TextBox">
+                                <Setter Property="Template">
+                                    <Setter.Value>
+                                        <ControlTemplate TargetType="TextBox">
+                                            <Border Background="{TemplateBinding Background}"
+                                                   BorderBrush="{TemplateBinding BorderBrush}"
+                                                   BorderThickness="{TemplateBinding BorderThickness}"
+                                                   CornerRadius="8">
+                                                <ScrollViewer x:Name="PART_ContentHost" 
+                                                            Padding="{TemplateBinding Padding}"
+                                                            VerticalAlignment="Center"/>
+                                            </Border>
+                                            <ControlTemplate.Triggers>
+                                                <Trigger Property="IsFocused" Value="True">
+                                                    <Setter Property="BorderBrush" Value="#3B82F6"/>
+                                                </Trigger>
+                                            </ControlTemplate.Triggers>
+                                        </ControlTemplate>
+                                    </Setter.Value>
+                                </Setter>
+                            </Style>
+                        </TextBox.Style>
+                    </TextBox>
+                </StackPanel>
+
+                <!-- Phone Number -->
+                <StackPanel Grid.Row="1" Margin="0,0,0,20">
+                    <TextBlock Text="Phone Number:" FontWeight="SemiBold" FontSize="14" Foreground="#2E3440" Margin="0,0,0,8"/>
+                    <TextBox x:Name="PhoneTextBox"
+                            Height="45"
+                            Padding="15,10"
+                            FontSize="14"
+                            BorderThickness="2"
+                            BorderBrush="#E5E7EB"
+                            Background="#F9FAFB">
+                        <TextBox.Style>
+                            <Style TargetType="TextBox">
+                                <Setter Property="Template">
+                                    <Setter.Value>
+                                        <ControlTemplate TargetType="TextBox">
+                                            <Border Background="{TemplateBinding Background}"
+                                                   BorderBrush="{TemplateBinding BorderBrush}"
+                                                   BorderThickness="{TemplateBinding BorderThickness}"
+                                                   CornerRadius="8">
+                                                <ScrollViewer x:Name="PART_ContentHost" 
+                                                            Padding="{TemplateBinding Padding}"
+                                                            VerticalAlignment="Center"/>
+                                            </Border>
+                                            <ControlTemplate.Triggers>
+                                                <Trigger Property="IsFocused" Value="True">
+                                                    <Setter Property="BorderBrush" Value="#3B82F6"/>
+                                                </Trigger>
+                                            </ControlTemplate.Triggers>
+                                        </ControlTemplate>
+                                    </Setter.Value>
+                                </Setter>
+                            </Style>
+                        </TextBox.Style>
+                    </TextBox>
+                </StackPanel>
+
+                <!-- Balance -->
+                <StackPanel Grid.Row="2" Margin="0,0,0,20">
+                    <TextBlock Text="Current Balance:" FontWeight="SemiBold" FontSize="14" Foreground="#2E3440" Margin="0,0,0,8"/>
+                    <TextBox x:Name="BalanceTextBox"
+                            Height="45"
+                            Padding="15,10"
+                            FontSize="14"
+                            BorderThickness="2"
+                            BorderBrush="#E5E7EB"
+                            Background="#F9FAFB">
+                        <TextBox.Style>
+                            <Style TargetType="TextBox">
+                                <Setter Property="Template">
+                                    <Setter.Value>
+                                        <ControlTemplate TargetType="TextBox">
+                                            <Border Background="{TemplateBinding Background}"
+                                                   BorderBrush="{TemplateBinding BorderBrush}"
+                                                   BorderThickness="{TemplateBinding BorderThickness}"
+                                                   CornerRadius="8">
+                                                <ScrollViewer x:Name="PART_ContentHost" 
+                                                            Padding="{TemplateBinding Padding}"
+                                                            VerticalAlignment="Center"/>
+                                            </Border>
+                                            <ControlTemplate.Triggers>
+                                                <Trigger Property="IsFocused" Value="True">
+                                                    <Setter Property="BorderBrush" Value="#3B82F6"/>
+                                                </Trigger>
+                                            </ControlTemplate.Triggers>
+                                        </ControlTemplate>
+                                    </Setter.Value>
+                                </Setter>
+                            </Style>
+                        </TextBox.Style>
+                    </TextBox>
+                </StackPanel>
+
+                <!-- Status -->
+                <StackPanel Grid.Row="3" Margin="0,0,0,20"/>
+            </Grid>
+
+            <!-- Buttons -->
+            <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,20,0,0">
+                <Button x:Name="CancelButton" 
+                       Content="Cancel" 
+                       Width="100" 
+                       Height="40"
+                       Margin="0,0,15,0"
+                       Background="#F3F4F6"
+                       BorderThickness="0"
+                       FontSize="14"
+                       FontWeight="SemiBold"
+                       Foreground="#374151"
+                       Cursor="Hand"
+                       Click="CancelButton_Click">
+                    <Button.Style>
+                        <Style TargetType="Button">
+                            <Setter Property="Template">
+                                <Setter.Value>
+                                    <ControlTemplate TargetType="Button">
+                                        <Border Background="{TemplateBinding Background}" 
+                                               CornerRadius="8">
+                                            <ContentPresenter HorizontalAlignment="Center" 
+                                                            VerticalAlignment="Center"/>
+                                        </Border>
+                                    </ControlTemplate>
+                                </Setter.Value>
+                            </Setter>
+                            <Style.Triggers>
+                                <Trigger Property="IsMouseOver" Value="True">
+                                    <Setter Property="Background" Value="#E5E7EB"/>
+                                </Trigger>
+                            </Style.Triggers>
+                        </Style>
+                    </Button.Style>
+                </Button>
+
+                <Button x:Name="UpdateButton" 
+                       Content="Update" 
+                       Width="100" 
+                       Height="40"
+                       Background="#3B82F6"
+                       BorderThickness="0"
+                       FontSize="14"
+                       FontWeight="SemiBold"
+                       Foreground="White"
+                       Cursor="Hand"
+                       Click="UpdateButton_Click">
+                    <Button.Style>
+                        <Style TargetType="Button">
+                            <Setter Property="Template">
+                                <Setter.Value>
+                                    <ControlTemplate TargetType="Button">
+                                        <Border Background="{TemplateBinding Background}" 
+                                               CornerRadius="8">
+                                            <ContentPresenter HorizontalAlignment="Center" 
+                                                            VerticalAlignment="Center"/>
+                                        </Border>
+                                    </ControlTemplate>
+                                </Setter.Value>
+                            </Setter>
+                            <Style.Triggers>
+                                <Trigger Property="IsMouseOver" Value="True">
+                                    <Setter Property="Background" Value="#2563EB"/>
+                                </Trigger>
+                            </Style.Triggers>
+                        </Style>
+                    </Button.Style>
+                </Button>
+            </StackPanel>
+
+            <Grid Name="ModalOverlay" Background="#80000000" Visibility="Collapsed" Grid.RowSpan="3" Panel.ZIndex="1000">
+                <!-- The modal content (UpdateFournisseurWindow) will be shown here as a UserControl or ContentPresenter -->
+                <ContentPresenter Name="ModalContent"/>
+            </Grid>
+        </Grid>
+    </Border>
+</Window>
+

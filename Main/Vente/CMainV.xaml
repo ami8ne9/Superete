@@ -1,0 +1,1146 @@
+﻿<UserControl x:Class="Superete.Main.Vente.CMainV"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             Background="#F5F5F5" Width="Auto" Height=" Auto" >
+
+    <UserControl.Resources>
+        <!-- Modern Button Style -->
+        <Style x:Key="ModernButtonStyle" TargetType="Button">
+            <Setter Property="Background" Value="#FFFFFF"/>
+            <Setter Property="BorderBrush" Value="#D1D5DB"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="Foreground" Value="#374151"/>
+            <Setter Property="FontFamily" Value="Segoe UI"/>
+            <Setter Property="FontSize" Value="13"/>
+            <Setter Property="FontWeight" Value="Medium"/>
+            <Setter Property="Padding" Value="12,8"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border Background="{TemplateBinding Background}" 
+                                BorderBrush="{TemplateBinding BorderBrush}" 
+                                BorderThickness="{TemplateBinding BorderThickness}" 
+                                CornerRadius="6">
+                            <ContentPresenter HorizontalAlignment="Center" 
+                                            VerticalAlignment="Center"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter Property="Background" Value="#F9FAFB"/>
+                            </Trigger>
+                            <Trigger Property="IsPressed" Value="True">
+                                <Setter Property="Background" Value="#F3F4F6"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!-- Blue Button Style -->
+        <Style x:Key="BlueButtonStyle" TargetType="Button" BasedOn="{StaticResource ModernButtonStyle}">
+            <Setter Property="Background" Value="#3B82F6"/>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="BorderBrush" Value="#3B82F6"/>
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Background" Value="#2563EB"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+
+        <!-- Green Button Style -->
+        <Style x:Key="GreenButtonStyle" TargetType="Button" BasedOn="{StaticResource ModernButtonStyle}">
+            <Setter Property="Background" Value="#10B981"/>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="BorderBrush" Value="#10B981"/>
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Background" Value="#059669"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+
+        <!-- Red Button Style -->
+        <Style x:Key="RedButtonStyle" TargetType="Button" BasedOn="{StaticResource ModernButtonStyle}">
+            <Setter Property="Background" Value="#EF4444"/>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="BorderBrush" Value="#EF4444"/>
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Background" Value="#DC2626"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+
+        <!-- Category Button Style -->
+        <Style x:Key="CategoryButtonStyle" TargetType="Button">
+            <Setter Property="FontFamily" Value="Segoe UI"/>
+            <Setter Property="FontSize" Value="12"/>
+            <Setter Property="FontWeight" Value="Medium"/>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Height" Value="35"/>
+            <Setter Property="Margin" Value="0,1"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border Background="{TemplateBinding Background}" 
+                                CornerRadius="4">
+                            <ContentPresenter HorizontalAlignment="Center" 
+                                            VerticalAlignment="Center"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter Property="Opacity" Value="0.9"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!-- Keypad Button Style -->
+        <Style x:Key="KeypadButtonStyle" TargetType="Button">
+            <Setter Property="Background" Value="#FFFFFF"/>
+            <Setter Property="BorderBrush" Value="#D1D5DB"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="Foreground" Value="#374151"/>
+            <Setter Property="FontFamily" Value="Segoe UI"/>
+            <Setter Property="FontSize" Value="16"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="Height" Value="40"/>
+            <Setter Property="Margin" Value="2"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border Background="{TemplateBinding Background}" 
+                                BorderBrush="{TemplateBinding BorderBrush}" 
+                                BorderThickness="{TemplateBinding BorderThickness}" 
+                                CornerRadius="6">
+                            <ContentPresenter HorizontalAlignment="Center" 
+                                            VerticalAlignment="Center"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter Property="Background" Value="#F9FAFB"/>
+                            </Trigger>
+                            <Trigger Property="IsPressed" Value="True">
+                                <Setter Property="Background" Value="#F3F4F6"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!-- TextBox Style -->
+        <Style x:Key="ModernTextBoxStyle" TargetType="TextBox">
+            <Setter Property="Background" Value="#FFFFFF"/>
+            <Setter Property="BorderBrush" Value="#D1D5DB"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="Foreground" Value="#374151"/>
+            <Setter Property="FontFamily" Value="Segoe UI"/>
+            <Setter Property="FontSize" Value="13"/>
+            <Setter Property="Padding" Value="10,8"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="TextBox">
+                        <Border Background="{TemplateBinding Background}" 
+                                BorderBrush="{TemplateBinding BorderBrush}" 
+                                BorderThickness="{TemplateBinding BorderThickness}" 
+                                CornerRadius="6">
+                            <ScrollViewer x:Name="PART_ContentHost" 
+                                        VerticalAlignment="Center"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsFocused" Value="True">
+                                <Setter Property="BorderBrush" Value="#3B82F6"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!-- DataGrid Style -->
+        <Style x:Key="ModernDataGridStyle" TargetType="DataGrid">
+            <Setter Property="Background" Value="#FFFFFF"/>
+            <Setter Property="BorderBrush" Value="#D1D5DB"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="GridLinesVisibility" Value="Horizontal"/>
+            <Setter Property="HorizontalGridLinesBrush" Value="#F3F4F6"/>
+            <Setter Property="RowHeaderWidth" Value="0"/>
+            <Setter Property="AutoGenerateColumns" Value="False"/>
+            <Setter Property="CanUserAddRows" Value="False"/>
+            <Setter Property="CanUserDeleteRows" Value="False"/>
+            <Setter Property="CanUserReorderColumns" Value="False"/>
+            <Setter Property="CanUserResizeRows" Value="False"/>
+            <Setter Property="SelectionMode" Value="Single"/>
+            <Setter Property="HeadersVisibility" Value="Column"/>
+            <Setter Property="FontFamily" Value="Segoe UI"/>
+            <Setter Property="FontSize" Value="12"/>
+        </Style>
+    </UserControl.Resources>
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="50"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="30"/>
+        </Grid.RowDefinitions>
+
+        <!-- Header with Logo, Admin Info, and Close Button -->
+        <Border Grid.Row="0" Background="#3B82F6" CornerRadius="8,8,0,0">
+            <Grid Margin="15,0">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+
+                <!-- Logo -->
+                <Border Grid.Column="0" Background="#FFFFFF" Width="35" Height="35" CornerRadius="17.5" VerticalAlignment="Center">
+                    <Ellipse Fill="#F59E0B" Width="25" Height="25" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                </Border>
+
+                <!-- Admin Section -->
+                <Border Grid.Column="2" Background="#2563EB" CornerRadius="6" Padding="20,8" VerticalAlignment="Center">
+                    <StackPanel Orientation="Horizontal">
+                        <Path Data="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z" 
+                              Fill="White" 
+                              Stretch="Uniform" 
+                              Width="14" 
+                              Height="14" 
+                              VerticalAlignment="Center" 
+                              Margin="0,0,8,0"/>
+                        <TextBlock Text="User" x:Name="CurrentUser" 
+                                   Foreground="White" 
+                                   FontFamily="Segoe UI" 
+                                   FontSize="12" 
+                                   FontWeight="SemiBold" 
+                                   VerticalAlignment="Center"/>
+                        <Path Data="M16 17.01V10h-2v7.01h-3L15 21l4-3.99h-3zM9 3L5 6.99h3V14h2V6.99h3L9 3z" 
+                              Fill="White" 
+                              Stretch="Uniform" 
+                              Width="12" 
+                              Height="12" 
+                              VerticalAlignment="Center" 
+                              Margin="8,0,0,0"/>
+                    </StackPanel>
+                </Border>
+
+                <!-- Close Button -->
+                <Button x:Name="CloseButton" 
+                        Grid.Column="3" 
+                        Background="#EF4444" 
+                        BorderThickness="0" 
+                        Width="30" 
+                        Height="30" 
+                        VerticalAlignment="Center" 
+                        Margin="10,0,0,0" HorizontalAlignment="Left" Click="CloseButton_Click">
+                    <Button.Template>
+                        <ControlTemplate TargetType="Button">
+                            <Border Background="{TemplateBinding Background}" CornerRadius="4">
+                                <Path Data="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z" 
+                                      Fill="White" 
+                                      Stretch="Uniform" 
+                                      Width="14" 
+                                      Height="14"/>
+                            </Border>
+                            <ControlTemplate.Triggers>
+                                <Trigger Property="IsMouseOver" Value="True">
+                                    <Setter Property="Background" Value="#DC2626"/>
+                                </Trigger>
+                            </ControlTemplate.Triggers>
+                        </ControlTemplate>
+                    </Button.Template>
+                </Button>
+            </Grid>
+        </Border>
+
+        <!-- Main Content Area -->
+        <Grid Grid.Row="1" Margin="10">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="300"/>
+                <ColumnDefinition Width="10"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+
+            <!-- Left Column - Article List and Controls -->
+            <Grid Grid.Column="0">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+
+                <!-- Article List -->
+                <Border Grid.Row="0" Background="#FFFFFF" BorderBrush="#D1D5DB" BorderThickness="1" CornerRadius="8">
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="*"/>
+                        </Grid.RowDefinitions>
+
+                        <!-- Header -->
+                        <Border Grid.Row="0" Background="#F9FAFB" BorderBrush="#D1D5DB" BorderThickness="0,0,0,1" CornerRadius="7,7,0,0" Padding="10,8">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="4*"/>
+                                    <!-- Article -->
+                                    <ColumnDefinition Width="3*"/>
+                                    <!-- Fournisseur -->
+                                    <ColumnDefinition Width="93"/>
+                                    <!-- PRIX_V -->
+                                    <ColumnDefinition Width="18"/>
+                                    <!-- Qté -->
+                                    <ColumnDefinition Width="69"/>
+                                    <!-- TOTAL_NET -->
+                                </Grid.ColumnDefinitions>
+                                <TextBlock Grid.Column="0" Text="Article" FontWeight="SemiBold" FontSize="11" Foreground="#6B7280"/>
+                                <TextBlock Grid.Column="1" Text="Fournisseur" FontWeight="SemiBold" FontSize="11" Foreground="#6B7280" Grid.ColumnSpan="2" Margin="0,0,42,0"/>
+                                <TextBlock Grid.Column="2" Text="PRIX_V" FontWeight="SemiBold" FontSize="11" Foreground="#6B7280" HorizontalAlignment="Left" Margin="46,0,0,0" Width="44"/>
+                                <TextBlock Grid.Column="3" Text="Qté" FontWeight="SemiBold" FontSize="11" Foreground="#6B7280" HorizontalAlignment="Left" Width="51" Grid.ColumnSpan="2"/>
+                                <TextBlock Grid.Column="4" Text="TOTAL_NET" FontWeight="SemiBold" FontSize="11" Foreground="#6B7280" HorizontalAlignment="Left" Margin="10,0,0,0" Width="70"/>
+                            </Grid>
+                        </Border>
+                        <StackPanel Grid.Row="1"  Background="White" x:Name="SelectedArticles"/>
+                    </Grid>
+                </Border>
+
+                <!-- Total Section -->
+                <Border Grid.Row="1" Background="#3B82F6" CornerRadius="8" Margin="0,10,0,0" Padding="15">
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                        </Grid.RowDefinitions>
+
+                        <StackPanel Grid.Row="0" Orientation="Horizontal">
+                            <TextBlock Text="TOTAL NET :" 
+                                       FontFamily="Segoe UI" 
+                                       FontSize="16" 
+                                       FontWeight="SemiBold" 
+                                       Foreground="White" 
+                                       VerticalAlignment="Center"/>
+                            <TextBlock x:Name="TotalNet" 
+                                       Text="0.00 DH" 
+                                       FontFamily="Segoe UI" 
+                                       FontSize="20" 
+                                       FontWeight="Bold" 
+                                       Foreground="White" 
+                                       Margin="10,0,0,0" 
+                                       VerticalAlignment="Center"
+                                       />
+                        </StackPanel>
+                        <StackPanel Grid.Row="1" Orientation="Horizontal">
+                            <TextBlock 
+                               Text="Nbr Articles : " 
+                               FontFamily="Segoe UI" 
+                               FontSize="12" 
+                               Foreground="#E5E7EB" 
+                               Margin="0,5,0,0"/>
+                            <TextBlock x:Name="ArticleCount" 
+                               Text="0" 
+                               FontFamily="Segoe UI" 
+                               FontSize="12" 
+                               Foreground="#E5E7EB" 
+                               Margin="0,5,0,0"/>
+                        </StackPanel>
+
+
+                    </Grid>
+                </Border>
+
+                <!-- Function Buttons Row 1 -->
+                <Grid Grid.Row="2" Margin="0,10,0,0">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="5"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="5"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="5"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+
+                    <CheckBox x:Name="Ticket" Margin="30,0,0,0"
+          Content="Ticket"
+          IsChecked="True"
+          FontFamily="Segoe UI"
+          FontSize="14"
+          VerticalAlignment="Center"  Grid.ColumnSpan="4">
+                        <CheckBox.Template>
+                            <ControlTemplate TargetType="CheckBox">
+                                <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Margin="4">
+                                    <!-- Custom Check Box -->
+                                    <Border x:Name="Border"
+                        Width="20" Height="20"
+                        CornerRadius="5"
+                        BorderBrush="#3B82F6"
+                        BorderThickness="2"
+                        Background="White"
+                        VerticalAlignment="Center">
+                                        <Path x:Name="CheckMark"
+                          Data="M 0 5 L 7 12 L 15 0"
+                          Stroke="#3B82F6"
+                          StrokeThickness="2"
+                          Visibility="Collapsed"
+                          Stretch="Uniform"
+                          HorizontalAlignment="Center"
+                          VerticalAlignment="Center"/>
+                                    </Border>
+
+                                    <!-- Text on the right -->
+                                    <ContentPresenter Margin="8,0,0,0"
+                                  VerticalAlignment="Center"
+                                  RecognizesAccessKey="True"/>
+                                </StackPanel>
+
+                                <ControlTemplate.Triggers>
+                                    <Trigger Property="IsChecked" Value="True">
+                                        <Setter TargetName="CheckMark" Property="Visibility" Value="Visible"/>
+                                    </Trigger>
+                                </ControlTemplate.Triggers>
+                            </ControlTemplate>
+                        </CheckBox.Template>
+                    </CheckBox>
+
+
+
+
+                    <Button x:Name="DeleteButton" 
+                            Grid.Column="3" 
+                            Content="X" 
+                            Style="{StaticResource RedButtonStyle}" 
+                            Height="40" 
+                            FontSize="16" 
+                            FontWeight="Bold" Click="DeleteButton_Click" Grid.ColumnSpan="4" Margin="4,0,0,0"/>
+                </Grid>
+
+                <!-- Function Buttons Row 2 -->
+                <Grid Grid.Row="3" Margin="0,5,0,0">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="5"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="5"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+
+                    <!-- Cash Button -->
+                    <Button x:Name="CashButton" 
+        Grid.Column="0" 
+        Style="{StaticResource BlueButtonStyle}" 
+        Height="45" Click="CashButton_Click">
+                        <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                            <Path Data="M3 6h18v12H3V6zm2 2v8h14V8H5z" 
+              Fill="White" 
+              Stretch="Uniform" 
+              Width="16" Height="16" 
+              Margin="0,0,6,0"/>
+                            <TextBlock Text="CASH" 
+                   FontSize="11" 
+                   VerticalAlignment="Center"/>
+                        </StackPanel>
+                    </Button>
+
+                    <!-- Half Cash / Half Credit Button -->
+                    <Button x:Name="HalfButton" 
+        Grid.Column="2" 
+        Style="{StaticResource RedButtonStyle}" 
+        Height="45" Click="HalfButton_Click">
+                        <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                            <Path Data="M4 4h16v16H4V4zm8 0v16" 
+              Fill="White" 
+              Stroke="White"
+              StrokeThickness="2"
+              Stretch="Uniform" 
+              Width="16" Height="16" 
+              Margin="0,0,6,0"/>
+                            <TextBlock Text="50/50" 
+                   FontSize="11" 
+                   VerticalAlignment="Center"/>
+                        </StackPanel>
+                    </Button>
+
+                    <!-- Credit Button -->
+                    <Button x:Name="CreditButton" 
+        Grid.Column="4" 
+        Style="{StaticResource GreenButtonStyle}" 
+        Height="45" Click="CreditButton_Click">
+                        <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                            <Path Data="M2 6c0-1.1.9-2 2-2h16a2 2 0 0 1 2 2v2H2V6zm0 4h20v8c0 1.1-.9 2-2 2H4a2 2 0 0 1-2-2v-8z" 
+              Fill="White" 
+              Stretch="Uniform" 
+              Width="16" Height="16" 
+              Margin="0,0,6,0"/>
+                            <TextBlock Text="CREDIT" 
+                   FontSize="11" 
+                   VerticalAlignment="Center"/>
+                        </StackPanel>
+                    </Button>
+
+                </Grid>
+            </Grid>
+
+            <!-- Right Column - Main POS Interface -->
+            <Grid Grid.Column="2">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+
+                <!-- Code Barre and Quantity Section -->
+                <Grid Grid.Row="0">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="15"/>
+                        <ColumnDefinition Width="200"/>
+                    </Grid.ColumnDefinitions>
+
+                    <!-- Code Barre Section -->
+                    <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Disabled">
+                        <Border Grid.Column="0" Background="#FFFFFF" BorderBrush="#D1D5DB" BorderThickness="1" CornerRadius="8" Padding="15" Height="262" VerticalAlignment="Top">
+                            <Grid>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="*"/>
+                                </Grid.RowDefinitions>
+
+                                <TextBlock Grid.Row="0" 
+                                       Text="CODE BARRE" 
+                                       FontFamily="Segoe UI" 
+                                       FontSize="12" 
+                                       FontWeight="SemiBold" 
+                                       Foreground="#6B7280" 
+                                       Margin="0,0,0,8"/>
+
+                                <Grid Grid.Row="1">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="Auto"/>
+                                    </Grid.ColumnDefinitions>
+
+                                    <TextBox x:Name="CodeBarreTextBox" 
+                                         Grid.Column="0" 
+                                         Style="{StaticResource ModernTextBoxStyle}" TextChanged="CodeBarreTextBox_TextChanged"/>
+
+                                    <Button x:Name="SearchButton" 
+                                        Grid.Column="1" 
+                                        Background="#3B82F6" 
+                                        BorderThickness="0" 
+                                        Width="40" 
+                                        Height="36" 
+                                        Margin="8,0,0,0">
+                                        <Button.Template>
+                                            <ControlTemplate TargetType="Button">
+                                                <Border Background="{TemplateBinding Background}" CornerRadius="6">
+                                                    <Path Data="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z" 
+                                                      Fill="White" 
+                                                      Stretch="Uniform" 
+                                                      Width="16" 
+                                                      Height="16"/>
+                                                </Border>
+                                                <ControlTemplate.Triggers>
+                                                    <Trigger Property="IsMouseOver" Value="True">
+                                                        <Setter Property="Background" Value="#2563EB"/>
+                                                    </Trigger>
+                                                </ControlTemplate.Triggers>
+                                            </ControlTemplate>
+                                        </Button.Template>
+                                    </Button>
+                                </Grid>
+                                <Grid Grid.Row="2" 
+Background="White"
+Margin="16">
+
+                                    <Grid.Resources>
+                                        <!-- Header Style -->
+                                        <Style x:Key="HeaderTextStyle" TargetType="TextBlock">
+                                            <Setter Property="Background" Value="#F8FAFC"/>
+                                            <Setter Property="Foreground" Value="#374151"/>
+                                            <Setter Property="Padding" Value="16,12"/>
+                                            <Setter Property="FontWeight" Value="SemiBold"/>
+                                            <Setter Property="FontSize" Value="12"/>
+                                            <Setter Property="VerticalAlignment" Value="Center"/>
+                                        </Style>
+
+                                        <!-- Cell Text Styles -->
+                                        <Style x:Key="CellTextStyle" TargetType="TextBlock">
+                                            <Setter Property="Padding" Value="16,8"/>
+                                            <Setter Property="VerticalAlignment" Value="Center"/>
+                                            <Setter Property="FontFamily" Value="Segoe UI"/>
+                                            <Setter Property="FontSize" Value="13"/>
+                                            <Setter Property="TextTrimming" Value="CharacterEllipsis"/>
+                                        </Style>
+
+                                        <Style x:Key="IDCellStyle" TargetType="TextBlock" BasedOn="{StaticResource CellTextStyle}">
+                                            <Setter Property="Foreground" Value="#374151"/>
+                                        </Style>
+
+                                        <Style x:Key="NameCellStyle" TargetType="TextBlock" BasedOn="{StaticResource CellTextStyle}">
+                                            <Setter Property="FontWeight" Value="Medium"/>
+                                            <Setter Property="Foreground" Value="#1F2937"/>
+                                        </Style>
+
+                                        <Style x:Key="QuantityCellStyle" TargetType="TextBlock" BasedOn="{StaticResource CellTextStyle}">
+                                            <Setter Property="HorizontalAlignment" Value="Right"/>
+                                            <Setter Property="Foreground" Value="#374151"/>
+                                        </Style>
+
+                                        <Style x:Key="PrixAchatCellStyle" TargetType="TextBlock" BasedOn="{StaticResource CellTextStyle}">
+                                            <Setter Property="HorizontalAlignment" Value="Right"/>
+                                            <Setter Property="Foreground" Value="#059669"/>
+                                            <Setter Property="FontWeight" Value="Medium"/>
+                                        </Style>
+
+                                        <Style x:Key="PrixVenteCellStyle" TargetType="TextBlock" BasedOn="{StaticResource CellTextStyle}">
+                                            <Setter Property="HorizontalAlignment" Value="Right"/>
+                                            <Setter Property="Foreground" Value="#DC2626"/>
+                                            <Setter Property="FontWeight" Value="Medium"/>
+                                        </Style>
+
+                                        <Style x:Key="PrixMPCellStyle" TargetType="TextBlock" BasedOn="{StaticResource CellTextStyle}">
+                                            <Setter Property="HorizontalAlignment" Value="Right"/>
+                                            <Setter Property="Foreground" Value="#7C3AED"/>
+                                            <Setter Property="FontWeight" Value="Medium"/>
+                                        </Style>
+
+                                        <Style x:Key="CodeCellStyle" TargetType="TextBlock" BasedOn="{StaticResource CellTextStyle}">
+                                            <Setter Property="FontFamily" Value="Consolas, Monaco, monospace"/>
+                                            <Setter Property="Background" Value="#F3F4F6"/>
+                                            <Setter Property="Foreground" Value="#374151"/>
+                                        </Style>
+
+                                        <Style x:Key="FournisseurCellStyle" TargetType="TextBlock" BasedOn="{StaticResource CellTextStyle}">
+                                            <Setter Property="Foreground" Value="#1F2937"/>
+                                            <Setter Property="FontWeight" Value="Medium"/>
+                                        </Style>
+
+                                        <!-- Row Container Style -->
+                                        <Style x:Key="RowContainerStyle" TargetType="Border">
+                                            <Setter Property="Background" Value="White"/>
+                                            <Style.Triggers>
+                                                <Trigger Property="IsMouseOver" Value="True">
+                                                    <Setter Property="Background" Value="#F8FAFC"/>
+                                                </Trigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </Grid.Resources>
+
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="45"/>
+                                        <!-- Header Row -->
+                                        <RowDefinition Height="*"/>
+                                        <!-- Content Row -->
+                                    </Grid.RowDefinitions>
+
+                                    <!-- Header Row -->
+                                    <Grid Grid.Row="0">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="100" MinWidth="80"/>
+                                            <!-- Article ID -->
+                                            <ColumnDefinition Width="2*" MinWidth="150"/>
+                                            <!-- Article Name -->
+                                            <ColumnDefinition Width="100" MinWidth="80"/>
+                                            <!-- Quantité -->
+                                            <ColumnDefinition Width="120" MinWidth="100"/>
+                                            <!-- Prix Achat -->
+                                            <ColumnDefinition Width="120" MinWidth="100"/>
+                                            <!-- Prix Vente -->
+                                            <ColumnDefinition Width="120" MinWidth="100"/>
+                                            <!-- Prix MP -->
+                                            <ColumnDefinition Width="100" MinWidth="80"/>
+                                            <!-- Famille ID -->
+                                            <ColumnDefinition Width="150" MinWidth="120"/>
+                                            <!-- Fournisseur -->
+                                            <ColumnDefinition Width="120" MinWidth="100"/>
+                                            <!-- Code -->
+                                        </Grid.ColumnDefinitions>
+
+                                        <Border Grid.Column="0" Style="{StaticResource RowContainerStyle}">
+                                            <TextBlock Text="Article ID" Style="{StaticResource HeaderTextStyle}"/>
+                                        </Border>
+
+                                        <Border Grid.Column="1" Style="{StaticResource RowContainerStyle}">
+                                            <TextBlock Text="Article Name" Style="{StaticResource HeaderTextStyle}"/>
+                                        </Border>
+
+                                        <Border Grid.Column="2" Style="{StaticResource RowContainerStyle}">
+                                            <TextBlock Text="Quantité" Style="{StaticResource HeaderTextStyle}"/>
+                                        </Border>
+
+                                        <Border Grid.Column="3" Style="{StaticResource RowContainerStyle}">
+                                            <TextBlock Text="Prix Achat" Style="{StaticResource HeaderTextStyle}"/>
+                                        </Border>
+
+                                        <Border Grid.Column="4" Style="{StaticResource RowContainerStyle}">
+                                            <TextBlock Text="Prix Vente" Style="{StaticResource HeaderTextStyle}"/>
+                                        </Border>
+
+                                        <Border Grid.Column="5" Style="{StaticResource RowContainerStyle}">
+                                            <TextBlock Text="Prix MP" Style="{StaticResource HeaderTextStyle}"/>
+                                        </Border>
+
+                                        <Border Grid.Column="6" Style="{StaticResource RowContainerStyle}">
+                                            <TextBlock Text="Famille ID" Style="{StaticResource HeaderTextStyle}"/>
+                                        </Border>
+
+                                        <Border Grid.Column="7" Style="{StaticResource RowContainerStyle}">
+                                            <TextBlock Text="Fournisseur" Style="{StaticResource HeaderTextStyle}"/>
+                                        </Border>
+
+                                        <Border Grid.Column="8" Style="{StaticResource RowContainerStyle}">
+                                            <TextBlock Text="Code" Style="{StaticResource HeaderTextStyle}"/>
+                                        </Border>
+                                    </Grid>
+
+                                    <!-- Content Area with ScrollViewer -->
+
+                                </Grid>
+                                <ScrollViewer Grid.Row="3" VerticalScrollBarVisibility="Auto" 
+HorizontalScrollBarVisibility="Disabled">
+                                    <StackPanel Background="white" x:Name="CodeArticlesContainer"/>
+                                </ScrollViewer>
+                            </Grid>
+                        </Border>
+                    </ScrollViewer>
+                    <!-- Quantity Section -->
+                    <Border Grid.Column="2" Background="#FFFFFF" BorderBrush="#D1D5DB" BorderThickness="1" CornerRadius="8" Padding="15">
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="*"/>
+                            </Grid.RowDefinitions>
+
+                            <TextBlock Grid.Row="0" 
+                                       Text="QUANTITE" 
+                                       FontFamily="Segoe UI" 
+                                       FontSize="12" 
+                                       FontWeight="SemiBold" 
+                                       Foreground="#6B7280" 
+                                       HorizontalAlignment="Center" 
+                                       Margin="0,0,0,8"/>
+
+                            <!-- Keypad -->
+                            <Grid Grid.Row="1">
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="*"/>
+                                    <RowDefinition Height="*"/>
+                                    <RowDefinition Height="*"/>
+                                    <RowDefinition Height="*"/>
+                                    <RowDefinition Height="*"/>
+                                </Grid.RowDefinitions>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
+
+                                <!-- Display -->
+                                <Border Grid.Row="0" Grid.ColumnSpan="3" Background="#F9FAFB" BorderBrush="#D1D5DB" BorderThickness="1" CornerRadius="6" Margin="2">
+                                    <TextBlock x:Name="ArticleQuantity" 
+                                               Text="1" 
+                                               FontFamily="Segoe UI" 
+                                               FontSize="18" 
+                                               FontWeight="Bold" 
+                                               Foreground="#374151" 
+                                               HorizontalAlignment="Center" 
+                                               VerticalAlignment="Center"/>
+                                </Border>
+
+                                <!-- Keypad Buttons -->
+                                <Button x:Name="Key7" Grid.Row="1" Grid.Column="0" Content="7" Style="{StaticResource KeypadButtonStyle}"/>
+                                <Button x:Name="Key8" Grid.Row="1" Grid.Column="1" Content="8" Style="{StaticResource KeypadButtonStyle}"/>
+                                <Button x:Name="Key9" Grid.Row="1" Grid.Column="2" Content="9" Style="{StaticResource KeypadButtonStyle}"/>
+
+                                <Button x:Name="Key4" Grid.Row="2" Grid.Column="0" Content="4" Style="{StaticResource KeypadButtonStyle}"/>
+                                <Button x:Name="Key5" Grid.Row="2" Grid.Column="1" Content="5" Style="{StaticResource KeypadButtonStyle}"/>
+                                <Button x:Name="Key6" Grid.Row="2" Grid.Column="2" Content="6" Style="{StaticResource KeypadButtonStyle}"/>
+
+                                <Button x:Name="Key1" Grid.Row="3" Grid.Column="0" Content="1" Style="{StaticResource KeypadButtonStyle}"/>
+                                <Button x:Name="Key2" Grid.Row="3" Grid.Column="1" Content="2" Style="{StaticResource KeypadButtonStyle}"/>
+                                <Button x:Name="Key3" Grid.Row="3" Grid.Column="2" Content="3" Style="{StaticResource KeypadButtonStyle}"/>
+
+                                <Button x:Name="KeyDot" Grid.Row="4" Grid.Column="0" Content="." Style="{StaticResource KeypadButtonStyle}"/>
+                                <Button x:Name="Key0" Grid.Row="4" Grid.Column="1" Content="0" Style="{StaticResource KeypadButtonStyle}"/>
+                                <Button x:Name="KeyBackspace" Grid.Row="4" Grid.Column="2" Style="{StaticResource KeypadButtonStyle}">
+                                    <Path Data="M22 3H7c-.69 0-1.23.35-1.59.88L0 12l5.41 8.11c.36.53.9.89 1.59.89h15c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-3 12.59L17.59 17 14 13.41 10.41 17 9 15.59 12.59 12 9 8.41 10.41 7 14 10.59 17.59 7 19 8.41 15.41 12 19 15.59z" 
+                                          Fill="#6B7280" 
+                                          Stretch="Uniform" 
+                                          Width="14" 
+                                          Height="14"/>
+                                </Button>
+                            </Grid>
+                        </Grid>
+                    </Border>
+                </Grid>
+
+                <!-- Designation Section -->
+                <Border Grid.Row="1" Background="#FFFFFF" BorderBrush="#D1D5DB" BorderThickness="1" CornerRadius="8" Margin="0,15,0,0" Padding="15">
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                        </Grid.RowDefinitions>
+
+                        <TextBlock Grid.Row="0" 
+                                   Text="DESIGNATION" 
+                                   FontFamily="Segoe UI" 
+                                   FontSize="12" 
+                                   FontWeight="SemiBold" 
+                                   Foreground="#6B7280" 
+                                   Margin="0,0,0,8"/>
+
+                        <Grid Grid.Row="1">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+
+                            <Border Grid.Column="0" Background="white" BorderBrush="#F59E0B" BorderThickness="1" CornerRadius="6" Padding="10,8" x:Name="SelectedArticle">
+                                <TextBlock x:Name="DesignationText" 
+                                           Text="Aucun article sélectionné" 
+                                           FontFamily="Segoe UI" 
+                                           FontSize="13" 
+                                           Foreground="#92400E" 
+                                           TextWrapping="Wrap"/>
+                            </Border>
+
+                            <Button x:Name="KeyboardButton" 
+        Grid.Column="1" 
+        Foreground="White"
+        Background="#059669" 
+        BorderBrush="#D1D5DB" 
+        BorderThickness="1" 
+        Width="40" 
+        Height="36" 
+        Margin="0,0,0,0"
+        Content="✔"
+        FontSize="16" Click="KeyboardButton_Click">
+                                <Button.Template>
+                                    <ControlTemplate TargetType="Button">
+                                        <Border Background="{TemplateBinding Background}" 
+                    BorderBrush="{TemplateBinding BorderBrush}" 
+                    BorderThickness="{TemplateBinding BorderThickness}" 
+                    CornerRadius="6"
+                    Padding="5">
+                                            <!-- Add ContentPresenter so Content="✔" is visible -->
+                                            <ContentPresenter HorizontalAlignment="Center" 
+                                  VerticalAlignment="Center"
+                                  RecognizesAccessKey="True"/>
+                                        </Border>
+                                        <ControlTemplate.Triggers>
+                                            <Trigger Property="IsMouseOver" Value="True">
+                                                <Setter Property="Background" Value="White"/>
+                                                <Setter Property="Foreground" Value="#059669"/>
+                                            </Trigger>
+                                        </ControlTemplate.Triggers>
+                                    </ControlTemplate>
+                                </Button.Template>
+                            </Button>
+
+                        </Grid>
+                    </Grid>
+                </Border>
+
+                <!-- Product Categories and List Section -->
+                <Grid Grid.Row="2" Margin="0,15,0,0">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="150"/>
+                        <ColumnDefinition Width="10"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+
+                    <!-- Categories Panel -->
+                    <Border Grid.Column="0" Background="#FFFFFF" BorderBrush="#D1D5DB" BorderThickness="1" CornerRadius="8" Padding="0">
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="*"/>
+                            </Grid.RowDefinitions>
+
+                            <Border Grid.Row="0" Background="#F9FAFB" BorderBrush="#D1D5DB" BorderThickness="0,0,0,1" CornerRadius="7,7,0,0" Padding="10,8">
+                                <TextBlock Text="Liste Familles" 
+                                           FontFamily="Segoe UI" 
+                                           FontSize="11" 
+                                           FontWeight="SemiBold" 
+                                           Foreground="#374151" 
+                                           HorizontalAlignment="Center"/>
+                            </Border>
+                            <ScrollViewer VerticalScrollBarVisibility="Auto"  Grid.Row="1">
+                                <StackPanel Orientation="Vertical" x:Name="FamillyContainer">
+
+                                </StackPanel>
+                            </ScrollViewer>
+
+
+                        </Grid>
+                    </Border>
+
+                    <!-- Product List Section -->
+                    <Border Grid.Column="2" Background="#FFFFFF" BorderBrush="#D1D5DB" BorderThickness="1" CornerRadius="8">
+                        <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Disabled">
+                            <Grid>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="*"/>
+                                </Grid.RowDefinitions>
+
+                                <!-- Product List Header -->
+                                <Border Grid.Row="0" Background="#F9FAFB" BorderBrush="#D1D5DB" BorderThickness="0,0,0,1" CornerRadius="7,7,0,0" Padding="15,8">
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="Auto"/>
+                                            <ColumnDefinition Width="*"/>
+                                            <ColumnDefinition Width="Auto"/>
+                                        </Grid.ColumnDefinitions>
+
+                                        <TextBlock Grid.Column="0" 
+                                               Text="Liste Articles" 
+                                               FontFamily="Segoe UI" 
+                                               FontSize="11" 
+                                               FontWeight="SemiBold" 
+                                               Foreground="#374151"/>
+                                        <Button Grid.Column="3" Content="Tout Articles" Padding="3" Background="white" Click="Button_Click"/>
+
+
+                                    </Grid>
+                                </Border>
+
+                                <!-- Product List Content -->
+
+                                <Grid Grid.Row="1" 
+      Background="White"
+      Margin="16">
+
+                                    <Grid.Resources>
+                                        <!-- Header Style -->
+                                        <Style x:Key="HeaderTextStyle" TargetType="TextBlock">
+                                            <Setter Property="Background" Value="#F8FAFC"/>
+                                            <Setter Property="Foreground" Value="#374151"/>
+                                            <Setter Property="Padding" Value="16,12"/>
+                                            <Setter Property="FontWeight" Value="SemiBold"/>
+                                            <Setter Property="FontSize" Value="12"/>
+                                            <Setter Property="VerticalAlignment" Value="Center"/>
+                                        </Style>
+
+                                        <!-- Cell Text Styles -->
+                                        <Style x:Key="CellTextStyle" TargetType="TextBlock">
+                                            <Setter Property="Padding" Value="16,8"/>
+                                            <Setter Property="VerticalAlignment" Value="Center"/>
+                                            <Setter Property="FontFamily" Value="Segoe UI"/>
+                                            <Setter Property="FontSize" Value="13"/>
+                                            <Setter Property="TextTrimming" Value="CharacterEllipsis"/>
+                                        </Style>
+
+                                        <Style x:Key="IDCellStyle" TargetType="TextBlock" BasedOn="{StaticResource CellTextStyle}">
+                                            <Setter Property="Foreground" Value="#374151"/>
+                                        </Style>
+
+                                        <Style x:Key="NameCellStyle" TargetType="TextBlock" BasedOn="{StaticResource CellTextStyle}">
+                                            <Setter Property="FontWeight" Value="Medium"/>
+                                            <Setter Property="Foreground" Value="#1F2937"/>
+                                        </Style>
+
+                                        <Style x:Key="QuantityCellStyle" TargetType="TextBlock" BasedOn="{StaticResource CellTextStyle}">
+                                            <Setter Property="HorizontalAlignment" Value="Right"/>
+                                            <Setter Property="Foreground" Value="#374151"/>
+                                        </Style>
+
+                                        <Style x:Key="PrixAchatCellStyle" TargetType="TextBlock" BasedOn="{StaticResource CellTextStyle}">
+                                            <Setter Property="HorizontalAlignment" Value="Right"/>
+                                            <Setter Property="Foreground" Value="#059669"/>
+                                            <Setter Property="FontWeight" Value="Medium"/>
+                                        </Style>
+
+                                        <Style x:Key="PrixVenteCellStyle" TargetType="TextBlock" BasedOn="{StaticResource CellTextStyle}">
+                                            <Setter Property="HorizontalAlignment" Value="Right"/>
+                                            <Setter Property="Foreground" Value="#DC2626"/>
+                                            <Setter Property="FontWeight" Value="Medium"/>
+                                        </Style>
+
+                                        <Style x:Key="PrixMPCellStyle" TargetType="TextBlock" BasedOn="{StaticResource CellTextStyle}">
+                                            <Setter Property="HorizontalAlignment" Value="Right"/>
+                                            <Setter Property="Foreground" Value="#7C3AED"/>
+                                            <Setter Property="FontWeight" Value="Medium"/>
+                                        </Style>
+
+                                        <Style x:Key="CodeCellStyle" TargetType="TextBlock" BasedOn="{StaticResource CellTextStyle}">
+                                            <Setter Property="FontFamily" Value="Consolas, Monaco, monospace"/>
+                                            <Setter Property="Background" Value="#F3F4F6"/>
+                                            <Setter Property="Foreground" Value="#374151"/>
+                                        </Style>
+
+                                        <Style x:Key="FournisseurCellStyle" TargetType="TextBlock" BasedOn="{StaticResource CellTextStyle}">
+                                            <Setter Property="Foreground" Value="#1F2937"/>
+                                            <Setter Property="FontWeight" Value="Medium"/>
+                                        </Style>
+
+                                        <!-- Row Container Style -->
+                                        <Style x:Key="RowContainerStyle" TargetType="Border">
+                                            <Setter Property="Background" Value="White"/>
+                                            <Style.Triggers>
+                                                <Trigger Property="IsMouseOver" Value="True">
+                                                    <Setter Property="Background" Value="#F8FAFC"/>
+                                                </Trigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </Grid.Resources>
+
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="45"/>
+                                        <!-- Header Row -->
+                                        <RowDefinition Height="*"/>
+                                        <!-- Content Row -->
+                                    </Grid.RowDefinitions>
+
+                                    <!-- Header Row -->
+                                    <Grid Grid.Row="0">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="100" MinWidth="80"/>
+                                            <!-- Article ID -->
+                                            <ColumnDefinition Width="2*" MinWidth="150"/>
+                                            <!-- Article Name -->
+                                            <ColumnDefinition Width="100" MinWidth="80"/>
+                                            <!-- Quantité -->
+                                            <ColumnDefinition Width="120" MinWidth="100"/>
+                                            <!-- Prix Achat -->
+                                            <ColumnDefinition Width="120" MinWidth="100"/>
+                                            <!-- Prix Vente -->
+                                            <ColumnDefinition Width="120" MinWidth="100"/>
+                                            <!-- Prix MP -->
+                                            <ColumnDefinition Width="100" MinWidth="80"/>
+                                            <!-- Famille ID -->
+                                            <ColumnDefinition Width="150" MinWidth="120"/>
+                                            <!-- Fournisseur -->
+                                            <ColumnDefinition Width="120" MinWidth="100"/>
+                                            <!-- Code -->
+                                        </Grid.ColumnDefinitions>
+
+                                        <Border Grid.Column="0" Style="{StaticResource RowContainerStyle}">
+                                            <TextBlock Text="Article ID" Style="{StaticResource HeaderTextStyle}"/>
+                                        </Border>
+
+                                        <Border Grid.Column="1" Style="{StaticResource RowContainerStyle}">
+                                            <TextBlock Text="Article Name" Style="{StaticResource HeaderTextStyle}"/>
+                                        </Border>
+
+                                        <Border Grid.Column="2" Style="{StaticResource RowContainerStyle}">
+                                            <TextBlock Text="Quantité" Style="{StaticResource HeaderTextStyle}"/>
+                                        </Border>
+
+                                        <Border Grid.Column="3" Style="{StaticResource RowContainerStyle}">
+                                            <TextBlock Text="Prix Achat" Style="{StaticResource HeaderTextStyle}"/>
+                                        </Border>
+
+                                        <Border Grid.Column="4" Style="{StaticResource RowContainerStyle}">
+                                            <TextBlock Text="Prix Vente" Style="{StaticResource HeaderTextStyle}"/>
+                                        </Border>
+
+                                        <Border Grid.Column="5" Style="{StaticResource RowContainerStyle}">
+                                            <TextBlock Text="Prix MP" Style="{StaticResource HeaderTextStyle}"/>
+                                        </Border>
+
+                                        <Border Grid.Column="6" Style="{StaticResource RowContainerStyle}">
+                                            <TextBlock Text="Famille ID" Style="{StaticResource HeaderTextStyle}"/>
+                                        </Border>
+
+                                        <Border Grid.Column="7" Style="{StaticResource RowContainerStyle}">
+                                            <TextBlock Text="Fournisseur" Style="{StaticResource HeaderTextStyle}"/>
+                                        </Border>
+
+                                        <Border Grid.Column="8" Style="{StaticResource RowContainerStyle}">
+                                            <TextBlock Text="Code" Style="{StaticResource HeaderTextStyle}"/>
+                                        </Border>
+                                    </Grid>
+
+                                    <!-- Content Area with ScrollViewer -->
+
+                                </Grid>
+                                <ScrollViewer Grid.Row="2" VerticalScrollBarVisibility="Auto" 
+              HorizontalScrollBarVisibility="Disabled">
+                                    <StackPanel Background="white" x:Name="ArticlesContainer"/>
+                                </ScrollViewer>
+                            </Grid>
+                        </ScrollViewer>
+                    </Border>
+                </Grid>
+            </Grid>
+        </Grid>
+
+        <!-- Footer -->
+        <Border Grid.Row="2" Background="#F9FAFB" BorderBrush="#D1D5DB" BorderThickness="0,1,0,0" CornerRadius="0,0,8,8">
+            <Grid Margin="15,0">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+
+                <!-- Date and Time -->
+                <TextBlock x:Name="DateTimeText" 
+                           Grid.Column="0" 
+                           Text="22/07/2025 16:41:02" 
+                           FontFamily="Segoe UI" 
+                           FontSize="11" 
+                           Foreground="#6B7280" 
+                           VerticalAlignment="Center"/>
+
+                <!-- Session Info -->
+                <TextBlock Grid.Column="1" 
+                           Text="01    C:\Debug app\Debug app" 
+                           FontFamily="Segoe UI" 
+                           FontSize="11" 
+                           Foreground="#6B7280" 
+                           VerticalAlignment="Center" 
+                           Margin="20,0,0,0"/>
+
+                <!-- Status Indicators -->
+                <Border Grid.Column="2" Background="#10B981" Width="12" Height="12" CornerRadius="6" VerticalAlignment="Center" Margin="0,0,10,0"/>
+
+                <TextBlock Grid.Column="3" 
+                           Text="DIRECTE" 
+                           FontFamily="Segoe UI" 
+                           FontSize="11" 
+                           FontWeight="Medium" 
+                           Foreground="#374151" 
+                           VerticalAlignment="Center" 
+                           Margin="0,0,15,0"/>
+
+                <!-- Alert Icon -->
+                <Border Grid.Column="4" Background="#F59E0B" Width="16" Height="16" CornerRadius="3" VerticalAlignment="Center">
+                    <TextBlock Text="!" 
+                               FontFamily="Segoe UI" 
+                               FontSize="10" 
+                               FontWeight="Bold" 
+                               Foreground="White" 
+                               HorizontalAlignment="Center" 
+                               VerticalAlignment="Center"/>
+                </Border>
+
+                <!-- Admin Info -->
+                <TextBlock Grid.Column="4" 
+                           Text="ADMIN" 
+                           FontFamily="Segoe UI" 
+                           FontSize="11" 
+                           FontWeight="Medium" 
+                           Foreground="#374151" 
+                           VerticalAlignment="Center" 
+                           Margin="25,0,0,0"/>
+            </Grid>
+        </Border>
+    </Grid>
+</UserControl>
+

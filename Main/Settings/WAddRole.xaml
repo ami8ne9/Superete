@@ -1,0 +1,256 @@
+﻿<Window x:Class="Superete.Main.Settings.WAddRole"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Configuration des Permissions" Height="734" Width="500"
+        Background="#F5F5F5" ResizeMode="NoResize" WindowStartupLocation="CenterScreen" WindowStyle="None">
+
+    <Window.Resources>
+        <!-- Custom Button Style -->
+        <Style x:Key="ActionButtonStyle" TargetType="Button">
+            <Setter Property="Height" Value="45"/>
+            <Setter Property="FontSize" Value="14"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border Background="{TemplateBinding Background}" 
+                                CornerRadius="5" 
+                                BorderBrush="{TemplateBinding BorderBrush}" 
+                                BorderThickness="{TemplateBinding BorderThickness}">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!-- Toggle Button Style -->
+        <Style x:Key="ToggleButtonStyle" TargetType="Button">
+            <Setter Property="Width" Value="80"/>
+            <Setter Property="Height" Value="25"/>
+            <Setter Property="FontSize" Value="11"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border Background="{TemplateBinding Background}" 
+                                CornerRadius="15">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!-- Role Section Style -->
+        <Style x:Key="RoleSectionStyle" TargetType="Border">
+            <Setter Property="Background" Value="White"/>
+            <Setter Property="CornerRadius" Value="8"/>
+            <Setter Property="Margin" Value="0,0,0,15"/>
+            <Setter Property="Padding" Value="20"/>
+            <Setter Property="Effect">
+                <Setter.Value>
+                    <DropShadowEffect Color="Gray" BlurRadius="5" ShadowDepth="2" Opacity="0.1"/>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!-- TextBox Style -->
+        <Style x:Key="InputTextBoxStyle" TargetType="TextBox">
+            <Setter Property="Height" Value="35"/>
+            <Setter Property="Padding" Value="8"/>
+            <Setter Property="FontSize" Value="13"/>
+            <Setter Property="BorderBrush" Value="#CCCCCC"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="Background" Value="White"/>
+        </Style>
+    </Window.Resources>
+
+    <Grid Margin="20" x:Name="Container">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto" MinHeight="45"/>
+            <RowDefinition Height="16*"/>
+            <RowDefinition Height="63*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <!-- Header Section -->
+        <StackPanel Grid.Row="0" Orientation="Horizontal" Margin="0,0,0,20">
+            <Border Background="#4CAF50" CornerRadius="8" Width="40" Height="40" Margin="0,0,15,0">
+                <TextBlock Text="🔐" FontSize="20" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+            </Border>
+            <StackPanel VerticalAlignment="Center">
+                <TextBlock Text="CONFIGURATION DES PERMISSIONS" FontWeight="Bold" FontSize="16" Foreground="#333"/>
+                <TextBlock Text="Gérer les permissions par type d'utilisateur" FontSize="12" Foreground="#666" Margin="0,2,0,0"/>
+            </StackPanel>
+        </StackPanel>
+
+        <!-- Toggle Buttons -->
+        <StackPanel Grid.Row="1" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,0,0,20" Width="170">
+            <Button x:Name="ToutActiverBtn" Content="Tout activer" 
+                    Style="{StaticResource ToggleButtonStyle}"
+                    Background="#4CAF50" Foreground="White" 
+                    Margin="0,0,10,0"
+                    Click="ToutActiverBtn_Click"/>
+            <Button x:Name="ToutDesactiverBtn" Content="Tout désactiver" 
+                    Style="{StaticResource ToggleButtonStyle}"
+                    Background="#F44336" Foreground="White"
+                    Click="ToutDesactiverBtn_Click"/>
+        </StackPanel>
+
+        <!-- Role Name Input Section -->
+        <Border Grid.Row="2" Style="{StaticResource RoleSectionStyle}" Margin="0,0,0,40" Grid.RowSpan="2" >
+            <StackPanel>
+                <TextBlock Text="📝 NOM DU RÔLE" FontWeight="Bold" FontSize="14" Foreground="#555" Margin="0,0,0,15"/>
+                <TextBox x:Name="RoleName" 
+                         Style="{StaticResource InputTextBoxStyle}"
+                         Margin="0,0,0,10"/>
+            </StackPanel>
+        </Border>
+
+        <!-- Permissions Content -->
+        <ScrollViewer Grid.Row="3" VerticalScrollBarVisibility="Auto" Margin="0,5,0,40">
+            <StackPanel>
+                <!-- ADMINISTRATEUR Section -->
+                <Border Style="{StaticResource RoleSectionStyle}" Height="373">
+                    <StackPanel>
+                        <TextBlock Text="🔑 Permissions" FontWeight="Bold" FontSize="14" Foreground="#555" Margin="0,0,0,15"/>
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="30"/>
+                                <RowDefinition Height="30"/>
+                                <RowDefinition Height="30"/>
+                                <RowDefinition Height="30"/>
+                                <RowDefinition Height="30"/>
+                                <RowDefinition Height="30"/>
+                                <RowDefinition Height="30"/>
+                                <RowDefinition Height="30"/>
+                                <RowDefinition Height="30"/>
+                                <RowDefinition Height="30"/>
+                            </Grid.RowDefinitions>
+
+                            <StackPanel Grid.Row="0" Grid.Column="0" Orientation="Horizontal">
+                                <CheckBox  VerticalAlignment="Center" Margin="0,0,8,0" x:Name="Operation"/>
+                                <TextBlock Text="Opérations" FontSize="12" VerticalAlignment="Center"/>
+                            </StackPanel>
+                            <StackPanel Grid.Row="0" Grid.Column="1" Orientation="Horizontal">
+                                <CheckBox x:Name="Sorties" VerticalAlignment="Center" Margin="0,0,8,0"/>
+                                <TextBlock Text="Sorties" FontSize="12" VerticalAlignment="Center"/>
+                            </StackPanel>
+                            <StackPanel Grid.Row="1" Grid.Column="0" Orientation="Horizontal">
+                                <CheckBox x:Name="Rapport" VerticalAlignment="Center" Margin="0,0,8,0"/>
+                                <TextBlock Text="Rapports" FontSize="12" VerticalAlignment="Center"/>
+                            </StackPanel>
+                            <StackPanel Grid.Row="1" Grid.Column="1" Orientation="Horizontal">
+                                <CheckBox x:Name="Clients" VerticalAlignment="Center" Margin="0,0,8,0"/>
+                                <TextBlock Text="Clients" FontSize="12" VerticalAlignment="Center"/>
+                            </StackPanel>
+                            <StackPanel Grid.Row="2" Grid.Column="0" Orientation="Horizontal">
+                                <CheckBox x:Name="Depences" VerticalAlignment="Center" Margin="0,0,8,0"/>
+                                <TextBlock Text="Dépenses" FontSize="12" VerticalAlignment="Center"/>
+                            </StackPanel>
+                            <StackPanel Grid.Row="2" Grid.Column="1" Orientation="Horizontal">
+                                <CheckBox x:Name="Articles" VerticalAlignment="Center" Margin="0,0,8,0"/>
+                                <TextBlock Text="Articles" FontSize="12" VerticalAlignment="Center"/>
+                            </StackPanel>
+                            <StackPanel Grid.Row="3" Grid.Column="0" Orientation="Horizontal">
+                                <CheckBox x:Name="Reception" VerticalAlignment="Center" Margin="0,0,8,0"/>
+                                <TextBlock Text="Réceptions" FontSize="12" VerticalAlignment="Center"/>
+                            </StackPanel>
+                            <StackPanel Grid.Row="3" Grid.Column="1" Orientation="Horizontal">
+                                <CheckBox x:Name="Cloture" VerticalAlignment="Center" Margin="0,0,8,0"/>
+                                <TextBlock Text="Cloture" FontSize="12" VerticalAlignment="Center"/>
+                            </StackPanel>
+                            <StackPanel Grid.Row="4" Grid.Column="0" Orientation="Horizontal">
+                                <CheckBox x:Name="Remise" VerticalAlignment="Center" Margin="0,0,8,0"/>
+                                <TextBlock Text="Remise" FontSize="12" VerticalAlignment="Center"/>
+                            </StackPanel>
+                            <StackPanel Grid.Row="4" Grid.Column="1" Orientation="Horizontal">
+                                <CheckBox x:Name="ModifPrix"  VerticalAlignment="Center" Margin="0,0,8,0"/>
+                                <TextBlock Text="Modification Prix" FontSize="12" VerticalAlignment="Center"/>
+                            </StackPanel>
+                            <StackPanel Grid.Row="5" Grid.Column="0" Orientation="Horizontal">
+                                <CheckBox x:Name="ModifQuantite"  VerticalAlignment="Center" Margin="0,0,8,0"/>
+                                <TextBlock Text="Modification Quantite" FontSize="12" VerticalAlignment="Center"/>
+                            </StackPanel>
+                            <StackPanel Grid.Row="5" Grid.Column="1" Orientation="Horizontal">
+                                <CheckBox x:Name="Divers" VerticalAlignment="Center" Margin="0,0,8,0"/>
+                                <TextBlock  Text="Divers" FontSize="12" VerticalAlignment="Center"/>
+                            </StackPanel>
+                            <StackPanel Grid.Row="6" Grid.Column="0" Orientation="Horizontal">
+                                <CheckBox x:Name="Prix" VerticalAlignment="Center" Margin="0,0,8,0"/>
+                                <TextBlock  Text="Prix" FontSize="12" VerticalAlignment="Center"/>
+                            </StackPanel>
+                            <StackPanel Grid.Row="6" Grid.Column="1" Orientation="Horizontal">
+                                <CheckBox x:Name="Duplica" VerticalAlignment="Center" Margin="0,0,8,0"/>
+                                <TextBlock  Text="Duplica" FontSize="12" VerticalAlignment="Center"/>
+                            </StackPanel>
+                            <StackPanel Grid.Row="7" Grid.Column="0" Orientation="Horizontal">
+                                <CheckBox x:Name="Flash"  VerticalAlignment="Center" Margin="0,0,8,0"/>
+                                <TextBlock Text="Flash" FontSize="12" VerticalAlignment="Center"/>
+                            </StackPanel>
+                            <StackPanel Grid.Row="7" Grid.Column="1" Orientation="Horizontal">
+                                <CheckBox x:Name="Tiroir" VerticalAlignment="Center" Margin="0,0,8,0"/>
+                                <TextBlock Text="Tiroir" FontSize="12" VerticalAlignment="Center"/>
+                            </StackPanel>
+                            <StackPanel Grid.Row="8" Grid.Column="0" Orientation="Horizontal">
+                                <CheckBox  x:Name="Anulation" VerticalAlignment="Center" Margin="0,0,8,0"/>
+                                <TextBlock Text="Anulation" FontSize="12" VerticalAlignment="Center"/>
+                            </StackPanel>
+                            <StackPanel Grid.Row="8" Grid.Column="1" Orientation="Horizontal">
+                                <CheckBox x:Name="ClientRegles" VerticalAlignment="Center" Margin="0,0,8,0"/>
+                                <TextBlock  Text="Client Regles" FontSize="12" VerticalAlignment="Center"/>
+                            </StackPanel>
+                            <StackPanel Grid.Row="9" Grid.Column="0" Orientation="Horizontal">
+                                <CheckBox x:Name="Solder" VerticalAlignment="Center" Margin="0,0,8,0"/>
+                                <TextBlock  Text="Solder" FontSize="12" VerticalAlignment="Center"/>
+                            </StackPanel>
+                        </Grid>
+                    </StackPanel>
+                </Border>
+
+                <!-- GESTIONNAIRE Section -->
+
+                <!-- UTILISATEUR Section -->
+
+                <!-- INVITÉ Section -->
+            </StackPanel>
+        </ScrollViewer>
+
+        <!-- Action Buttons -->
+        <Grid Grid.Row="4" Margin="0,20,0,0">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="10"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+
+            <!-- Cancel Button -->
+            <Button Grid.Column="0" 
+                    x:Name="AnnulerButton"
+                    Content="✕ Annuler" 
+                    Style="{StaticResource ActionButtonStyle}"
+                    Background="#F44336" 
+                    Foreground="White" Click="AnnulerButton_Click" 
+                    />
+
+            <!-- Apply Button -->
+            <Button Grid.Column="2" 
+                    x:Name="AppliquerButton"
+                    Content="✓ Appliquer" 
+                    Style="{StaticResource ActionButtonStyle}"
+                    Background="#2196F3" 
+                    Foreground="White" Click="AppliquerButton_Click" 
+                   />
+        </Grid>
+    </Grid>
+</Window>

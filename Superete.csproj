@@ -1,0 +1,487 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{49DA6D4D-F0AF-453B-9724-88EA6E9B1ECD}</ProjectGuid>
+    <OutputType>WinExe</OutputType>
+    <RootNamespace>Superete</RootNamespace>
+    <AssemblyName>Superete</AssemblyName>
+    <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <ProjectTypeGuids>{60dc8134-eba5-43b8-bcc9-bb4bc16c2548};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
+    <WarningLevel>4</WarningLevel>
+    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
+    <Deterministic>true</Deterministic>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Xaml">
+      <RequiredTargetFramework>4.0</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="WindowsBase" />
+    <Reference Include="PresentationCore" />
+    <Reference Include="PresentationFramework" />
+  </ItemGroup>
+  <ItemGroup>
+    <ApplicationDefinition Include="App.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </ApplicationDefinition>
+    <Compile Include="Article.cs" />
+    <Compile Include="Client.cs" />
+    <Compile Include="Credit.cs" />
+    <Compile Include="Famille.cs" />
+    <Compile Include="Fournisseur.cs" />
+    <Compile Include="Main\CMain.xaml.cs">
+      <DependentUpon>CMain.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Main\ClientPage\CMainC.xaml.cs">
+      <DependentUpon>CMainC.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Main\ClientPage\CSingleClient.xaml.cs">
+      <DependentUpon>CSingleClient.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Main\ClientPage\WAddClient.xaml.cs">
+      <DependentUpon>WAddClient.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Main\ClientPage\WDeleteClient.xaml.cs">
+      <DependentUpon>WDeleteClient.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Main\ClientPage\WHistoryOperationC.xaml.cs">
+      <DependentUpon>WHistoryOperationC.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Main\ClientPage\WPayeClient.xaml.cs">
+      <DependentUpon>WPayeClient.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Main\FournisseurPage\CMainF.xaml.cs">
+      <DependentUpon>CMainF.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Main\FournisseurPage\CSingleFournisseur.xaml.cs">
+      <DependentUpon>CSingleFournisseur.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Main\FournisseurPage\WAddFournisseur.xaml.cs">
+      <DependentUpon>WAddFournisseur.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Main\FournisseurPage\WDeleteFournisseur.xaml.cs">
+      <DependentUpon>WDeleteFournisseur.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Main\FournisseurPage\WHistoryOperation.xaml.cs">
+      <DependentUpon>WHistoryOperation.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Main\FournisseurPage\WPayeFournisseur.xaml.cs">
+      <DependentUpon>WPayeFournisseur.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Main\Inventory\CMainI.xaml.cs">
+      <DependentUpon>CMainI.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Main\Inventory\CSingleArticleI.xaml.cs">
+      <DependentUpon>CSingleArticleI.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Main\Inventory\CSingleRowArticle.xaml.cs">
+      <DependentUpon>CSingleRowArticle.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Main\Inventory\CSingleRowFamilly.xaml.cs">
+      <DependentUpon>CSingleRowFamilly.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Main\Inventory\WAddArticle.xaml.cs">
+      <DependentUpon>WAddArticle.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Main\Inventory\WAddFamille.xaml.cs">
+      <DependentUpon>WAddFamille.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Main\Inventory\WAddFournisseur.xaml.cs">
+      <DependentUpon>WAddFournisseur.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Main\Inventory\WAjoutQuantite.xaml.cs">
+      <DependentUpon>WAjoutQuantite.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Main\Inventory\WConfirmTransaction.xaml.cs">
+      <DependentUpon>WConfirmTransaction.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Main\Inventory\WCongratulations.xaml.cs">
+      <DependentUpon>WCongratulations.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Main\Inventory\WDeleteConfirmation.xaml.cs">
+      <DependentUpon>WDeleteConfirmation.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Main\Inventory\WDeleteFamillyConfirmation.xaml.cs">
+      <DependentUpon>WDeleteFamillyConfirmation.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Main\Inventory\WExistingArticles.xaml.cs">
+      <DependentUpon>WExistingArticles.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Main\Inventory\WManageFamillies.xaml.cs">
+      <DependentUpon>WManageFamillies.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Main\Inventory\WNouveauStock.xaml.cs">
+      <DependentUpon>WNouveauStock.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Main\ProjectManagment\CMainP.xaml.cs">
+      <DependentUpon>CMainP.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Main\ProjectManagment\CSingleArticle.xaml.cs">
+      <DependentUpon>CSingleArticle.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Main\ProjectManagment\CSingleArticleReverse.xaml.cs">
+      <DependentUpon>CSingleArticleReverse.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Main\ProjectManagment\CSingleOperation.xaml.cs">
+      <DependentUpon>CSingleOperation.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Main\ProjectManagment\WArticlesReverse.xaml.cs">
+      <DependentUpon>WArticlesReverse.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Main\ProjectManagment\WPlus.xaml.cs">
+      <DependentUpon>WPlus.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Main\ProjectManagment\WReverseConfirmation.xaml.cs">
+      <DependentUpon>WReverseConfirmation.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Main\Settings\CSingleRole.xaml.cs">
+      <DependentUpon>CSingleRole.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Main\Settings\CSingleUser.xaml.cs">
+      <DependentUpon>CSingleUser.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Main\Settings\CUserManagment.xaml.cs">
+      <DependentUpon>CUserManagment.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Main\Settings\SettingsPage.xaml.cs">
+      <DependentUpon>SettingsPage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Main\Settings\WAddRole.xaml.cs">
+      <DependentUpon>WAddRole.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Main\Settings\WAddUser.xaml.cs">
+      <DependentUpon>WAddUser.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Main\Settings\WDeleteRole.xaml.cs">
+      <DependentUpon>WDeleteRole.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Main\Settings\WDeleteUser.xaml.cs">
+      <DependentUpon>WDeleteUser.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Main\Settings\WRoles.xaml.cs">
+      <DependentUpon>WRoles.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Main\Settings\WUpdateUser.xaml.cs">
+      <DependentUpon>WUpdateUser.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Main\Vente\CMainV.xaml.cs">
+      <DependentUpon>CMainV.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Main\Vente\CSingleArticle1.xaml.cs">
+      <DependentUpon>CSingleArticle1.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Main\Vente\CSingleArticle2.xaml.cs">
+      <DependentUpon>CSingleArticle2.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Main\Vente\CSingleClient.xaml.cs">
+      <DependentUpon>CSingleClient.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Main\Vente\CSingleFamilly.xaml.cs">
+      <DependentUpon>CSingleFamilly.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Main\Vente\WAddCleint.xaml.cs">
+      <DependentUpon>WAddCleint.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Main\Vente\WSelectCient.xaml.cs">
+      <DependentUpon>WSelectCient.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Operation.cs" />
+    <Compile Include="OperationArticle.cs" />
+    <Compile Include="Role.cs" />
+    <Compile Include="User.cs" />
+    <Page Include="Login.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="MainWindow.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Compile Include="App.xaml.cs">
+      <DependentUpon>App.xaml</DependentUpon>
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Login.xaml.cs">
+      <DependentUpon>Login.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="MainWindow.xaml.cs">
+      <DependentUpon>MainWindow.xaml</DependentUpon>
+      <SubType>Code</SubType>
+    </Compile>
+    <Page Include="Main\CMain.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Main\ClientPage\CMainC.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Main\ClientPage\CSingleClient.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Main\ClientPage\WAddClient.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Main\ClientPage\WDeleteClient.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Main\ClientPage\WHistoryOperationC.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Main\ClientPage\WPayeClient.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Main\FournisseurPage\CMainF.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Main\FournisseurPage\CSingleFournisseur.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Main\FournisseurPage\WAddFournisseur.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Main\FournisseurPage\WDeleteFournisseur.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Main\FournisseurPage\WHistoryOperation.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Main\FournisseurPage\WPayeFournisseur.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Main\Inventory\CMainI.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Main\Inventory\CSingleArticleI.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Main\Inventory\CSingleRowArticle.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Main\Inventory\CSingleRowFamilly.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Main\Inventory\WAddArticle.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Main\Inventory\WAddFamille.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Main\Inventory\WAddFournisseur.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Main\Inventory\WAjoutQuantite.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Main\Inventory\WConfirmTransaction.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Main\Inventory\WCongratulations.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Main\Inventory\WDeleteConfirmation.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Main\Inventory\WDeleteFamillyConfirmation.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Main\Inventory\WExistingArticles.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Main\Inventory\WManageFamillies.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Main\Inventory\WNouveauStock.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Main\ProjectManagment\CMainP.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Main\ProjectManagment\CSingleArticle.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Main\ProjectManagment\CSingleArticleReverse.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Main\ProjectManagment\CSingleOperation.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Main\ProjectManagment\WArticlesReverse.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Main\ProjectManagment\WPlus.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Main\ProjectManagment\WReverseConfirmation.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Main\Settings\CSingleRole.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Main\Settings\CSingleUser.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Main\Settings\CUserManagment.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Main\Settings\SettingsPage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Main\Settings\WAddRole.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Main\Settings\WAddUser.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Main\Settings\WDeleteRole.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Main\Settings\WDeleteUser.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Main\Settings\WRoles.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Main\Settings\WUpdateUser.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Main\Vente\CMainV.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Main\Vente\CSingleArticle1.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Main\Vente\CSingleArticle2.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Main\Vente\CSingleClient.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Main\Vente\CSingleFamilly.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Main\Vente\WAddCleint.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Main\Vente\WSelectCient.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Properties\AssemblyInfo.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
+    <Compile Include="Properties\Settings.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Settings.settings</DependentUpon>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+    </Compile>
+    <EmbeddedResource Include="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <None Include="Properties\Settings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="App.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Main\images\customer-review.png" />
+    <Resource Include="Main\images\diagramme-a-bandes.png" />
+    <Resource Include="Main\images\inventaire.png" />
+    <Resource Include="Main\images\management.png" />
+    <Resource Include="Main\images\parametres.png" />
+    <Resource Include="Main\images\revenu.png" />
+  </ItemGroup>
+  <ItemGroup />
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+</Project>
