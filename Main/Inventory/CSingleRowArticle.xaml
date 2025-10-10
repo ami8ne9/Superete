@@ -28,7 +28,7 @@
     </UserControl.Resources>
 
     <Border Background="White" Margin="0,0,0,-15" CornerRadius="4" Padding="10">
-        <Grid MouseLeftButtonDown="MyGrid_MouseLeftButtonDown" Name="MainContainer">
+        <Grid Name="MainContainer">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="3*"/>
                 <!-- Article Name -->

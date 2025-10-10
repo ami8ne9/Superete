@@ -240,7 +240,7 @@
                                Foreground="#333333"
                                Margin="0,0,0,8"/>
 
-                    <PasswordBox x:Name="PasswordInput"
+                    <PasswordBox x:Name="PasswordInput" MaxLength="9"
                                  Style="{StaticResource ModernTextBoxStyle}"
                                  Width="332"
                                  HorizontalAlignment="Left"

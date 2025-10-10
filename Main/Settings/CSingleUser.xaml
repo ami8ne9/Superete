@@ -41,6 +41,12 @@
                             <Trigger Property="IsPressed" Value="True">
                                 <Setter Property="Background" Value="#2A56C6"/>
                             </Trigger>
+                            <Trigger Property="IsEnabled" Value="False">
+                                <Setter Property="Opacity" Value="0.5"/>
+                                <Setter Property="Background" Value="#E5E7EB"/>
+                                <Setter Property="Foreground" Value="#9CA3AF"/>
+                                <Setter Property="Cursor" Value="No"/>
+                            </Trigger>
                         </ControlTemplate.Triggers>
                     </ControlTemplate>
                 </Setter.Value>
@@ -55,6 +61,12 @@
                 </Trigger>
                 <Trigger Property="IsPressed" Value="True">
                     <Setter Property="Background" Value="#BD2130"/>
+                </Trigger>
+                <Trigger Property="IsEnabled" Value="False">
+                    <Setter Property="Opacity" Value="0.5"/>
+                    <Setter Property="Background" Value="#E5E7EB"/>
+                    <Setter Property="Foreground" Value="#9CA3AF"/>
+                    <Setter Property="Cursor" Value="No"/>
                 </Trigger>
             </Style.Triggers>
         </Style>
@@ -119,7 +131,7 @@
 
                 <Button Style="{StaticResource ActionButtonStyle}"
                         Content="✏ Edit"
-                        Click="EditUser_Click"/>
+                        Click="EditUser_Click" x:Name="EditUsers"/>
 
                 <Button Style="{StaticResource DeleteButtonStyle}"
                         Content="🗑 Delete"

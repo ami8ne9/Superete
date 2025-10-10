@@ -10,35 +10,54 @@ namespace Superete
     {
         public int RoleID { get; set; }
         public string RoleName { get; set; }
-        public int Operation { get; set; }
-        public int Remise { get; set; }
-        public int ModifPrix { get; set; }
-        public int ModifQuantite { get; set; }
-        public int Prix { get; set; }
-        public int Divers { get; set; }
-        public int Duplica { get; set; }
-        public int Flash { get; set; }
-        public int Tiroir { get; set; }
-        public int Anulation { get; set; }
-        public int Rapport { get; set; }
-        public int Depences { get; set; }
-        public int Reseption { get; set; }
-        public int Sorties { get; set; }
-        public int Clients { get; set; }
-        public int ClientRegles { get; set; }
-        public int Articles { get; set; }
-        public int Solder { get; set; }
-        public int Cloture { get; set; }
 
+        // ✅ New Permission Columns (BIT -> bool in C#)
+        public bool CreateClient { get; set; }
+        public bool ModifyClient { get; set; }
+        public bool DeleteClient { get; set; }
+        public bool ViewOperationClient { get; set; }
+        public bool PayeClient { get; set; }
+        public bool ViewClient { get; set; }
+
+        public bool CreateFournisseur { get; set; }
+        public bool ModifyFournisseur { get; set; }
+        public bool DeleteFournisseur { get; set; }
+        public bool ViewOperationFournisseur { get; set; }
+        public bool PayeFournisseur { get; set; }
+        public bool ViewFournisseur { get; set; }
+
+        public bool ReverseOperation { get; set; }
+        public bool ReverseMouvment { get; set; }
+        public bool ViewOperation { get; set; }
+        public bool ViewMouvment { get; set; }
+
+        public bool ViewProjectManagment { get; set; }
+        public bool ViewSettings { get; set; }
+
+        public bool ViewUsers { get; set; }
+        public bool EditUsers { get; set; }
+        public bool DeleteUsers { get; set; }
+        public bool AddUsers { get; set; }
+
+        public bool ViewRoles { get; set; }
+        public bool AddRoles { get; set; }
+        public bool DeleteRoles { get; set; }
+
+        public bool ModifyTicket { get; set; }
+
+        public bool ViewFamilly { get; set; }
+        public bool EditFamilly { get; set; }
+        public bool DeleteFamilly { get; set; }
+        public bool AddFamilly { get; set; }
 
         private static readonly string ConnectionString =
             "Server=localhost\\SQLEXPRESS;Database=SUPERETE;Trusted_Connection=True;";
 
-        // Get all roles
+        // ✅ Get all roles
         public async Task<List<Role>> GetRolesAsync()
         {
             var roles = new List<Role>();
-            string query = "SELECT * FROM Role where Etat=1";
+            string query = "SELECT * FROM Role WHERE Etat=1";
 
             using (SqlConnection connection = new SqlConnection(ConnectionString))
             {
@@ -48,29 +67,48 @@ namespace Superete
                 {
                     while (await reader.ReadAsync())
                     {
-                        Role role = new Role
+                        var role = new Role
                         {
                             RoleID = Convert.ToInt32(reader["RoleID"]),
                             RoleName = reader["RoleName"].ToString(),
-                            Operation = Convert.ToInt32(reader["Operation"]),
-                            Remise = Convert.ToInt32(reader["Remise"]),
-                            ModifPrix = Convert.ToInt32(reader["ModifPrix"]),
-                            ModifQuantite = Convert.ToInt32(reader["ModifQuantite"]),
-                            Prix = Convert.ToInt32(reader["Prix"]),
-                            Divers = Convert.ToInt32(reader["Divers"]),
-                            Duplica = Convert.ToInt32(reader["Duplica"]),
-                            Flash = Convert.ToInt32(reader["Flash"]),
-                            Tiroir = Convert.ToInt32(reader["Tiroir"]),
-                            Anulation = Convert.ToInt32(reader["Anulation"]),
-                            Rapport = Convert.ToInt32(reader["Rapport"]),
-                            Depences = Convert.ToInt32(reader["Depences"]),
-                            Reseption = Convert.ToInt32(reader["Reseption"]),
-                            Sorties = Convert.ToInt32(reader["Sorties"]),
-                            Clients = Convert.ToInt32(reader["Clients"]),
-                            ClientRegles = Convert.ToInt32(reader["ClientRegles"]),
-                            Articles = Convert.ToInt32(reader["Articles"]),
-                            Solder = Convert.ToInt32(reader["Solder"]),
-                            Cloture = Convert.ToInt32(reader["Cloture"])
+
+                            CreateClient = Convert.ToBoolean(reader["CreateClient"]),
+                            ModifyClient = Convert.ToBoolean(reader["ModifyClient"]),
+                            DeleteClient = Convert.ToBoolean(reader["DeleteClient"]),
+                            ViewOperationClient = Convert.ToBoolean(reader["ViewOperationClient"]),
+                            PayeClient = Convert.ToBoolean(reader["PayeClient"]),
+                            ViewClient = Convert.ToBoolean(reader["ViewClient"]),
+
+                            CreateFournisseur = Convert.ToBoolean(reader["CreateFournisseur"]),
+                            ModifyFournisseur = Convert.ToBoolean(reader["ModifyFournisseur"]),
+                            DeleteFournisseur = Convert.ToBoolean(reader["DeleteFournisseur"]),
+                            ViewOperationFournisseur = Convert.ToBoolean(reader["ViewOperationFournisseur"]),
+                            PayeFournisseur = Convert.ToBoolean(reader["PayeFournisseur"]),
+                            ViewFournisseur = Convert.ToBoolean(reader["ViewFournisseur"]),
+
+                            ReverseOperation = Convert.ToBoolean(reader["ReverseOperation"]),
+                            ReverseMouvment = Convert.ToBoolean(reader["ReverseMouvment"]),
+                            ViewOperation = Convert.ToBoolean(reader["ViewOperation"]),
+                            ViewMouvment = Convert.ToBoolean(reader["ViewMouvment"]),
+
+                            ViewProjectManagment = Convert.ToBoolean(reader["ViewProjectManagment"]),
+                            ViewSettings = Convert.ToBoolean(reader["ViewSettings"]),
+
+                            ViewUsers = Convert.ToBoolean(reader["ViewUsers"]),
+                            EditUsers = Convert.ToBoolean(reader["EditUsers"]),
+                            DeleteUsers = Convert.ToBoolean(reader["DeleteUsers"]),
+                            AddUsers = Convert.ToBoolean(reader["AddUsers"]),
+
+                            ViewRoles = Convert.ToBoolean(reader["ViewRoles"]),
+                            AddRoles = Convert.ToBoolean(reader["AddRoles"]),
+                            DeleteRoles = Convert.ToBoolean(reader["DeleteRoles"]),
+
+                            ModifyTicket = Convert.ToBoolean(reader["ModifyTicket"]),
+
+                            ViewFamilly = Convert.ToBoolean(reader["ViewFamilly"]),
+                            EditFamilly = Convert.ToBoolean(reader["EditFamilly"]),
+                            DeleteFamilly = Convert.ToBoolean(reader["DeleteFamilly"]),
+                            AddFamilly = Convert.ToBoolean(reader["AddFamilly"])
                         };
                         roles.Add(role);
                     }
@@ -79,12 +117,27 @@ namespace Superete
             return roles;
         }
 
-        // Insert a new role
+        // ✅ Insert new role
         public async Task<int> InsertRoleAsync()
         {
             string query = @"INSERT INTO Role 
-                (RoleName, Operation, Remise, ModifPrix, ModifQuantite, Prix, Divers, Duplica, Flash, Tiroir, Anulation, Rapport, Depences, Reseption, Sorties, Clients, ClientRegles, Articles, Solder, Cloture)
-                VALUES (@RoleName, @Operation, @Remise, @ModifPrix, @ModifQuantite, @Prix, @Divers, @Duplica, @Flash, @Tiroir, @Anulation, @Rapport, @Depences, @Reseption, @Sorties, @Clients, @ClientRegles, @Articles, @Solder, @Cloture);
+                (RoleName, CreateClient, ModifyClient, DeleteClient, ViewOperationClient, PayeClient, ViewClient,
+                 CreateFournisseur, ModifyFournisseur, DeleteFournisseur, ViewOperationFournisseur, PayeFournisseur, ViewFournisseur,
+                 ReverseOperation, ReverseMouvment, ViewOperation, ViewMouvment,
+                 ViewProjectManagment, ViewSettings,
+                 ViewUsers, EditUsers, DeleteUsers, AddUsers,
+                 ViewRoles, AddRoles, DeleteRoles,
+                 ModifyTicket,
+                 ViewFamilly, EditFamilly, DeleteFamilly, AddFamilly)
+                VALUES 
+                (@RoleName, @CreateClient, @ModifyClient, @DeleteClient, @ViewOperationClient, @PayeClient, @ViewClient,
+                 @CreateFournisseur, @ModifyFournisseur, @DeleteFournisseur, @ViewOperationFournisseur, @PayeFournisseur, @ViewFournisseur,
+                 @ReverseOperation, @ReverseMouvment, @ViewOperation, @ViewMouvment,
+                 @ViewProjectManagment, @ViewSettings,
+                 @ViewUsers, @EditUsers, @DeleteUsers, @AddUsers,
+                 @ViewRoles, @AddRoles, @DeleteRoles,
+                 @ModifyTicket,
+                 @ViewFamilly, @EditFamilly, @DeleteFamilly, @AddFamilly);
                 SELECT SCOPE_IDENTITY();";
 
             using (SqlConnection connection = new SqlConnection(ConnectionString))
@@ -95,25 +148,44 @@ namespace Superete
                     using (SqlCommand cmd = new SqlCommand(query, connection))
                     {
                         cmd.Parameters.AddWithValue("@RoleName", this.RoleName);
-                        cmd.Parameters.AddWithValue("@Operation", this.Operation);
-                        cmd.Parameters.AddWithValue("@Remise", this.Remise);
-                        cmd.Parameters.AddWithValue("@ModifPrix", this.ModifPrix);
-                        cmd.Parameters.AddWithValue("@ModifQuantite", this.ModifQuantite);
-                        cmd.Parameters.AddWithValue("@Prix", this.Prix);
-                        cmd.Parameters.AddWithValue("@Divers", this.Divers);
-                        cmd.Parameters.AddWithValue("@Duplica", this.Duplica);
-                        cmd.Parameters.AddWithValue("@Flash", this.Flash);
-                        cmd.Parameters.AddWithValue("@Tiroir", this.Tiroir);
-                        cmd.Parameters.AddWithValue("@Anulation", this.Anulation);
-                        cmd.Parameters.AddWithValue("@Rapport", this.Rapport);
-                        cmd.Parameters.AddWithValue("@Depences", this.Depences);
-                        cmd.Parameters.AddWithValue("@Reseption", this.Reseption);
-                        cmd.Parameters.AddWithValue("@Sorties", this.Sorties);
-                        cmd.Parameters.AddWithValue("@Clients", this.Clients);
-                        cmd.Parameters.AddWithValue("@ClientRegles", this.ClientRegles);
-                        cmd.Parameters.AddWithValue("@Articles", this.Articles);
-                        cmd.Parameters.AddWithValue("@Solder", this.Solder);
-                        cmd.Parameters.AddWithValue("@Cloture", this.Cloture);
+
+                        cmd.Parameters.AddWithValue("@CreateClient", this.CreateClient);
+                        cmd.Parameters.AddWithValue("@ModifyClient", this.ModifyClient);
+                        cmd.Parameters.AddWithValue("@DeleteClient", this.DeleteClient);
+                        cmd.Parameters.AddWithValue("@ViewOperationClient", this.ViewOperationClient);
+                        cmd.Parameters.AddWithValue("@PayeClient", this.PayeClient);
+                        cmd.Parameters.AddWithValue("@ViewClient", this.ViewClient);
+
+                        cmd.Parameters.AddWithValue("@CreateFournisseur", this.CreateFournisseur);
+                        cmd.Parameters.AddWithValue("@ModifyFournisseur", this.ModifyFournisseur);
+                        cmd.Parameters.AddWithValue("@DeleteFournisseur", this.DeleteFournisseur);
+                        cmd.Parameters.AddWithValue("@ViewOperationFournisseur", this.ViewOperationFournisseur);
+                        cmd.Parameters.AddWithValue("@PayeFournisseur", this.PayeFournisseur);
+                        cmd.Parameters.AddWithValue("@ViewFournisseur", this.ViewFournisseur);
+
+                        cmd.Parameters.AddWithValue("@ReverseOperation", this.ReverseOperation);
+                        cmd.Parameters.AddWithValue("@ReverseMouvment", this.ReverseMouvment);
+                        cmd.Parameters.AddWithValue("@ViewOperation", this.ViewOperation);
+                        cmd.Parameters.AddWithValue("@ViewMouvment", this.ViewMouvment);
+
+                        cmd.Parameters.AddWithValue("@ViewProjectManagment", this.ViewProjectManagment);
+                        cmd.Parameters.AddWithValue("@ViewSettings", this.ViewSettings);
+
+                        cmd.Parameters.AddWithValue("@ViewUsers", this.ViewUsers);
+                        cmd.Parameters.AddWithValue("@EditUsers", this.EditUsers);
+                        cmd.Parameters.AddWithValue("@DeleteUsers", this.DeleteUsers);
+                        cmd.Parameters.AddWithValue("@AddUsers", this.AddUsers);
+
+                        cmd.Parameters.AddWithValue("@ViewRoles", this.ViewRoles);
+                        cmd.Parameters.AddWithValue("@AddRoles", this.AddRoles);
+                        cmd.Parameters.AddWithValue("@DeleteRoles", this.DeleteRoles);
+
+                        cmd.Parameters.AddWithValue("@ModifyTicket", this.ModifyTicket);
+
+                        cmd.Parameters.AddWithValue("@ViewFamilly", this.ViewFamilly);
+                        cmd.Parameters.AddWithValue("@EditFamilly", this.EditFamilly);
+                        cmd.Parameters.AddWithValue("@DeleteFamilly", this.DeleteFamilly);
+                        cmd.Parameters.AddWithValue("@AddFamilly", this.AddFamilly);
 
                         object result = await cmd.ExecuteScalarAsync();
                         return Convert.ToInt32(result);
@@ -127,14 +199,19 @@ namespace Superete
             }
         }
 
-        // Update a role
+        // ✅ Update role
         public async Task<int> UpdateRoleAsync()
         {
             string query = @"UPDATE Role SET 
-                RoleName=@RoleName, Operation=@Operation, Remise=@Remise, ModifPrix=@ModifPrix, ModifQuantite=@ModifQuantite, 
-                Prix=@Prix, Divers=@Divers, Duplica=@Duplica, Flash=@Flash, Tiroir=@Tiroir, Anulation=@Anulation, 
-                Rapport=@Rapport, Depences=@Depences, Reseption=@Reseption, Sorties=@Sorties, Clients=@Clients, 
-                ClientRegles=@ClientRegles, Articles=@Articles, Solder=@Solder, Cloture=@Cloture
+                RoleName=@RoleName,
+                CreateClient=@CreateClient, ModifyClient=@ModifyClient, DeleteClient=@DeleteClient, ViewOperationClient=@ViewOperationClient, PayeClient=@PayeClient, ViewClient=@ViewClient,
+                CreateFournisseur=@CreateFournisseur, ModifyFournisseur=@ModifyFournisseur, DeleteFournisseur=@DeleteFournisseur, ViewOperationFournisseur=@ViewOperationFournisseur, PayeFournisseur=@PayeFournisseur, ViewFournisseur=@ViewFournisseur,
+                ReverseOperation=@ReverseOperation, ReverseMouvment=@ReverseMouvment, ViewOperation=@ViewOperation, ViewMouvment=@ViewMouvment,
+                ViewProjectManagment=@ViewProjectManagment, ViewSettings=@ViewSettings,
+                ViewUsers=@ViewUsers, EditUsers=@EditUsers, DeleteUsers=@DeleteUsers, AddUsers=@AddUsers,
+                ViewRoles=@ViewRoles, AddRoles=@AddRoles, DeleteRoles=@DeleteRoles,
+                ModifyTicket=@ModifyTicket,
+                ViewFamilly=@ViewFamilly, EditFamilly=@EditFamilly, DeleteFamilly=@DeleteFamilly, AddFamilly=@AddFamilly
                 WHERE RoleID=@RoleID";
 
             using (SqlConnection connection = new SqlConnection(ConnectionString))
@@ -145,26 +222,45 @@ namespace Superete
                     using (SqlCommand cmd = new SqlCommand(query, connection))
                     {
                         cmd.Parameters.AddWithValue("@RoleName", this.RoleName);
-                        cmd.Parameters.AddWithValue("@Operation", this.Operation);
-                        cmd.Parameters.AddWithValue("@Remise", this.Remise);
-                        cmd.Parameters.AddWithValue("@ModifPrix", this.ModifPrix);
-                        cmd.Parameters.AddWithValue("@ModifQuantite", this.ModifQuantite);
-                        cmd.Parameters.AddWithValue("@Prix", this.Prix);
-                        cmd.Parameters.AddWithValue("@Divers", this.Divers);
-                        cmd.Parameters.AddWithValue("@Duplica", this.Duplica);
-                        cmd.Parameters.AddWithValue("@Flash", this.Flash);
-                        cmd.Parameters.AddWithValue("@Tiroir", this.Tiroir);
-                        cmd.Parameters.AddWithValue("@Anulation", this.Anulation);
-                        cmd.Parameters.AddWithValue("@Rapport", this.Rapport);
-                        cmd.Parameters.AddWithValue("@Depences", this.Depences);
-                        cmd.Parameters.AddWithValue("@Reseption", this.Reseption);
-                        cmd.Parameters.AddWithValue("@Sorties", this.Sorties);
-                        cmd.Parameters.AddWithValue("@Clients", this.Clients);
-                        cmd.Parameters.AddWithValue("@ClientRegles", this.ClientRegles);
-                        cmd.Parameters.AddWithValue("@Articles", this.Articles);
-                        cmd.Parameters.AddWithValue("@Solder", this.Solder);
-                        cmd.Parameters.AddWithValue("@Cloture", this.Cloture);
                         cmd.Parameters.AddWithValue("@RoleID", this.RoleID);
+
+                        cmd.Parameters.AddWithValue("@CreateClient", this.CreateClient);
+                        cmd.Parameters.AddWithValue("@ModifyClient", this.ModifyClient);
+                        cmd.Parameters.AddWithValue("@DeleteClient", this.DeleteClient);
+                        cmd.Parameters.AddWithValue("@ViewOperationClient", this.ViewOperationClient);
+                        cmd.Parameters.AddWithValue("@PayeClient", this.PayeClient);
+                        cmd.Parameters.AddWithValue("@ViewClient", this.ViewClient);
+
+                        cmd.Parameters.AddWithValue("@CreateFournisseur", this.CreateFournisseur);
+                        cmd.Parameters.AddWithValue("@ModifyFournisseur", this.ModifyFournisseur);
+                        cmd.Parameters.AddWithValue("@DeleteFournisseur", this.DeleteFournisseur);
+                        cmd.Parameters.AddWithValue("@ViewOperationFournisseur", this.ViewOperationFournisseur);
+                        cmd.Parameters.AddWithValue("@PayeFournisseur", this.PayeFournisseur);
+                        cmd.Parameters.AddWithValue("@ViewFournisseur", this.ViewFournisseur);
+
+                        cmd.Parameters.AddWithValue("@ReverseOperation", this.ReverseOperation);
+                        cmd.Parameters.AddWithValue("@ReverseMouvment", this.ReverseMouvment);
+                        cmd.Parameters.AddWithValue("@ViewOperation", this.ViewOperation);
+                        cmd.Parameters.AddWithValue("@ViewMouvment", this.ViewMouvment);
+
+                        cmd.Parameters.AddWithValue("@ViewProjectManagment", this.ViewProjectManagment);
+                        cmd.Parameters.AddWithValue("@ViewSettings", this.ViewSettings);
+
+                        cmd.Parameters.AddWithValue("@ViewUsers", this.ViewUsers);
+                        cmd.Parameters.AddWithValue("@EditUsers", this.EditUsers);
+                        cmd.Parameters.AddWithValue("@DeleteUsers", this.DeleteUsers);
+                        cmd.Parameters.AddWithValue("@AddUsers", this.AddUsers);
+
+                        cmd.Parameters.AddWithValue("@ViewRoles", this.ViewRoles);
+                        cmd.Parameters.AddWithValue("@AddRoles", this.AddRoles);
+                        cmd.Parameters.AddWithValue("@DeleteRoles", this.DeleteRoles);
+
+                        cmd.Parameters.AddWithValue("@ModifyTicket", this.ModifyTicket);
+
+                        cmd.Parameters.AddWithValue("@ViewFamilly", this.ViewFamilly);
+                        cmd.Parameters.AddWithValue("@EditFamilly", this.EditFamilly);
+                        cmd.Parameters.AddWithValue("@DeleteFamilly", this.DeleteFamilly);
+                        cmd.Parameters.AddWithValue("@AddFamilly", this.AddFamilly);
 
                         await cmd.ExecuteNonQueryAsync();
                         return 1;
@@ -178,10 +274,10 @@ namespace Superete
             }
         }
 
-        // Delete role (hard delete, or could do soft delete if you add Etat)
+        // ✅ Soft delete role (Etat=0)
         public async Task<int> DeleteRoleAsync()
         {
-            string query = "UPDATE Client SET Etat=0 WHERE RoleID=@RoleID";
+            string query = "UPDATE Role SET Etat=0 WHERE RoleID=@RoleID";
 
             using (SqlConnection connection = new SqlConnection(ConnectionString))
             {

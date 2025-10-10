@@ -1,10 +1,10 @@
 ﻿using Superete.Main;
+using Superete.Main.ClientPage;
+using Superete.Main.FournisseurPage;
 using Superete.Main.Inventory;
+using Superete.Main.ProjectManagment;
 using Superete.Main.Settings;
 using Superete.Main.Vente;
-using Superete.Main.FournisseurPage;
-using Superete.Main.ProjectManagment;
-using Superete.Main.ClientPage;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -39,7 +39,7 @@ namespace Superete
             loginPage.VerticalAlignment = VerticalAlignment.Stretch;
             loginPage.Margin = new Thickness(0);
             MainGrid.Children.Add(loginPage);
-
+            this.Closed += MainWindow_Closed;
         }
         public List<User> lu;
         public List<Role> lr;
@@ -51,6 +51,15 @@ namespace Superete
         public List<Operation> lo ;
         public List<OperationArticle> loa ;
         public List<Credit> credits ;
+        public List<PaymentMethod> lp;
+        private void MainWindow_Closed(object sender, EventArgs e)
+        {
+            foreach (Window w in Application.Current.Windows)
+            {
+                if (w != this) // skip the main window itself
+                    w.Close();
+            }
+        }
         public async void load_main(User u)
         {
 
@@ -68,6 +77,20 @@ namespace Superete
             List<Client> lc = await c.GetClientsAsync();
             List<Operation> lo = await (new Operation()).GetOperationsAsync();
             List<OperationArticle> loa = await (new OperationArticle()).GetOperationArticlesAsync();
+            List<PaymentMethod> lp = await (new PaymentMethod()).GetPaymentMethodsAsync();
+
+            foreach (OperationArticle oa in loa)
+            {
+                foreach(Operation o in lo)
+                {
+                    if(o.OperationID == oa.OperationID)
+                    {
+                        oa.Date=o.DateOperation;
+                    }
+                }
+            }
+            loa = loa.OrderByDescending(oa => oa.Date).ToList();
+
             List<Credit> credits = await (new Credit()).GetCreditsAsync();
             this.lu = lu;
             this.lr = lr;
@@ -78,6 +101,7 @@ namespace Superete
             this.lc = lc;
             this.lo = lo;
             this.loa = loa;
+            this.lp = lp;
             this.credits = credits;
             MainGrid.Children.Clear();
             CMain loginPage = new CMain(this,u);
@@ -116,7 +140,7 @@ namespace Superete
         public void load_fournisseur(User u)
         {
             MainGrid.Children.Clear();
-            CMainF loginPage = new CMainF(u,this,lfo);
+            CMainF loginPage = new CMainF(u,this);
             loginPage.HorizontalAlignment = HorizontalAlignment.Stretch;
             loginPage.VerticalAlignment = VerticalAlignment.Stretch;
             loginPage.Margin = new Thickness(0);
@@ -125,7 +149,7 @@ namespace Superete
         public void load_client(User u)
         {
             MainGrid.Children.Clear();
-            CMainC loginPage = new CMainC(u, this, lc);
+            CMainC loginPage = new CMainC(u, this);
             loginPage.HorizontalAlignment = HorizontalAlignment.Stretch;
             loginPage.VerticalAlignment = VerticalAlignment.Stretch;
             loginPage.Margin = new Thickness(0);

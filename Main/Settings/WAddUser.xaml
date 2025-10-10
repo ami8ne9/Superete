@@ -78,14 +78,14 @@
             <!-- Full Name Field -->
             <StackPanel>
                 <TextBlock Text="Nom complet *" FontWeight="SemiBold" FontSize="14" Foreground="#333" Margin="0,0,0,8"/>
-                <TextBox x:Name="Name" Style="{StaticResource InputTextBoxStyle}"/>
+                <TextBox x:Name="Name" Style="{StaticResource InputTextBoxStyle}" MaxLength="100"/>
             </StackPanel>
 
 
             <!-- Password Field -->
             <StackPanel>
-                <TextBlock Text="Mot de passe *" FontWeight="SemiBold" FontSize="14" Foreground="#333" Margin="0,0,0,8"/>
-                <PasswordBox x:Name="Code" Style="{StaticResource InputPasswordBoxStyle}" PreviewTextInput="PasswordInput_PreviewTextInput"
+                <TextBlock Text="Mot de passe *" FontWeight="SemiBold" FontSize="14" Foreground="#333" Margin="0,0,0,8" />
+                <PasswordBox x:Name="Code" Style="{StaticResource InputPasswordBoxStyle}" PreviewTextInput="PasswordInput_PreviewTextInput" MaxLength="9"
              PreviewKeyDown="PasswordInput_PreviewKeyDown"/>
             </StackPanel>
             <StackPanel Width="438">

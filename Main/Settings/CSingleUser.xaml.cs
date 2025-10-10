@@ -36,6 +36,21 @@ namespace Superete.Main.Settings
             {
                 DeleteBtn.Visibility = Visibility.Collapsed;
             }
+            foreach (Role r in CUM.sp.main.lr)
+            {
+                if (CUM.u.RoleID == r.RoleID)
+                {
+                    if (r.EditUsers == false)
+                    {
+                        EditUsers.IsEnabled = false;
+                    }
+                    if (r.DeleteUsers == false)
+                    {
+                        DeleteBtn.IsEnabled=false;
+                    }
+                    break;
+                }
+            }
         }
         List<User> lu;
         List<Role> lr;

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
@@ -20,7 +21,7 @@ namespace Superete.Main.Vente
     /// </summary>
     public partial class CSingleArticle1 : UserControl
     {
-        public CSingleArticle1(Article a, CMainV mainv,List<Famille> lf, List<Fournisseur> lfo)
+        public CSingleArticle1(Article a, CMainV mainv,List<Famille> lf, List<Fournisseur> lfo,int s)
         {
             InitializeComponent();
             ArticleID.Text = a.ArticleID.ToString();
@@ -46,7 +47,35 @@ namespace Superete.Main.Vente
             this.a = a;
             this.lf = lf;
             this.lfo = lfo;
+            if (s == 1)
+            {
+                ArticleID.Visibility = Visibility.Collapsed;
+                ArticleIDC.Width = new GridLength(0);
+                PrixAchat.Visibility = Visibility.Collapsed;
+                PrixAchatC.Width = new GridLength(0);
+                PrixVente.Visibility = Visibility.Collapsed;
+                PrixVenteC.Width = new GridLength(0);
+                PrixMP.Visibility = Visibility.Collapsed;
+                PrixMPC.Width = new GridLength(0);
+                Famille.Visibility = Visibility.Collapsed;
+                FamilleC.Width = new GridLength(0);
 
+                ArticleIDC.MinWidth = 0;
+                PrixAchatC.MinWidth = 0;
+                PrixVenteC.MinWidth = 0;
+                PrixMPC.MinWidth = 0;
+                FamilleC.MinWidth = 0;
+
+                ArticleNameC.MinWidth =30;
+                QuantiteC.MinWidth = 30;
+                FournisseurNameC.MinWidth = 30;
+                CodeC.MinWidth = 30;
+
+                ArticleNameC.Width = new GridLength(1, GridUnitType.Star);
+                QuantiteC.Width = new GridLength(1, GridUnitType.Star);
+                FournisseurNameC.Width = new GridLength(1, GridUnitType.Star);
+                CodeC.Width = new GridLength(1, GridUnitType.Star);
+            }
 
         }
         CMainV mainv;
@@ -55,8 +84,31 @@ namespace Superete.Main.Vente
         List<Fournisseur> lfo;
         private void ArticleClicked(object sender, RoutedEventArgs e)
         {
-            
-            mainv.SelectedArticle.Child=new CSingleArticle1(a,mainv, lf,lfo);
+            foreach (CSingleArticle2 item in mainv.SelectedArticles.Children)
+            {
+                if (item.a.ArticleID ==a.ArticleID)
+                {
+                    if(a.Quantite<= Convert.ToInt32(item.Quantite.Text))
+                    {
+                        MessageBox.Show("La quantite dans le panier est le meme wue vous aver en stock");
+                        return;
+                    }
+                    item.Quantite.Text =(Convert.ToInt32(item.Quantite.Text)+1).ToString();
+                    item.qte++;
+                    mainv.TotalNett += a.PrixVente;
+                    mainv.TotalNet.Text = mainv.TotalNett.ToString("F2") + " DH";
+                    mainv.NbrA += 1;
+                    mainv.ArticleCount.Text = mainv.NbrA.ToString();
+                    return;
+                }
+            }
+            mainv.TotalNett += a.PrixVente ;
+            mainv.TotalNet.Text = mainv.TotalNett.ToString("F2") + " DH";
+            mainv.NbrA += 1;
+            mainv.ArticleCount.Text = mainv.NbrA.ToString();
+            CSingleArticle2 sa = new CSingleArticle2(a, 1, mainv);
+            mainv.SelectedArticles.Children.Add(sa);
+            mainv.SelectedArticle.Child=new CSingleArticle1(a,mainv, lf,lfo,1);
         }
     }
 }

@@ -19,16 +19,28 @@ namespace Superete.Main.Inventory
             this.la = la;
             this.lfo = lfo;
             LoadArticles(la);
-            
+            foreach (Role r in main.lr)
+            {
+                if (u.RoleID == r.RoleID)
+                {
+                    if (r.ViewFamilly == false && r.AddFamilly==false)
+                    {
+                        ManageFamillies.IsEnabled = false;
+                    }
+                    break;
+                }
+            }
+
         }
         public List<Famille> lf; public MainWindow main;public User u; public List<Fournisseur> lfo; public List<Article> la;
-        Decimal PrixATotall=0;
-        Decimal PrixMPTotall=0;
-        Decimal PrixVTotall = 0;
-        int QuantiteTotall = 0;
+        
         public void LoadArticles(List<Article> la)
         {
             int count = la.Count;
+            Decimal PrixATotall = 0;
+            Decimal PrixMPTotall = 0;
+            Decimal PrixVTotall = 0;
+            int QuantiteTotall = 0;
             ArticlesTotal.Text = count.ToString() ;
             ArticlesContainer.Children.Clear();
             foreach (Article a in la)
@@ -110,20 +122,26 @@ namespace Superete.Main.Inventory
         // Nouveau Article button
         private void NewArticleButton_Click(object sender, RoutedEventArgs e)
         {
-            WNouveauStock wNouveauStock = new WNouveauStock(lf, la, lfo, this);
+            WNouveauStock wNouveauStock = new WNouveauStock(lf, la, lfo, this,1,null,null);
             wNouveauStock.ShowDialog();
         }
 
         // Fournisseur management button
         private void Button_Click(object sender, RoutedEventArgs e)
         {
-            // À implémenter : gestion des fournisseurs
+            main.load_fournisseur(u);
         }
 
         private void Button_Click_1(object sender, RoutedEventArgs e)
         {
             WManageFamillies wManageFamillies = new WManageFamillies(lf, la, this);
             wManageFamillies.ShowDialog();
+        }
+
+        private void AddMultipleArticlesButton_Click(object sender, RoutedEventArgs e)
+        {
+            WAddMultipleArticles wAddMultipleArticles = new WAddMultipleArticles(this);
+            wAddMultipleArticles.ShowDialog();
         }
     }
 }

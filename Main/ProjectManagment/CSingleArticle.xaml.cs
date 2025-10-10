@@ -47,7 +47,7 @@ namespace Superete.Main.ProjectManagment
                         ArticleTotalPrice.Text = (oa.QteArticle * a.PrixVente).ToString();
                     }else if (plus.so.op.OperationType.StartsWith("A"))
                     {
-                        ArticleUnitaryPrice.Text = a.PrixVente.ToString();
+                        ArticleUnitaryPrice.Text = a.PrixAchat.ToString();
                         ArticleTotalPrice.Text = (oa.QteArticle * a.PrixAchat).ToString();
                     }
                     else

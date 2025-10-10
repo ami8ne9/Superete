@@ -111,7 +111,7 @@
 				<TextBlock Text="Nom du fournisseur *"
                           Style="{StaticResource ModernLabel}"
                           Margin="0,0,0,6"/>
-				<TextBox Name="NameTextBox"
+                <TextBox Name="NameTextBox" MaxLength="100"
                         Style="{StaticResource ModernTextBox}"
                         Margin="0,0,0,18"/>
 
@@ -120,7 +120,7 @@
                           Style="{StaticResource ModernLabel}"
                           Margin="0,0,0,6"/>
 				<TextBox Name="PhoneTextBox"
-                        Style="{StaticResource ModernTextBox}"
+                        Style="{StaticResource ModernTextBox}" MaxLength="19"
                         Margin="0,0,0,18"
                         PreviewTextInput="Quantite_PreviewTextInput"
                         DataObject.Pasting="Quantite_Pasting"/>

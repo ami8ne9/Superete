@@ -47,9 +47,19 @@ namespace Superete.Main
             main.load_inventory(u);
         }
 
-        private void Button_Click_3(object sender, RoutedEventArgs e)
+        //private void Button_Click_3(object sender, RoutedEventArgs e)
+        //{
+        //    main.load_fournisseur(u);
+        //}
+
+        //private void Button_Click_4(object sender, RoutedEventArgs e)
+        //{
+        //    main.load_client(u);
+        //}
+
+        private void Button_Click_5(object sender, RoutedEventArgs e)
         {
-            main.load_fournisseur(u);
+            main.load_ProjectManagement(u);
         }
 
         private void Button_Click_4(object sender, RoutedEventArgs e)
@@ -57,9 +67,9 @@ namespace Superete.Main
             main.load_client(u);
         }
 
-        private void Button_Click_5(object sender, RoutedEventArgs e)
+        private void Button_Click_3(object sender, RoutedEventArgs e)
         {
-            main.load_ProjectManagement(u);
+            main.load_fournisseur(u);
         }
     }
 }

@@ -59,10 +59,10 @@ namespace Superete.Main.Settings
                 e.Handled = true;
             }
 
-            if (Keyboard.Modifiers == ModifierKeys.Control && e.Key == Key.V)
-            {
-                e.Handled = true;
-            }
+            //if (Keyboard.Modifiers == ModifierKeys.Control && e.Key == Key.V)
+            //{
+            //    e.Handled = true;
+            //}
         }
 
 

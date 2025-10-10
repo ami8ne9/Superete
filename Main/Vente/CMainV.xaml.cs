@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
@@ -25,20 +26,7 @@ namespace Superete.Main.Vente
         public CMainV(User u, List<Famille> lf, List<User> lu, List<Role> lr, MainWindow main, List<Article> la, List<Fournisseur> lfo)
         {
             InitializeComponent();
-            Key0.Click += Keypad_Click;
-            Key1.Click += Keypad_Click;
-            Key2.Click += Keypad_Click;
-            Key3.Click += Keypad_Click;
-            Key4.Click += Keypad_Click;
-            Key5.Click += Keypad_Click;
-            Key6.Click += Keypad_Click;
-            Key7.Click += Keypad_Click;
-            Key8.Click += Keypad_Click;
-            Key9.Click += Keypad_Click;
-            KeyDot.Click += Keypad_Click;
-            KeyBackspace.Click += KeyBackspace_Click;
             CurrentUser.Text = u.UserName;
-            UpdateQuantityDisplay();
             this.u = u;
             this.lf = lf;
             this.la = la;
@@ -51,92 +39,88 @@ namespace Superete.Main.Vente
                 FamillyContainer.Children.Add(f);
             }
             LoadArticles(la);
-
+            LoadPayments(main.lp);
         }
-        public User u;List<Famille> lf;public List<Article> la; MainWindow main;public decimal TotalNett=0; public int NbrA = 0; public List<Fournisseur> lfo;
+
+        public User u;List<Famille> lf;public List<Article> la; public MainWindow main;public decimal TotalNett=0; public int NbrA = 0; public List<Fournisseur> lfo;
         public void LoadArticles(List<Article> la)
         {
             ArticlesContainer.Children.Clear();
             foreach (Article a in la)
             {
-                CSingleArticle1 ar = new CSingleArticle1(a, this, lf, lfo);
+                CSingleArticle1 ar = new CSingleArticle1(a, this, lf, lfo,0);
                 ArticlesContainer.Children.Add(ar);
             }
         }
-
-        private void Keypad_Click(object sender, RoutedEventArgs e)
+        public void LoadPayments(List<PaymentMethod> lp)
         {
-            if (sender is Button btn)
+            PaymentMethodComboBox.Items.Clear();
+            foreach(PaymentMethod a in lp)
             {
-                string value = btn.Content.ToString();
-                if (value == ".")
-                {
-                    if (!quantityBuilder.ToString().Contains("."))
-                        quantityBuilder.Append(".");
-                }
-                else
-                {
-                    if (quantityBuilder.ToString() == "0")
-                        quantityBuilder.Clear();
-                    quantityBuilder.Append(value);
-                }
-                UpdateQuantityDisplay();
+                PaymentMethodComboBox.Items.Add(a.PaymentMethodName);
             }
         }
-
-        private void KeyBackspace_Click(object sender, RoutedEventArgs e)
-        {
-            if (quantityBuilder.Length > 0)
-            {
-                quantityBuilder.Remove(quantityBuilder.Length - 1, 1);
-                if (quantityBuilder.Length == 0)
-                    quantityBuilder.Append("0");
-                UpdateQuantityDisplay();
-            }
-        }
-
-        private void UpdateQuantityDisplay()
-        {
-            ArticleQuantity.Text = quantityBuilder.ToString();
-        }
-
         private void CloseButton_Click(object sender, RoutedEventArgs e)
         {
             main.load_main(u);
         }
+        private void MyBorder_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            WKeyPad wKeyPad = new WKeyPad(this);
+            wKeyPad.ShowDialog();
+        }
 
         private void KeyboardButton_Click(object sender, RoutedEventArgs e)
         {
-            if(SelectedArticle.Child is CSingleArticle1 sa1)
+            
+            if (SelectedArticle.Child is CSingleArticle1 sa1)
             {
-                if (Convert.ToInt32(ArticleQuantity.Text)==0)
+                
+                if (ArticleQuantity.Text == "")
                 {
                     MessageBox.Show("inserer une quantite");
                     return;
-                } else if (Convert.ToInt32(ArticleQuantity.Text)>sa1.a.Quantite)
+                } else if (Convert.ToInt32(ArticleQuantity.Text) == 0) {
+                    MessageBox.Show("inserer une quantite");
+                    return;
+                } else if (Convert.ToInt32(ArticleQuantity.Text) > sa1.a.Quantite)
                 {
                     MessageBox.Show("la quantite inserer est plus grande que la quantite en stock");
                 }
                 else
                 {
+                    MessageBox.Show(TotalNett.ToString());
                     foreach (CSingleArticle2 item in SelectedArticles.Children)
                     {
-                        if(item.a.ArticleID==sa1.a.ArticleID)
+                        if (item.a.ArticleID == sa1.a.ArticleID)
                         {
-                            MessageBox.Show("Article déjà ajouté. Veuillez modifier la quantité dans le panier.");
+                            if(Convert.ToInt32(ArticleQuantity.Text) + Convert.ToInt32(item.Quantite.Text)> sa1.a.Quantite)
+                            {
+                                MessageBox.Show("La quantite dans le panier plus la quantite vous voulez ajouter est plus grande que la quantite en stock");
+                            }
+                            else
+                            {
+                                item.Quantite.Text=(Convert.ToInt32(ArticleQuantity.Text) + item.qte).ToString();
+                                item.qte += Convert.ToInt32(ArticleQuantity.Text);
+                                TotalNett += sa1.a.PrixVente * Convert.ToInt32(ArticleQuantity.Text);
+                                TotalNet.Text = TotalNett.ToString("F2") + " DH";
+                                NbrA += Convert.ToInt32(ArticleQuantity.Text);
+                                ArticleCount.Text = NbrA.ToString();
+                            }
                             return;
                         }
                     }
+                    
                     TotalNett += sa1.a.PrixVente * Convert.ToInt32(ArticleQuantity.Text);
                     TotalNet.Text = TotalNett.ToString("F2") + " DH";
                     NbrA += Convert.ToInt32(ArticleQuantity.Text);
                     ArticleCount.Text = NbrA.ToString();
-                    CSingleArticle2 sa = new CSingleArticle2(sa1, ArticleQuantity.Text,this);
+                    CSingleArticle2 sa = new CSingleArticle2(sa1.a, Convert.ToInt32(ArticleQuantity.Text), this);
                     SelectedArticles.Children.Add(sa);
                     SelectedArticle.Child = new TextBlock
                     {
-                        Name="DesignationText",
-                        Text="Aucun article sélectionné",
+                        Name = "DesignationText",
+                        Text = "Aucun article sélectionné",
                         FontFamily = new FontFamily("Segoe UI"),
                         FontSize = 13,
                         Foreground = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#92400E")),
@@ -156,6 +140,8 @@ namespace Superete.Main.Vente
         private void DeleteButton_Click(object sender, RoutedEventArgs e)
         {
             SelectedArticles.Children.Clear();
+            TotalNett = 0;
+            NbrA = 0;
             TotalNet.Text =" 0.00 DH";
             ArticleCount.Text = " 0";
         }
@@ -165,23 +151,23 @@ namespace Superete.Main.Vente
             ArticlesContainer.Children.Clear();
             foreach (Article a in la)
             {
-                CSingleArticle1 ar = new CSingleArticle1(a, this,lf,lfo);
+                CSingleArticle1 ar = new CSingleArticle1(a, this,lf,lfo, 0);
                 ArticlesContainer.Children.Add(ar);
             }
         }
 
         private void CodeBarreTextBox_TextChanged(object sender, TextChangedEventArgs e)
         {
-            CodeArticlesContainer.Children.Clear();
-            string code=sender is TextBox tb ? tb.Text : "";
+            ArticlesContainer.Children.Clear();
+            string code = sender is TextBox tb ? tb.Text : "";
             foreach (Article a in la)
             {
-                if (a.Code.ToString().Contains(code) && code!="")
+                if (a.Code.ToString().Contains(code) || a.ArticleName.ToLower().Contains(code.ToLower()))
                 {
-                    CSingleArticle1 ar = new CSingleArticle1(a, this, lf,lfo);
-                    CodeArticlesContainer.Children.Add(ar);
+                    CSingleArticle1 ar = new CSingleArticle1(a, this, lf, lfo, 0);
+                    ArticlesContainer.Children.Add(ar);
                 }
-                
+
             }
         }
 
@@ -189,6 +175,7 @@ namespace Superete.Main.Vente
         private async void CashButton_Click(object sender, RoutedEventArgs e)
 
         {
+            int MethodID = 0;
             if (SelectedArticles.Children.Count == 0)
             {
                 MessageBox.Show("Aucun article sélectionné .");
@@ -196,14 +183,23 @@ namespace Superete.Main.Vente
             }
             else
             {
+                foreach (PaymentMethod p in main.lp)
+                {
+                    if (p.PaymentMethodName == PaymentMethodComboBox.SelectedValue)
+                    {
+                        MethodID=p.PaymentMethodID;
+                    }
+                }
+
                 Client client = new Client();
-                WSelectCient w = new WSelectCient(await client.GetClientsAsync(), this, 0);
+                WSelectCient w = new WSelectCient(await client.GetClientsAsync(), this, 0,MethodID);
                 w.ShowDialog();
             }
         }
 
         private async void HalfButton_Click(object sender, RoutedEventArgs e)
         {
+            int MethodID = 0;
             if (SelectedArticles.Children.Count == 0)
             {
                 MessageBox.Show("Aucun article sélectionné .");
@@ -211,14 +207,22 @@ namespace Superete.Main.Vente
             }
             else
             {
+                foreach (PaymentMethod p in main.lp)
+                {
+                    if (p.PaymentMethodName == PaymentMethodComboBox.SelectedValue)
+                    {
+                        MethodID = p.PaymentMethodID;
+                    }
+                }
                 Client client = new Client();
-                WSelectCient w = new WSelectCient(await client.GetClientsAsync(), this, 1);
+                WSelectCient w = new WSelectCient(await client.GetClientsAsync(), this, 1, MethodID);
                 w.ShowDialog();
             }
         }
 
         private async void CreditButton_Click(object sender, RoutedEventArgs e)
         {
+            int MethodID = 0;
             if (SelectedArticles.Children.Count == 0)
             {
                 MessageBox.Show("Aucun article sélectionné .");
@@ -226,8 +230,15 @@ namespace Superete.Main.Vente
             }
             else
             {
+                foreach (PaymentMethod p in main.lp)
+                {
+                    if (p.PaymentMethodName == PaymentMethodComboBox.SelectedValue)
+                    {
+                        MethodID = p.PaymentMethodID;
+                    }
+                }
                 Client client = new Client();
-                WSelectCient w = new WSelectCient(await client.GetClientsAsync(), this, 2);
+                WSelectCient w = new WSelectCient(await client.GetClientsAsync(), this, 2, MethodID);
                 w.ShowDialog();
             }
         }

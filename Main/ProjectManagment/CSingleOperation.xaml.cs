@@ -31,8 +31,7 @@ namespace Superete.Main.ProjectManagment
             {
                 SideColor.Background = (SolidColorBrush)(new BrushConverter().ConvertFrom("#10B981"));
                 OperationType.Text="Vente #"+ op.OperationID.ToString();
-
-                foreach(Client c in main.main.lc)
+                foreach (Client c in main.main.lc)
                 {
                     if (op.ClientID == c.ClientID)
                     {
@@ -79,13 +78,60 @@ namespace Superete.Main.ProjectManagment
                     }
                 }
             }
+            else if (op.OperationType.StartsWith("S"))
+            {
+                SideColor.Background = (SolidColorBrush)(new BrushConverter().ConvertFrom("#d3f705"));
+                OperationType.Text = "Payement de Credit Fournisseur #" + op.OperationID.ToString();
+                foreach (Fournisseur f in main.main.lfo)
+                {
+                    if (op.FournisseurID == f.FournisseurID)
+                    {
+                        OperationName.Text = "Fournisseur : " + f.Nom;
+                        break;
+                    }
+                }
+            }
+            else if (op.OperationType.StartsWith("P"))
+            {
+                SideColor.Background = (SolidColorBrush)(new BrushConverter().ConvertFrom("#d3f705"));
+                OperationType.Text = "Payement de Credit Client#" + op.OperationID.ToString();
+                foreach (Client c in main.main.lc)
+                {
+                    if (op.ClientID == c.ClientID)
+                    {
+                        OperationName.Text = "Client : " + c.Nom;
+                        break;
+                    }
+                }
+            }
+            foreach (OperationArticle oa in main.main.loa)
+            {
+                if (op.Reversed == true) break;
+                if (oa.OperationID == op.OperationID)
+                {
+                    if (oa.Reversed == true)
+                    {
+                        reversed++;
+                    }
+                    total++;
+
+                }
+            }
+            if (total == reversed && !op.OperationType.StartsWith("S") && !op.OperationType.StartsWith("P"))
+            {
+                op.Reversed = true;
+                op.UpdateOperationAsync();
+            }
             if (op.Reversed == true)
             {
                 SideColor.Background = (SolidColorBrush)(new BrushConverter().ConvertFrom("#828181"));
                 OperationType.Text += " (Reversed)";
+                main.LoadStats();
             }
+
+
         }
-        public CMainP main;public Operation op;public bool entered;
+        public CMainP main;public Operation op;public bool entered;public int reversed;public int total;
         private void MyBorder_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
             WPlus wPlus = new WPlus(this);

@@ -12,6 +12,7 @@ namespace Superete
         public int ArticleID { get; set; }
         public int OperationID { get; set; }
         public int QteArticle { get; set; }
+        public DateTime Date{ get; set; }
         public bool Etat { get; set; }
         public bool Reversed { get; set; } // ✅ new property
 
@@ -21,7 +22,7 @@ namespace Superete
         public async Task<List<OperationArticle>> GetOperationArticlesAsync()
         {
             var list = new List<OperationArticle>();
-            string query = "SELECT * FROM OperationArticle WHERE Etat=1";
+            string query = "SELECT * FROM OperationArticle WHERE Etat=1 ";
 
             using (SqlConnection connection = new SqlConnection(ConnectionString))
             {

@@ -20,14 +20,14 @@
                 <Setter.Value>
                     <ControlTemplate TargetType="RadioButton">
                         <Border x:Name="border" 
-                                Background="{TemplateBinding Background}"
-                                BorderThickness="0,0,0,3"
-                                BorderBrush="Transparent"
-                                Padding="{TemplateBinding Padding}">
+                            Background="{TemplateBinding Background}"
+                            BorderThickness="0,0,0,3"
+                            BorderBrush="Transparent"
+                            Padding="{TemplateBinding Padding}">
                             <ContentPresenter x:Name="contentPresenter"
-                                            HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
-                                            VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
-                                            RecognizesAccessKey="True"/>
+                                        HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                        VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
+                                        RecognizesAccessKey="True"/>
                         </Border>
                         <ControlTemplate.Triggers>
                             <Trigger Property="IsMouseOver" Value="True">
@@ -45,7 +45,7 @@
             </Setter>
         </Style>
 
-        <!-- Card Style -->
+        <!-- Card Style (Operations) -->
         <Style x:Key="CardStyle" TargetType="Border">
             <Setter Property="Background" Value="White"/>
             <Setter Property="CornerRadius" Value="12"/>
@@ -70,10 +70,10 @@
                 <Setter.Value>
                     <ControlTemplate TargetType="Button">
                         <Border Background="{TemplateBinding Background}" 
-                                CornerRadius="6"
-                                Padding="{TemplateBinding Padding}">
+                            CornerRadius="6"
+                            Padding="{TemplateBinding Padding}">
                             <ContentPresenter HorizontalAlignment="Center" 
-                                            VerticalAlignment="Center"/>
+                                        VerticalAlignment="Center"/>
                         </Border>
                         <ControlTemplate.Triggers>
                             <Trigger Property="IsMouseOver" Value="True">
@@ -99,12 +99,12 @@
                 <Setter.Value>
                     <ControlTemplate TargetType="Button">
                         <Border Background="{TemplateBinding Background}" 
-                                BorderBrush="{TemplateBinding BorderBrush}"
-                                BorderThickness="{TemplateBinding BorderThickness}"
-                                CornerRadius="6"
-                                Padding="{TemplateBinding Padding}">
+                            BorderBrush="{TemplateBinding BorderBrush}"
+                            BorderThickness="{TemplateBinding BorderThickness}"
+                            CornerRadius="6"
+                            Padding="{TemplateBinding Padding}">
                             <ContentPresenter HorizontalAlignment="Center" 
-                                            VerticalAlignment="Center"/>
+                                        VerticalAlignment="Center"/>
                         </Border>
                         <ControlTemplate.Triggers>
                             <Trigger Property="IsMouseOver" Value="True">
@@ -112,6 +112,56 @@
                             </Trigger>
                         </ControlTemplate.Triggers>
                     </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!-- Report Filter Button Style -->
+        <Style x:Key="FilterButtonStyle" TargetType="Button">
+            <Setter Property="Background" Value="White"/>
+            <Setter Property="Foreground" Value="#666666"/>
+            <Setter Property="BorderBrush" Value="#E0E0E0"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="FontSize" Value="14"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="Padding" Value="20,12"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border x:Name="border"
+                            Background="{TemplateBinding Background}"
+                            BorderBrush="{TemplateBinding BorderBrush}"
+                            BorderThickness="{TemplateBinding BorderThickness}"
+                            CornerRadius="10">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="border" Property="Background" Value="#F0F4FF"/>
+                                <Setter TargetName="border" Property="BorderBrush" Value="#4A90E2"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!-- Selected Filter Button Style -->
+        <Style x:Key="SelectedFilterButtonStyle" TargetType="Button" BasedOn="{StaticResource FilterButtonStyle}">
+            <Setter Property="Background" Value="#4A90E2"/>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="BorderBrush" Value="#4A90E2"/>
+        </Style>
+
+        <!-- Report Stat Card Style -->
+        <Style x:Key="StatCardStyle" TargetType="Border">
+            <Setter Property="Background" Value="White"/>
+            <Setter Property="CornerRadius" Value="10"/>
+            <Setter Property="Padding" Value="20"/>
+            <Setter Property="Effect">
+                <Setter.Value>
+                    <DropShadowEffect BlurRadius="8" ShadowDepth="1" Opacity="0.08" Color="Black"/>
                 </Setter.Value>
             </Setter>
         </Style>
@@ -130,6 +180,7 @@
         <Border Grid.Row="0" Background="White" BorderBrush="#E5E7EB" BorderThickness="0,0,0,1">
             <Grid>
                 <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
                     <ColumnDefinition Width="Auto"/>
                     <ColumnDefinition Width="Auto"/>
                     <ColumnDefinition Width="Auto"/>
@@ -176,6 +227,12 @@
                                             <Trigger Property="IsMouseOver" Value="True">
                                                 <Setter TargetName="border" Property="Background" Value="#F3F4F6"/>
                                             </Trigger>
+                                            <Trigger Property="IsEnabled" Value="False">
+                                                <Setter Property="Opacity" Value="0.5"/>
+                                                <Setter Property="Background" Value="#E5E7EB"/>
+                                                <Setter Property="Foreground" Value="#9CA3AF"/>
+                                                <Setter Property="Cursor" Value="No"/>
+                                            </Trigger>
                                         </ControlTemplate.Triggers>
                                     </ControlTemplate>
                                 </Setter.Value>
@@ -216,6 +273,57 @@
                                                 <Setter TargetName="border" Property="Background" Value="#F3F4F6"/>
                                                 <Setter Property="Foreground" Value="#374151"/>
                                             </Trigger>
+                                            <Trigger Property="IsEnabled" Value="False">
+                                                <Setter Property="Opacity" Value="0.5"/>
+                                                <Setter Property="Background" Value="#E5E7EB"/>
+                                                <Setter Property="Foreground" Value="#9CA3AF"/>
+                                                <Setter Property="Cursor" Value="No"/>
+                                            </Trigger>
+                                        </ControlTemplate.Triggers>
+                                    </ControlTemplate>
+                                </Setter.Value>
+                            </Setter>
+                        </Style>
+                    </Button.Style>
+                </Button>
+
+                <Button Grid.Column="3" 
+Content="Rapport" 
+x:Name="Repportbtn"
+Click="RepportButton_Click"
+Padding="24,16"
+FontSize="14"
+FontWeight="Medium"
+FontFamily="Segoe UI"
+Background="Transparent"
+Foreground="#6B7280"
+BorderThickness="0,0,0,3"
+BorderBrush="Transparent"
+Cursor="Hand">
+                    <Button.Style>
+                        <Style TargetType="Button">
+                            <Setter Property="Template">
+                                <Setter.Value>
+                                    <ControlTemplate TargetType="Button">
+                                        <Border x:Name="border" 
+                        Background="{TemplateBinding Background}"
+                        BorderBrush="{TemplateBinding BorderBrush}"
+                        BorderThickness="{TemplateBinding BorderThickness}"
+                        Padding="{TemplateBinding Padding}">
+                                            <ContentPresenter HorizontalAlignment="Center" 
+                                    VerticalAlignment="Center"/>
+                                        </Border>
+                                        <ControlTemplate.Triggers>
+                                            <Trigger Property="IsMouseOver" Value="True">
+                                                <Setter TargetName="border" Property="Background" Value="#F3F4F6"/>
+                                                <Setter Property="Foreground" Value="#374151"/>
+                                            </Trigger>
+                                            <Trigger Property="IsEnabled" Value="False">
+                                                <Setter Property="Opacity" Value="0.5"/>
+                                                <Setter Property="Background" Value="#E5E7EB"/>
+                                                <Setter Property="Foreground" Value="#9CA3AF"/>
+                                                <Setter Property="Cursor" Value="No"/>
+                                            </Trigger>
                                         </ControlTemplate.Triggers>
                                     </ControlTemplate>
                                 </Setter.Value>
@@ -227,7 +335,7 @@
         </Border>
 
         <!-- Content Area -->
-        <Grid Grid.Row="1" x:Name="OperationsContent">
+        <Grid Grid.Row="1" x:Name="OperationsContent" >
             <!-- Operations Content -->
             <Grid >
                 <Grid.RowDefinitions>
@@ -263,7 +371,7 @@
                                         <DropShadowEffect Color="#000000" Opacity="0.03" ShadowDepth="1" BlurRadius="3"/>
                                     </Border.Effect>
                                     <ComboBox x:Name="SearchTypeFilter" Background="Transparent" BorderThickness="0" 
-                            FontSize="13" Padding="12,8" VerticalContentAlignment="Center">
+                            FontSize="13" Padding="12,8" VerticalContentAlignment="Center" SelectionChanged="SearchTypeFilter_SelectionChanged">
                                         <ComboBoxItem Content="Operation ID" IsSelected="True"/>
                                         <ComboBoxItem Content="Client"/>
                                         <ComboBoxItem Content="Fournisseur"/>
@@ -363,6 +471,8 @@
                                         <ComboBoxItem Content="Tout"/>
                                         <ComboBoxItem Content="Vente"/>
                                         <ComboBoxItem Content="Achat"/>
+                                        <ComboBoxItem Content="Payment Credit Client"/>
+                                        <ComboBoxItem Content="Payment Credit Fournisseur"/>
                                         <ComboBoxItem Content="Modification"/>
                                         <ComboBoxItem Content="Suppression"/>
                                     </ComboBox>
@@ -377,7 +487,7 @@
                                         <DropShadowEffect Color="#000000" Opacity="0.03" ShadowDepth="1" BlurRadius="3"/>
                                     </Border.Effect>
                                     <ComboBox x:Name="StatusFilter" Background="Transparent" BorderThickness="0" 
-                            FontSize="13" Padding="12,8" VerticalContentAlignment="Center">
+                            FontSize="13" Padding="12,8" VerticalContentAlignment="Center" SelectionChanged="StatusFilter_SelectionChanged">
                                         <ComboBox.Style>
                                             <Style TargetType="ComboBox">
                                                 <Style.Triggers>
@@ -387,7 +497,7 @@
                                                 </Style.Triggers>
                                             </Style>
                                         </ComboBox.Style>
-                                        <ComboBoxItem Content="Tout" IsSelected="True"/>
+                                        <ComboBoxItem Content="Tout" />
                                         <ComboBoxItem Content="Normal"/>
                                         <ComboBoxItem Content="Reversed"/>
                                     </ComboBox>
@@ -402,7 +512,7 @@
                                         <DropShadowEffect Color="#000000" Opacity="0.03" ShadowDepth="1" BlurRadius="3"/>
                                     </Border.Effect>
                                     <ComboBox x:Name="DateFilter" Background="Transparent" BorderThickness="0" 
-                            FontSize="13" Padding="12,8" VerticalContentAlignment="Center">
+                            FontSize="13" Padding="12,8" VerticalContentAlignment="Center" SelectionChanged="DateFilter_SelectionChanged">
                                         <ComboBox.Style>
                                             <Style TargetType="ComboBox">
                                                 <Style.Triggers>
@@ -412,12 +522,12 @@
                                                 </Style.Triggers>
                                             </Style>
                                         </ComboBox.Style>
-                                        <ComboBoxItem Content="Tout" IsSelected="True"/>
+                                        <ComboBoxItem Content="Tout" />
                                         <ComboBoxItem Content="Today"/>
-                                        <ComboBoxItem Content="Last Week"/>
-                                        <ComboBoxItem Content="Last Month"/>
-                                        <ComboBoxItem Content="Last 6 month"/>
-                                        <ComboBoxItem Content="Last Year"/>
+                                        <ComboBoxItem Content="Week"/>
+                                        <ComboBoxItem Content="Month"/>
+                                        <ComboBoxItem Content="6 month"/>
+                                        <ComboBoxItem Content="Year"/>
                                     </ComboBox>
                                 </Border>
                             </StackPanel>
@@ -482,11 +592,11 @@
                                                     <ColumnDefinition Width="*"/>
                                                     <ColumnDefinition Width="Auto"/>
                                                 </Grid.ColumnDefinitions>
-                                                <TextBlock Grid.Column="0" Text="Nombre de Vente" 
+                                                <TextBlock Grid.Column="0" Text="Nombre de Vente (Non Reverser)" 
                           FontSize="14" FontWeight="Medium" Foreground="#6B7280"/>
                                                 <Ellipse Grid.Column="1" Width="12" Height="12" Fill="#10B981"/>
                                             </Grid>
-                                            <TextBlock Text="127" FontSize="28" FontWeight="Bold" Foreground="#1F2937" Margin="0,0,0,8"/>
+                                            <TextBlock Text="127" FontSize="28" FontWeight="Bold" Foreground="#1F2937" Margin="0,0,0,8" Name="VenteCountLabel"/>
                                             <TextBlock Text="+8 aujourd'hui" FontSize="12" Foreground="#10B981" FontWeight="Medium"/>
                                         </StackPanel>
                                     </Border>
@@ -499,11 +609,11 @@
                                                     <ColumnDefinition Width="*"/>
                                                     <ColumnDefinition Width="Auto"/>
                                                 </Grid.ColumnDefinitions>
-                                                <TextBlock Grid.Column="0" Text="Nombre d'achat" 
+                                                <TextBlock Grid.Column="0" Text="Nombre d'achat (Non Reverser)" 
                           FontSize="14" FontWeight="Medium" Foreground="#6B7280"/>
                                                 <Ellipse Grid.Column="1" Width="12" Height="12" Fill="#3B82F6"/>
                                             </Grid>
-                                            <TextBlock Text="45" FontSize="28" FontWeight="Bold" Foreground="#1F2937" Margin="0,0,0,8"/>
+                                            <TextBlock Text="45" FontSize="28" FontWeight="Bold" Foreground="#1F2937" Margin="0,0,0,8" Name="AchatCountLabel"/>
                                             <TextBlock Text="+3 cette semaine" FontSize="12" Foreground="#3B82F6" FontWeight="Medium"/>
                                         </StackPanel>
                                     </Border>
@@ -520,14 +630,14 @@
                           FontSize="14" FontWeight="Medium" Foreground="#6B7280"/>
                                                 <Ellipse Grid.Column="1" Width="12" Height="12" Fill="#059669"/>
                                             </Grid>
-                                            <TextBlock Text="€18,742.35" FontSize="28" FontWeight="Bold" Foreground="#1F2937" Margin="0,0,0,8"/>
+                                            <TextBlock Text="€18,742.35" FontSize="28" FontWeight="Bold" Foreground="#1F2937" Margin="0,0,0,8" Name="FinanceLabel"/>
                                             <TextBlock Text="Bénéfice net" FontSize="12" Foreground="#059669" FontWeight="Medium"/>
                                         </StackPanel>
                                     </Border>
                                 </Grid>
 
                                 <!-- Second Row of Filters -->
-                                
+
                             </Grid>
                         </Border>
 
@@ -540,12 +650,41 @@
                                         <ColumnDefinition Width="Auto"/>
                                     </Grid.ColumnDefinitions>
                                     <TextBlock Grid.Column="0" Text="Opérations récentes" 
-                                              FontSize="18" FontWeight="SemiBold" Foreground="#1F2937"/>
+                      FontSize="18" FontWeight="SemiBold" Foreground="#1F2937"/>
                                 </Grid>
-
                                 <!-- Operations List -->
                                 <StackPanel Name="OperationsContainer">
                                 </StackPanel>
+
+                                <!-- View More Link -->
+                                <Border Height="27" Margin="0,12,0,0">
+                                    <Button HorizontalAlignment="Center" VerticalAlignment="Top"
+        Background="Transparent" BorderThickness="0" Cursor="Hand"
+        Padding="12,6" Click="Button_Click" Height="30">
+                                        <Button.Style>
+                                            <Style TargetType="Button">
+                                                <Setter Property="Template">
+                                                    <Setter.Value>
+                                                        <ControlTemplate TargetType="Button">
+                                                            <Border Background="{TemplateBinding Background}" 
+                                Padding="{TemplateBinding Padding}">
+                                                                <ContentPresenter HorizontalAlignment="Center" 
+                                            VerticalAlignment="Center"/>
+                                                            </Border>
+                                                        </ControlTemplate>
+                                                    </Setter.Value>
+                                                </Setter>
+                                                <Style.Triggers>
+                                                    <Trigger Property="IsMouseOver" Value="True">
+                                                        <Setter Property="Foreground" Value="#2563EB"/>
+                                                    </Trigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </Button.Style>
+                                        <TextBlock Text="View More" Foreground="#3B82F6" 
+               FontSize="14" FontWeight="Medium"/>
+                                    </Button>
+                                </Border>
                             </StackPanel>
                         </Border>
                     </Grid>
@@ -654,7 +793,7 @@
                 </StackPanel>
             </ScrollViewer>
         </Grid>
-        <Grid Grid.Row="1" Visibility="Collapsed" x:Name="MouvmentContent">
+        <Grid Grid.Row="1" x:Name="MouvmentContent" Visibility="Collapsed">
             <!-- Operations Content -->
             <Grid >
                 <Grid.RowDefinitions>
@@ -684,14 +823,14 @@
 
                             <!-- Search Type Selector -->
                             <StackPanel Grid.Column="0">
-                                <TextBlock Text="Rechercher " FontSize="13" FontWeight="Medium" Foreground="#374151" Margin="0,0,0,6"/>
+                                <TextBlock Text="Rechercher par" FontSize="13" FontWeight="Medium" Foreground="#374151" Margin="0,0,0,6"/>
                                 <Border Background="White" BorderBrush="#D1D5DB" BorderThickness="1" Height="40">
                                     <Border.Effect>
                                         <DropShadowEffect Color="#000000" Opacity="0.03" ShadowDepth="1" BlurRadius="3"/>
                                     </Border.Effect>
                                     <ComboBox x:Name="SearchTypeMouvmentFilter" Background="Transparent" BorderThickness="0" 
                     FontSize="13" Padding="12,8" VerticalContentAlignment="Center">
-                                        <ComboBoxItem Content="Operation ID" IsSelected="True"/>
+                                        <ComboBoxItem Content="Article" />
                                         <ComboBoxItem Content="Client"/>
                                         <ComboBoxItem Content="Fournisseur"/>
                                         <ComboBoxItem Content="Utilisateur"/>
@@ -708,7 +847,7 @@
                                     </Border.Effect>
                                     <Grid>
                                         <TextBox x:Name="SearchMouvmentInput" Background="Transparent" BorderThickness="0" 
-                       Padding="16,0,48,0" FontSize="13" VerticalContentAlignment="Center">
+                       Padding="16,0,48,0" FontSize="13" VerticalContentAlignment="Center" TextChanged="SearchMouvmentInput_TextChanged">
                                             <TextBox.Style>
                                                 <Style TargetType="TextBox">
                                                     <Style.Triggers>
@@ -766,18 +905,20 @@
                                 <ColumnDefinition Width="16"/>
                                 <ColumnDefinition Width="*"/>
                                 <ColumnDefinition Width="16"/>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="16"/>
                                 <ColumnDefinition Width="Auto"/>
                             </Grid.ColumnDefinitions>
 
                             <!-- Type Opération Filter -->
                             <StackPanel Grid.Column="0">
-                                <TextBlock Text="Type Opération" FontSize="13" FontWeight="Medium" Foreground="#374151" Margin="0,0,0,6"/>
+                                <TextBlock Text="Type de mouvment" FontSize="13" FontWeight="Medium" Foreground="#374151" Margin="0,0,0,6"/>
                                 <Border Background="White" BorderBrush="#D1D5DB" BorderThickness="1" Height="40">
                                     <Border.Effect>
                                         <DropShadowEffect Color="#000000" Opacity="0.03" ShadowDepth="1" BlurRadius="3"/>
                                     </Border.Effect>
                                     <ComboBox x:Name="TypeMouvmentFilter" Background="Transparent" BorderThickness="0" 
-                    FontSize="13" Padding="12,8" VerticalContentAlignment="Center">
+                    FontSize="13" Padding="12,8" VerticalContentAlignment="Center" SelectionChanged="TypeMouvmentFilter_SelectionChanged">
                                         <ComboBox.Style>
                                             <Style TargetType="ComboBox">
                                                 <Style.Triggers>
@@ -787,7 +928,7 @@
                                                 </Style.Triggers>
                                             </Style>
                                         </ComboBox.Style>
-                                        <ComboBoxItem Content="Tout" IsSelected="True"/>
+                                        <ComboBoxItem Content="Tout"/>
                                         <ComboBoxItem Content="Vente"/>
                                         <ComboBoxItem Content="Achat"/>
                                         <ComboBoxItem Content="Modification"/>
@@ -796,15 +937,14 @@
                                 </Border>
                             </StackPanel>
 
-                            <!-- Status Filter -->
                             <StackPanel Grid.Column="2">
                                 <TextBlock Text="Status" FontSize="13" FontWeight="Medium" Foreground="#374151" Margin="0,0,0,6"/>
                                 <Border Background="White" BorderBrush="#D1D5DB" BorderThickness="1" Height="40">
                                     <Border.Effect>
                                         <DropShadowEffect Color="#000000" Opacity="0.03" ShadowDepth="1" BlurRadius="3"/>
                                     </Border.Effect>
-                                    <ComboBox x:Name="StatusMouvmentFilter" Background="Transparent" BorderThickness="0" 
-                    FontSize="13" Padding="12,8" VerticalContentAlignment="Center">
+                                    <ComboBox x:Name="StatusMouvmenttFilter" Background="Transparent" BorderThickness="0" 
+FontSize="13" Padding="12,8" VerticalContentAlignment="Center" SelectionChanged="StatusMouvmentFilter_SelectionChanged">
                                         <ComboBox.Style>
                                             <Style TargetType="ComboBox">
                                                 <Style.Triggers>
@@ -814,22 +954,44 @@
                                                 </Style.Triggers>
                                             </Style>
                                         </ComboBox.Style>
-                                        <ComboBoxItem Content="Tout" IsSelected="True"/>
+                                        <ComboBoxItem Content="Tout" />
+                                        <ComboBoxItem Content="Normal"/>
+                                        <ComboBoxItem Content="Supprime"/>
+                                    </ComboBox>
+                                </Border>
+                            </StackPanel>
+                            <StackPanel Grid.Column="4">
+                                <TextBlock Text="Reversed" FontSize="13" FontWeight="Medium" Foreground="#374151" Margin="0,0,0,6"/>
+                                <Border Background="White" BorderBrush="#D1D5DB" BorderThickness="1" Height="40">
+                                    <Border.Effect>
+                                        <DropShadowEffect Color="#000000" Opacity="0.03" ShadowDepth="1" BlurRadius="3"/>
+                                    </Border.Effect>
+                                    <ComboBox x:Name="StatusMouvmentReversedFilter" Background="Transparent" BorderThickness="0" 
+FontSize="13" Padding="12,8" VerticalContentAlignment="Center" SelectionChanged="ReversedMouvmentFilter_SelectionChanged">
+                                        <ComboBox.Style>
+                                            <Style TargetType="ComboBox">
+                                                <Style.Triggers>
+                                                    <Trigger Property="IsMouseOver" Value="True">
+                                                        <Setter Property="Background" Value="#F8FAFC"/>
+                                                    </Trigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </ComboBox.Style>
+                                        <ComboBoxItem Content="Tout" />
                                         <ComboBoxItem Content="Normal"/>
                                         <ComboBoxItem Content="Reversed"/>
                                     </ComboBox>
                                 </Border>
                             </StackPanel>
-
                             <!-- Date Filter -->
-                            <StackPanel Grid.Column="4">
+                            <StackPanel Grid.Column="6">
                                 <TextBlock Text="Date" FontSize="13" FontWeight="Medium" Foreground="#374151" Margin="0,0,0,6"/>
                                 <Border Background="White" BorderBrush="#D1D5DB" BorderThickness="1" Height="40">
                                     <Border.Effect>
                                         <DropShadowEffect Color="#000000" Opacity="0.03" ShadowDepth="1" BlurRadius="3"/>
                                     </Border.Effect>
                                     <ComboBox x:Name="DateMouvmentFilter" Background="Transparent" BorderThickness="0" 
-                    FontSize="13" Padding="12,8" VerticalContentAlignment="Center">
+                    FontSize="13" Padding="12,8" VerticalContentAlignment="Center" SelectionChanged="DateMouvmentFilter_SelectionChanged">
                                         <ComboBox.Style>
                                             <Style TargetType="ComboBox">
                                                 <Style.Triggers>
@@ -839,7 +1001,7 @@
                                                 </Style.Triggers>
                                             </Style>
                                         </ComboBox.Style>
-                                        <ComboBoxItem Content="Tout" IsSelected="True"/>
+                                        <ComboBoxItem Content="Tout" />
                                         <ComboBoxItem Content="Today"/>
                                         <ComboBoxItem Content="Last Week"/>
                                         <ComboBoxItem Content="Last Month"/>
@@ -850,12 +1012,12 @@
                             </StackPanel>
 
                             <!-- Clear Button -->
-                            <Border Grid.Column="6" Background="#F3F4F6" BorderBrush="#D1D5DB" BorderThickness="1" 
+                            <Border Grid.Column="8" Background="#F3F4F6" BorderBrush="#D1D5DB" BorderThickness="1" 
             Height="40" VerticalAlignment="Bottom">
                                 <Border.Effect>
                                     <DropShadowEffect Color="#000000" Opacity="0.03" ShadowDepth="1" BlurRadius="3"/>
                                 </Border.Effect>
-                                <Button x:Name="ToutMouvmentButton" Content="Tout Afficher" Click="ToutButton_Click"
+                                <Button x:Name="ToutButtonMouvment_Click" Content="Tout Afficher" Click="ToutMouvmentButton_Click"
                 Background="Transparent" BorderThickness="0" Cursor="Hand"
                 FontSize="13" FontWeight="SemiBold" Foreground="#374151" 
                 Padding="20,0" VerticalContentAlignment="Center">
@@ -909,11 +1071,11 @@
                                                     <ColumnDefinition Width="*"/>
                                                     <ColumnDefinition Width="Auto"/>
                                                 </Grid.ColumnDefinitions>
-                                                <TextBlock Grid.Column="0" Text="Nombre de Vente" 
+                                                <TextBlock Grid.Column="0" Text="Mouvment de vente" 
                   FontSize="14" FontWeight="Medium" Foreground="#6B7280"/>
                                                 <Ellipse Grid.Column="1" Width="12" Height="12" Fill="#10B981"/>
                                             </Grid>
-                                            <TextBlock Text="127" FontSize="28" FontWeight="Bold" Foreground="#1F2937" Margin="0,0,0,8"/>
+                                            <TextBlock Text="127" FontSize="28" FontWeight="Bold" Foreground="#1F2937" Margin="0,0,0,8" Name="MouvmentVente"/>
                                             <TextBlock Text="+8 aujourd'hui" FontSize="12" Foreground="#10B981" FontWeight="Medium"/>
                                         </StackPanel>
                                     </Border>
@@ -926,11 +1088,11 @@
                                                     <ColumnDefinition Width="*"/>
                                                     <ColumnDefinition Width="Auto"/>
                                                 </Grid.ColumnDefinitions>
-                                                <TextBlock Grid.Column="0" Text="Nombre d'achat" 
+                                                <TextBlock Grid.Column="0" Text="Mouvment d'achat" 
                   FontSize="14" FontWeight="Medium" Foreground="#6B7280"/>
                                                 <Ellipse Grid.Column="1" Width="12" Height="12" Fill="#3B82F6"/>
                                             </Grid>
-                                            <TextBlock Text="45" FontSize="28" FontWeight="Bold" Foreground="#1F2937" Margin="0,0,0,8"/>
+                                            <TextBlock Text="45" FontSize="28" FontWeight="Bold" Foreground="#1F2937" Margin="0,0,0,8" Name="MouvmentAchat"/>
                                             <TextBlock Text="+3 cette semaine" FontSize="12" Foreground="#3B82F6" FontWeight="Medium"/>
                                         </StackPanel>
                                     </Border>
@@ -943,11 +1105,11 @@
                                                     <ColumnDefinition Width="*"/>
                                                     <ColumnDefinition Width="Auto"/>
                                                 </Grid.ColumnDefinitions>
-                                                <TextBlock Grid.Column="0" Text="Finance" 
+                                                <TextBlock Grid.Column="0" Text="Article vendus - Articles achetes" 
                   FontSize="14" FontWeight="Medium" Foreground="#6B7280"/>
                                                 <Ellipse Grid.Column="1" Width="12" Height="12" Fill="#059669"/>
                                             </Grid>
-                                            <TextBlock Text="€18,742.35" FontSize="28" FontWeight="Bold" Foreground="#1F2937" Margin="0,0,0,8"/>
+                                            <TextBlock Text="€18,742.35" FontSize="28" FontWeight="Bold" Foreground="#1F2937" Margin="0,0,0,8" Name="MouvmentFinance"/>
                                             <TextBlock Text="Bénéfice net" FontSize="12" Foreground="#059669" FontWeight="Medium"/>
                                         </StackPanel>
                                     </Border>
@@ -966,13 +1128,41 @@
                                         <ColumnDefinition Width="*"/>
                                         <ColumnDefinition Width="Auto"/>
                                     </Grid.ColumnDefinitions>
-                                    <TextBlock Grid.Column="0" Text="Opérations récentes" 
+                                    <TextBlock Grid.Column="0" Text="Mouvment" 
                                       FontSize="18" FontWeight="SemiBold" Foreground="#1F2937"/>
                                 </Grid>
 
                                 <!-- Operations List -->
                                 <StackPanel Name="MouvmentContainer">
                                 </StackPanel>
+                                <Border Height="34" Margin="0,12,0,0">
+                                    <Button HorizontalAlignment="Center" VerticalAlignment="Bottom" Margin="0,0,0,6"
+Background="Transparent" BorderThickness="0" Cursor="Hand"
+Padding="12,6" Click="Button1_Click">
+                                        <Button.Style>
+                                            <Style TargetType="Button">
+                                                <Setter Property="Template">
+                                                    <Setter.Value>
+                                                        <ControlTemplate TargetType="Button">
+                                                            <Border Background="{TemplateBinding Background}" 
+                        Padding="{TemplateBinding Padding}">
+                                                                <ContentPresenter HorizontalAlignment="Center" 
+                                    VerticalAlignment="Center"/>
+                                                            </Border>
+                                                        </ControlTemplate>
+                                                    </Setter.Value>
+                                                </Setter>
+                                                <Style.Triggers>
+                                                    <Trigger Property="IsMouseOver" Value="True">
+                                                        <Setter Property="Foreground" Value="#2563EB"/>
+                                                    </Trigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </Button.Style>
+                                        <TextBlock Text="View More" Foreground="#3B82F6" 
+       FontSize="14" FontWeight="Medium"/>
+                                    </Button>
+                                </Border>
                             </StackPanel>
                         </Border>
                     </Grid>
@@ -1076,6 +1266,305 @@
                                     </Grid>
                                 </Border>
                             </StackPanel>
+                        </StackPanel>
+                    </Border>
+                </StackPanel>
+            </ScrollViewer>
+        </Grid>
+        <Grid Background="#F5F7FA" Grid.Row="1" x:Name="RapportContent" Visibility="Collapsed">
+
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+
+            <!-- Page Title -->
+            <TextBlock Grid.Row="0" 
+               Text="Rapports" 
+               FontSize="28" 
+               FontWeight="Bold" 
+               Foreground="#2C3E50"
+               Margin="30,30,30,20"/>
+
+            <!-- Filter Buttons -->
+            <Border Grid.Row="1" Style="{StaticResource CardStyle}" Margin="30,0,30,20">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="10"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="10"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="10"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+
+                    <Button x:Name="DayButton" 
+                    Grid.Column="0"
+                    Style="{StaticResource SelectedFilterButtonStyle}"
+                    Click="DayButton_Click"
+                    Height="50">
+                        <StackPanel Orientation="Horizontal">
+                            <Path Data="M19 3h-1V1h-2v2H8V1H6v2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V8h14v11z" 
+                          Fill="{Binding RelativeSource={RelativeSource AncestorType=Button}, Path=Foreground}"
+                          Stretch="Uniform" 
+                          Width="18" 
+                          Height="18" 
+                          Margin="0,0,8,0"/>
+                            <TextBlock Text="Jour" VerticalAlignment="Center"/>
+                        </StackPanel>
+                    </Button>
+
+                    <Button x:Name="MonthButton" 
+                    Grid.Column="2"
+                    Style="{StaticResource FilterButtonStyle}"
+                    Click="MonthButton_Click"
+                    Height="50">
+                        <StackPanel Orientation="Horizontal">
+                            <Path Data="M9 11H7v2h2v-2zm4 0h-2v2h2v-2zm4 0h-2v2h2v-2zm2-7h-1V2h-2v2H8V2H6v2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 16H5V9h14v11z" 
+                          Fill="{Binding RelativeSource={RelativeSource AncestorType=Button}, Path=Foreground}"
+                          Stretch="Uniform" 
+                          Width="18" 
+                          Height="18" 
+                          Margin="0,0,8,0"/>
+                            <TextBlock Text="Mois" VerticalAlignment="Center"/>
+                        </StackPanel>
+                    </Button>
+
+                    <Button x:Name="YearButton" 
+                    Grid.Column="4"
+                    Style="{StaticResource FilterButtonStyle}"
+                    Click="YearButton_Click"
+                    Height="50">
+                        <StackPanel Orientation="Horizontal">
+                            <Path Data="M17 12h-5v5h5v-5zM16 1v2H8V1H6v2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2h-1V1h-2zm3 18H5V8h14v11z" 
+                          Fill="{Binding RelativeSource={RelativeSource AncestorType=Button}, Path=Foreground}"
+                          Stretch="Uniform" 
+                          Width="18" 
+                          Height="18" 
+                          Margin="0,0,8,0"/>
+                            <TextBlock Text="Année" VerticalAlignment="Center"/>
+                        </StackPanel>
+                    </Button>
+
+                    <Button x:Name="CustomButton" 
+                    Grid.Column="6"
+                    Style="{StaticResource FilterButtonStyle}"
+                    Click="CustomButton_Click"
+                    Height="50">
+                        <StackPanel Orientation="Horizontal">
+                            <Path Data="M11 17c0 .55.45 1 1 1s1-.45 1-1-.45-1-1-1-1 .45-1 1zm0-14v4h2V5.08c3.39.49 6 3.39 6 6.92 0 3.87-3.13 7-7 7s-7-3.13-7-7c0-1.68.59-3.22 1.58-4.42L12 13l1.41-1.41-6.8-6.8v.02C4.42 6.45 3 9.05 3 12c0 4.97 4.02 9 9 9 4.97 0 9-4.03 9-9s-4.03-9-9-9h-1zm7 9c0-.55-.45-1-1-1s-1 .45-1 1 .45 1 1 1 1-.45 1-1zM6 12c0 .55.45 1 1 1s1-.45 1-1-.45-1-1-1-1 .45-1 1z" 
+                          Fill="{Binding RelativeSource={RelativeSource AncestorType=Button}, Path=Foreground}"
+                          Stretch="Uniform" 
+                          Width="18" 
+                          Height="18" 
+                          Margin="0,0,8,0"/>
+                            <TextBlock Text="Personnalisé" VerticalAlignment="Center"/>
+                        </StackPanel>
+                    </Button>
+                </Grid>
+            </Border>
+
+            <!-- Date Pickers Section -->
+            
+
+            <!-- Statistics Display Area -->
+            <ScrollViewer Grid.Row="3" VerticalScrollBarVisibility="Auto" Margin="30,0,30,30">
+                <StackPanel>
+                    <!-- Summary Cards -->
+                    <Grid Margin="0,0,0,20">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="15"/>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="15"/>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="15"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+
+                        <!-- Total Revenue Card -->
+                        <Border Grid.Column="0" Style="{StaticResource StatCardStyle}">
+                            <StackPanel>
+                                <TextBlock Text="Revenu Total" 
+                                   FontSize="12" 
+                                   Foreground="#999999"
+                                   Margin="0,0,0,10"/>
+                                <TextBlock x:Name="TotalRevenueText"
+                                   Text="0.00 DH" 
+                                   FontSize="24" 
+                                   FontWeight="Bold" 
+                                   Foreground="#4CAF50"/>
+                                <StackPanel Orientation="Horizontal" Margin="0,5,0,0">
+                                    <Path Data="M7 14l5-5 5 5z" 
+                                  Fill="#4CAF50"
+                                  Stretch="Uniform"
+                                  Width="16"
+                                  Height="16"
+                                  Margin="0,0,5,0"/>
+                                    <TextBlock Text="+12.5%" 
+                                       FontSize="12" 
+                                       Foreground="#4CAF50"
+                                       FontWeight="SemiBold"/>
+                                </StackPanel>
+                            </StackPanel>
+                        </Border>
+
+                        <!-- Total Orders Card -->
+                        <Border Grid.Column="2" Style="{StaticResource StatCardStyle}">
+                            <StackPanel>
+                                <TextBlock Text="Commandes" 
+                                   FontSize="12" 
+                                   Foreground="#999999"
+                                   Margin="0,0,0,10"/>
+                                <TextBlock x:Name="TotalOrdersText"
+                                   Text="0" 
+                                   FontSize="24" 
+                                   FontWeight="Bold" 
+                                   Foreground="#4A90E2"/>
+                                <StackPanel Orientation="Horizontal" Margin="0,5,0,0">
+                                    <Path Data="M7 14l5-5 5 5z" 
+                                  Fill="#4A90E2"
+                                  Stretch="Uniform"
+                                  Width="16"
+                                  Height="16"
+                                  Margin="0,0,5,0"/>
+                                    <TextBlock Text="+8.3%" 
+                                       FontSize="12" 
+                                       Foreground="#4A90E2"
+                                       FontWeight="SemiBold"/>
+                                </StackPanel>
+                            </StackPanel>
+                        </Border>
+
+                        <!-- Average Order Card -->
+                        <Border Grid.Column="4" Style="{StaticResource StatCardStyle}">
+                            <StackPanel>
+                                <TextBlock Text="Panier Moyen" 
+                                   FontSize="12" 
+                                   Foreground="#999999"
+                                   Margin="0,0,0,10"/>
+                                <TextBlock x:Name="AverageOrderText"
+                                   Text="0.00 DH" 
+                                   FontSize="24" 
+                                   FontWeight="Bold" 
+                                   Foreground="#FF9800"/>
+                                <StackPanel Orientation="Horizontal" Margin="0,5,0,0">
+                                    <Path Data="M7 10l5 5 5-5z" 
+                                  Fill="#FF9800"
+                                  Stretch="Uniform"
+                                  Width="16"
+                                  Height="16"
+                                  Margin="0,0,5,0"/>
+                                    <TextBlock Text="-2.1%" 
+                                       FontSize="12" 
+                                       Foreground="#FF9800"
+                                       FontWeight="SemiBold"/>
+                                </StackPanel>
+                            </StackPanel>
+                        </Border>
+
+                        <!-- Total Customers Card -->
+                        <Border Grid.Column="6" Style="{StaticResource StatCardStyle}">
+                            <StackPanel>
+                                <TextBlock Text="Clients" 
+                                   FontSize="12" 
+                                   Foreground="#999999"
+                                   Margin="0,0,0,10"/>
+                                <TextBlock x:Name="TotalCustomersText"
+                                   Text="0" 
+                                   FontSize="24" 
+                                   FontWeight="Bold" 
+                                   Foreground="#9C27B0"/>
+                                <StackPanel Orientation="Horizontal" Margin="0,5,0,0">
+                                    <Path Data="M7 14l5-5 5 5z" 
+                                  Fill="#9C27B0"
+                                  Stretch="Uniform"
+                                  Width="16"
+                                  Height="16"
+                                  Margin="0,0,5,0"/>
+                                    <TextBlock Text="+5.7%" 
+                                       FontSize="12" 
+                                       Foreground="#9C27B0"
+                                       FontWeight="SemiBold"/>
+                                </StackPanel>
+                            </StackPanel>
+                        </Border>
+                    </Grid>
+
+                    <!-- Detailed Stats Section -->
+                    <Border Style="{StaticResource CardStyle}">
+                        <StackPanel>
+                            <TextBlock Text="Détails des Ventes" 
+                               FontSize="18" 
+                               FontWeight="Bold" 
+                               Foreground="#2C3E50"
+                               Margin="0,0,0,20"/>
+
+                            <!-- Chart Placeholder -->
+                            <Border Background="#F8F9FA" 
+                            CornerRadius="8" 
+                            Height="300" 
+                            Margin="0,0,0,20">
+                                <TextBlock Text="📊 Graphique des ventes" 
+                                   FontSize="16" 
+                                   Foreground="#CCCCCC"
+                                   HorizontalAlignment="Center" 
+                                   VerticalAlignment="Center"/>
+                            </Border>
+
+                            <!-- Top Products -->
+                            <TextBlock Text="Produits les plus vendus" 
+                               FontSize="16" 
+                               FontWeight="SemiBold" 
+                               Foreground="#2C3E50"
+                               Margin="0,0,0,15"/>
+
+                            <ItemsControl x:Name="TopProductsList">
+                                <ItemsControl.ItemTemplate>
+                                    <DataTemplate>
+                                        <Border Background="#F8F9FA" 
+                                        CornerRadius="8" 
+                                        Padding="15" 
+                                        Margin="0,0,0,10">
+                                            <Grid>
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition Width="Auto"/>
+                                                    <ColumnDefinition Width="*"/>
+                                                    <ColumnDefinition Width="Auto"/>
+                                                </Grid.ColumnDefinitions>
+
+                                                <TextBlock Grid.Column="0" 
+                                                   Text="{Binding Rank}" 
+                                                   FontSize="18" 
+                                                   FontWeight="Bold"
+                                                   Foreground="#4A90E2"
+                                                   Width="30"/>
+
+                                                <StackPanel Grid.Column="1">
+                                                    <TextBlock Text="{Binding ProductName}" 
+                                                       FontSize="14" 
+                                                       FontWeight="SemiBold"
+                                                       Foreground="#2C3E50"/>
+                                                    <TextBlock Text="{Binding Quantity, StringFormat='Quantité: {0}'}" 
+                                                       FontSize="12" 
+                                                       Foreground="#999999"
+                                                       Margin="0,2,0,0"/>
+                                                </StackPanel>
+
+                                                <TextBlock Grid.Column="2" 
+                                                   Text="{Binding Revenue, StringFormat='{}{0:N2} DH'}" 
+                                                   FontSize="16" 
+                                                   FontWeight="Bold"
+                                                   Foreground="#4CAF50"
+                                                   VerticalAlignment="Center"/>
+                                            </Grid>
+                                        </Border>
+                                    </DataTemplate>
+                                </ItemsControl.ItemTemplate>
+                            </ItemsControl>
                         </StackPanel>
                     </Border>
                 </StackPanel>

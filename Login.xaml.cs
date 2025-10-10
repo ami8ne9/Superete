@@ -68,21 +68,23 @@ namespace Superete
         }
         private void PasswordInput_PreviewTextInput(object sender, TextCompositionEventArgs e)
         {
-            Regex regex = new Regex("[^0-9]+");
-            e.Handled = regex.IsMatch(e.Text);
+            // Only allow digits
+            e.Handled = !Regex.IsMatch(e.Text, "^[0-9]+$");
         }
 
         private void PasswordInput_PreviewKeyDown(object sender, KeyEventArgs e)
         {
+            // Block spaces
             if (e.Key == Key.Space)
             {
-                e.Handled = true; 
+                e.Handled = true;
             }
 
-            if (Keyboard.Modifiers == ModifierKeys.Control && e.Key == Key.V)
-            {
-                e.Handled = true; 
-            }
+            //// Block Ctrl+V (paste)
+            //if ((Keyboard.Modifiers & ModifierKeys.Control) == ModifierKeys.Control && e.Key == Key.V)
+            //{
+            //    e.Handled = true;
+            //}
         }
         private async void BtnEnter_Click(object sender, RoutedEventArgs e)
         {
@@ -102,7 +104,7 @@ namespace Superete
                     return;
                 }
             }
-            PasswordInput.Password = "";
+            PasswordInput.Clear();
             MessageBox.Show("Wrong Code");
 
         }

@@ -27,23 +27,23 @@
                 CornerRadius="0">
             <Grid>
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="100" MinWidth="80"/>
+                    <ColumnDefinition Width="100" MinWidth="80" x:Name="ArticleIDC" />
                     <!-- Article ID -->
-                    <ColumnDefinition Width="2*" MinWidth="150"/>
+                    <ColumnDefinition Width="2*" MinWidth="150" x:Name="ArticleNameC" />
                     <!-- Article Name -->
-                    <ColumnDefinition Width="100" MinWidth="80"/>
+                    <ColumnDefinition Width="100" MinWidth="80" x:Name="QuantiteC" />
                     <!-- Quantité -->
-                    <ColumnDefinition Width="120" MinWidth="100"/>
+                    <ColumnDefinition Width="120" MinWidth="100" x:Name="PrixAchatC" />
                     <!-- Prix Achat -->
-                    <ColumnDefinition Width="120" MinWidth="100"/>
+                    <ColumnDefinition Width="120" MinWidth="100" x:Name="PrixVenteC"/>
                     <!-- Prix Vente -->
-                    <ColumnDefinition Width="120" MinWidth="100"/>
+                    <ColumnDefinition Width="120" MinWidth="100"  x:Name="PrixMPC" />
                     <!-- Prix MP -->
-                    <ColumnDefinition Width="100" MinWidth="80"/>
+                    <ColumnDefinition Width="100" MinWidth="80" x:Name="FamilleC" />
                     <!-- Famille ID -->
-                    <ColumnDefinition Width="150" MinWidth="120"/>
+                    <ColumnDefinition Width="150" MinWidth="120" x:Name="FournisseurNameC" />
                     <!-- Fournisseur -->
-                    <ColumnDefinition Width="120" MinWidth="100"/>
+                    <ColumnDefinition Width="120" MinWidth="100" x:Name="CodeC" />
                     <!-- Code -->
                 </Grid.ColumnDefinitions>
 

@@ -31,9 +31,19 @@ namespace Superete.Main.ProjectManagment
             Total.Text = "Sous-Total : "+so.op.PrixOperation.ToString();
             Remise2.Text="Remise : -"+so.op.Remise.ToString("0.00")+" DH";
             TotalFinal.Text = "Total Final : "+(so.op.PrixOperation - so.op.Remise).ToString();
-            RRightSideContainer.Width = new GridLength(0);
             CreditValueLabel.Visibility = Visibility.Collapsed;
             CreditValue.Visibility = Visibility.Collapsed;
+            foreach (Role r in so.main.main.lr)
+            {
+                if (so.main.u.RoleID == r.RoleID)
+                {
+                    if (r.ReverseOperation == false)
+                    {
+                        ReverseAritcles.IsEnabled = false;
+                    }
+                    break;
+                }
+            }
             foreach (User u in so.main.main.lu)
             {
                 if (so.op.UserID == u.UserID)
@@ -48,6 +58,13 @@ namespace Superete.Main.ProjectManagment
                 Start.Text = "V";
                 OperationType1.Text = "Vente #" + so.op.OperationID.ToString();
                 OperationType2.Text = "Vente";
+                foreach(PaymentMethod p in so.main.main.lp)
+                {
+                    if(p.PaymentMethodID == so.op.PaymentMethodID)
+                    {
+                        PaymentType.Text = p.PaymentMethodName;
+                    }
+                }
                 if (so.op.OperationType.EndsWith("Ca"))
                 {
                     Transaction.Text = "Cash";
@@ -85,6 +102,13 @@ namespace Superete.Main.ProjectManagment
                 Start.Text = "A";
                 OperationType1.Text = "Achat #" + so.op.OperationID.ToString();
                 OperationType2.Text = "Achat";
+                foreach (PaymentMethod p in so.main.main.lp)
+                {
+                    if (p.PaymentMethodID == so.op.PaymentMethodID)
+                    {
+                        PaymentType.Text = p.PaymentMethodName;
+                    }
+                }
                 if (so.op.OperationType.EndsWith("Ca"))
                 {
                     Transaction.Text = "Cash";
@@ -124,6 +148,7 @@ namespace Superete.Main.ProjectManagment
                 RemiseLabel.Text = "Quantite Avant Modification";
                 ArticlesCountLabel.Visibility = Visibility.Collapsed;   
                 ArticlesCount.Visibility = Visibility.Collapsed;
+                ReverseAritcles.Content = "Reverse";
                 RightSideContainer.Width = new GridLength(0);
                 this.Height= 520;
                 this.Width = 600;
@@ -144,6 +169,60 @@ namespace Superete.Main.ProjectManagment
                 Remise.Visibility = Visibility.Collapsed;
                 ArticlesCountLabel.Visibility = Visibility.Collapsed;
                 ArticlesCount.Visibility = Visibility.Collapsed;
+                ReverseAritcles.Content = "Reverse";
+                RightSideContainer.Width = new GridLength(0);
+                this.Height = 520;
+                this.Width = 600;
+                Print.Visibility = Visibility.Collapsed;
+
+            }
+            else if (so.op.OperationType.StartsWith("S"))
+            {
+                IconColor.Background = (SolidColorBrush)(new BrushConverter().ConvertFrom("#d3f705"));
+                Start.Text = "P";
+                OperationType1.Text = "Payement de Credit Fournisseur #" + so.op.OperationID.ToString();
+                OperationType2.Text = "Payement de Credit Fournisseur";
+                foreach (Fournisseur f in so.main.main.lfo)
+                {
+                    if (so.op.FournisseurID == f.FournisseurID)
+                    {
+                        RemiseLabel.Text = "Fournisseur";
+                        Remise.Text = f.Nom;
+                        break;
+                    }
+                }
+                ArticleOperation.Visibility = Visibility.Collapsed;
+                TotalPriceLabel.Text = "Payement Value";
+                ArticlesCountLabel.Visibility = Visibility.Collapsed;
+                ArticlesCount.Visibility = Visibility.Collapsed;
+                ReverseAritcles.Content = "Reverse";
+                RightSideContainer.Width = new GridLength(0);
+
+                this.Height = 520;
+                this.Width = 600;
+                Print.Visibility = Visibility.Collapsed;
+
+            }
+            else if (so.op.OperationType.StartsWith("P"))
+            {
+                IconColor.Background = (SolidColorBrush)(new BrushConverter().ConvertFrom("#d3f705"));
+                Start.Text = "P";
+                OperationType1.Text = "Payement de Credit Client#" + so.op.OperationID.ToString();
+                OperationType2.Text = "Payement de Credit Client";
+                foreach (Client c in so.main.main.lc)
+                {
+                    if (so.op.ClientID == c.ClientID)
+                    {
+                        RemiseLabel.Text = "Client";
+                        Remise.Text = c.Nom;
+                        break;
+                    }
+                }
+                ArticleOperation.Visibility = Visibility.Collapsed;
+                TotalPriceLabel.Text = "Payement Value";
+                ArticlesCountLabel.Visibility = Visibility.Collapsed;
+                ArticlesCount.Visibility = Visibility.Collapsed;
+                ReverseAritcles.Content = "Reverse";
                 RightSideContainer.Width = new GridLength(0);
                 this.Height = 520;
                 this.Width = 600;
@@ -191,8 +270,16 @@ namespace Superete.Main.ProjectManagment
 
         private void ReverseAritcles_Click(object sender, RoutedEventArgs e)
         {
-            WArticlesReverse wArticlesReverse = new WArticlesReverse(this);
-            wArticlesReverse.ShowDialog();
+            if (so.op.OperationType.StartsWith("A") || so.op.OperationType.StartsWith("V"))
+            {
+                WArticlesReverse wArticlesReverse = new WArticlesReverse(this);
+                wArticlesReverse.ShowDialog();
+            } else if(so.op.OperationType.StartsWith("M") || so.op.OperationType.StartsWith("D") || so.op.OperationType.StartsWith("S") || so.op.OperationType.StartsWith("P"))
+            {
+                WReverseConfirmation wReverseConfirmation = new WReverseConfirmation(this, null);
+                wReverseConfirmation.ShowDialog();
+            }
+                
         }
     }
 }

@@ -21,25 +21,25 @@ namespace Superete.Main.Vente
     /// </summary>
     public partial class CSingleArticle2 : UserControl
     {
-        public CSingleArticle2(CSingleArticle1 sa,string qte,CMainV main)
+        public CSingleArticle2(Article a,int qte,CMainV main)
         {
             InitializeComponent();
-            ArticleName.Text = sa.ArticleName.Text;
-            Prix.Text = sa.PrixVente.Text;
-            Quantite.Text = qte;
-            Total.Text = (Convert.ToDecimal(sa.PrixVente.Text) * Convert.ToInt32(qte)).ToString("F2");
+            ArticleName.Text = a.ArticleName;
+            Prix.Text = a.PrixVente.ToString();
+            Quantite.Text = qte.ToString();
+            Total.Text = (Convert.ToDecimal(a.PrixVente) * Convert.ToInt32(qte)).ToString("F2");
             foreach (Fournisseur fo in main.lfo)
-                if (sa.a.FournisseurID== fo.FournisseurID)
+                if (a.FournisseurID== fo.FournisseurID)
                 {
                     Fournisseur.Text = fo.Nom;
                     break;
                 }
-            this.a = sa.a;
+            this.a = a;
             this.main = main;
             this.qte = qte;
         }
         public Article a;
-        CMainV main;public string qte;
+        CMainV main;public int qte;
         public void SelectedArticleClicked(object sender, RoutedEventArgs e)
         {
             main.SelectedArticles.Children.Remove(this);

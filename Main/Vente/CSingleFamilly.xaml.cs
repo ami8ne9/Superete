@@ -38,7 +38,7 @@ namespace Superete.Main.Vente
             List<Article> articlesInFamily = Articles.Where(article => article.FamillyID == f.FamilleID).ToList();
             foreach (Article article in articlesInFamily)
             {
-                mainv.ArticlesContainer.Children.Add(new CSingleArticle1(article, mainv,lf,mainv.lfo));
+                mainv.ArticlesContainer.Children.Add(new CSingleArticle1(article, mainv,lf,mainv.lfo,0));
             }
         }
     }

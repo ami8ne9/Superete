@@ -19,15 +19,19 @@ namespace Superete.Main.Inventory
     /// </summary>
     public partial class WNouveauStock : Window
     {
-        public WNouveauStock(List<Famille> lf, List<Article> la, List<Fournisseur> lfo, CMainI main)
+        public WNouveauStock(List<Famille> lf, List<Article> la, List<Fournisseur> lfo, CMainI main,int s,Fournisseur fo,WAddMultipleArticles AMA)
         {
             InitializeComponent();
             this.lf = lf;
             this.la = la;
             this.lfo = lfo;
             this.main = main;
+            this.s = s;
+            this.fo = fo;
+            this.AMA = AMA;
         }
-        List<Famille> lf; List<Article> la; List<Fournisseur> lfo; CMainI main;
+
+        List<Famille> lf; List<Article> la; List<Fournisseur> lfo; public CMainI main;int s;Fournisseur fo;public WAddMultipleArticles AMA;
         private void CloseButton_Click(object sender, RoutedEventArgs e)
         {
             this.Close();
@@ -35,21 +39,16 @@ namespace Superete.Main.Inventory
 
         private void AddNewArticleButton_Click(object sender, RoutedEventArgs e)
         {
-            WAddArticle af = new WAddArticle(new Article(), la, lf, lfo, main, 1,null);
+            WAddArticle af = new WAddArticle(new Article(), la, lf, lfo, main, s,null,this);
             af.ShowDialog();
         }
 
         private void AddExistingArticleButton_Click(object sender, RoutedEventArgs e)
         {
-            WExistingArticles ea = new WExistingArticles(la,main,2);
+            WExistingArticles ea = new WExistingArticles(la,main,s,fo,this);
             ea.ShowDialog();
         }
 
 
-        private void AddStockNewSupplierButton_Click(object sender, RoutedEventArgs e)
-        {
-            WExistingArticles ea = new WExistingArticles(la, main,1); 
-            ea.ShowDialog();
-        }
     }
 }

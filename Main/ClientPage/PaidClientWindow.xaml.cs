@@ -1,0 +1,255 @@
+﻿using Superete;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Media;
+
+namespace Superete.Main.ClientPage
+{
+    public partial class PaidClientWindow : Window
+    {
+        private readonly MainWindow _mainWindow;
+        private User _currentUser;
+        private readonly Client _client;
+        private Credit[] _clientCredits;
+        private Dictionary<int, decimal> _originalPaidAmounts;
+
+        public PaidClientWindow(User u, MainWindow mainWindow, Client client)
+        {
+            InitializeComponent();
+            _mainWindow = mainWindow;
+            _client = client;
+            _currentUser = u;
+            _originalPaidAmounts = new Dictionary<int, decimal>();
+            SetupEventHandlers();
+            Loaded += PaidClientWindow_Loaded;
+        }
+
+        private void SetupEventHandlers()
+        {
+            PaymentAmountTextBox.TextChanged += PaymentAmountTextBox_TextChanged;
+            PaymentAmountTextBox.PreviewTextInput += PaymentAmountTextBox_PreviewTextInput;
+        }
+
+        private void PaidClientWindow_Loaded(object sender, RoutedEventArgs e)
+        {
+            ClientNameLabel.Text = _client.Nom;
+            LoadCredits();
+        }
+
+        private void LoadCredits()
+        {
+            try
+            {
+                // Load from MainWindow credit list instead of database
+                _clientCredits = _mainWindow.credits
+                    .Where(c => c.ClientID == _client.ClientID && c.Etat)
+                    .ToArray();
+
+                decimal total = _clientCredits.Sum(c => c.Total);
+                decimal paid = _clientCredits.Sum(c => c.Paye);
+                decimal diff = _clientCredits.Sum(c => c.Difference);
+
+                TotalCreditLabel.Text = $"{total:N2} DH";
+                TotalPaidLabel.Text = $"{paid:N2} DH";
+                DifferenceLabel.Text = $"{diff:N2} DH";
+                RemainingBalanceLabel.Text = $"{diff:N2} DH";
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error loading credits: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+        }
+
+        private void PaymentAmountTextBox_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            if (_clientCredits == null || _clientCredits.Length == 0)
+                return;
+
+            decimal totalDifference = _clientCredits.Sum(c => c.Difference);
+
+            if (decimal.TryParse(PaymentAmountTextBox.Text, out decimal paymentAmount))
+            {
+                decimal remainingBalance = Math.Max(0, totalDifference - paymentAmount);
+                RemainingBalanceLabel.Text = $"{remainingBalance:N2} DH";
+
+                if (paymentAmount == totalDifference)
+                {
+                    RemainingBalanceLabel.Foreground = new SolidColorBrush(Color.FromRgb(16, 185, 129));
+                }
+                else if (paymentAmount < totalDifference)
+                {
+                    RemainingBalanceLabel.Foreground = new SolidColorBrush(Color.FromRgb(124, 58, 237));
+                }
+                else
+                {
+                    RemainingBalanceLabel.Foreground = new SolidColorBrush(Color.FromRgb(220, 38, 38));
+                }
+            }
+            else
+            {
+                RemainingBalanceLabel.Text = $"{totalDifference:N2} DH";
+                RemainingBalanceLabel.Foreground = new SolidColorBrush(Color.FromRgb(124, 58, 237));
+            }
+        }
+
+        private void PaymentAmountTextBox_PreviewTextInput(object sender, System.Windows.Input.TextCompositionEventArgs e)
+        {
+            var textBox = sender as TextBox;
+            var fullText = textBox.Text.Insert(textBox.SelectionStart, e.Text);
+
+            if (!System.Text.RegularExpressions.Regex.IsMatch(fullText, @"^\d*\.?\d*$"))
+                e.Handled = true;
+        }
+
+        private void PayMaxButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (_clientCredits == null || _clientCredits.Length == 0)
+            {
+                MessageBox.Show("No outstanding credits found.", "Info", MessageBoxButton.OK, MessageBoxImage.Information);
+                return;
+            }
+
+            decimal diff = _clientCredits.Sum(c => c.Difference);
+            PaymentAmountTextBox.Text = diff.ToString("F2");
+            RemainingBalanceLabel.Text = "0.00 DH";
+            RemainingBalanceLabel.Foreground = new SolidColorBrush(Color.FromRgb(16, 185, 129));
+        }
+
+        private void CloseButton_Click(object sender, RoutedEventArgs e) => Close();
+        private void CancelButton_Click(object sender, RoutedEventArgs e) => Close();
+
+        private async void ProcessPaymentButton_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                if (!decimal.TryParse(PaymentAmountTextBox.Text, out decimal amount) || amount <= 0)
+                {
+                    MessageBox.Show("Enter a valid payment amount.", "Validation", MessageBoxButton.OK, MessageBoxImage.Warning);
+                    return;
+                }
+
+                decimal totalDifference = _clientCredits.Sum(c => c.Difference);
+
+                if (amount > totalDifference)
+                {
+                    MessageBox.Show(
+                        $"Payment amount ({amount:N2} DH) cannot exceed remaining balance ({totalDifference:N2} DH).",
+                        "Validation Error",
+                        MessageBoxButton.OK,
+                        MessageBoxImage.Error);
+                    return;
+                }
+
+                // Save original paye
+                _originalPaidAmounts.Clear();
+                foreach (var credit in _clientCredits)
+                    _originalPaidAmounts[credit.CreditID] = credit.Paye;
+
+                decimal remaining = amount;
+                var creditsToUpdate = new List<Credit>();
+
+                // FIFO allocation
+                int creditId = 0;
+                foreach (var credit in _clientCredits.OrderBy(c => c.CreditID))
+                {
+                    if (remaining <= 0) break;
+                    if (credit.Difference <= 0) continue;
+
+                    decimal payForThisCredit = Math.Min(credit.Difference, remaining);
+
+                    credit.Paye += payForThisCredit;
+                    credit.Difference = credit.Total - credit.Paye;
+                    creditId=credit.CreditID;
+                    creditsToUpdate.Add(credit);
+
+                    remaining -= payForThisCredit;
+                }
+
+                // Update credits in database
+                foreach (var credit in creditsToUpdate)
+                {
+                    int res = await credit.UpdateCreditAsync();
+                    if (res == 0)
+                    {
+                        MessageBox.Show("Error updating credits.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                        return;
+                    }
+
+                    // Update in MainWindow list
+                    var creditInList = _mainWindow.credits.FirstOrDefault(c => c.CreditID == credit.CreditID);
+                    if (creditInList != null)
+                    {
+                        creditInList.Paye = credit.Paye;
+                        creditInList.Difference = credit.Difference;
+                    }
+                }
+
+                // Reload from list
+                LoadCredits();
+
+                // Create operations
+                await CreatePaymentOperationAsync(amount, creditId);
+
+                MessageBox.Show(
+                    $"Payment of {amount:N2} DH processed successfully.",
+                    "Success", MessageBoxButton.OK, MessageBoxImage.Information);
+
+                PaymentAmountTextBox.Clear();
+
+                this.DialogResult = true;
+                this.Close();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error while processing payment: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+        }
+
+        private async Task CreatePaymentOperationAsync(decimal paidAmount,int creditID)
+        {
+            try
+            {
+                var op = new Operation
+                {
+                    ClientID = _client.ClientID,
+                    FournisseurID = null,
+                    CreditID = creditID,
+                    PrixOperation = paidAmount,
+                    Remise = 0m,
+                    CreditValue = -paidAmount,
+                    UserID = GetCurrentUserId(),
+                    DateOperation = DateTime.Now,
+                    OperationType = "PAYMENT",
+                    //Reversed = false,
+                    Etat = true
+                };
+
+                int opId = await op.InsertOperationAsync();
+
+                if (opId > 0)
+                {
+                    op.OperationID = opId;
+                    _mainWindow.lo.Add(op);
+                }
+
+                // ❌ remove this line to prevent duplicate operations
+                // await CreateDetailedCreditPaymentOperationsAsync(paidAmount);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Payment saved but failed to record operation: {ex.Message}",
+                    "Warning", MessageBoxButton.OK, MessageBoxImage.Warning);
+            }
+        }
+
+        private int GetCurrentUserId()
+        {
+           
+            return _currentUser.UserID;
+        }
+    }
+}

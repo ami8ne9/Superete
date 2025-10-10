@@ -8,12 +8,13 @@
     <OutputType>WinExe</OutputType>
     <RootNamespace>Superete</RootNamespace>
     <AssemblyName>Superete</AssemblyName>
-    <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <ProjectTypeGuids>{60dc8134-eba5-43b8-bcc9-bb4bc16c2548};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
     <WarningLevel>4</WarningLevel>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
     <Deterministic>true</Deterministic>
+    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -60,44 +61,47 @@
     <Compile Include="Credit.cs" />
     <Compile Include="Famille.cs" />
     <Compile Include="Fournisseur.cs" />
-    <Compile Include="Main\CMain.xaml.cs">
-      <DependentUpon>CMain.xaml</DependentUpon>
+    <Compile Include="GlobalButtonWindow.xaml.cs">
+      <DependentUpon>GlobalButtonWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Main\ClientPage\ClientFormWindow.xaml.cs">
+      <DependentUpon>ClientFormWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Main\ClientPage\ClientOperationsWindow.xaml.cs">
+      <DependentUpon>ClientOperationsWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="Main\ClientPage\CMainC.xaml.cs">
       <DependentUpon>CMainC.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Main\ClientPage\CSingleClient.xaml.cs">
-      <DependentUpon>CSingleClient.xaml</DependentUpon>
+    <Compile Include="Main\ClientPage\DeleteClientWindow.xaml.cs">
+      <DependentUpon>DeleteClientWindow.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Main\ClientPage\WAddClient.xaml.cs">
-      <DependentUpon>WAddClient.xaml</DependentUpon>
+    <Compile Include="Main\ClientPage\PaidClientWindow.xaml.cs">
+      <DependentUpon>PaidClientWindow.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Main\ClientPage\WDeleteClient.xaml.cs">
-      <DependentUpon>WDeleteClient.xaml</DependentUpon>
+    <Compile Include="Main\ClientPage\SingleRowClient.xaml.cs">
+      <DependentUpon>SingleRowClient.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Main\ClientPage\WHistoryOperationC.xaml.cs">
-      <DependentUpon>WHistoryOperationC.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Main\ClientPage\WPayeClient.xaml.cs">
-      <DependentUpon>WPayeClient.xaml</DependentUpon>
+    <Compile Include="Main\CMain.xaml.cs">
+      <DependentUpon>CMain.xaml</DependentUpon>
     </Compile>
     <Compile Include="Main\FournisseurPage\CMainF.xaml.cs">
       <DependentUpon>CMainF.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Main\FournisseurPage\CSingleFournisseur.xaml.cs">
-      <DependentUpon>CSingleFournisseur.xaml</DependentUpon>
+    <Compile Include="Main\FournisseurPage\DeleteSupplierWindow.xaml.cs">
+      <DependentUpon>DeleteSupplierWindow.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Main\FournisseurPage\WAddFournisseur.xaml.cs">
-      <DependentUpon>WAddFournisseur.xaml</DependentUpon>
+    <Compile Include="Main\FournisseurPage\PaidSupplierWindow.xaml.cs">
+      <DependentUpon>PaidSupplierWindow.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Main\FournisseurPage\WDeleteFournisseur.xaml.cs">
-      <DependentUpon>WDeleteFournisseur.xaml</DependentUpon>
+    <Compile Include="Main\FournisseurPage\SingleRowSupplier.xaml.cs">
+      <DependentUpon>SingleRowSupplier.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Main\FournisseurPage\WHistoryOperation.xaml.cs">
-      <DependentUpon>WHistoryOperation.xaml</DependentUpon>
+    <Compile Include="Main\FournisseurPage\SupplierFormWindow.xaml.cs">
+      <DependentUpon>SupplierFormWindow.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Main\FournisseurPage\WPayeFournisseur.xaml.cs">
-      <DependentUpon>WPayeFournisseur.xaml</DependentUpon>
+    <Compile Include="Main\FournisseurPage\SupplierOperationsWindow.xaml.cs">
+      <DependentUpon>SupplierOperationsWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="Main\Inventory\CMainI.xaml.cs">
       <DependentUpon>CMainI.xaml</DependentUpon>
@@ -119,6 +123,9 @@
     </Compile>
     <Compile Include="Main\Inventory\WAddFournisseur.xaml.cs">
       <DependentUpon>WAddFournisseur.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Main\Inventory\WAddMultipleArticles.xaml.cs">
+      <DependentUpon>WAddMultipleArticles.xaml</DependentUpon>
     </Compile>
     <Compile Include="Main\Inventory\WAjoutQuantite.xaml.cs">
       <DependentUpon>WAjoutQuantite.xaml</DependentUpon>
@@ -153,6 +160,9 @@
     <Compile Include="Main\ProjectManagment\CSingleArticleReverse.xaml.cs">
       <DependentUpon>CSingleArticleReverse.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Main\ProjectManagment\CSingleMouvment.xaml.cs">
+      <DependentUpon>CSingleMouvment.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Main\ProjectManagment\CSingleOperation.xaml.cs">
       <DependentUpon>CSingleOperation.xaml</DependentUpon>
     </Compile>
@@ -164,6 +174,9 @@
     </Compile>
     <Compile Include="Main\ProjectManagment\WReverseConfirmation.xaml.cs">
       <DependentUpon>WReverseConfirmation.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Main\ProjectManagment\WReverseMouvmentConfirmation.xaml.cs">
+      <DependentUpon>WReverseMouvmentConfirmation.xaml</DependentUpon>
     </Compile>
     <Compile Include="Main\Settings\CSingleRole.xaml.cs">
       <DependentUpon>CSingleRole.xaml</DependentUpon>
@@ -213,13 +226,24 @@
     <Compile Include="Main\Vente\WAddCleint.xaml.cs">
       <DependentUpon>WAddCleint.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Main\Vente\WKeyPad.xaml.cs">
+      <DependentUpon>WKeyPad.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Main\Vente\WSelectCient.xaml.cs">
       <DependentUpon>WSelectCient.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Main\WKeyboard.xaml.cs">
+      <DependentUpon>WKeyboard.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Operation.cs" />
     <Compile Include="OperationArticle.cs" />
+    <Compile Include="PaymentMethod.cs" />
     <Compile Include="Role.cs" />
     <Compile Include="User.cs" />
+    <Page Include="GlobalButtonWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Login.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -239,57 +263,57 @@
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Page Include="Main\CMain.xaml">
-      <SubType>Designer</SubType>
+    <Page Include="Main\ClientPage\ClientFormWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Main\ClientPage\ClientOperationsWindow.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
     </Page>
     <Page Include="Main\ClientPage\CMainC.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Main\ClientPage\CSingleClient.xaml">
+    <Page Include="Main\ClientPage\DeleteClientWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Main\ClientPage\WAddClient.xaml">
+    <Page Include="Main\ClientPage\PaidClientWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Main\ClientPage\WDeleteClient.xaml">
+    <Page Include="Main\ClientPage\SingleRowClient.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Main\ClientPage\WHistoryOperationC.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Main\ClientPage\WPayeClient.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Main\FournisseurPage\CMainF.xaml">
+    <Page Include="Main\CMain.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Main\FournisseurPage\CSingleFournisseur.xaml">
-      <SubType>Designer</SubType>
+    <Page Include="Main\FournisseurPage\CMainF.xaml">
       <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
     </Page>
-    <Page Include="Main\FournisseurPage\WAddFournisseur.xaml">
-      <SubType>Designer</SubType>
+    <Page Include="Main\FournisseurPage\DeleteSupplierWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
     </Page>
-    <Page Include="Main\FournisseurPage\WDeleteFournisseur.xaml">
-      <SubType>Designer</SubType>
+    <Page Include="Main\FournisseurPage\PaidSupplierWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
     </Page>
-    <Page Include="Main\FournisseurPage\WHistoryOperation.xaml">
-      <SubType>Designer</SubType>
+    <Page Include="Main\FournisseurPage\SingleRowSupplier.xaml">
       <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
     </Page>
-    <Page Include="Main\FournisseurPage\WPayeFournisseur.xaml">
-      <SubType>Designer</SubType>
+    <Page Include="Main\FournisseurPage\SupplierFormWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Main\FournisseurPage\SupplierOperationsWindow.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
     </Page>
     <Page Include="Main\Inventory\CMainI.xaml">
       <SubType>Designer</SubType>
@@ -316,6 +340,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Main\Inventory\WAddFournisseur.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Main\Inventory\WAddMultipleArticles.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -363,6 +391,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="Main\ProjectManagment\CSingleMouvment.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Main\ProjectManagment\CSingleOperation.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -376,6 +408,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Main\ProjectManagment\WReverseConfirmation.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Main\ProjectManagment\WReverseMouvmentConfirmation.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -443,7 +479,15 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="Main\Vente\WKeyPad.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Main\Vente\WSelectCient.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Main\WKeyboard.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -482,6 +526,5 @@
     <Resource Include="Main\images\parametres.png" />
     <Resource Include="Main\images\revenu.png" />
   </ItemGroup>
-  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

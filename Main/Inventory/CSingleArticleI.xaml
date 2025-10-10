@@ -61,7 +61,7 @@
                        FontSize="12" Foreground="#374151" 
                        FontFamily="Consolas, Monaco, monospace"/>
 
-            <TextBlock Grid.Column="2" x:Name="ArticleName"
+            <TextBlock Grid.Column="2" x:Name="ArticleName" 
                        VerticalAlignment="Center" Height="15"
                        FontSize="12" Foreground="#1F2937" FontWeight="Medium"
                        TextTrimming="CharacterEllipsis"/>

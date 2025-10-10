@@ -23,6 +23,7 @@ namespace Superete.Main.ProjectManagment
         {
             InitializeComponent();
             this.plus = plus; this.arts = arts;
+            
         }
         WPlus plus; WArticlesReverse arts; int countRev; decimal RA; decimal RAA;
         private void CancelButton_Click(object sender, RoutedEventArgs e)
@@ -34,38 +35,17 @@ namespace Superete.Main.ProjectManagment
         {
             List<OperationArticle> oas = new List<OperationArticle>();
             countRev = 0;
-            foreach (CSingleArticleReverse sar in arts.ArticlesContainer.Children)
+            if (arts != null)
             {
-                if (sar.oa.Reversed == true)
+                foreach (CSingleArticleReverse sar in arts.ArticlesContainer.Children)
                 {
-                    countRev++;
-
-
-                }
-                if (sar.inittialStat != sar.oa.Reversed)
-                {
-                    foreach (Article a in plus.so.main.main.laa)
-                    {
-                        if (a.ArticleID == sar.oa.ArticleID)
-                        {
-                            if (plus.so.op.OperationType.StartsWith("V"))
-                            {
-                                RA += sar.oa.QteArticle * a.PrixVente;
-                            }
-                            else if (plus.so.op.OperationType.StartsWith("A"))
-                            {
-                                RA += sar.oa.QteArticle * a.PrixAchat;
-                            }
-
-                        }
-                    }
-                    sar.oa.UpdateOperationArticleAsync();
-                    oas.Add(sar.oa);
-                }
-                else
-                {
-
                     if (sar.oa.Reversed == true)
+                    {
+                        countRev++;
+
+
+                    }
+                    if (sar.inittialStat != sar.oa.Reversed)
                     {
                         foreach (Article a in plus.so.main.main.laa)
                         {
@@ -73,20 +53,45 @@ namespace Superete.Main.ProjectManagment
                             {
                                 if (plus.so.op.OperationType.StartsWith("V"))
                                 {
-                                    RAA += sar.oa.QteArticle * a.PrixVente;
+                                    RA += sar.oa.QteArticle * a.PrixVente;
                                 }
                                 else if (plus.so.op.OperationType.StartsWith("A"))
                                 {
-                                    RAA += sar.oa.QteArticle * a.PrixAchat;
+                                    RA += sar.oa.QteArticle * a.PrixAchat;
                                 }
 
                             }
                         }
+                        sar.oa.UpdateOperationArticleAsync();
+                        oas.Add(sar.oa);
                     }
+                    else
+                    {
+
+                        if (sar.oa.Reversed == true)
+                        {
+                            foreach (Article a in plus.so.main.main.laa)
+                            {
+                                if (a.ArticleID == sar.oa.ArticleID)
+                                {
+                                    if (plus.so.op.OperationType.StartsWith("V"))
+                                    {
+                                        RAA += sar.oa.QteArticle * a.PrixVente;
+                                    }
+                                    else if (plus.so.op.OperationType.StartsWith("A"))
+                                    {
+                                        RAA += sar.oa.QteArticle * a.PrixAchat;
+                                    }
+
+                                }
+                            }
+                        }
+                    }
+
                 }
 
+                if (countRev == arts.ArticlesContainer.Children.Count) plus.so.op.Reversed = true;
             }
-
             if (plus.so.op.OperationType.StartsWith("V"))
             {
                 foreach (OperationArticle cs in oas)
@@ -143,19 +148,19 @@ namespace Superete.Main.ProjectManagment
 
                                 if (cr.ClientID == plus.so.op.ClientID)
                                 {
-                                    if(RA< plus.so.op.CreditValue - RAA)
+                                    if (RA < plus.so.op.CreditValue - RAA)
                                     {
                                         cr.Total -= RA;
                                     }
                                     else
                                     {
-                                        if(plus.so.op.CreditValue - RAA>0)
+                                        if (plus.so.op.CreditValue - RAA > 0)
                                         {
                                             cr.Total -= plus.so.op.CreditValue - RAA;
                                         }
-                                        
+
                                     }
-                                        
+
                                     cr.UpdateCreditAsync();
                                     break;
                                 }
@@ -230,7 +235,7 @@ namespace Superete.Main.ProjectManagment
                             foreach (Credit cr in plus.so.main.main.credits)
                             {
 
-                                if (cr.ClientID == plus.so.op.FournisseurID)
+                                if (cr.FournisseurID == plus.so.op.FournisseurID)
                                 {
                                     if (RA < plus.so.op.CreditValue - RAA)
                                     {
@@ -247,8 +252,8 @@ namespace Superete.Main.ProjectManagment
 
                                     cr.UpdateCreditAsync();
                                     break;
-                                
-                            }
+
+                                }
 
                             }
                             break;
@@ -256,15 +261,18 @@ namespace Superete.Main.ProjectManagment
                     }
                 }
             }
+            //change this
             else if (plus.so.op.OperationType.StartsWith("M"))
             {
-                foreach (OperationArticle cs in oas)
+                foreach (OperationArticle cs in plus.so.main.main.loa)
                 {
                     foreach (Article a in plus.so.main.main.laa)
                     {
-                        if (a.ArticleID == cs.ArticleID)
+                        if (a.ArticleID == cs.ArticleID && plus.so.op.OperationID == cs.OperationID)
                         {
                             a.Quantite = cs.QteArticle;
+                            plus.so.op.Reversed = true;
+                            cs.Reversed = true;
                             a.UpdateArticleAsync();
                             break;
                         }
@@ -274,22 +282,52 @@ namespace Superete.Main.ProjectManagment
             else if (plus.so.op.OperationType.StartsWith("D"))
 
             {
-                foreach (Article a in plus.so.main.main.laa)
+                foreach (OperationArticle cs in plus.so.main.main.loa)
                 {
-                    //makaynach asln fles articles
-                    if (a.ArticleID == Convert.ToInt32(plus.TotalPrice.Text))
+                    foreach (Article a in plus.so.main.main.laa)
                     {
-                        a.Etat = true;
-                        a.BringBackArticleAsync();
-                        break;
+                        if (a.ArticleID == cs.ArticleID && plus.so.op.OperationID == cs.OperationID)
+                        {
+                            a.Etat = true;
+                            plus.so.op.Reversed = true;
+                            cs.Reversed = true;
+                            a.BringBackArticleAsync();
+                            break;
+                        }
                     }
                 }
             }
-            if (countRev == arts.ArticlesContainer.Children.Count) plus.so.op.Reversed = true;
+            else if (plus.so.op.OperationType.StartsWith("S"))
+            {
+                foreach(Credit cr in plus.so.main.main.credits)
+                {
+                    if (plus.so.op.CreditID == cr.CreditID)
+                    {
+                        cr.Paye += plus.so.op.CreditValue;
+                        plus.so.op.Reversed=true;
+                        cr.UpdateCreditAsync();
+
+                    }
+                }
+            }
+            else if (plus.so.op.OperationType.StartsWith("P"))
+            {
+                foreach (Credit cr in plus.so.main.main.credits)
+                {
+                    if (plus.so.op.CreditID == cr.CreditID)
+                    {
+                        cr.Paye += plus.so.op.CreditValue;
+                        plus.so.op.Reversed = true;
+                        cr.UpdateCreditAsync();
+
+                    }
+                }
+            }
             plus.so.op.UpdateOperationAsync();
             plus.so.main.LoadOperations(plus.so.main.main.lo);
+            plus.so.main.LoadMouvments(plus.so.main.main.loa);
             plus.Close();
-            arts.Close();
+            arts?.Close();
             this.Close();
 
             plus.LoadArticles();

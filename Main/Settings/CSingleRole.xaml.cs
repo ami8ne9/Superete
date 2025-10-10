@@ -25,7 +25,17 @@ namespace Superete.Main.Settings
             InitializeComponent();
             this.r = r; this.Roles = Roles; this.lr = lr; this.lu = lu;
             RoleName.Text = r.RoleName;
-            
+            foreach (Role rr in Roles.CUM.sp.main.lr)
+            {
+                if (Roles.CUM.u.RoleID == rr.RoleID)
+                {
+                    if (rr.DeleteRoles == false)
+                    {
+                        DeleteButton.IsEnabled = false;
+                    }
+                    break;
+                }
+            }
 
         }
         Role r; WRoles Roles; List<Role> lr; List<User> lu;

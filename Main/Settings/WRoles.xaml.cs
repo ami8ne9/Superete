@@ -19,16 +19,31 @@ namespace Superete.Main.Settings
     /// </summary>
     public partial class WRoles : Window
     {
-        public WRoles(List<Role> lr, List<User> lu)
+        public WRoles(List<Role> lr, List<User> lu,CUserManagment CUM)
         {
             InitializeComponent();
             this.lu = lu;
             this.lr = lr;
-
-            LoadRoles();
+            this.CUM = CUM;
+            foreach (Role r in CUM.sp.main.lr)
+            {
+                if (CUM.u.RoleID == r.RoleID)
+                {
+                    if (r.ViewRoles == true)
+                    {
+                        LoadRoles();
+                    }
+                    if (r.AddRoles == true)
+                    {
+                        AddRoles.IsEnabled = true;
+                    }
+                    break;
+                }
+            }
+            
 
         }
-        List<Role> lr; List<User> lu;
+        List<Role> lr; List<User> lu; public CUserManagment CUM;
         public void LoadRoles()
         {
             RolesList.Children.Clear();

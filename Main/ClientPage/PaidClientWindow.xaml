@@ -1,7 +1,7 @@
-﻿<Window x:Class="Superete.Main.ClientPage.WPayeClient"
+﻿<Window x:Class="Superete.Main.ClientPage.PaidClientWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        Title="Payment Management" Height="550" Width="650"
+        Title="Payment Management" Height="550" Width="850"
         WindowStartupLocation="CenterScreen"
         ResizeMode="NoResize"
         WindowStyle="None"
@@ -81,6 +81,8 @@
                         <ColumnDefinition Width="*"/>
                         <ColumnDefinition Width="15"/>
                         <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="15"/>
+                        <ColumnDefinition Width="*"/>
                     </Grid.ColumnDefinitions>
 
                     <!-- Total Credit Card -->
@@ -124,6 +126,27 @@
                                       Foreground="#059669"/>
                         </StackPanel>
                     </Border>
+
+                    <!-- Remaining Balance Card -->
+                    <Border Grid.Column="4" 
+                           Background="#FEF3C7" 
+                           BorderBrush="#F59E0B" 
+                           BorderThickness="2" 
+                           CornerRadius="12" 
+                           Padding="20">
+                        <StackPanel>
+                            <TextBlock Text="Remaining Balance" 
+                                      FontSize="14" 
+                                      FontWeight="SemiBold" 
+                                      Foreground="#D97706" 
+                                      Margin="0,0,0,8"/>
+                            <TextBlock x:Name="DifferenceLabel" 
+                                      Text="1250.00 DH" 
+                                      FontSize="20" 
+                                      FontWeight="Bold" 
+                                      Foreground="#D97706"/>
+                        </StackPanel>
+                    </Border>
                 </Grid>
 
                 <!-- Payment Input Section -->
@@ -160,7 +183,7 @@
                                     <ColumnDefinition Width="Auto"/>
                                 </Grid.ColumnDefinitions>
 
-                                <TextBox x:Name="PaymentAmountTextBox"
+                                <TextBox x:Name="PaymentAmountTextBox" MaxLength="18"
                                         Grid.Column="0"
                                         Height="45"
                                         Padding="15,10"

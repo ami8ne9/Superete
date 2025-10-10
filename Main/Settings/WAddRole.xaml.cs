@@ -82,56 +82,78 @@ namespace Superete.Main.Settings
             }
             Role newRole = new Role
             {
-                RoleName = RoleName.Text
-                ,
-                Operation = check(Operation)
-                ,
-                Remise= check(Remise)
-                ,
-                ModifPrix= check(ModifPrix)
-                ,
-                ModifQuantite= check(ModifQuantite)
-                ,
-                Prix=check(Prix)
-                ,
-                Divers= check(Divers)
-                ,
-                Duplica = check(Duplica)
-                ,
-                Flash= check(Flash)
-                ,
-                Tiroir = check(Tiroir)
-                ,
-                Anulation = check(Anulation)
-                ,
-                Rapport= check(Rapport)
-                ,
-                Depences = check(Depences)
-                ,
-                Reseption= check(Reception)
-                ,
-                Sorties= check(Sorties)
-                ,
-                Clients = check(Clients)
-                ,
-                ClientRegles = check(ClientRegles)
-                ,
-                Articles = check(Articles)
-                ,
-                Solder = check(Solder)
-                ,
-                Cloture = check(Cloture)
+                RoleName = RoleName.Text,
+
+                // Client Permissions
+                CreateClient = check(CreateClient),
+                ModifyClient = check(ModifyClient),
+                DeleteClient = check(DeleteClient),
+                ViewClient = check(ViewClient),
+                ViewOperationClient = check(ViewOperationClient),
+                PayeClient = check(PayeClient),
+
+                // Fournisseur Permissions
+                CreateFournisseur = check(CreateFournisseur),
+                ModifyFournisseur = check(ModifyFournisseur),
+                DeleteFournisseur = check(DeleteFournisseur),
+                ViewFournisseur = check(ViewFournisseur),
+                ViewOperationFournisseur = check(ViewOperationFournisseur),
+                PayeFournisseur = check(PayeFournisseur),
+
+                // Operations / Movements
+                ReverseOperation = check(ReverseOperation),
+                ReverseMouvment = check(ReverseMouvment),
+                ViewOperation = check(ViewOperation),
+                ViewMouvment = check(ViewMouvment),
+
+                // Management & Settings
+                ViewProjectManagment = check(ViewProjectManagment),
+                ViewSettings = check(ViewSettings),
+                ModifyTicket = check(ModifyTicket),
+
+                // Users & Roles
+                ViewUsers = check(ViewUsers),
+                AddUsers = check(AddUsers),
+                EditUsers = check(EditUsers),
+                DeleteUsers = check(DeleteUsers),
+                ViewRoles = check(ViewRoles),
+                AddRoles = check(AddRoles),
+                DeleteRoles = check(DeleteRoles),
+
+                // Familles
+                ViewFamilly = check(ViewFamilly),
+                AddFamilly = check(AddFamilly),
+                EditFamilly = check(EditFamilly),
+                DeleteFamilly = check(DeleteFamilly)
             };
-            int id=await newRole.InsertRoleAsync();
+
+
+            int id = await newRole.InsertRoleAsync();
             newRole.RoleID = id;
             lr.Add(newRole);
-            roles.LoadRoles();
+            foreach (Role r in roles.CUM.sp.main.lr)
+            {
+                if (roles.CUM.u.RoleID == r.RoleID)
+                {
+                    if (r.ViewRoles == true)
+                    {
+                        roles.LoadRoles();
+                    }
+                    break;
+                }
+            }
+            
             this.Close();
         }
-        private int check(CheckBox cb)
+        private bool check(CheckBox cb)
         {
-            if (cb.IsChecked == true) return 1;
-            return 0;
+            return cb != null && cb.IsChecked == true;
+        }
+
+
+        private void CloseButton_Click(object sender, RoutedEventArgs e)
+        {
+            this.Close();
         }
     }
 }

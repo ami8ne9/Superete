@@ -29,8 +29,23 @@ namespace Superete.Main.Inventory
             this.Main = Main;
             this.la = la;
             FamillyName.Text = f.FamilleName;
+            foreach (Role r in Main.main.lr)
+            {
+                if (Main.u.RoleID == r.RoleID)
+                {
+                    if (r.EditFamilly == false)
+                    {
+                        UpdateButton.IsEnabled = false;
+                    }
+                    if (r.DeleteFamilly == false)
+                    {
+                        DeleteButton.IsEnabled = false;
+                    }
+                    break;
+                }
+            }
         }
-        public Famille f; List<Famille> lf; WManageFamillies main; List<Article> la; CMainI Main;
+        public Famille f; List<Famille> lf; WManageFamillies main; List<Article> la; public CMainI Main;
         private void MyGrid_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
             main.Width=1100;
@@ -51,7 +66,7 @@ namespace Superete.Main.Inventory
             main.ArticlesContainer.Children.Clear();
             foreach (Article a in laa.Where(a => a.FamillyID == f.FamilleID).ToList())
             {
-                CSingleRowArticle ar = new CSingleRowArticle(a, laa, this, Main,0,null);
+                CSingleRowArticle ar = new CSingleRowArticle(a, laa, this, Main,0,null,null,0);
                 main.ArticlesContainer.Children.Add(ar);
             }
         }

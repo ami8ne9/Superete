@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Superete.Main.Inventory"
         mc:Ignorable="d"
-        Title="Ajouter un Fournisseur" Height="310" Width="420"
+        Title="Ajouter un Fournisseur" Height="368" Width="420"
         WindowStartupLocation="CenterScreen"
         ResizeMode="NoResize"
         Background="#F8F9FA" WindowStyle="None">
@@ -261,10 +261,10 @@
                           Style="{StaticResource ModernLabel}"
                           Margin="0,0,0,6"/>
                 <TextBox 
-                        Style="{StaticResource ModernTextBox}" Name="Quantite"
+                        Style="{StaticResource ModernTextBox}" Name="Quantite" MaxLength="9"
                         Margin="0,0,0,18"
                         PreviewTextInput="Quantite_PreviewTextInput"
-                        DataObject.Pasting="Quantite_Pasting" />
+                        DataObject.Pasting="Quantite_Pasting" TextChanged="Quantite_TextChanged" />
                 <CheckBox Content="Ticket"
                          x:Name="TicketCheckBox" IsChecked="True"
                          Style="{StaticResource ModernCheckBox}"/>
@@ -277,69 +277,289 @@
                 <!-- Checkbox -->
 
                 <!-- Payment Method Buttons -->
-                <Grid Grid.Row="3" Margin="0,5,0,0">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="*"/>
-                        <ColumnDefinition Width="5"/>
-                        <ColumnDefinition Width="*"/>
-                        <ColumnDefinition Width="5"/>
-                        <ColumnDefinition Width="*"/>
-                    </Grid.ColumnDefinitions>
+                <StackPanel Grid.Row="3" x:Name="ButtonsContainer">
+                    <!-- Payment Method ComboBox -->
+                    <Grid Margin="0,5,0,10">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
 
-                    <!-- Cash Button -->
-                    <Button x:Name="CashButton" 
+                        <TextBlock Text="Méthode de Paiement:" 
+   Grid.Column="0"
+   VerticalAlignment="Center"
+   FontSize="13"
+   FontWeight="SemiBold"
+   Foreground="#333333"
+   Margin="0,0,10,0"/>
+
+                        <ComboBox x:Name="PaymentMethodComboBox"
+  Grid.Column="1"
+  Height="40"
+  FontSize="13"
+  SelectedIndex="0">
+                            <ComboBox.Style>
+                                <Style TargetType="ComboBox">
+                                    <Setter Property="Background" Value="White"/>
+                                    <Setter Property="BorderBrush" Value="#E0E0E0"/>
+                                    <Setter Property="BorderThickness" Value="1"/>
+                                    <Setter Property="Padding" Value="12,8"/>
+                                    <Setter Property="Template">
+                                        <Setter.Value>
+                                            <ControlTemplate TargetType="ComboBox">
+                                                <Grid>
+                                                    <Border x:Name="Border"
+                            Background="{TemplateBinding Background}"
+                            BorderBrush="{TemplateBinding BorderBrush}"
+                            BorderThickness="{TemplateBinding BorderThickness}"
+                            CornerRadius="8">
+                                                        <Grid>
+                                                            <Grid.ColumnDefinitions>
+                                                                <ColumnDefinition Width="*"/>
+                                                                <ColumnDefinition Width="Auto"/>
+                                                            </Grid.ColumnDefinitions>
+
+                                                            <ContentPresenter x:Name="ContentSite"
+                                            Grid.Column="0"
+                                            IsHitTestVisible="False"
+                                            Content="{TemplateBinding SelectionBoxItem}"
+                                            ContentTemplate="{TemplateBinding SelectionBoxItemTemplate}"
+                                            ContentTemplateSelector="{TemplateBinding ItemTemplateSelector}"
+                                            Margin="{TemplateBinding Padding}"
+                                            VerticalAlignment="Center"
+                                            HorizontalAlignment="Left"/>
+
+                                                            <Path Grid.Column="1"
+                                  Data="M 0 0 L 4 4 L 8 0 Z"
+                                  Fill="#666666"
+                                  Margin="0,0,12,0"
+                                  VerticalAlignment="Center"/>
+
+                                                            <ToggleButton x:Name="ToggleButton"
+                                        Grid.Column="0"
+                                        Grid.ColumnSpan="2"
+                                        Background="Transparent"
+                                        BorderThickness="0"
+                                        Focusable="False"
+                                        IsChecked="{Binding Path=IsDropDownOpen, Mode=TwoWay, RelativeSource={RelativeSource TemplatedParent}}"
+                                        ClickMode="Press"/>
+                                                        </Grid>
+                                                    </Border>
+
+                                                    <Popup x:Name="Popup"
+                           Placement="Bottom"
+                           IsOpen="{TemplateBinding IsDropDownOpen}"
+                           AllowsTransparency="True"
+                           Focusable="False"
+                           PopupAnimation="Slide">
+                                                        <Border Background="White"
+                                BorderBrush="#E0E0E0"
+                                BorderThickness="1"
+                                CornerRadius="8"
+                                Margin="0,4,0,0"
+                                >
+                                                            <ScrollViewer MaxHeight="200" 
+                                        VerticalScrollBarVisibility="Auto">
+                                                                <StackPanel IsItemsHost="True"
+                                          KeyboardNavigation.DirectionalNavigation="Contained"/>
+                                                            </ScrollViewer>
+                                                        </Border>
+                                                    </Popup>
+                                                </Grid>
+
+                                                <ControlTemplate.Triggers>
+                                                    <Trigger Property="IsMouseOver" Value="True">
+                                                        <Setter TargetName="Border" Property="BorderBrush" Value="#4A90E2"/>
+                                                    </Trigger>
+                                                    <Trigger Property="IsFocused" Value="True">
+                                                        <Setter TargetName="Border" Property="BorderBrush" Value="#4A90E2"/>
+                                                    </Trigger>
+                                                </ControlTemplate.Triggers>
+                                            </ControlTemplate>
+                                        </Setter.Value>
+                                    </Setter>
+                                </Style>
+                            </ComboBox.Style>
+
+                            <ComboBox.ItemContainerStyle>
+                                <Style TargetType="ComboBoxItem">
+                                    <Setter Property="Padding" Value="12,10"/>
+                                    <Setter Property="FontSize" Value="13"/>
+                                    <Setter Property="Template">
+                                        <Setter.Value>
+                                            <ControlTemplate TargetType="ComboBoxItem">
+                                                <Border x:Name="Border"
+                        Background="Transparent"
+                        Padding="{TemplateBinding Padding}">
+                                                    <ContentPresenter/>
+                                                </Border>
+                                                <ControlTemplate.Triggers>
+                                                    <Trigger Property="IsMouseOver" Value="True">
+                                                        <Setter TargetName="Border" Property="Background" Value="#F5F5F5"/>
+                                                    </Trigger>
+                                                    <Trigger Property="IsSelected" Value="True">
+                                                        <Setter TargetName="Border" Property="Background" Value="#E3F2FD"/>
+                                                    </Trigger>
+                                                </ControlTemplate.Triggers>
+                                            </ControlTemplate>
+                                        </Setter.Value>
+                                    </Setter>
+                                </Style>
+                            </ComboBox.ItemContainerStyle>
+
+
+                        </ComboBox>
+                    </Grid>
+
+                    <!-- Original Payment Buttons Grid -->
+                    <Grid  Margin="0,5,0,0">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="5"/>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="5"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+
+                        <!-- Cash Button -->
+                        <Button x:Name="CashButton" 
 Grid.Column="0" 
 Style="{StaticResource BlueButtonStyle}" 
-Height="45" Click="CashButton_Click">
-                        <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
-                            <Path Data="M3 6h18v12H3V6zm2 2v8h14V8H5z" 
+Height="45" 
+Click="CashButton_Click">
+                            <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                                <Path Data="M3 6h18v12H3V6zm2 2v8h14V8H5z" 
       Fill="White" 
       Stretch="Uniform" 
       Width="16" Height="16" 
       Margin="0,0,6,0"/>
-                            <TextBlock Text="CASH" 
+                                <TextBlock Text="CASH" 
            FontSize="11" 
            VerticalAlignment="Center"/>
-                        </StackPanel>
-                    </Button>
+                            </StackPanel>
+                        </Button>
 
-                    <!-- Half Cash / Half Credit Button -->
-                    <Button x:Name="HalfButton" 
-Grid.Column="1" 
+                        <!-- Half Cash / Half Credit Button -->
+                        <Button x:Name="HalfButton" 
+Grid.Column="2" 
 Style="{StaticResource RedButtonStyle}" 
-Height="45" Click="HalfButton_Click" Grid.ColumnSpan="3" HorizontalAlignment="Left" Margin="5,0,0,0" Width="114">
-                        <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
-                            <Path Data="M4 4h16v16H4V4zm8 0v16" 
+Height="45" 
+Click="HalfButton_Click">
+                            <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                                <Path Data="M4 4h16v16H4V4zm8 0v16" 
       Fill="White" 
       Stroke="White"
       StrokeThickness="2"
       Stretch="Uniform" 
       Width="16" Height="16" 
       Margin="0,0,6,0"/>
-                            <TextBlock Text="50/50" 
+                                <TextBlock Text="50/50" 
            FontSize="11" 
            VerticalAlignment="Center"/>
-                        </StackPanel>
-                    </Button>
+                            </StackPanel>
+                        </Button>
 
-                    <!-- Credit Button -->
-                    <Button x:Name="CreditButton" 
+                        <!-- Credit Button -->
+                        <Button x:Name="CreditButton" 
 Grid.Column="4" 
 Style="{StaticResource GreenButtonStyle}" 
-Height="45" Click="CreditButton_Click">
-                        <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
-                            <Path Data="M2 6c0-1.1.9-2 2-2h16a2 2 0 0 1 2 2v2H2V6zm0 4h20v8c0 1.1-.9 2-2 2H4a2 2 0 0 1-2-2v-8z" 
+Height="45" 
+Click="CreditButton_Click">
+                            <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                                <Path Data="M2 6c0-1.1.9-2 2-2h16a2 2 0 0 1 2 2v2H2V6zm0 4h20v8c0 1.1-.9 2-2 2H4a2 2 0 0 1-2-2v-8z" 
       Fill="White" 
       Stretch="Uniform" 
       Width="16" Height="16" 
       Margin="0,0,6,0"/>
-                            <TextBlock Text="CREDIT" 
+                                <TextBlock Text="CREDIT" 
            FontSize="11" 
            VerticalAlignment="Center"/>
-                        </StackPanel>
-                    </Button>
+                            </StackPanel>
+                        </Button>
+                    </Grid>
+                </StackPanel>
 
-                </Grid>
+                <Button x:Name="AjouterButton" Content="Ajouter" Click="EnregistrerButton_Click" Grid.Row="2" Visibility="Collapsed">
+                    <Button.Style>
+                        <Style TargetType="Button">
+                            <Setter Property="Background" Value="#FF28B531"/>
+                            <Setter Property="Foreground" Value="White"/>
+                            <Setter Property="FontSize" Value="14"/>
+                            <Setter Property="FontWeight" Value="SemiBold"/>
+                            <Setter Property="FontFamily" Value="Segoe UI"/>
+                            <Setter Property="Padding" Value="24,12"/>
+                            <Setter Property="MinWidth" Value="120"/>
+                            <Setter Property="Height" Value="44"/>
+                            <Setter Property="BorderThickness" Value="0"/>
+                            <Setter Property="Cursor" Value="Hand"/>
+                            <Setter Property="HorizontalContentAlignment" Value="Center"/>
+                            <Setter Property="VerticalContentAlignment" Value="Center"/>
+                            <Setter Property="Template">
+                                <Setter.Value>
+                                    <ControlTemplate TargetType="Button">
+                                        <Border x:Name="border" 
+                    Background="{TemplateBinding Background}" 
+                    CornerRadius="8"
+                    Padding="{TemplateBinding Padding}">
+                                            <Border.Effect>
+                                                <DropShadowEffect Color="#3B82F6" 
+                                    Opacity="0.25" 
+                                    ShadowDepth="2" 
+                                    BlurRadius="8"
+                                    Direction="270"/>
+                                            </Border.Effect>
+                                            <ContentPresenter x:Name="contentPresenter"
+                                HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
+                                RecognizesAccessKey="True"/>
+                                        </Border>
+                                        <ControlTemplate.Triggers>
+                                            <Trigger Property="IsMouseOver" Value="True">
+                                                <Setter TargetName="border" Property="Background" Value="#2563EB"/>
+                                                <Setter TargetName="border" Property="RenderTransform">
+                                                    <Setter.Value>
+                                                        <ScaleTransform ScaleX="1.02" ScaleY="1.02"/>
+                                                    </Setter.Value>
+                                                </Setter>
+                                                <Setter TargetName="border" Property="Effect">
+                                                    <Setter.Value>
+                                                        <DropShadowEffect Color="#2563EB" 
+                                            Opacity="0.4" 
+                                            ShadowDepth="3" 
+                                            BlurRadius="12"
+                                            Direction="270"/>
+                                                    </Setter.Value>
+                                                </Setter>
+                                            </Trigger>
+                                            <Trigger Property="IsPressed" Value="True">
+                                                <Setter TargetName="border" Property="Background" Value="#1D4ED8"/>
+                                                <Setter TargetName="border" Property="RenderTransform">
+                                                    <Setter.Value>
+                                                        <ScaleTransform ScaleX="0.98" ScaleY="0.98"/>
+                                                    </Setter.Value>
+                                                </Setter>
+                                                <Setter TargetName="border" Property="Effect">
+                                                    <Setter.Value>
+                                                        <DropShadowEffect Color="#1D4ED8" 
+                                            Opacity="0.3" 
+                                            ShadowDepth="1" 
+                                            BlurRadius="6"
+                                            Direction="270"/>
+                                                    </Setter.Value>
+                                                </Setter>
+                                            </Trigger>
+                                            <Trigger Property="IsEnabled" Value="False">
+                                                <Setter TargetName="border" Property="Background" Value="#9CA3AF"/>
+                                                <Setter TargetName="border" Property="Effect" Value="{x:Null}"/>
+                                                <Setter TargetName="contentPresenter" Property="Opacity" Value="0.6"/>
+                                            </Trigger>
+                                        </ControlTemplate.Triggers>
+                                    </ControlTemplate>
+                                </Setter.Value>
+                            </Setter>
+                        </Style>
+                    </Button.Style>
+                </Button>
             </StackPanel>
         </Grid>
     </Border>

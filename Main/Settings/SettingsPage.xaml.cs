@@ -29,14 +29,14 @@ namespace Superete.Main.Settings
             this.lf = lf;
             this.main = main;
             ContentGrid.Children.Clear();
-            CUserManagment UserM = new CUserManagment(u,lu,lr);
+            CUserManagment UserM = new CUserManagment(u,lu,lr,this);
             UserM.HorizontalAlignment = HorizontalAlignment.Stretch;
             UserM.VerticalAlignment = VerticalAlignment.Stretch;
             UserM.Margin = new Thickness(0);
             ContentGrid.Children.Add(UserM);
 
         }
-        User u; List<User> lu; MainWindow main;List<Role> lr; List<Famille> lf;
+        User u; List<User> lu; public MainWindow main;List<Role> lr; List<Famille> lf;
 
         private void NavigationItem_Click(object sender, RoutedEventArgs e)
         {

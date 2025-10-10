@@ -20,7 +20,7 @@ namespace Superete.Main.Inventory
     /// </summary>
     public partial class CSingleRowArticle : UserControl
     {
-        public CSingleRowArticle(Article a, List<Article> la, CSingleRowFamilly sf, CMainI Main, int s,WExistingArticles ea)
+        public CSingleRowArticle(Article a, List<Article> la, CSingleRowFamilly sf, CMainI Main, int s,WExistingArticles ea, WNouveauStock ns,int q)
         {
             InitializeComponent();
             this.a = a;
@@ -29,6 +29,7 @@ namespace Superete.Main.Inventory
             this.sf = sf;
             this.s = s;
             this.ea = ea;
+            this.ns = ns;
             foreach (Fournisseur fo in Main.lfo)
                 if (fo.FournisseurID == a.FournisseurID)
                 {
@@ -37,39 +38,66 @@ namespace Superete.Main.Inventory
                 }
             ArticleName.Text = a.ArticleName;
             Quantite.Text = "x"+a.Quantite.ToString();
+            if (s == 0)
+            {
+
+
+                ButtonsContainerPanel.Width = 67;
+                EditButton.Visibility = Visibility.Collapsed;
+                DeleteButton.Visibility = Visibility.Visible;
+            }
+            if (s == 6)
+            {
+                Quantite.Text = "x" + q;
+            }
             EditButton.Visibility = Visibility.Collapsed;
-            if (s == 2)
+            if (s == 1 || s==5)
             {
 
                 ButtonsContainerPanel.Width = 67;
                 EditButton.Visibility = Visibility.Visible;
-                MainContainer.MouseLeftButtonDown -= MyGrid_MouseLeftButtonDown;
                 DeleteButton.Visibility = Visibility.Collapsed;
             }
-            else if (s == 1)
+            //else if (s == 1)
+            //{
+            //    DeleteButton.Visibility = Visibility.Collapsed;
+            //    ButtonsContainer.Width = new GridLength(0);
+            //}
+            else if (s == 7 || s==6) {
+                ButtonsContainerPanel.Width = 67;
+            }
+            if (s == 6)
             {
-                DeleteButton.Visibility = Visibility.Collapsed;
-                ButtonsContainer.Width = new GridLength(0);
+                Fournisseur.Text = "Ajout de quantite";
+            }
+            else if (s == 7) {
+                Fournisseur.Text = "Nouvelle Article";
             }
         }
-        public Article a; List<Article> la;public CMainI Main; CSingleRowFamilly sf; int s;public WExistingArticles ea;
+        public Article a; List<Article> la;public CMainI Main; CSingleRowFamilly sf; int s;public WExistingArticles ea; WNouveauStock ns;
 
         private void EditButton_Click(object sender, RoutedEventArgs e)
         {
-            WAjoutQuantite w = new WAjoutQuantite(this);
+            WAjoutQuantite w = new WAjoutQuantite(this,s,ns);
             w.ShowDialog();
         }
 
         private void DeleteButton_Click(object sender, RoutedEventArgs e)
         {
-            WDeleteConfirmation df = new WDeleteConfirmation(a, la, sf, Main);
-            df.ShowDialog();
+            if (s == 7 || s==6)
+            {
+                ns.AMA.ArticlesContainer.Children.Remove(this);
+            }
+            if (s == 0) {
+                WDeleteConfirmation wDeleteConfirmation=new WDeleteConfirmation(a,la,sf,sf.Main);
+                wDeleteConfirmation.ShowDialog();
+            }
         }
         
-        private void MyGrid_MouseLeftButtonDown(object sender, RoutedEventArgs e)
-        {
-            WAddArticle af = new WAddArticle(a, la, Main.lf, Main.lfo, Main,2,ea);
-            af.ShowDialog();
-        }
+        //private void MyGrid_MouseLeftButtonDown(object sender, RoutedEventArgs e)
+        //{
+        //    WAddArticle af = new WAddArticle(a, la, Main.lf, Main.lfo, Main,2,ea,ns);
+        //    af.ShowDialog();
+        //}
     }
 }

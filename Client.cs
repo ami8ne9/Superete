@@ -32,7 +32,8 @@ namespace Superete
                         {
                             ClientID = Convert.ToInt32(reader["ClientID"]),
                             Nom = reader["Nom"].ToString(),
-                            Telephone = reader["Telephone"] == DBNull.Value ? string.Empty : reader["Telephone"].ToString()
+                            Telephone = reader["Telephone"] == DBNull.Value ? string.Empty : reader["Telephone"].ToString(),
+                            Etat = reader["Etat"] == DBNull.Value ? true : Convert.ToBoolean(reader["Etat"])
                         };
                         clients.Add(client);
                     }

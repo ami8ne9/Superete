@@ -21,13 +21,14 @@ namespace Superete.Main.Vente
     /// </summary>
     public partial class WSelectCient : Window
     {
-        public WSelectCient(List<Client> lc,CMainV main,int Credit)
+        public WSelectCient(List<Client> lc,CMainV main,int Credit,int MethodID)
         {
             InitializeComponent();
             this.lc = lc;
             LoadClients();
             this.main = main;
             this.Credit = Credit;
+            this.MethodID = MethodID;
             if (Credit == 0)
             {
                 Creditt.Visibility = Visibility.Collapsed;
@@ -41,8 +42,18 @@ namespace Superete.Main.Vente
                 Creditt.Visibility = Visibility.Collapsed;
                 NoClient.Visibility = Visibility.Collapsed;
             }
+            foreach(Role r in main.main.lr)
+            {
+                if (main.u.RoleID == r.RoleID){
+                    if (r.CreateClient == false)
+                    {
+                        AddClient.IsEnabled = false;
+                    }
+                    break;
+                }
+            }
         }
-        List<Client> lc;public int selected = 0; CMainV main;int Credit;
+        List<Client> lc;public int selected = 0; CMainV main;int Credit;public int MethodID;
 
         public void LoadClients()
         {
@@ -83,9 +94,10 @@ namespace Superete.Main.Vente
                 Operation Operation = new Operation();
                 Operation.OperationType = "VenteCa";
                 Operation.PrixOperation = main.TotalNett;
+                Operation.PaymentMethodID = MethodID;
                 if (Remise.Text != "")
                 {
-                    Operation.Remise = Convert.ToInt32(Remise.Text);
+                    Operation.Remise = Convert.ToDecimal(Remise.Text);
                     if (Operation.Remise > Operation.PrixOperation)
                     {
                         MessageBox.Show("la remise est plus grande que le total.");
@@ -165,7 +177,7 @@ namespace Superete.Main.Vente
 
                 if (Remise.Text != "")
                 {
-                    if (Convert.ToInt32(Credittext.Text) > Convert.ToInt32(main.TotalNett) - Convert.ToInt32(Remise.Text))
+                    if (Convert.ToDecimal(Credittext.Text) > Convert.ToDecimal(main.TotalNett) - Convert.ToDecimal(Remise.Text))
                     {
                         MessageBox.Show("la valeur de credit est plus grande que le total mois la remise.");
                         return;
@@ -173,7 +185,7 @@ namespace Superete.Main.Vente
                 }
                 else
                 {
-                    if (Convert.ToInt32(Credittext.Text) > Convert.ToInt32(main.TotalNett))
+                    if (Convert.ToDecimal(Credittext.Text) > Convert.ToDecimal(main.TotalNett))
                     {
                         MessageBox.Show("la valeur de credit est plus grande que le total.");
                         return;
@@ -190,7 +202,7 @@ namespace Superete.Main.Vente
                     if (cc.ClientID == selected)
                     {
 
-                        cc.Total += Convert.ToInt32(Credittext.Text);
+                        cc.Total += Convert.ToDecimal(Credittext.Text);
                         await cc.UpdateCreditAsync();
                         creditExists = true;
                         creditId = cc.CreditID;
@@ -211,13 +223,14 @@ namespace Superete.Main.Vente
 
                 Operation.OperationType = "Vente50";
 
-			    Operation.PrixOperation = main.TotalNett;
-				Operation.CreditValue = Convert.ToInt32(Credittext.Text);
+                Operation.PaymentMethodID = MethodID;
+                Operation.PrixOperation = main.TotalNett;
+				Operation.CreditValue = Convert.ToDecimal(Credittext.Text);
                 
                 Operation.CreditID = creditId;
                 if (Remise.Text != "")
                 {
-                    Operation.Remise = Convert.ToInt32(Remise.Text);
+                    Operation.Remise = Convert.ToDecimal(Remise.Text);
                 }
 
                 Operation.UserID = main.u.UserID;
@@ -260,7 +273,7 @@ namespace Superete.Main.Vente
                 }
                 if (Remise.Text != "")
                 {
-                    if (Convert.ToInt32(Remise.Text) > Convert.ToInt32(main.TotalNett))
+                    if (Convert.ToDecimal(Remise.Text) > Convert.ToDecimal(main.TotalNett))
                     {
                         MessageBox.Show("la remise est plus grande que le total.");
                         return;
@@ -272,6 +285,8 @@ namespace Superete.Main.Vente
                 Credit Credit = new Credit();
                 List<Credit> lcc = await Credit.GetCreditsAsync();
                 Operation Operation = new Operation();
+
+                Operation.PaymentMethodID = MethodID;
                 // update the credit value
                 foreach (Credit cc in lcc)
                 {
@@ -279,14 +294,12 @@ namespace Superete.Main.Vente
                     {
                         if (Remise.Text != "")
                         {
-
-							MessageBox.Show(Remise.Text);
-							cc.Total += Convert.ToInt32(main.TotalNett) - Convert.ToInt32(Remise.Text);
-                            Operation.CreditValue = main.TotalNett - Convert.ToInt32(Remise.Text);
+							cc.Total += Convert.ToDecimal(main.TotalNett) - Convert.ToDecimal(Remise.Text);
+                            Operation.CreditValue = main.TotalNett - Convert.ToDecimal(Remise.Text);
                         }
                         else
                         {
-							cc.Total += Convert.ToInt32(main.TotalNett);
+							cc.Total += Convert.ToDecimal(main.TotalNett);
                             Operation.CreditValue = main.TotalNett ;
                         }
                         await cc.UpdateCreditAsync();
@@ -303,13 +316,13 @@ namespace Superete.Main.Vente
                     newCredit.ClientID = selected;
                     if (Remise.Text != "")
                     {
-						newCredit.Total += Convert.ToInt32(main.TotalNett) - Convert.ToInt32(Remise.Text);
-                        Operation.CreditValue = main.TotalNett - Convert.ToInt32(Remise.Text);
+						newCredit.Total += Convert.ToDecimal(main.TotalNett) - Convert.ToDecimal(Remise.Text);
+                        Operation.CreditValue = main.TotalNett - Convert.ToDecimal(Remise.Text);
                     }
                     else
                     {
                         
-                        newCredit.Total += Convert.ToInt32(main.TotalNett);
+                        newCredit.Total += Convert.ToDecimal(main.TotalNett);
                         Operation.CreditValue = main.TotalNett ;
                     }
                     creditId = await newCredit.InsertCreditAsync();
@@ -324,7 +337,7 @@ namespace Superete.Main.Vente
                 Operation.CreditID = creditId;
                 if (Remise.Text != "")
                 {
-                    Operation.Remise = Convert.ToInt32(Remise.Text);
+                    Operation.Remise = Convert.ToDecimal(Remise.Text);
                 }
 
                 Operation.UserID = main.u.UserID;

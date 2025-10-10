@@ -423,76 +423,213 @@
                 </Grid>
 
                 <!-- Function Buttons Row 2 -->
-                <Grid Grid.Row="3" Margin="0,5,0,0">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="*"/>
-                        <ColumnDefinition Width="5"/>
-                        <ColumnDefinition Width="*"/>
-                        <ColumnDefinition Width="5"/>
-                        <ColumnDefinition Width="*"/>
-                    </Grid.ColumnDefinitions>
+                <StackPanel Grid.Row="3">
+                    <!-- Payment Method ComboBox -->
+                    <Grid Margin="0,5,0,10">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
 
-                    <!-- Cash Button -->
-                    <Button x:Name="CashButton" 
-        Grid.Column="0" 
-        Style="{StaticResource BlueButtonStyle}" 
-        Height="45" Click="CashButton_Click">
-                        <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
-                            <Path Data="M3 6h18v12H3V6zm2 2v8h14V8H5z" 
-              Fill="White" 
-              Stretch="Uniform" 
-              Width="16" Height="16" 
-              Margin="0,0,6,0"/>
-                            <TextBlock Text="CASH" 
-                   FontSize="11" 
-                   VerticalAlignment="Center"/>
-                        </StackPanel>
-                    </Button>
+                        <TextBlock Text="Méthode de Paiement:" 
+                   Grid.Column="0"
+                   VerticalAlignment="Center"
+                   FontSize="13"
+                   FontWeight="SemiBold"
+                   Foreground="#333333"
+                   Margin="0,0,10,0"/>
 
-                    <!-- Half Cash / Half Credit Button -->
-                    <Button x:Name="HalfButton" 
-        Grid.Column="2" 
-        Style="{StaticResource RedButtonStyle}" 
-        Height="45" Click="HalfButton_Click">
-                        <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
-                            <Path Data="M4 4h16v16H4V4zm8 0v16" 
-              Fill="White" 
-              Stroke="White"
-              StrokeThickness="2"
-              Stretch="Uniform" 
-              Width="16" Height="16" 
-              Margin="0,0,6,0"/>
-                            <TextBlock Text="50/50" 
-                   FontSize="11" 
-                   VerticalAlignment="Center"/>
-                        </StackPanel>
-                    </Button>
+                        <ComboBox x:Name="PaymentMethodComboBox"
+                  Grid.Column="1"
+                  Height="40"
+                  FontSize="13"
+                  SelectedIndex="0">
+                            <ComboBox.Style>
+                                <Style TargetType="ComboBox">
+                                    <Setter Property="Background" Value="White"/>
+                                    <Setter Property="BorderBrush" Value="#E0E0E0"/>
+                                    <Setter Property="BorderThickness" Value="1"/>
+                                    <Setter Property="Padding" Value="12,8"/>
+                                    <Setter Property="Template">
+                                        <Setter.Value>
+                                            <ControlTemplate TargetType="ComboBox">
+                                                <Grid>
+                                                    <Border x:Name="Border"
+                                            Background="{TemplateBinding Background}"
+                                            BorderBrush="{TemplateBinding BorderBrush}"
+                                            BorderThickness="{TemplateBinding BorderThickness}"
+                                            CornerRadius="8">
+                                                        <Grid>
+                                                            <Grid.ColumnDefinitions>
+                                                                <ColumnDefinition Width="*"/>
+                                                                <ColumnDefinition Width="Auto"/>
+                                                            </Grid.ColumnDefinitions>
 
-                    <!-- Credit Button -->
-                    <Button x:Name="CreditButton" 
-        Grid.Column="4" 
-        Style="{StaticResource GreenButtonStyle}" 
-        Height="45" Click="CreditButton_Click">
-                        <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
-                            <Path Data="M2 6c0-1.1.9-2 2-2h16a2 2 0 0 1 2 2v2H2V6zm0 4h20v8c0 1.1-.9 2-2 2H4a2 2 0 0 1-2-2v-8z" 
-              Fill="White" 
-              Stretch="Uniform" 
-              Width="16" Height="16" 
-              Margin="0,0,6,0"/>
-                            <TextBlock Text="CREDIT" 
-                   FontSize="11" 
-                   VerticalAlignment="Center"/>
-                        </StackPanel>
-                    </Button>
+                                                            <ContentPresenter x:Name="ContentSite"
+                                                            Grid.Column="0"
+                                                            IsHitTestVisible="False"
+                                                            Content="{TemplateBinding SelectionBoxItem}"
+                                                            ContentTemplate="{TemplateBinding SelectionBoxItemTemplate}"
+                                                            ContentTemplateSelector="{TemplateBinding ItemTemplateSelector}"
+                                                            Margin="{TemplateBinding Padding}"
+                                                            VerticalAlignment="Center"
+                                                            HorizontalAlignment="Left"/>
 
-                </Grid>
+                                                            <Path Grid.Column="1"
+                                                  Data="M 0 0 L 4 4 L 8 0 Z"
+                                                  Fill="#666666"
+                                                  Margin="0,0,12,0"
+                                                  VerticalAlignment="Center"/>
+
+                                                            <ToggleButton x:Name="ToggleButton"
+                                                        Grid.Column="0"
+                                                        Grid.ColumnSpan="2"
+                                                        Background="Transparent"
+                                                        BorderThickness="0"
+                                                        Focusable="False"
+                                                        IsChecked="{Binding Path=IsDropDownOpen, Mode=TwoWay, RelativeSource={RelativeSource TemplatedParent}}"
+                                                        ClickMode="Press"/>
+                                                        </Grid>
+                                                    </Border>
+
+                                                    <Popup x:Name="Popup"
+                                           Placement="Bottom"
+                                           IsOpen="{TemplateBinding IsDropDownOpen}"
+                                           AllowsTransparency="True"
+                                           Focusable="False"
+                                           PopupAnimation="Slide">
+                                                        <Border Background="White"
+                                                BorderBrush="#E0E0E0"
+                                                BorderThickness="1"
+                                                CornerRadius="8"
+                                                Margin="0,4,0,0"
+                                                >
+                                                            <ScrollViewer MaxHeight="200" 
+                                                        VerticalScrollBarVisibility="Auto">
+                                                                <StackPanel IsItemsHost="True"
+                                                          KeyboardNavigation.DirectionalNavigation="Contained"/>
+                                                            </ScrollViewer>
+                                                        </Border>
+                                                    </Popup>
+                                                </Grid>
+
+                                                <ControlTemplate.Triggers>
+                                                    <Trigger Property="IsMouseOver" Value="True">
+                                                        <Setter TargetName="Border" Property="BorderBrush" Value="#4A90E2"/>
+                                                    </Trigger>
+                                                    <Trigger Property="IsFocused" Value="True">
+                                                        <Setter TargetName="Border" Property="BorderBrush" Value="#4A90E2"/>
+                                                    </Trigger>
+                                                </ControlTemplate.Triggers>
+                                            </ControlTemplate>
+                                        </Setter.Value>
+                                    </Setter>
+                                </Style>
+                            </ComboBox.Style>
+
+                            <ComboBox.ItemContainerStyle>
+                                <Style TargetType="ComboBoxItem">
+                                    <Setter Property="Padding" Value="12,10"/>
+                                    <Setter Property="FontSize" Value="13"/>
+                                    <Setter Property="Template">
+                                        <Setter.Value>
+                                            <ControlTemplate TargetType="ComboBoxItem">
+                                                <Border x:Name="Border"
+                                        Background="Transparent"
+                                        Padding="{TemplateBinding Padding}">
+                                                    <ContentPresenter/>
+                                                </Border>
+                                                <ControlTemplate.Triggers>
+                                                    <Trigger Property="IsMouseOver" Value="True">
+                                                        <Setter TargetName="Border" Property="Background" Value="#F5F5F5"/>
+                                                    </Trigger>
+                                                    <Trigger Property="IsSelected" Value="True">
+                                                        <Setter TargetName="Border" Property="Background" Value="#E3F2FD"/>
+                                                    </Trigger>
+                                                </ControlTemplate.Triggers>
+                                            </ControlTemplate>
+                                        </Setter.Value>
+                                    </Setter>
+                                </Style>
+                            </ComboBox.ItemContainerStyle>
+
+                            
+                        </ComboBox>
+                    </Grid>
+
+                    <!-- Original Payment Buttons Grid -->
+                    <Grid  Margin="0,5,0,0">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="5"/>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="5"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+
+                        <!-- Cash Button -->
+                        <Button x:Name="CashButton" 
+                Grid.Column="0" 
+                Style="{StaticResource BlueButtonStyle}" 
+                Height="45" 
+                Click="CashButton_Click">
+                            <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                                <Path Data="M3 6h18v12H3V6zm2 2v8h14V8H5z" 
+                      Fill="White" 
+                      Stretch="Uniform" 
+                      Width="16" Height="16" 
+                      Margin="0,0,6,0"/>
+                                <TextBlock Text="CASH" 
+                           FontSize="11" 
+                           VerticalAlignment="Center"/>
+                            </StackPanel>
+                        </Button>
+
+                        <!-- Half Cash / Half Credit Button -->
+                        <Button x:Name="HalfButton" 
+                Grid.Column="2" 
+                Style="{StaticResource RedButtonStyle}" 
+                Height="45" 
+                Click="HalfButton_Click">
+                            <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                                <Path Data="M4 4h16v16H4V4zm8 0v16" 
+                      Fill="White" 
+                      Stroke="White"
+                      StrokeThickness="2"
+                      Stretch="Uniform" 
+                      Width="16" Height="16" 
+                      Margin="0,0,6,0"/>
+                                <TextBlock Text="50/50" 
+                           FontSize="11" 
+                           VerticalAlignment="Center"/>
+                            </StackPanel>
+                        </Button>
+
+                        <!-- Credit Button -->
+                        <Button x:Name="CreditButton" 
+                Grid.Column="4" 
+                Style="{StaticResource GreenButtonStyle}" 
+                Height="45" 
+                Click="CreditButton_Click">
+                            <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                                <Path Data="M2 6c0-1.1.9-2 2-2h16a2 2 0 0 1 2 2v2H2V6zm0 4h20v8c0 1.1-.9 2-2 2H4a2 2 0 0 1-2-2v-8z" 
+                      Fill="White" 
+                      Stretch="Uniform" 
+                      Width="16" Height="16" 
+                      Margin="0,0,6,0"/>
+                                <TextBlock Text="CREDIT" 
+                           FontSize="11" 
+                           VerticalAlignment="Center"/>
+                            </StackPanel>
+                        </Button>
+                    </Grid>
+                </StackPanel>
             </Grid>
 
             <!-- Right Column - Main POS Interface -->
             <Grid Grid.Column="2">
                 <Grid.RowDefinitions>
-                    <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="150"/>
                     <RowDefinition Height="*"/>
                 </Grid.RowDefinitions>
 
@@ -506,219 +643,84 @@
 
                     <!-- Code Barre Section -->
                     <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Disabled">
-                        <Border Grid.Column="0" Background="#FFFFFF" BorderBrush="#D1D5DB" BorderThickness="1" CornerRadius="8" Padding="15" Height="262" VerticalAlignment="Top">
-                            <Grid>
-                                <Grid.RowDefinitions>
-                                    <RowDefinition Height="Auto"/>
-                                    <RowDefinition Height="Auto"/>
-                                    <RowDefinition Height="Auto"/>
-                                    <RowDefinition Height="*"/>
-                                </Grid.RowDefinitions>
+                        <Border Grid.Column="0" Background="#FFFFFF" BorderBrush="#D1D5DB" BorderThickness="1" CornerRadius="8" Height="129">
 
-                                <TextBlock Grid.Row="0" 
-                                       Text="CODE BARRE" 
-                                       FontFamily="Segoe UI" 
-                                       FontSize="12" 
-                                       FontWeight="SemiBold" 
-                                       Foreground="#6B7280" 
-                                       Margin="0,0,0,8"/>
 
-                                <Grid Grid.Row="1">
-                                    <Grid.ColumnDefinitions>
-                                        <ColumnDefinition Width="*"/>
-                                        <ColumnDefinition Width="Auto"/>
-                                    </Grid.ColumnDefinitions>
-
-                                    <TextBox x:Name="CodeBarreTextBox" 
-                                         Grid.Column="0" 
-                                         Style="{StaticResource ModernTextBoxStyle}" TextChanged="CodeBarreTextBox_TextChanged"/>
-
-                                    <Button x:Name="SearchButton" 
-                                        Grid.Column="1" 
-                                        Background="#3B82F6" 
-                                        BorderThickness="0" 
-                                        Width="40" 
-                                        Height="36" 
-                                        Margin="8,0,0,0">
-                                        <Button.Template>
-                                            <ControlTemplate TargetType="Button">
-                                                <Border Background="{TemplateBinding Background}" CornerRadius="6">
-                                                    <Path Data="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z" 
-                                                      Fill="White" 
-                                                      Stretch="Uniform" 
-                                                      Width="16" 
-                                                      Height="16"/>
-                                                </Border>
-                                                <ControlTemplate.Triggers>
-                                                    <Trigger Property="IsMouseOver" Value="True">
-                                                        <Setter Property="Background" Value="#2563EB"/>
-                                                    </Trigger>
-                                                </ControlTemplate.Triggers>
-                                            </ControlTemplate>
-                                        </Button.Template>
-                                    </Button>
-                                </Grid>
-                                <Grid Grid.Row="2" 
-Background="White"
-Margin="16">
-
-                                    <Grid.Resources>
-                                        <!-- Header Style -->
-                                        <Style x:Key="HeaderTextStyle" TargetType="TextBlock">
-                                            <Setter Property="Background" Value="#F8FAFC"/>
-                                            <Setter Property="Foreground" Value="#374151"/>
-                                            <Setter Property="Padding" Value="16,12"/>
-                                            <Setter Property="FontWeight" Value="SemiBold"/>
-                                            <Setter Property="FontSize" Value="12"/>
-                                            <Setter Property="VerticalAlignment" Value="Center"/>
-                                        </Style>
-
-                                        <!-- Cell Text Styles -->
-                                        <Style x:Key="CellTextStyle" TargetType="TextBlock">
-                                            <Setter Property="Padding" Value="16,8"/>
-                                            <Setter Property="VerticalAlignment" Value="Center"/>
-                                            <Setter Property="FontFamily" Value="Segoe UI"/>
-                                            <Setter Property="FontSize" Value="13"/>
-                                            <Setter Property="TextTrimming" Value="CharacterEllipsis"/>
-                                        </Style>
-
-                                        <Style x:Key="IDCellStyle" TargetType="TextBlock" BasedOn="{StaticResource CellTextStyle}">
-                                            <Setter Property="Foreground" Value="#374151"/>
-                                        </Style>
-
-                                        <Style x:Key="NameCellStyle" TargetType="TextBlock" BasedOn="{StaticResource CellTextStyle}">
-                                            <Setter Property="FontWeight" Value="Medium"/>
-                                            <Setter Property="Foreground" Value="#1F2937"/>
-                                        </Style>
-
-                                        <Style x:Key="QuantityCellStyle" TargetType="TextBlock" BasedOn="{StaticResource CellTextStyle}">
-                                            <Setter Property="HorizontalAlignment" Value="Right"/>
-                                            <Setter Property="Foreground" Value="#374151"/>
-                                        </Style>
-
-                                        <Style x:Key="PrixAchatCellStyle" TargetType="TextBlock" BasedOn="{StaticResource CellTextStyle}">
-                                            <Setter Property="HorizontalAlignment" Value="Right"/>
-                                            <Setter Property="Foreground" Value="#059669"/>
-                                            <Setter Property="FontWeight" Value="Medium"/>
-                                        </Style>
-
-                                        <Style x:Key="PrixVenteCellStyle" TargetType="TextBlock" BasedOn="{StaticResource CellTextStyle}">
-                                            <Setter Property="HorizontalAlignment" Value="Right"/>
-                                            <Setter Property="Foreground" Value="#DC2626"/>
-                                            <Setter Property="FontWeight" Value="Medium"/>
-                                        </Style>
-
-                                        <Style x:Key="PrixMPCellStyle" TargetType="TextBlock" BasedOn="{StaticResource CellTextStyle}">
-                                            <Setter Property="HorizontalAlignment" Value="Right"/>
-                                            <Setter Property="Foreground" Value="#7C3AED"/>
-                                            <Setter Property="FontWeight" Value="Medium"/>
-                                        </Style>
-
-                                        <Style x:Key="CodeCellStyle" TargetType="TextBlock" BasedOn="{StaticResource CellTextStyle}">
-                                            <Setter Property="FontFamily" Value="Consolas, Monaco, monospace"/>
-                                            <Setter Property="Background" Value="#F3F4F6"/>
-                                            <Setter Property="Foreground" Value="#374151"/>
-                                        </Style>
-
-                                        <Style x:Key="FournisseurCellStyle" TargetType="TextBlock" BasedOn="{StaticResource CellTextStyle}">
-                                            <Setter Property="Foreground" Value="#1F2937"/>
-                                            <Setter Property="FontWeight" Value="Medium"/>
-                                        </Style>
-
-                                        <!-- Row Container Style -->
-                                        <Style x:Key="RowContainerStyle" TargetType="Border">
-                                            <Setter Property="Background" Value="White"/>
-                                            <Style.Triggers>
-                                                <Trigger Property="IsMouseOver" Value="True">
-                                                    <Setter Property="Background" Value="#F8FAFC"/>
-                                                </Trigger>
-                                            </Style.Triggers>
-                                        </Style>
-                                    </Grid.Resources>
-
+                            <!-- Designation Section -->
+                            <Border Background="#FFFFFF" BorderBrush="#D1D5DB" BorderThickness="1" CornerRadius="8" Padding="15">
+                                <Grid>
                                     <Grid.RowDefinitions>
-                                        <RowDefinition Height="45"/>
-                                        <!-- Header Row -->
-                                        <RowDefinition Height="*"/>
-                                        <!-- Content Row -->
+                                        <RowDefinition Height="Auto"/>
+                                        <RowDefinition Height="Auto"/>
                                     </Grid.RowDefinitions>
 
-                                    <!-- Header Row -->
-                                    <Grid Grid.Row="0">
+                                    <TextBlock Grid.Row="0" 
+                                   Text="DESIGNATION" 
+                                   FontFamily="Segoe UI" 
+                                   FontSize="12" 
+                                   FontWeight="SemiBold" 
+                                   Foreground="#6B7280" 
+                                   Margin="0,0,0,8"/>
+
+                                    <Grid Grid.Row="1">
                                         <Grid.ColumnDefinitions>
-                                            <ColumnDefinition Width="100" MinWidth="80"/>
-                                            <!-- Article ID -->
-                                            <ColumnDefinition Width="2*" MinWidth="150"/>
-                                            <!-- Article Name -->
-                                            <ColumnDefinition Width="100" MinWidth="80"/>
-                                            <!-- Quantité -->
-                                            <ColumnDefinition Width="120" MinWidth="100"/>
-                                            <!-- Prix Achat -->
-                                            <ColumnDefinition Width="120" MinWidth="100"/>
-                                            <!-- Prix Vente -->
-                                            <ColumnDefinition Width="120" MinWidth="100"/>
-                                            <!-- Prix MP -->
-                                            <ColumnDefinition Width="100" MinWidth="80"/>
-                                            <!-- Famille ID -->
-                                            <ColumnDefinition Width="150" MinWidth="120"/>
-                                            <!-- Fournisseur -->
-                                            <ColumnDefinition Width="120" MinWidth="100"/>
-                                            <!-- Code -->
+                                            <ColumnDefinition Width="*"/>
+                                            <ColumnDefinition Width="Auto"/>
                                         </Grid.ColumnDefinitions>
 
-                                        <Border Grid.Column="0" Style="{StaticResource RowContainerStyle}">
-                                            <TextBlock Text="Article ID" Style="{StaticResource HeaderTextStyle}"/>
+                                        <Border Grid.Column="0" Background="white" BorderBrush="#F59E0B" BorderThickness="1" CornerRadius="6" Padding="10,8" x:Name="SelectedArticle">
+                                            <TextBlock x:Name="DesignationText" 
+                                           Text="Aucun article sélectionné" 
+                                           FontFamily="Segoe UI" 
+                                           FontSize="13" 
+                                           Foreground="#92400E" 
+                                           TextWrapping="Wrap"/>
                                         </Border>
 
-                                        <Border Grid.Column="1" Style="{StaticResource RowContainerStyle}">
-                                            <TextBlock Text="Article Name" Style="{StaticResource HeaderTextStyle}"/>
-                                        </Border>
+                                        <Button x:Name="KeyboardButton" 
+        Grid.Column="1" 
+        Foreground="White"
+        Background="#059669" 
+        BorderBrush="#D1D5DB" 
+        BorderThickness="1" 
+        Width="40" 
+        Height="36" 
+        Margin="10,0,0,0"
+        Content="✔"
+        FontSize="16" Click="KeyboardButton_Click">
+                                            <Button.Template>
+                                                <ControlTemplate TargetType="Button">
+                                                    <Border Background="{TemplateBinding Background}" 
+                    BorderBrush="{TemplateBinding BorderBrush}" 
+                    BorderThickness="{TemplateBinding BorderThickness}" 
+                    CornerRadius="6"
+                    Padding="5">
+                                                        <!-- Add ContentPresenter so Content="✔" is visible -->
+                                                        <ContentPresenter HorizontalAlignment="Center" 
+                                  VerticalAlignment="Center"
+                                  RecognizesAccessKey="True"/>
+                                                    </Border>
+                                                    <ControlTemplate.Triggers>
+                                                        <Trigger Property="IsMouseOver" Value="True">
+                                                            <Setter Property="Background" Value="White"/>
+                                                            <Setter Property="Foreground" Value="#059669"/>
+                                                        </Trigger>
+                                                    </ControlTemplate.Triggers>
+                                                </ControlTemplate>
+                                            </Button.Template>
+                                        </Button>
 
-                                        <Border Grid.Column="2" Style="{StaticResource RowContainerStyle}">
-                                            <TextBlock Text="Quantité" Style="{StaticResource HeaderTextStyle}"/>
-                                        </Border>
-
-                                        <Border Grid.Column="3" Style="{StaticResource RowContainerStyle}">
-                                            <TextBlock Text="Prix Achat" Style="{StaticResource HeaderTextStyle}"/>
-                                        </Border>
-
-                                        <Border Grid.Column="4" Style="{StaticResource RowContainerStyle}">
-                                            <TextBlock Text="Prix Vente" Style="{StaticResource HeaderTextStyle}"/>
-                                        </Border>
-
-                                        <Border Grid.Column="5" Style="{StaticResource RowContainerStyle}">
-                                            <TextBlock Text="Prix MP" Style="{StaticResource HeaderTextStyle}"/>
-                                        </Border>
-
-                                        <Border Grid.Column="6" Style="{StaticResource RowContainerStyle}">
-                                            <TextBlock Text="Famille ID" Style="{StaticResource HeaderTextStyle}"/>
-                                        </Border>
-
-                                        <Border Grid.Column="7" Style="{StaticResource RowContainerStyle}">
-                                            <TextBlock Text="Fournisseur" Style="{StaticResource HeaderTextStyle}"/>
-                                        </Border>
-
-                                        <Border Grid.Column="8" Style="{StaticResource RowContainerStyle}">
-                                            <TextBlock Text="Code" Style="{StaticResource HeaderTextStyle}"/>
-                                        </Border>
                                     </Grid>
-
-                                    <!-- Content Area with ScrollViewer -->
-
                                 </Grid>
-                                <ScrollViewer Grid.Row="3" VerticalScrollBarVisibility="Auto" 
-HorizontalScrollBarVisibility="Disabled">
-                                    <StackPanel Background="white" x:Name="CodeArticlesContainer"/>
-                                </ScrollViewer>
-                            </Grid>
+                            </Border>
                         </Border>
                     </ScrollViewer>
                     <!-- Quantity Section -->
-                    <Border Grid.Column="2" Background="#FFFFFF" BorderBrush="#D1D5DB" BorderThickness="1" CornerRadius="8" Padding="15">
+                    <Border Grid.Column="2" Background="#FFFFFF" BorderBrush="#D1D5DB" BorderThickness="1" CornerRadius="8" Padding="15" Margin="0,0,0,5">
                         <Grid>
                             <Grid.RowDefinitions>
                                 <RowDefinition Height="Auto"/>
-                                <RowDefinition Height="*"/>
+                                <RowDefinition Height="30"/>
                             </Grid.RowDefinitions>
 
                             <TextBlock Grid.Row="0" 
@@ -728,129 +730,23 @@ HorizontalScrollBarVisibility="Disabled">
                                        FontWeight="SemiBold" 
                                        Foreground="#6B7280" 
                                        HorizontalAlignment="Center" 
-                                       Margin="0,0,0,8"/>
+                                       Margin="0,10,0,28" Grid.RowSpan="2"/>
 
                             <!-- Keypad -->
-                            <Grid Grid.Row="1">
-                                <Grid.RowDefinitions>
-                                    <RowDefinition Height="*"/>
-                                    <RowDefinition Height="*"/>
-                                    <RowDefinition Height="*"/>
-                                    <RowDefinition Height="*"/>
-                                    <RowDefinition Height="*"/>
-                                </Grid.RowDefinitions>
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="*"/>
-                                    <ColumnDefinition Width="*"/>
-                                    <ColumnDefinition Width="*"/>
-                                </Grid.ColumnDefinitions>
-
-                                <!-- Display -->
-                                <Border Grid.Row="0" Grid.ColumnSpan="3" Background="#F9FAFB" BorderBrush="#D1D5DB" BorderThickness="1" CornerRadius="6" Margin="2">
-                                    <TextBlock x:Name="ArticleQuantity" 
-                                               Text="1" 
-                                               FontFamily="Segoe UI" 
-                                               FontSize="18" 
-                                               FontWeight="Bold" 
-                                               Foreground="#374151" 
-                                               HorizontalAlignment="Center" 
-                                               VerticalAlignment="Center"/>
-                                </Border>
-
-                                <!-- Keypad Buttons -->
-                                <Button x:Name="Key7" Grid.Row="1" Grid.Column="0" Content="7" Style="{StaticResource KeypadButtonStyle}"/>
-                                <Button x:Name="Key8" Grid.Row="1" Grid.Column="1" Content="8" Style="{StaticResource KeypadButtonStyle}"/>
-                                <Button x:Name="Key9" Grid.Row="1" Grid.Column="2" Content="9" Style="{StaticResource KeypadButtonStyle}"/>
-
-                                <Button x:Name="Key4" Grid.Row="2" Grid.Column="0" Content="4" Style="{StaticResource KeypadButtonStyle}"/>
-                                <Button x:Name="Key5" Grid.Row="2" Grid.Column="1" Content="5" Style="{StaticResource KeypadButtonStyle}"/>
-                                <Button x:Name="Key6" Grid.Row="2" Grid.Column="2" Content="6" Style="{StaticResource KeypadButtonStyle}"/>
-
-                                <Button x:Name="Key1" Grid.Row="3" Grid.Column="0" Content="1" Style="{StaticResource KeypadButtonStyle}"/>
-                                <Button x:Name="Key2" Grid.Row="3" Grid.Column="1" Content="2" Style="{StaticResource KeypadButtonStyle}"/>
-                                <Button x:Name="Key3" Grid.Row="3" Grid.Column="2" Content="3" Style="{StaticResource KeypadButtonStyle}"/>
-
-                                <Button x:Name="KeyDot" Grid.Row="4" Grid.Column="0" Content="." Style="{StaticResource KeypadButtonStyle}"/>
-                                <Button x:Name="Key0" Grid.Row="4" Grid.Column="1" Content="0" Style="{StaticResource KeypadButtonStyle}"/>
-                                <Button x:Name="KeyBackspace" Grid.Row="4" Grid.Column="2" Style="{StaticResource KeypadButtonStyle}">
-                                    <Path Data="M22 3H7c-.69 0-1.23.35-1.59.88L0 12l5.41 8.11c.36.53.9.89 1.59.89h15c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-3 12.59L17.59 17 14 13.41 10.41 17 9 15.59 12.59 12 9 8.41 10.41 7 14 10.59 17.59 7 19 8.41 15.41 12 19 15.59z" 
-                                          Fill="#6B7280" 
-                                          Stretch="Uniform" 
-                                          Width="14" 
-                                          Height="14"/>
-                                </Button>
-                            </Grid>
+                            <Border Grid.Row="1" Background="#F9FAFB" BorderBrush="#D1D5DB" BorderThickness="1" CornerRadius="6" Margin="0,36,4,-33" MouseLeftButtonDown="MyBorder_MouseLeftButtonDown">
+                                <TextBlock x:Name="ArticleQuantity" 
+Text="1" 
+FontFamily="Segoe UI" 
+FontSize="18" 
+FontWeight="Bold" 
+Foreground="#374151" 
+HorizontalAlignment="Center" 
+VerticalAlignment="Center" /> 
+                            </Border>
                         </Grid>
                     </Border>
                 </Grid>
 
-                <!-- Designation Section -->
-                <Border Grid.Row="1" Background="#FFFFFF" BorderBrush="#D1D5DB" BorderThickness="1" CornerRadius="8" Margin="0,15,0,0" Padding="15">
-                    <Grid>
-                        <Grid.RowDefinitions>
-                            <RowDefinition Height="Auto"/>
-                            <RowDefinition Height="Auto"/>
-                        </Grid.RowDefinitions>
-
-                        <TextBlock Grid.Row="0" 
-                                   Text="DESIGNATION" 
-                                   FontFamily="Segoe UI" 
-                                   FontSize="12" 
-                                   FontWeight="SemiBold" 
-                                   Foreground="#6B7280" 
-                                   Margin="0,0,0,8"/>
-
-                        <Grid Grid.Row="1">
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="*"/>
-                                <ColumnDefinition Width="Auto"/>
-                            </Grid.ColumnDefinitions>
-
-                            <Border Grid.Column="0" Background="white" BorderBrush="#F59E0B" BorderThickness="1" CornerRadius="6" Padding="10,8" x:Name="SelectedArticle">
-                                <TextBlock x:Name="DesignationText" 
-                                           Text="Aucun article sélectionné" 
-                                           FontFamily="Segoe UI" 
-                                           FontSize="13" 
-                                           Foreground="#92400E" 
-                                           TextWrapping="Wrap"/>
-                            </Border>
-
-                            <Button x:Name="KeyboardButton" 
-        Grid.Column="1" 
-        Foreground="White"
-        Background="#059669" 
-        BorderBrush="#D1D5DB" 
-        BorderThickness="1" 
-        Width="40" 
-        Height="36" 
-        Margin="0,0,0,0"
-        Content="✔"
-        FontSize="16" Click="KeyboardButton_Click">
-                                <Button.Template>
-                                    <ControlTemplate TargetType="Button">
-                                        <Border Background="{TemplateBinding Background}" 
-                    BorderBrush="{TemplateBinding BorderBrush}" 
-                    BorderThickness="{TemplateBinding BorderThickness}" 
-                    CornerRadius="6"
-                    Padding="5">
-                                            <!-- Add ContentPresenter so Content="✔" is visible -->
-                                            <ContentPresenter HorizontalAlignment="Center" 
-                                  VerticalAlignment="Center"
-                                  RecognizesAccessKey="True"/>
-                                        </Border>
-                                        <ControlTemplate.Triggers>
-                                            <Trigger Property="IsMouseOver" Value="True">
-                                                <Setter Property="Background" Value="White"/>
-                                                <Setter Property="Foreground" Value="#059669"/>
-                                            </Trigger>
-                                        </ControlTemplate.Triggers>
-                                    </ControlTemplate>
-                                </Button.Template>
-                            </Button>
-
-                        </Grid>
-                    </Grid>
-                </Border>
 
                 <!-- Product Categories and List Section -->
                 <Grid Grid.Row="2" Margin="0,15,0,0">
@@ -893,6 +789,8 @@ HorizontalScrollBarVisibility="Disabled">
                                 <Grid.RowDefinitions>
                                     <RowDefinition Height="Auto"/>
                                     <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
                                     <RowDefinition Height="*"/>
                                 </Grid.RowDefinitions>
 
@@ -917,9 +815,54 @@ HorizontalScrollBarVisibility="Disabled">
                                     </Grid>
                                 </Border>
 
+
+                                <TextBlock Grid.Row="1" 
+       Text="CODE BARRE" 
+       FontFamily="Segoe UI" 
+       FontSize="12" 
+       FontWeight="SemiBold" 
+       Foreground="#6B7280" 
+       Margin="0,0,0,8"/>
+
+                                <Grid Grid.Row="2">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="Auto"/>
+                                    </Grid.ColumnDefinitions>
+
+                                    <TextBox x:Name="CodeBarreTextBox" MaxLength="18"
+         Grid.Column="0" 
+         Style="{StaticResource ModernTextBoxStyle}" TextChanged="CodeBarreTextBox_TextChanged"/>
+
+                                    <Button x:Name="SearchButton" 
+        Grid.Column="1" 
+        Background="#3B82F6" 
+        BorderThickness="0" 
+        Width="40" 
+        Height="36" 
+        Margin="8,0,0,0">
+                                        <Button.Template>
+                                            <ControlTemplate TargetType="Button">
+                                                <Border Background="{TemplateBinding Background}" CornerRadius="6">
+                                                    <Path Data="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z" 
+                      Fill="White" 
+                      Stretch="Uniform" 
+                      Width="16" 
+                      Height="16"/>
+                                                </Border>
+                                                <ControlTemplate.Triggers>
+                                                    <Trigger Property="IsMouseOver" Value="True">
+                                                        <Setter Property="Background" Value="#2563EB"/>
+                                                    </Trigger>
+                                                </ControlTemplate.Triggers>
+                                            </ControlTemplate>
+                                        </Button.Template>
+                                    </Button>
+                                </Grid>
+
                                 <!-- Product List Content -->
 
-                                <Grid Grid.Row="1" 
+                                <Grid Grid.Row="3" 
       Background="White"
       Margin="16">
 
@@ -1067,7 +1010,7 @@ HorizontalScrollBarVisibility="Disabled">
                                     <!-- Content Area with ScrollViewer -->
 
                                 </Grid>
-                                <ScrollViewer Grid.Row="2" VerticalScrollBarVisibility="Auto" 
+                                <ScrollViewer Grid.Row="4" VerticalScrollBarVisibility="Auto" 
               HorizontalScrollBarVisibility="Disabled">
                                     <StackPanel Background="white" x:Name="ArticlesContainer"/>
                                 </ScrollViewer>

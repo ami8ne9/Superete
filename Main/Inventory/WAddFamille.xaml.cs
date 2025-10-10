@@ -33,6 +33,7 @@ namespace Superete.Main.Inventory
                 AddButton.Content = "Update";
                 FamillyName.Text = f.FamilleName;    
             }
+            
         }
         List<Famille> lf; WAddArticle ar;Famille f; WManageFamillies mf;int ww;
         private void CancelButton_Click(object sender, RoutedEventArgs e)
@@ -62,7 +63,17 @@ namespace Superete.Main.Inventory
                 lf.Add(ff);
                 if (ww == 1)
                 {
-                    mf.LoadFamillies(lf);
+                    foreach (Role r in mf.main.main.lr)
+                    {
+                        if (mf.main.u.RoleID == r.RoleID)
+                        {
+                            if (r.ViewFamilly == true)
+                            {
+                                mf.LoadFamillies(lf);
+                            }
+                            break;
+                        }
+                    }
                 }
                 else
                 {
@@ -83,7 +94,17 @@ namespace Superete.Main.Inventory
                         break;
                     }
                 }
-                mf.LoadFamillies(lf);
+                foreach (Role r in mf.main.main.lr)
+                {
+                    if (mf.main.u.RoleID == r.RoleID)
+                    {
+                        if (r.ViewFamilly == true)
+                        {
+                            mf.LoadFamillies(lf);
+                        }
+                        break;
+                    }
+                }
                 this.Close();
             }
             

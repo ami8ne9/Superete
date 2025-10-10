@@ -52,7 +52,7 @@ namespace Superete.Main.Inventory
 
         private void EditButton_Click(object sender, RoutedEventArgs e)
         {
-            WAddArticle af = new WAddArticle(a, la,lf,lfo,main,0,null);
+            WAddArticle af = new WAddArticle(a, la,lf,lfo,main,0,null,null);
             af.ShowDialog();
         }
 

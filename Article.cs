@@ -14,7 +14,7 @@ namespace Superete
         public decimal PrixVente { get; set; }
         public decimal PrixMP { get; set; }
         public int FamillyID { get; set; }
-        public int Code { get; set; }
+        public long Code { get; set; }
         public string ArticleName { get; set; }
         public bool Etat { get; set; }
 
@@ -76,8 +76,8 @@ namespace Superete
                             FamillyID = Convert.ToInt32(reader["FamillyID"]),
                             FournisseurID = Convert.ToInt32(reader["FournisseurID"]),
                             Etat= Convert.ToBoolean(reader["Etat"]),
-                            Code = reader["Code"] == DBNull.Value ? 0 : Convert.ToInt32(reader["Code"]),
-                            ArticleName = reader["ArticleName"] == DBNull.Value ? string.Empty : reader["ArticleName"].ToString()
+							Code = reader["Code"] == DBNull.Value ? 0L : Convert.ToInt64(reader["Code"]),
+							ArticleName = reader["ArticleName"] == DBNull.Value ? string.Empty : reader["ArticleName"].ToString()
                         };
                         articles.Add(article);
                     }

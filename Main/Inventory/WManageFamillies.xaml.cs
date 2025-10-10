@@ -25,9 +25,25 @@ namespace Superete.Main.Inventory
             this.lf = lf;
             this.la = la;
             this.main = main;
-            LoadFamillies(lf);
+            foreach (Role r in main.main.lr)
+            {
+                if (main.u.RoleID == r.RoleID)
+                {
+                    if (r.ViewFamilly == true)
+                    {
+                        LoadFamillies(lf);
+                    }
+                    if (r.AddFamilly == false)
+                    {
+                        AddFamilleButton.IsEnabled = false;
+                    }
+                    
+                    break;
+                }
+            }
+           
         }
-        List<Famille> lf; List<Article> la;CMainI main;
+        List<Famille> lf; List<Article> la;public CMainI main;
         public void LoadFamillies(List<Famille> lf)
         {
             FamilliesContainer.Children.Clear();    

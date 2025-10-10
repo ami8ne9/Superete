@@ -93,6 +93,13 @@
                             <Trigger Property="IsPressed" Value="True">
                                 <Setter Property="Background" Value="#4338CA"/>
                             </Trigger>
+                            <Trigger Property="IsEnabled" Value="False">
+                                <Setter Property="Opacity" Value="0.5"/>
+                                <Setter Property="Background" Value="#E5E7EB"/>
+                                <Setter Property="Foreground" Value="#9CA3AF"/>
+                                <Setter Property="Cursor" Value="No"/>
+                            </Trigger>
+
                         </ControlTemplate.Triggers>
                     </ControlTemplate>
                 </Setter.Value>
@@ -270,7 +277,7 @@
                         <Border.Effect>
                             <DropShadowEffect BlurRadius="10" ShadowDepth="1" Color="#000000" Opacity="0.08"/>
                         </Border.Effect>
-                        <TextBox x:Name="SearchTextBox"
+                        <TextBox x:Name="SearchTextBox" MaxLength="100"
                                  Width="280" Height="44"
                                  BorderThickness="0"
                                  Background="Transparent"
@@ -371,7 +378,7 @@
 
                         <!-- Data Grid Content -->
                         <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto"
-                                  Style="{DynamicResource {x:Static GridView.GridViewScrollViewerStyleKey}}">
+                                  Style="{DynamicResource {x:Static GridView.GridViewScrollViewerStyleKey}}" Margin="0,0,0,10">
                             <StackPanel x:Name="ArticlesContainer">
 
                             </StackPanel>
@@ -381,7 +388,7 @@
             </Grid>
         </ScrollViewer>
         <!-- Modern Statistics Panel -->
-        <Grid Grid.Row="2" Margin="20,20,20,20">
+        <Grid Grid.Row="2" Margin="20,0,20,0">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*"/>
                 <ColumnDefinition Width="*"/>
@@ -460,25 +467,66 @@
             </Border>
 
             <!-- Action Buttons Panel -->
-            <StackPanel Grid.Column="5" VerticalAlignment="Center" HorizontalAlignment="Left" Width="221">
+            <StackPanel Grid.Column="4" VerticalAlignment="Center" HorizontalAlignment="Center" Width="221" Height="220">
                 <Button Name="NewArticleButton"
-                       Width="160" Height="48"
+                       Width="173" Height="48"
                        Style="{StaticResource ModernButtonStyle}"
                        Background="{StaticResource SuccessBrush}"
                        Margin="0,0,0,12"
                        Click="NewArticleButton_Click">
                     <StackPanel Orientation="Horizontal">
-                        <Ellipse Width="6" Height="6" Fill="White" Margin="0,0,8,0"/>
                         <Path Data="M12 5V19M5 12H19"
                               Stroke="White"
                               StrokeThickness="2"
-                              Width="16" Height="16"
-                              Margin="0,0,8,0"/>
-                        <TextBlock Text="Nouveau Stock" FontWeight="Medium"/>
+                              Width="19" Height="16"
+                              Margin="0,0,8,0" Stretch="Fill"/>
+                        <TextBlock Text="Nouveau Stock" FontWeight="Medium" FontSize="14"/>
                     </StackPanel>
                 </Button>
-
-                <Button Width="160" Height="44"
+                <Button x:Name="AddMultipleArticlesButton"
+        Width="173" Height="44" Margin="0,0,0,10"
+        Background="#8B5CF6"
+        BorderThickness="0"
+        Cursor="Hand"
+        Click="AddMultipleArticlesButton_Click">
+                    <Button.Style>
+                        <Style TargetType="{x:Type Button}">
+                            <Setter Property="Template">
+                                <Setter.Value>
+                                    <ControlTemplate TargetType="{x:Type Button}">
+                                        <Border Background="{TemplateBinding Background}" 
+                                CornerRadius="8"
+                                Padding="16,0">
+                                            <ContentPresenter HorizontalAlignment="Center" 
+                                            VerticalAlignment="Center"/>
+                                        </Border>
+                                        <ControlTemplate.Triggers>
+                                            <Trigger Property="IsMouseOver" Value="True">
+                                                <Setter Property="Background" Value="#7C3AED"/>
+                                            </Trigger>
+                                            <Trigger Property="IsPressed" Value="True">
+                                                <Setter Property="Background" Value="#6D28D9"/>
+                                            </Trigger>
+                                        </ControlTemplate.Triggers>
+                                    </ControlTemplate>
+                                </Setter.Value>
+                            </Setter>
+                        </Style>
+                    </Button.Style>
+                    <StackPanel Orientation="Horizontal">
+                        <Grid Width="20" Height="20" Margin="0,0,10,0">
+                            <Path Data="M16 6v12M12 9v6M8 11v2" 
+                  Stroke="White" 
+                  StrokeThickness="2"
+                  Opacity="0.8"/>
+                        </Grid>
+                        <TextBlock Text="Nouveau Stoks" 
+                   FontWeight="SemiBold" 
+                   FontSize="14"
+                   Foreground="White"/>
+                    </StackPanel>
+                </Button>
+                <Button Width="173" Height="44"
                        Background="{StaticResource TextSecondaryBrush}"
                        Style="{StaticResource ModernButtonStyle}"
                        Margin="0,0,0,12"
@@ -489,7 +537,7 @@
                         <TextBlock Text="FORNISSEURE MANAGEMENT"  Height="22" Width="110" FontSize="10"/>
                     </StackPanel>
                 </Button>
-                <Button Width="160" Height="44"
+                <Button Width="173" Height="44" Name="ManageFamillies"
                        Background="{StaticResource TextSecondaryBrush}"
                        Style="{StaticResource ModernButtonStyle}"
                        FontSize="12" Click="Button_Click_1">

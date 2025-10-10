@@ -112,7 +112,7 @@
                           Style="{StaticResource ModernLabel}"
                           Margin="0,0,0,6"/>
                 <TextBox 
-                        Style="{StaticResource ModernTextBox}" Name="FamillyName"
+                        Style="{StaticResource ModernTextBox}" Name="FamillyName" MaxLength="100"
                         Margin="0,0,0,18" TextChanged="NameTextBox_TextChanged"/>
 
                 <!-- Phone Number -->
