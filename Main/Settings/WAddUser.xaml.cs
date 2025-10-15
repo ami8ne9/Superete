@@ -70,29 +70,40 @@ namespace Superete.Main.Settings
 
         private async void RegisterButton_Click(object sender, RoutedEventArgs e)
         {
-            List<User> newU= lu ;
-            if (Name.Text=="" || Code.Password == "")
+            try
             {
-                MessageBox.Show("Please fill all the fields");
-                return;
-            }
-            User u=new User();
-            u.UserName = Name.Text;
-            u.Code = Convert.ToInt32(Code.Password);
-            foreach(Role role in lr)
-            {
-                if(role.RoleName== Roles.SelectedItem.ToString())
+                List<User> newU = lu;
+                if (Name.Text == "" || Code.Password == "")
                 {
-                    u.RoleID = role.RoleID;
-                    break;
+                    MessageBox.Show("Please fill all the fields");
+                    return;
                 }
+                User u = new User();
+                u.UserName = Name.Text;
+                u.Code = Code.Password;
+                foreach (Role role in lr)
+                {
+                    if (role.RoleName == Roles.SelectedItem.ToString())
+                    {
+                        u.RoleID = role.RoleID;
+                        break;
+                    }
+                }
+                u.Etat = 1;
+                int id = await u.InsertUserAsync();
+                u.UserID = id;
+                newU.Add(u);
+                CUM.Load_users();
+                //this.Close();
+
+                WCongratulations wCongratulations = new WCongratulations("Ajout avec succès", "l'ajout a ete effectue avec succes", 1);
+                wCongratulations.ShowDialog();
             }
-            u.Etat = 1;
-            int id=await u.InsertUserAsync();
-            u.UserID = id;
-            newU.Add(u);
-            CUM.Load_users();
-            this.Close();
+            catch (Exception ex)
+            {
+                WCongratulations wCongratulations = new WCongratulations("Ajout échoué", "l'ajout n'a pas ete effectue ", 0);
+                wCongratulations.ShowDialog();
+            }
         }
     }
 }

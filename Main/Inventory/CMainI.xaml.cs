@@ -18,7 +18,6 @@ namespace Superete.Main.Inventory
             this.u = u;
             this.la = la;
             this.lfo = lfo;
-            LoadArticles(la);
             foreach (Role r in main.lr)
             {
                 if (u.RoleID == r.RoleID)
@@ -26,6 +25,18 @@ namespace Superete.Main.Inventory
                     if (r.ViewFamilly == false && r.AddFamilly==false)
                     {
                         ManageFamillies.IsEnabled = false;
+                    }if (r.AddArticle == false)
+                    {
+                        NewArticleButton.IsEnabled = false;
+                        AddMultipleArticlesButton.IsEnabled = false;
+                    }
+                    if (r.ViewFournisseur == false)
+                    {
+                        FournisseurManage.IsEnabled = false;
+                    }
+                    if (r.ViewArticle == true)
+                    {
+                        LoadArticles(la);
                     }
                     break;
                 }
@@ -36,28 +47,40 @@ namespace Superete.Main.Inventory
         
         public void LoadArticles(List<Article> la)
         {
-            int count = la.Count;
-            Decimal PrixATotall = 0;
-            Decimal PrixMPTotall = 0;
-            Decimal PrixVTotall = 0;
-            int QuantiteTotall = 0;
-            ArticlesTotal.Text = count.ToString() ;
-            ArticlesContainer.Children.Clear();
-            foreach (Article a in la)
+            foreach (Role r in main.lr)
             {
-                CSingleArticleI ar = new CSingleArticleI(a, la, this, lf,lfo);
-                ArticlesContainer.Children.Add(ar);
-                PrixATotall+=a.PrixAchat * a.Quantite;
-                PrixMPTotall += a.PrixMP * a.Quantite;
-                PrixVTotall += a.PrixVente * a.Quantite;
-                QuantiteTotall+=a.Quantite;
+                if (u.RoleID == r.RoleID)
+                { 
+                    }
+                    if (r.ViewArticle == true)
+                    {
 
+                    int count = la.Count;
+                    Decimal PrixATotall = 0;
+                    Decimal PrixMPTotall = 0;
+                    Decimal PrixVTotall = 0;
+                    int QuantiteTotall = 0;
+                    ArticlesTotal.Text = count.ToString();
+                    ArticlesContainer.Children.Clear();
+                    foreach (Article a in la)
+                    {
+                        CSingleArticleI ar = new CSingleArticleI(a, la, this, lf, lfo);
+                        ArticlesContainer.Children.Add(ar);
+                        PrixATotall += a.PrixAchat * a.Quantite;
+                        PrixMPTotall += a.PrixMP * a.Quantite;
+                        PrixVTotall += a.PrixVente * a.Quantite;
+                        QuantiteTotall += a.Quantite;
+
+                    }
+                    PrixATotal.Text = PrixATotall.ToString("0.00") + " DH";
+                    PrixMPTotal.Text = PrixMPTotall.ToString("0.00") + " DH";
+                    PrixVTotal.Text = PrixVTotall.ToString("0.00") + " DH";
+                    QuantiteTotal.Text = QuantiteTotall.ToString();
+                }
+                    break;
+                }
             }
-            PrixATotal.Text = PrixATotall.ToString("0.00") + " DH";
-            PrixMPTotal.Text = PrixMPTotall.ToString("0.00") + " DH";
-            PrixVTotal.Text = PrixVTotall.ToString("0.00") + " DH";
-            QuantiteTotal.Text= QuantiteTotall.ToString();
-        }
+        
         // Back button in header
         private void BackButton_Click(object sender, RoutedEventArgs e)
         {

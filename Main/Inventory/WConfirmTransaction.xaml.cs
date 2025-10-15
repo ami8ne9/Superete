@@ -106,683 +106,695 @@ namespace Superete.Main.Inventory
         }
         private async void ConfirmButton_Click(object sender, RoutedEventArgs e)
         {
-            if (Remise.Text == "0.00") Remise.Text = "";
-            FinalTotal.Text = FinalTotal.Text.Replace("DH", "").Trim();
-            Remise.Text = Remise.Text.Replace("DH", "").Trim();
-            Remise.Text = Remise.Text.Replace("-", "");
-            if (Convert.ToDecimal(FinalTotal.Text) < 0)
+            try
             {
-                MessageBox.Show("le total final ne peux pas etre negative");
-                Remise.Text = "-" + Remise.Text + " DH";
-                FinalTotal.Text= FinalTotal.Text+" DH";
-                return;
-            }
-            //New Article
-            if (ar != null)
-            {
-                
-                if (s == 0)
+                if (Remise.Text == "0.00") Remise.Text = "";
+                FinalTotal.Text = FinalTotal.Text.Replace("DH", "").Trim();
+                Remise.Text = Remise.Text.Replace("DH", "").Trim();
+                Remise.Text = Remise.Text.Replace("-", "");
+                if (Convert.ToDecimal(FinalTotal.Text) < 0)
                 {
-                    Operation Operation = new Operation();
-                    Operation.PaymentMethodID = methodID;
-                    Operation.OperationType = "AchatCa";
-                    Operation.PrixOperation = a.PrixAchat * a.Quantite;
-                    if (Remise.Text != "")
-                    {
-                        Operation.Remise = Convert.ToDecimal(Remise.Text);
-                        if (Operation.Remise > Operation.PrixOperation)
-                        {
-                            MessageBox.Show("la remise est plus grande que le total.");
-                            return;
-                        }
-                    }
-                    
-                    Operation.UserID = ar.main.u.UserID;
-                    Operation.FournisseurID = a.FournisseurID;
-                    int idd = await Operation.InsertOperationAsync();
-                    
-                    OperationArticle ofa = new OperationArticle();
-
-                    int id = await a.InsertArticleAsync();
-                    a.ArticleID = id;
-
-                    ofa.ArticleID = a.ArticleID;
-                    ofa.OperationID = idd;
-                    ofa.QteArticle = Convert.ToInt32(a.Quantite);
-                    await ofa.InsertOperationArticleAsync();
-                    
-                    this.Close();
+                    MessageBox.Show("le total final ne peux pas etre negative");
+                    Remise.Text = "-" + Remise.Text + " DH";
+                    FinalTotal.Text = FinalTotal.Text + " DH";
+                    return;
                 }
-                else if (s == 1)
+                //New Article
+                if (ar != null)
                 {
-                    if (Convert.ToDecimal(CreditInput.Text)==0)
-                    {
-                        MessageBox.Show("Doneer un valeur de credit.");
-                        return;
-                    }
 
-                    if (Remise.Text != "")
+                    if (s == 0)
                     {
-                        if (Convert.ToDecimal(CreditInput.Text) > Convert.ToDecimal(a.PrixAchat * a.Quantite) - Convert.ToDecimal(Remise.Text))
+                        Operation Operation = new Operation();
+                        Operation.PaymentMethodID = methodID;
+                        Operation.OperationType = "AchatCa";
+                        Operation.PrixOperation = a.PrixAchat * a.Quantite;
+                        if (Remise.Text != "")
                         {
-                            MessageBox.Show("la valeur de credit est plus grande que le total mois la remise.");
+                            Operation.Remise = Convert.ToDecimal(Remise.Text);
+                            if (Operation.Remise > Operation.PrixOperation)
+                            {
+                                MessageBox.Show("la remise est plus grande que le total.");
+                                return;
+                            }
+                        }
+
+                        Operation.UserID = ar.main.u.UserID;
+                        Operation.FournisseurID = a.FournisseurID;
+                        int idd = await Operation.InsertOperationAsync();
+
+                        OperationArticle ofa = new OperationArticle();
+
+                        int id = await a.InsertArticleAsync();
+                        a.ArticleID = id;
+
+                        ofa.ArticleID = a.ArticleID;
+                        ofa.OperationID = idd;
+                        ofa.QteArticle = Convert.ToInt32(a.Quantite);
+                        await ofa.InsertOperationArticleAsync();
+
+                        this.Close();
+                    }
+                    else if (s == 1)
+                    {
+                        if (Convert.ToDecimal(CreditInput.Text) == 0)
+                        {
+                            MessageBox.Show("Doneer un valeur de credit.");
                             return;
                         }
+
+                        if (Remise.Text != "")
+                        {
+                            if (Convert.ToDecimal(CreditInput.Text) > Convert.ToDecimal(a.PrixAchat * a.Quantite) - Convert.ToDecimal(Remise.Text))
+                            {
+                                MessageBox.Show("la valeur de credit est plus grande que le total mois la remise.");
+                                return;
+                            }
+                        }
+                        else
+                        {
+                            if (Convert.ToDecimal(CreditInput.Text) > Convert.ToDecimal(a.PrixAchat * a.Quantite))
+                            {
+                                MessageBox.Show("la valeur de credit est plus grande que le total.");
+                                return;
+                            }
+                        }
+                        int creditId = 0;
+                        bool creditExists = false;
+                        //import Credit
+                        Credit Credit = new Credit();
+                        List<Credit> lff = await Credit.GetCreditsAsync();
+                        //if there is no credit with Fournisseur id create a new one
+                        foreach (Credit ff in lff)
+                        {
+                            if (ff.FournisseurID == a.FournisseurID)
+                            {
+
+                                ff.Total += Convert.ToDecimal(CreditInput.Text);
+                                await ff.UpdateCreditAsync();
+                                creditExists = true;
+                                creditId = ff.CreditID;
+                                break;
+                            }
+                        }
+                        //else update the credit value
+                        if (!creditExists)
+                        {
+                            MessageBox.Show("Creating new credit");
+                            Credit newCredit = new Credit();
+                            newCredit.FournisseurID = a.FournisseurID;
+                            newCredit.Total = Convert.ToDecimal(CreditInput.Text);
+                            creditId = await newCredit.InsertCreditAsync();
+
+                        }
+
+                        Operation Operation = new Operation();
+
+                        Operation.PaymentMethodID = methodID;
+                        Operation.OperationType = "Achat50";
+                        Operation.PrixOperation = (a.PrixAchat * a.Quantite);
+                        Operation.CreditValue = Convert.ToDecimal(CreditInput.Text);
+                        Operation.CreditID = creditId;
+                        if (Remise.Text != "")
+                        {
+                            Operation.Remise = Convert.ToDecimal(Remise.Text);
+                        }
+
+                        Operation.UserID = ar.main.u.UserID;
+                        Operation.FournisseurID = a.FournisseurID;
+
+                        int idd = await Operation.InsertOperationAsync();
+                        OperationArticle ofa = new OperationArticle();
+                        int id = await a.InsertArticleAsync();
+                        a.ArticleID = id;
+                        ofa.ArticleID = a.ArticleID;
+                        ofa.OperationID = idd;
+                        ofa.QteArticle = Convert.ToInt32(a.Quantite);
+                        await ofa.InsertOperationArticleAsync();
+                        this.Close();
                     }
                     else
                     {
-                        if (Convert.ToDecimal(CreditInput.Text) > Convert.ToDecimal(a.PrixAchat * a.Quantite))
+
+                        if (Remise.Text != "")
                         {
-                            MessageBox.Show("la valeur de credit est plus grande que le total.");
-                            return;
+                            if (Convert.ToDecimal(Remise.Text) > Convert.ToDecimal(a.PrixAchat * a.Quantite))
+                            {
+                                MessageBox.Show("la remise est plus grande que le total.");
+                                return;
+                            }
                         }
-                    }
-                    int creditId = 0;
-                    bool creditExists = false;
-                    //import Credit
-                    Credit Credit = new Credit();
-                    List<Credit> lff = await Credit.GetCreditsAsync();
-                    //if there is no credit with Fournisseur id create a new one
-                    foreach (Credit ff in lff)
-                    {
-                        if (ff.FournisseurID == a.FournisseurID)
+                        int creditId = 0;
+                        bool creditExists = false;
+                        //import Credit
+                        Credit Credit = new Credit();
+                        List<Credit> lcc = await Credit.GetCreditsAsync();
+                        //if there is no credit with Fournisseur id create a new one
+                        Operation Operation = new Operation();
+                        Operation.PaymentMethodID = methodID;
+                        foreach (Credit cf in lcc)
                         {
-
-                            ff.Total += Convert.ToDecimal(CreditInput.Text);
-                            await ff.UpdateCreditAsync();
-                            creditExists = true;
-                            creditId = ff.CreditID;
-                            break;
+                            if (cf.FournisseurID == a.FournisseurID)
+                            {
+                                if (Remise.Text != "")
+                                {
+                                    cf.Total += Convert.ToDecimal(a.PrixAchat * a.Quantite) - Convert.ToDecimal(Remise.Text);
+                                    Operation.CreditValue = Convert.ToDecimal(a.PrixAchat * a.Quantite) - Convert.ToDecimal(Remise.Text);
+                                }
+                                else
+                                {
+                                    cf.Total += Convert.ToDecimal(a.PrixAchat * a.Quantite);
+                                    Operation.CreditValue = Convert.ToDecimal(a.PrixAchat * a.Quantite);
+                                }
+                                await cf.UpdateCreditAsync();
+                                creditExists = true;
+                                creditId = cf.CreditID;
+                                break;
+                            }
                         }
-                    }
-                    //else update the credit value
-                    if (!creditExists)
-                    {
-                        MessageBox.Show("Creating new credit");
-                        Credit newCredit = new Credit();
-                        newCredit.FournisseurID = a.FournisseurID;
-                        newCredit.Total = Convert.ToDecimal(CreditInput.Text);
-                        creditId = await newCredit.InsertCreditAsync();
-
-                    }
-
-                    Operation Operation = new Operation();
-
-                    Operation.PaymentMethodID = methodID;
-                    Operation.OperationType = "Achat50";
-                    Operation.PrixOperation = (a.PrixAchat * a.Quantite);
-                    Operation.CreditValue = Convert.ToDecimal(CreditInput.Text);
-                    Operation.CreditID = creditId;
-                    if (Remise.Text != "")
-                    {
-                        Operation.Remise = Convert.ToDecimal(Remise.Text);
-                    }
-
-                    Operation.UserID = ar.main.u.UserID;
-                    Operation.FournisseurID = a.FournisseurID;
-
-                    int idd = await Operation.InsertOperationAsync();
-                    OperationArticle ofa = new OperationArticle();
-                    int id = await a.InsertArticleAsync();
-                    a.ArticleID = id;
-                    ofa.ArticleID = a.ArticleID;
-                    ofa.OperationID = idd;
-                    ofa.QteArticle = Convert.ToInt32(a.Quantite);
-                    await ofa.InsertOperationArticleAsync();
-                    this.Close();
-                }
-                else
-                {
-                    
-                    if (Remise.Text != "")
-                    {
-                        if (Convert.ToDecimal(Remise.Text) > Convert.ToDecimal(a.PrixAchat * a.Quantite))
+                        //else update the credit value
+                        if (!creditExists)
                         {
-                            MessageBox.Show("la remise est plus grande que le total.");
-                            return;
-                        }
-                    }
-                    int creditId = 0;
-                    bool creditExists = false;
-                    //import Credit
-                    Credit Credit = new Credit();
-                    List<Credit> lcc = await Credit.GetCreditsAsync();
-                    //if there is no credit with Fournisseur id create a new one
-                    Operation Operation = new Operation();
-                    Operation.PaymentMethodID = methodID;
-                    foreach (Credit cf in lcc)
-                    {
-                        if (cf.FournisseurID == a.FournisseurID)
-                        {
+                            Credit newCredit = new Credit();
+                            newCredit.FournisseurID = a.FournisseurID;
                             if (Remise.Text != "")
                             {
-                                cf.Total += Convert.ToDecimal(a.PrixAchat * a.Quantite) - Convert.ToDecimal(Remise.Text);
+                                newCredit.Total += Convert.ToDecimal(a.PrixAchat * a.Quantite) - Convert.ToDecimal(Remise.Text);
                                 Operation.CreditValue = Convert.ToDecimal(a.PrixAchat * a.Quantite) - Convert.ToDecimal(Remise.Text);
                             }
                             else
                             {
-                                cf.Total += Convert.ToDecimal(a.PrixAchat * a.Quantite);
+                                newCredit.Total += Convert.ToDecimal(a.PrixAchat * a.Quantite);
                                 Operation.CreditValue = Convert.ToDecimal(a.PrixAchat * a.Quantite);
                             }
-                            await cf.UpdateCreditAsync();
-                            creditExists = true;
-                            creditId = cf.CreditID;
-                            break;
+                            creditId = await newCredit.InsertCreditAsync();
                         }
-                    }
-                    //else update the credit value
-                    if (!creditExists)
-                    {
-                        Credit newCredit = new Credit();
-                        newCredit.FournisseurID = a.FournisseurID;
+
+
+
+                        Operation.OperationType = "AchatCr";
+                        Operation.PrixOperation = a.PrixAchat * a.Quantite;
+                        Operation.CreditID = creditId;
                         if (Remise.Text != "")
                         {
-                            newCredit.Total += Convert.ToDecimal(a.PrixAchat * a.Quantite) - Convert.ToDecimal(Remise.Text);
-                            Operation.CreditValue = Convert.ToDecimal(a.PrixAchat * a.Quantite)- Convert.ToDecimal(Remise.Text);
+                            Operation.Remise = Convert.ToDecimal(Remise.Text);
+                        }
+
+                        Operation.UserID = ar.main.u.UserID;
+                        Operation.FournisseurID = a.FournisseurID;
+
+                        int idd = await Operation.InsertOperationAsync();
+                        OperationArticle ofa = new OperationArticle();
+                        int id = await a.InsertArticleAsync();
+                        a.ArticleID = id;
+                        ofa.ArticleID = a.ArticleID;
+                        ofa.OperationID = idd;
+                        ofa.QteArticle = Convert.ToInt32(a.Quantite);
+                        await ofa.InsertOperationArticleAsync();
+
+                        this.Close();
+                    }
+                    ar.la.Add(a);
+                    List<Article> la1 = ar.la;
+                    ar.main.LoadArticles(la1);
+                    ar.ea?.LoadArticles(la1);
+                    ar.Close();
+                }
+                //Add Quantity
+                if (aq != null)
+                {
+
+                    if (s == 0)
+                    {
+                        Operation Operation = new Operation();
+                        Operation.PaymentMethodID = methodID;
+
+                        Operation.OperationType = "AchatCa";
+                        Operation.PrixOperation = a.PrixAchat * aq.qte;
+                        if (Remise.Text != "")
+                        {
+                            Operation.Remise = Convert.ToDecimal(Remise.Text);
+                            if (Operation.Remise > Operation.PrixOperation)
+                            {
+                                MessageBox.Show("la remise est plus grande que le total.");
+                                return;
+                            }
+                        }
+
+                        Operation.UserID = aq.sa.Main.u.UserID;
+                        Operation.FournisseurID = a.FournisseurID;
+                        int idd = await Operation.InsertOperationAsync();
+                        OperationArticle ofa = new OperationArticle();
+                        a.Quantite += aq.qte;
+                        a.UpdateArticleAsync();
+                        ofa.ArticleID = a.ArticleID;
+                        ofa.OperationID = idd;
+                        ofa.QteArticle = Convert.ToInt32(aq.qte);
+                        await ofa.InsertOperationArticleAsync();
+                        this.Close();
+                    }
+                    else if (s == 1)
+                    {
+                        if (Convert.ToDecimal(CreditInput.Text) == 0)
+                        {
+                            MessageBox.Show("Doneer un valeur de credit.");
+                            return;
+                        }
+
+                        if (Remise.Text != "")
+                        {
+                            if (Convert.ToDecimal(CreditInput.Text) > Convert.ToDecimal(a.PrixAchat * a.Quantite) - Convert.ToDecimal(Remise.Text))
+                            {
+                                MessageBox.Show("la valeur de credit est plus grande que le total mois la remise.");
+                                return;
+                            }
                         }
                         else
                         {
-                            newCredit.Total += Convert.ToDecimal(a.PrixAchat * a.Quantite);
-                            Operation.CreditValue = Convert.ToDecimal(a.PrixAchat * a.Quantite);
+                            if (Convert.ToDecimal(CreditInput.Text) > Convert.ToDecimal(a.PrixAchat * a.Quantite))
+                            {
+                                MessageBox.Show("la valeur de credit est plus grande que le total.");
+                                return;
+                            }
                         }
-                        creditId = await newCredit.InsertCreditAsync();
-                    }
-
-
-                    
-                    Operation.OperationType = "AchatCr";
-                    Operation.PrixOperation = a.PrixAchat * a.Quantite;
-                    Operation.CreditID = creditId;
-                    if (Remise.Text != "")
-                    {
-                        Operation.Remise = Convert.ToDecimal(Remise.Text);
-                    }
-
-                    Operation.UserID = ar.main.u.UserID;
-                    Operation.FournisseurID = a.FournisseurID;
-
-                    int idd = await Operation.InsertOperationAsync();
-                    OperationArticle ofa = new OperationArticle();
-                    int id = await a.InsertArticleAsync();
-                    a.ArticleID = id;
-                    ofa.ArticleID = a.ArticleID;
-                    ofa.OperationID = idd;
-                    ofa.QteArticle = Convert.ToInt32(a.Quantite);
-                    await ofa.InsertOperationArticleAsync();
-
-                    this.Close();
-                }
-                ar.la.Add(a);
-                List<Article> la1 = ar.la;
-                ar.main.LoadArticles(la1);
-                ar.ea?.LoadArticles(la1);
-                ar.Close();
-            }
-            //Add Quantity
-            if (aq != null)
-            {
-
-                if (s == 0)
-                {
-                    Operation Operation = new Operation();
-                    Operation.PaymentMethodID = methodID;
-
-                    Operation.OperationType = "AchatCa";
-                    Operation.PrixOperation = a.PrixAchat * aq.qte;
-                    if (Remise.Text != "")
-                    {
-                        Operation.Remise = Convert.ToDecimal(Remise.Text);
-                        if (Operation.Remise > Operation.PrixOperation)
+                        int creditId = 0;
+                        bool creditExists = false;
+                        //import Credit
+                        Credit Credit = new Credit();
+                        List<Credit> lff = await Credit.GetCreditsAsync();
+                        //if there is no credit with Fournisseur id create a new one
+                        foreach (Credit ff in lff)
                         {
-                            MessageBox.Show("la remise est plus grande que le total.");
-                            return;
+                            if (ff.FournisseurID == a.FournisseurID)
+                            {
+
+                                ff.Total += Convert.ToDecimal(CreditInput.Text);
+                                await ff.UpdateCreditAsync();
+                                creditExists = true;
+                                creditId = ff.CreditID;
+                                break;
+                            }
                         }
-                    }
-
-                    Operation.UserID = aq.sa.Main.u.UserID;
-                    Operation.FournisseurID = a.FournisseurID;
-                    int idd = await Operation.InsertOperationAsync();
-                    OperationArticle ofa = new OperationArticle();
-                    a.Quantite += aq.qte;
-                    a.UpdateArticleAsync();
-                    ofa.ArticleID = a.ArticleID;
-                    ofa.OperationID = idd;
-                    ofa.QteArticle = Convert.ToInt32(aq.qte);
-                    await ofa.InsertOperationArticleAsync();
-                    this.Close();
-                }
-                else if (s == 1)
-                {
-                    if (Convert.ToDecimal(CreditInput.Text) == 0)
-                    {
-                        MessageBox.Show("Doneer un valeur de credit.");
-                        return;
-                    }
-
-                    if (Remise.Text != "")
-                    {
-                        if (Convert.ToDecimal(CreditInput.Text) > Convert.ToDecimal(a.PrixAchat * a.Quantite) - Convert.ToDecimal(Remise.Text))
+                        //else update the credit value
+                        if (!creditExists)
                         {
-                            MessageBox.Show("la valeur de credit est plus grande que le total mois la remise.");
-                            return;
+                            Credit newCredit = new Credit();
+                            newCredit.FournisseurID = a.FournisseurID;
+                            newCredit.Total = Convert.ToDecimal(CreditInput.Text);
+                            creditId = await newCredit.InsertCreditAsync();
+
                         }
+
+                        Operation Operation = new Operation();
+                        Operation.PaymentMethodID = methodID;
+
+                        Operation.OperationType = "Achat50";
+                        Operation.PrixOperation = (a.PrixAchat * aq.qte);
+                        Operation.CreditValue = Convert.ToDecimal(CreditInput.Text);
+                        Operation.CreditID = creditId;
+                        if (Remise.Text != "")
+                        {
+                            Operation.Remise = Convert.ToDecimal(Remise.Text);
+                        }
+
+                        Operation.UserID = aq.sa.Main.u.UserID;
+                        Operation.FournisseurID = a.FournisseurID;
+
+                        int idd = await Operation.InsertOperationAsync();
+                        OperationArticle ofa = new OperationArticle();
+
+                        aq.sa.a.Quantite += aq.qte;
+                        aq.sa.a.UpdateArticleAsync();
+                        ofa.ArticleID = a.ArticleID;
+                        ofa.OperationID = idd;
+                        ofa.QteArticle = Convert.ToInt32(aq.qte);
+                        await ofa.InsertOperationArticleAsync();
+
+
+                        this.Close();
                     }
                     else
                     {
-                        if (Convert.ToDecimal(CreditInput.Text) > Convert.ToDecimal(a.PrixAchat * a.Quantite))
+                        if (Remise.Text != "")
                         {
-                            MessageBox.Show("la valeur de credit est plus grande que le total.");
-                            return;
+                            if (Convert.ToDecimal(Remise.Text) > Convert.ToDecimal(a.PrixAchat * aq.qte))
+                            {
+                                MessageBox.Show("la remise est plus grande que le total.");
+                                return;
+                            }
                         }
-                    }
-                    int creditId = 0;
-                    bool creditExists = false;
-                    //import Credit
-                    Credit Credit = new Credit();
-                    List<Credit> lff = await Credit.GetCreditsAsync();
-                    //if there is no credit with Fournisseur id create a new one
-                    foreach (Credit ff in lff)
-                    {
-                        if (ff.FournisseurID == a.FournisseurID)
+                        int creditId = 0;
+                        bool creditExists = false;
+                        //import Credit
+                        Credit Credit = new Credit();
+                        List<Credit> lcc = await Credit.GetCreditsAsync();
+                        Operation Operation = new Operation();
+                        Operation.PaymentMethodID = methodID;
+                        //if there is no credit with Fournisseur id create a new one
+                        foreach (Credit cf in lcc)
                         {
-
-                            ff.Total += Convert.ToDecimal(CreditInput.Text);
-                            await ff.UpdateCreditAsync();
-                            creditExists = true;
-                            creditId = ff.CreditID;
-                            break;
+                            if (cf.FournisseurID == a.FournisseurID)
+                            {
+                                if (Remise.Text != "")
+                                {
+                                    cf.Total += Convert.ToDecimal(a.PrixAchat * aq.qte) - Convert.ToDecimal(Remise.Text);
+                                    Operation.CreditValue = Convert.ToDecimal(a.PrixAchat * aq.qte) - Convert.ToDecimal(Remise.Text);
+                                }
+                                else
+                                {
+                                    cf.Total += Convert.ToDecimal(a.PrixAchat * aq.qte);
+                                    Operation.CreditValue = Convert.ToDecimal(a.PrixAchat * aq.qte);
+                                }
+                                await cf.UpdateCreditAsync();
+                                creditExists = true;
+                                creditId = cf.CreditID;
+                                break;
+                            }
                         }
-                    }
-                    //else update the credit value
-                    if (!creditExists)
-                    {
-                        Credit newCredit = new Credit();
-                        newCredit.FournisseurID = a.FournisseurID;
-                        newCredit.Total = Convert.ToDecimal(CreditInput.Text);
-                        creditId = await newCredit.InsertCreditAsync();
-
-                    }
-
-                    Operation Operation = new Operation();
-                    Operation.PaymentMethodID = methodID;
-
-                    Operation.OperationType = "Achat50";
-                    Operation.PrixOperation = (a.PrixAchat * aq.qte);
-                    Operation.CreditValue = Convert.ToDecimal(CreditInput.Text);
-                    Operation.CreditID = creditId;
-                    if (Remise.Text != "")
-                    {
-                        Operation.Remise = Convert.ToDecimal(Remise.Text);
-                    }
-
-                    Operation.UserID = aq.sa.Main.u.UserID;
-                    Operation.FournisseurID = a.FournisseurID;
-
-                    int idd = await Operation.InsertOperationAsync();
-                    OperationArticle ofa = new OperationArticle();
-
-                    aq.sa.a.Quantite += aq.qte;
-                    aq.sa.a.UpdateArticleAsync();
-                    ofa.ArticleID = a.ArticleID;
-                    ofa.OperationID = idd;
-                    ofa.QteArticle = Convert.ToInt32(aq.qte);
-                    await ofa.InsertOperationArticleAsync();
-
-
-                    this.Close();
-                }
-                else
-                {
-                    if (Remise.Text != "")
-                    {
-                        if (Convert.ToDecimal(Remise.Text) > Convert.ToDecimal(a.PrixAchat * aq.qte))
+                        //else update the credit value
+                        if (!creditExists)
                         {
-                            MessageBox.Show("la remise est plus grande que le total.");
-                            return;
-                        }
-                    }
-                    int creditId = 0;
-                    bool creditExists = false;
-                    //import Credit
-                    Credit Credit = new Credit();
-                    List<Credit> lcc = await Credit.GetCreditsAsync();
-                    Operation Operation = new Operation();
-                    Operation.PaymentMethodID = methodID;
-                    //if there is no credit with Fournisseur id create a new one
-                    foreach (Credit cf in lcc)
-                    {
-                        if (cf.FournisseurID == a.FournisseurID)
-                        {
+                            Credit newCredit = new Credit();
+                            newCredit.FournisseurID = a.FournisseurID;
                             if (Remise.Text != "")
                             {
-                                cf.Total += Convert.ToDecimal(a.PrixAchat * aq.qte) - Convert.ToDecimal(Remise.Text);
+                                newCredit.Total += Convert.ToDecimal(a.PrixAchat * aq.qte) - Convert.ToDecimal(Remise.Text);
                                 Operation.CreditValue = Convert.ToDecimal(a.PrixAchat * aq.qte) - Convert.ToDecimal(Remise.Text);
                             }
                             else
                             {
-                                cf.Total += Convert.ToDecimal(a.PrixAchat * aq.qte);
+                                newCredit.Total += Convert.ToDecimal(a.PrixAchat * aq.qte);
                                 Operation.CreditValue = Convert.ToDecimal(a.PrixAchat * aq.qte);
                             }
-                            await cf.UpdateCreditAsync();
-                            creditExists = true;
-                            creditId = cf.CreditID;
-                            break;
+                            creditId = await newCredit.InsertCreditAsync();
                         }
-                    }
-                    //else update the credit value
-                    if (!creditExists)
-                    {
-                        Credit newCredit = new Credit();
-                        newCredit.FournisseurID = a.FournisseurID;
+
+
+
+
+                        Operation.OperationType = "AchatCr";
+                        Operation.PrixOperation = a.PrixAchat * aq.qte;
+                        Operation.CreditID = creditId;
                         if (Remise.Text != "")
                         {
-                            newCredit.Total += Convert.ToDecimal(a.PrixAchat * aq.qte) - Convert.ToDecimal(Remise.Text);
-                            Operation.CreditValue = Convert.ToDecimal(a.PrixAchat * aq.qte) - Convert.ToDecimal(Remise.Text);
+                            Operation.Remise = Convert.ToDecimal(Remise.Text);
+                        }
+
+                        Operation.UserID = aq.sa.Main.u.UserID;
+                        Operation.FournisseurID = a.FournisseurID;
+
+                        int idd = await Operation.InsertOperationAsync();
+                        OperationArticle ofa = new OperationArticle();
+
+                        aq.sa.a.Quantite += aq.qte;
+                        aq.sa.a.UpdateArticleAsync();
+
+                        ofa.ArticleID = a.ArticleID;
+                        ofa.OperationID = idd;
+                        ofa.QteArticle = Convert.ToInt32(aq.qte);
+                        await ofa.InsertOperationArticleAsync();
+
+                        this.Close();
+                    }
+                    aq.sa.Main.LoadArticles(aq.ns.main.main.la);
+                    aq.sa.ea.LoadArticles(aq.ns.main.main.la);
+                    aq.Close();
+
+
+                }
+                //Add Multiple Articles
+                if (ama != null)
+                {
+                    if (s == 0)
+                    {
+                        Operation Operation = new Operation();
+                        Operation.PaymentMethodID = methodID;
+                        Operation.OperationType = "AchatCa";
+                        Operation.PrixOperation = Subtotall;
+                        if (Remise.Text != "")
+                        {
+                            Operation.Remise = Convert.ToDecimal(Remise.Text);
+                            if (Operation.Remise > Operation.PrixOperation)
+                            {
+                                MessageBox.Show("la remise est plus grande que le total.");
+                                return;
+                            }
+                        }
+
+                        Operation.UserID = ama.main.u.UserID;
+                        Operation.FournisseurID = ama.fo.FournisseurID;
+                        int idd = await Operation.InsertOperationAsync();
+                        for (int i = ama.ArticlesContainer.Children.Count - 1; i >= 0; i--)
+                        {
+                            if (ama.ArticlesContainer.Children[i] is CSingleRowArticle csra)
+                            {
+                                if (csra.Fournisseur.Text == "Nouvelle Article")
+                                {
+                                    OperationArticle ofa = new OperationArticle();
+
+                                    int id = await csra.a.InsertArticleAsync();
+                                    csra.a.ArticleID = id;
+                                    ama.main.la.Add(csra.a);
+
+                                    ofa.ArticleID = csra.a.ArticleID;
+                                    ofa.OperationID = idd;
+                                    ofa.QteArticle = Convert.ToInt32(csra.a.Quantite);
+                                    await ofa.InsertOperationArticleAsync();
+
+                                }
+                                else if (csra.Fournisseur.Text == "Ajout de quantite")
+                                {
+                                    OperationArticle ofa = new OperationArticle();
+                                    csra.Quantite.Text = csra.Quantite.Text.Replace("x", "");
+                                    csra.a.Quantite += Convert.ToInt32(csra.Quantite.Text);
+                                    csra.a.UpdateArticleAsync();
+                                    ofa.ArticleID = csra.a.ArticleID;
+                                    ofa.OperationID = idd;
+                                    ofa.QteArticle = Convert.ToInt32(csra.Quantite.Text);
+                                    await ofa.InsertOperationArticleAsync();
+                                }
+                            }
+                        }
+
+
+                    }
+                    else if (s == 1)
+                    {
+                        if (Convert.ToDecimal(CreditInput.Text) == 0)
+                        {
+                            MessageBox.Show("Doneer un valeur de credit.");
+                            return;
+                        }
+
+                        if (Remise.Text != "")
+                        {
+                            if (Convert.ToDecimal(CreditInput.Text) > Convert.ToDecimal(Subtotall) - Convert.ToDecimal(Remise.Text))
+                            {
+                                MessageBox.Show("la valeur de credit est plus grande que le total mois la remise.");
+                                return;
+                            }
                         }
                         else
                         {
-                            newCredit.Total += Convert.ToDecimal(a.PrixAchat * aq.qte);
-                            Operation.CreditValue = Convert.ToDecimal(a.PrixAchat * aq.qte);
-                        }
-                        creditId = await newCredit.InsertCreditAsync();
-                    }
-
-
-                    
-
-                    Operation.OperationType = "AchatCr";
-                    Operation.PrixOperation = a.PrixAchat * aq.qte;
-                    Operation.CreditID = creditId;
-                    if (Remise.Text != "")
-                    {
-                        Operation.Remise = Convert.ToDecimal(Remise.Text);
-                    }
-
-                    Operation.UserID = aq.sa.Main.u.UserID;
-                    Operation.FournisseurID = a.FournisseurID;
-
-                    int idd = await Operation.InsertOperationAsync();
-                    OperationArticle ofa = new OperationArticle();
-
-                    aq.sa.a.Quantite += aq.qte;
-                    aq.sa.a.UpdateArticleAsync();
-                    
-                    ofa.ArticleID = a.ArticleID;
-                    ofa.OperationID = idd;
-                    ofa.QteArticle = Convert.ToInt32(aq.qte);
-                    await ofa.InsertOperationArticleAsync();
-
-                    this.Close();
-                }
-                aq.sa.Main.LoadArticles(aq.ns.main.main.la);
-                aq.sa.ea.LoadArticles(aq.ns.main.main.la);
-                aq.Close();
-
-
-            }
-            //Add Multiple Articles
-            if (ama != null)
-            {
-                if (s == 0)
-                {
-                    Operation Operation = new Operation();
-                    Operation.PaymentMethodID = methodID;
-                    Operation.OperationType = "AchatCa";
-                    Operation.PrixOperation = Subtotall;
-                    if (Remise.Text != "")
-                    {
-                        Operation.Remise = Convert.ToDecimal(Remise.Text);
-                        if (Operation.Remise > Operation.PrixOperation)
-                        {
-                            MessageBox.Show("la remise est plus grande que le total.");
-                            return;
-                        }
-                    }
-
-                    Operation.UserID = ama.main.u.UserID;
-                    Operation.FournisseurID = ama.fo.FournisseurID;
-                    int idd = await Operation.InsertOperationAsync();
-                    for (int i = ama.ArticlesContainer.Children.Count - 1; i >= 0; i--)
-                    {
-                        if (ama.ArticlesContainer.Children[i] is CSingleRowArticle csra)
-                        {
-                            if(csra.Fournisseur.Text== "Nouvelle Article")
+                            if (Convert.ToDecimal(CreditInput.Text) > Convert.ToDecimal(Subtotall))
                             {
-                                OperationArticle ofa = new OperationArticle();
-
-                                int id = await csra.a.InsertArticleAsync();
-                                csra.a.ArticleID = id;
-
-                                ofa.ArticleID = csra.a.ArticleID;
-                                ofa.OperationID = idd;
-                                ofa.QteArticle = Convert.ToInt32(csra.a.Quantite);
-                                await ofa.InsertOperationArticleAsync();
-
-                            }
-                            else if (csra.Fournisseur.Text == "Ajout de quantite")
-                            {
-                                OperationArticle ofa = new OperationArticle();
-                                csra.Quantite.Text = csra.Quantite.Text.Replace("x", "");
-                                csra.a.Quantite += Convert.ToInt32(csra.Quantite.Text);
-                                csra.a.UpdateArticleAsync();
-                                ofa.ArticleID = csra.a.ArticleID;
-                                ofa.OperationID = idd;
-                                ofa.QteArticle = Convert.ToInt32(csra.Quantite.Text);
-                                await ofa.InsertOperationArticleAsync();
+                                MessageBox.Show("la valeur de credit est plus grande que le total.");
+                                return;
                             }
                         }
-                    }
-
-                    
-                }
-                else if (s == 1)
-                {
-                    if (Convert.ToDecimal(CreditInput.Text) == 0)
-                    {
-                        MessageBox.Show("Doneer un valeur de credit.");
-                        return;
-                    }
-
-                    if (Remise.Text != "")
-                    {
-                        if (Convert.ToDecimal(CreditInput.Text) > Convert.ToDecimal(Subtotall) - Convert.ToDecimal(Remise.Text))
+                        int creditId = 0;
+                        bool creditExists = false;
+                        //import Credit
+                        Credit Credit = new Credit();
+                        List<Credit> lff = await Credit.GetCreditsAsync();
+                        //if there is no credit with Fournisseur id create a new one
+                        foreach (Credit ff in lff)
                         {
-                            MessageBox.Show("la valeur de credit est plus grande que le total mois la remise.");
-                            return;
+                            if (ff.FournisseurID == ama.fo.FournisseurID)
+                            {
+
+                                ff.Total += Convert.ToDecimal(CreditInput.Text);
+                                await ff.UpdateCreditAsync();
+                                creditExists = true;
+                                creditId = ff.CreditID;
+                                break;
+                            }
                         }
+                        //else update the credit value
+                        if (!creditExists)
+                        {
+                            Credit newCredit = new Credit();
+                            newCredit.FournisseurID = ama.fo.FournisseurID;
+                            newCredit.Total = Convert.ToDecimal(CreditInput.Text);
+                            creditId = await newCredit.InsertCreditAsync();
+
+                        }
+
+                        Operation Operation = new Operation();
+                        Operation.PaymentMethodID = methodID;
+                        Operation.OperationType = "Achat50";
+                        Operation.PrixOperation = Subtotall;
+                        Operation.CreditValue = Convert.ToDecimal(CreditInput.Text);
+                        Operation.CreditID = creditId;
+                        if (Remise.Text != "")
+                        {
+                            Operation.Remise = Convert.ToDecimal(Remise.Text);
+                        }
+
+                        Operation.UserID = ama.main.u.UserID;
+                        Operation.FournisseurID = ama.fo.FournisseurID;
+
+                        int idd = await Operation.InsertOperationAsync();
+                        //Start here
+                        for (int i = ama.ArticlesContainer.Children.Count - 1; i >= 0; i--)
+                        {
+                            if (ama.ArticlesContainer.Children[i] is CSingleRowArticle csra)
+                            {
+                                if (csra.Fournisseur.Text == "Nouvelle Article")
+                                {
+                                    OperationArticle ofa = new OperationArticle();
+
+                                    int id = await csra.a.InsertArticleAsync();
+                                    ama.main.la.Add(csra.a);
+                                    csra.a.ArticleID = id;
+
+                                    ofa.ArticleID = csra.a.ArticleID;
+                                    ofa.OperationID = idd;
+                                    ofa.QteArticle = Convert.ToInt32(csra.a.Quantite);
+                                    await ofa.InsertOperationArticleAsync();
+
+                                }
+                                else if (csra.Fournisseur.Text == "Ajout de quantite")
+                                {
+                                    OperationArticle ofa = new OperationArticle();
+                                    csra.Quantite.Text = csra.Quantite.Text.Replace("x", "");
+                                    csra.a.Quantite += Convert.ToInt32(csra.Quantite.Text);
+                                    csra.a.UpdateArticleAsync();
+                                    ofa.ArticleID = csra.a.ArticleID;
+                                    ofa.OperationID = idd;
+                                    ofa.QteArticle = Convert.ToInt32(csra.Quantite.Text);
+                                    await ofa.InsertOperationArticleAsync();
+                                }
+                            }
+                        }
+
                     }
                     else
                     {
-                        if (Convert.ToDecimal(CreditInput.Text) > Convert.ToDecimal(Subtotall))
+                        if (Remise.Text != "")
                         {
-                            MessageBox.Show("la valeur de credit est plus grande que le total.");
-                            return;
-                        }
-                    }
-                    int creditId = 0;
-                    bool creditExists = false;
-                    //import Credit
-                    Credit Credit = new Credit();
-                    List<Credit> lff = await Credit.GetCreditsAsync();
-                    //if there is no credit with Fournisseur id create a new one
-                    foreach (Credit ff in lff)
-                    {
-                        if (ff.FournisseurID == ama.fo.FournisseurID)
-                        {
-
-                            ff.Total += Convert.ToDecimal(CreditInput.Text);
-                            await ff.UpdateCreditAsync();
-                            creditExists = true;
-                            creditId = ff.CreditID;
-                            break;
-                        }
-                    }
-                    //else update the credit value
-                    if (!creditExists)
-                    {
-                        Credit newCredit = new Credit();
-                        newCredit.FournisseurID = ama.fo.FournisseurID;
-                        newCredit.Total = Convert.ToDecimal(CreditInput.Text);
-                        creditId = await newCredit.InsertCreditAsync();
-
-                    }
-
-                    Operation Operation = new Operation();
-                    Operation.PaymentMethodID = methodID;
-                    Operation.OperationType = "Achat50";
-                    Operation.PrixOperation = Subtotall;
-                    Operation.CreditValue = Convert.ToDecimal(CreditInput.Text);
-                    Operation.CreditID = creditId;
-                    if (Remise.Text != "")
-                    {
-                        Operation.Remise = Convert.ToDecimal(Remise.Text);
-                    }
-
-                    Operation.UserID = ama.main.u.UserID;
-                    Operation.FournisseurID = ama.fo.FournisseurID;
-
-                    int idd = await Operation.InsertOperationAsync();
-                    //Start here
-                    for (int i = ama.ArticlesContainer.Children.Count - 1; i >= 0; i--)
-                    {
-                        if (ama.ArticlesContainer.Children[i] is CSingleRowArticle csra)
-                        {
-                            if (csra.Fournisseur.Text == "Nouvelle Article")
+                            if (Convert.ToDecimal(Remise.Text) > Convert.ToDecimal(Subtotall))
                             {
-                                OperationArticle ofa = new OperationArticle();
-
-                                int id = await csra.a.InsertArticleAsync();
-                                csra.a.ArticleID = id;
-
-                                ofa.ArticleID = csra.a.ArticleID;
-                                ofa.OperationID = idd;
-                                ofa.QteArticle = Convert.ToInt32(csra.a.Quantite);
-                                await ofa.InsertOperationArticleAsync();
-
-                            }
-                            else if (csra.Fournisseur.Text == "Ajout de quantite")
-                            {
-                                OperationArticle ofa = new OperationArticle();
-                                csra.Quantite.Text = csra.Quantite.Text.Replace("x", "");
-                                csra.a.Quantite += Convert.ToInt32(csra.Quantite.Text);
-                                csra.a.UpdateArticleAsync();
-                                ofa.ArticleID = csra.a.ArticleID;
-                                ofa.OperationID = idd;
-                                ofa.QteArticle = Convert.ToInt32(csra.Quantite.Text);
-                                await ofa.InsertOperationArticleAsync();
+                                MessageBox.Show("la remise est plus grande que le total.");
+                                return;
                             }
                         }
-                    }
-
-                }
-                else
-                {
-                    if (Remise.Text != "")
-                    {
-                        if (Convert.ToDecimal(Remise.Text) > Convert.ToDecimal(Subtotall))
+                        int creditId = 0;
+                        bool creditExists = false;
+                        //import Credit
+                        Credit Credit = new Credit();
+                        List<Credit> lcc = await Credit.GetCreditsAsync();
+                        Operation Operation = new Operation();
+                        Operation.PaymentMethodID = methodID;
+                        //if there is no credit with Fournisseur id create a new one
+                        foreach (Credit cf in lcc)
                         {
-                            MessageBox.Show("la remise est plus grande que le total.");
-                            return;
+                            if (cf.FournisseurID == ama.fo.FournisseurID)
+                            {
+                                if (Remise.Text != "")
+                                {
+                                    cf.Total += Convert.ToDecimal(Subtotall) - Convert.ToDecimal(Remise.Text);
+                                    Operation.CreditValue = Convert.ToDecimal(Subtotall) - Convert.ToDecimal(Remise.Text);
+                                }
+                                else
+                                {
+                                    cf.Total += Convert.ToDecimal(Subtotall);
+                                    Operation.CreditValue = Convert.ToDecimal(Subtotall);
+                                }
+                                await cf.UpdateCreditAsync();
+                                creditExists = true;
+                                creditId = cf.CreditID;
+                                break;
+                            }
                         }
-                    }
-                    int creditId = 0;
-                    bool creditExists = false;
-                    //import Credit
-                    Credit Credit = new Credit();
-                    List<Credit> lcc = await Credit.GetCreditsAsync();
-                    Operation Operation = new Operation();
-                    Operation.PaymentMethodID = methodID;
-                    //if there is no credit with Fournisseur id create a new one
-                    foreach (Credit cf in lcc)
-                    {
-                        if (cf.FournisseurID == ama.fo.FournisseurID)
+                        //else update the credit value
+                        if (!creditExists)
                         {
+                            Credit newCredit = new Credit();
+                            newCredit.FournisseurID = ama.fo.FournisseurID;
                             if (Remise.Text != "")
                             {
-                                cf.Total += Convert.ToDecimal(Subtotall) - Convert.ToDecimal(Remise.Text);
+                                newCredit.Total += Convert.ToDecimal(Subtotall) - Convert.ToDecimal(Remise.Text);
                                 Operation.CreditValue = Convert.ToDecimal(Subtotall) - Convert.ToDecimal(Remise.Text);
                             }
                             else
                             {
-                                cf.Total += Convert.ToDecimal(Subtotall);
+                                newCredit.Total += Convert.ToDecimal(Subtotall);
                                 Operation.CreditValue = Convert.ToDecimal(Subtotall);
                             }
-                            await cf.UpdateCreditAsync();
-                            creditExists = true;
-                            creditId = cf.CreditID;
-                            break;
+                            creditId = await newCredit.InsertCreditAsync();
                         }
-                    }
-                    //else update the credit value
-                    if (!creditExists)
-                    {
-                        Credit newCredit = new Credit();
-                        newCredit.FournisseurID = ama.fo.FournisseurID;
+
+
+
+
+                        Operation.OperationType = "AchatCr";
+                        Operation.PrixOperation = Subtotall;
+                        Operation.CreditID = creditId;
                         if (Remise.Text != "")
                         {
-                            newCredit.Total += Convert.ToDecimal(Subtotall) - Convert.ToDecimal(Remise.Text);
-                            Operation.CreditValue = Convert.ToDecimal(Subtotall) - Convert.ToDecimal(Remise.Text);
+                            Operation.Remise = Convert.ToDecimal(Remise.Text);
                         }
-                        else
+
+                        Operation.UserID = ama.main.u.UserID;
+                        Operation.FournisseurID = ama.fo.FournisseurID;
+
+                        int idd = await Operation.InsertOperationAsync();
+
+
+                        for (int i = ama.ArticlesContainer.Children.Count - 1; i >= 0; i--)
                         {
-                            newCredit.Total += Convert.ToDecimal(Subtotall);
-                            Operation.CreditValue = Convert.ToDecimal(Subtotall);
-                        }
-                        creditId = await newCredit.InsertCreditAsync();
-                    }
-
-
-
-
-                    Operation.OperationType = "AchatCr";
-                    Operation.PrixOperation = Subtotall;
-                    Operation.CreditID = creditId;
-                    if (Remise.Text != "")
-                    {
-                        Operation.Remise = Convert.ToDecimal(Remise.Text);
-                    }
-
-                    Operation.UserID = ama.main.u.UserID;
-                    Operation.FournisseurID = ama.fo.FournisseurID;
-
-                    int idd = await Operation.InsertOperationAsync();
-
-
-                    for (int i = ama.ArticlesContainer.Children.Count - 1; i >= 0; i--)
-                    {
-                        if (ama.ArticlesContainer.Children[i] is CSingleRowArticle csra)
-                        {
-                            if (csra.Fournisseur.Text == "Nouvelle Article")
+                            if (ama.ArticlesContainer.Children[i] is CSingleRowArticle csra)
                             {
-                                OperationArticle ofa = new OperationArticle();
+                                if (csra.Fournisseur.Text == "Nouvelle Article")
+                                {
+                                    OperationArticle ofa = new OperationArticle();
 
-                                int id = await csra.a.InsertArticleAsync();
-                                csra.a.ArticleID = id;
+                                    int id = await csra.a.InsertArticleAsync();
+                                    csra.a.ArticleID = id;
+                                    ama.main.la.Add(csra.a);
 
-                                ofa.ArticleID = csra.a.ArticleID;
-                                ofa.OperationID = idd;
-                                ofa.QteArticle = Convert.ToInt32(csra.a.Quantite);
-                                await ofa.InsertOperationArticleAsync();
+                                    ofa.ArticleID = csra.a.ArticleID;
+                                    ofa.OperationID = idd;
+                                    ofa.QteArticle = Convert.ToInt32(csra.a.Quantite);
+                                    await ofa.InsertOperationArticleAsync();
 
-                            }
-                            else if (csra.Fournisseur.Text == "Ajout de quantite")
-                            {
-                                OperationArticle ofa = new OperationArticle();
-                                csra.Quantite.Text = csra.Quantite.Text.Replace("x", "");
-                                csra.a.Quantite += Convert.ToInt32(csra.Quantite.Text);
-                                csra.a.UpdateArticleAsync();
-                                ofa.ArticleID = csra.a.ArticleID;
-                                ofa.OperationID = idd;
-                                ofa.QteArticle = Convert.ToInt32(csra.Quantite.Text);
-                                await ofa.InsertOperationArticleAsync();
+                                }
+                                else if (csra.Fournisseur.Text == "Ajout de quantite")
+                                {
+                                    OperationArticle ofa = new OperationArticle();
+                                    csra.Quantite.Text = csra.Quantite.Text.Replace("x", "");
+                                    csra.a.Quantite += Convert.ToInt32(csra.Quantite.Text);
+                                    csra.a.UpdateArticleAsync();
+                                    ofa.ArticleID = csra.a.ArticleID;
+                                    ofa.OperationID = idd;
+                                    ofa.QteArticle = Convert.ToInt32(csra.Quantite.Text);
+                                    await ofa.InsertOperationArticleAsync();
+                                }
                             }
                         }
                     }
+                    ama.main.LoadArticles(ama.main.la);
                 }
-                ama.main.LoadArticles(ama.main.la);
+                WCongratulations wCongratulations = new WCongratulations("Opération réussie", "Opération a ete effectue avec succes",1);
+                wCongratulations.ShowDialog();
             }
-            WCongratulations wCongratulations = new WCongratulations(0);
-            wCongratulations.ShowDialog();
+            catch (Exception ex)
+            {
+
+                WCongratulations wCongratulations = new WCongratulations("Opération échoué", "Opération n'a pas ete effectue ", 0);
+                wCongratulations.ShowDialog();
+            }
         }
 
         private void RemiseInput_TextChanged(object sender, TextChangedEventArgs e)

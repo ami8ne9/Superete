@@ -44,7 +44,7 @@ namespace Superete
                             PrixMP = Convert.ToDecimal(reader["PrixMP"]),
                             FamillyID = Convert.ToInt32(reader["FamillyID"]),
                             FournisseurID = Convert.ToInt32(reader["FournisseurID"]),
-                            Code = reader["Code"] == DBNull.Value ? 0 : Convert.ToInt32(reader["Code"]),
+                            Code = reader["Code"] == DBNull.Value ? 0 : Convert.ToInt64(reader["Code"]),
                             ArticleName = reader["ArticleName"] == DBNull.Value ? string.Empty : reader["ArticleName"].ToString()
                         };
                         articles.Add(article);

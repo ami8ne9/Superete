@@ -59,7 +59,7 @@ namespace Superete.Main.Inventory
             int id=await fo.InsertFournisseurAsync();
             fo.FournisseurID = id;
             lfo.Add(fo);
-            main.LoadFournisseurs(lfo);
+            main.LoadFournisseurs(lfo,1);
             this.Close();
 
         }

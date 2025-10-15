@@ -198,6 +198,7 @@ namespace Superete.Main.ClientPage
                     // Clear articles on error
                     ArticlesList.ItemsSource = null;
                     ClearSummary();
+                    HideArticlesPanel();
                 }
             }
             else
@@ -205,6 +206,7 @@ namespace Superete.Main.ClientPage
                 // Clear articles when no operation is selected
                 ArticlesList.ItemsSource = null;
                 ClearSummary();
+                HideArticlesPanel();
                 OperationInfoText.Text = "Sélectionnez une opération";
             }
         }

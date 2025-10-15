@@ -36,6 +36,17 @@ namespace Superete.Main.Inventory
                     Fournisseur.Text = fo.Nom;
                     break;
                 }
+            foreach (Role r in Main.main.lr)
+            {
+                if (Main.u.RoleID == r.RoleID)
+                {
+                    if (r.DeleteArticle == false )
+                    {
+                        DeleteButton.IsEnabled = false;
+                    }
+                    break;
+                }
+            }
             ArticleName.Text = a.ArticleName;
             Quantite.Text = "x"+a.Quantite.ToString();
             if (s == 0)

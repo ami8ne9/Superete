@@ -196,7 +196,7 @@
                                 Background="#4A90E2"
                                 CornerRadius="30"
                                 Margin="0,0,15,0">
-                            <TextBlock Text="BMS"
+                            <TextBlock Text="SGE"
                                        FontFamily="Segoe UI"
                                        FontSize="18"
                                        FontWeight="Bold"
@@ -205,12 +205,12 @@
                                        VerticalAlignment="Center"/>
                         </Border>
                         <StackPanel VerticalAlignment="Center">
-                            <TextBlock Text="Business Management System"
+                            <TextBlock Text="Système de Gestion d'Entreprise"
                                        FontFamily="Segoe UI"
                                        FontSize="24"
                                        FontWeight="SemiBold"
                                        Foreground="#333333"/>
-                            <TextBlock Text="Secure Access Portal"
+                            <TextBlock Text="Portail d'Accès Sécurisé"
                                        FontFamily="Segoe UI"
                                        FontSize="14"
                                        Foreground="#666666"
@@ -219,21 +219,21 @@
                     </StackPanel>
 
                     <!-- Welcome Message -->
-                    <TextBlock Text="Welcome back!"
+                    <TextBlock Text="Bienvenue !"
                                FontFamily="Segoe UI"
                                FontSize="28"
                                FontWeight="Light"
                                Foreground="#333333"
                                Margin="0,0,0,10"/>
 
-                    <TextBlock Text="Please enter your password to access the system"
+                    <TextBlock Text="Veuillez entrer votre mot de passe pour accéder au système"
                                FontFamily="Segoe UI"
                                FontSize="14"
                                Foreground="#666666"
                                Margin="0,0,0,40"/>
 
                     <!-- Password Input -->
-                    <TextBlock Text="Password"
+                    <TextBlock Text="Mot de passe"
                                FontFamily="Segoe UI"
                                FontSize="14"
                                FontWeight="Medium"
@@ -247,93 +247,115 @@
                                  Margin="0,0,0,30" BorderThickness="1" BorderBrush="Black" PreviewTextInput="PasswordInput_PreviewTextInput"
              PreviewKeyDown="PasswordInput_PreviewKeyDown"/>
 
-                    <!-- Login Button -->
-
                 </StackPanel>
 
                 <!-- Right Panel - Numeric Keypad -->
                 <Border Grid.Column="1" 
-                        Background="#FAFBFC"
-                        CornerRadius="0,16,16,0"
-                        Padding="60">
-                    <StackPanel VerticalAlignment="Center">
-                        <TextBlock Text="Numeric Keypad"
-                                   FontFamily="Segoe UI"
-                                   FontSize="22"
-                                   FontWeight="SemiBold"
-                                   Foreground="#333333"
-                                   HorizontalAlignment="Center"
-                                   Margin="0,0,0,12"/>
+        Background="#FAFBFC"
+        CornerRadius="0,16,16,0"
+        Padding="60">
+                    <Grid>
+                        <!-- Shutdown Button - Top Right -->
+                        <Button Width="41" Height="41"
+                HorizontalAlignment="Right"
+                VerticalAlignment="Top"
+                Margin="0,-41,-43,0"
+                Content="⏻"
+                Background="#EF4444"
+                Foreground="White"
+                FontSize="18"
+                FontWeight="Bold"
+                BorderThickness="0"
+                Cursor="Hand" x:Name="BtnShutdown" Click="BtnShutdown_Click">
+                            <Button.Template>
+                                <ControlTemplate TargetType="Button">
+                                    <Grid>
+                                        <Ellipse Fill="{TemplateBinding Background}"/>
+                                        <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                    </Grid>
+                                </ControlTemplate>
+                            </Button.Template>
+                        </Button>
 
-                        <TextBlock Text="Use keypad for secure entry"
-                                   FontFamily="Segoe UI"
-                                   FontSize="16"
-                                   Foreground="#666666"
-                                   HorizontalAlignment="Center"
-                                   Margin="0,0,0,35"/>
+                        <!-- Keypad Content -->
+                        <StackPanel VerticalAlignment="Center">
+                            <TextBlock Text="Pavé Numérique"
+                   FontFamily="Segoe UI"
+                   FontSize="22"
+                   FontWeight="SemiBold"
+                   Foreground="#333333"
+                   HorizontalAlignment="Center"
+                   Margin="0,0,0,12"/>
 
-                        <!-- Pavé numérique plus grand -->
-                        <Grid Width="400">
-                            <Grid.RowDefinitions>
-                                <RowDefinition Height="80"/>
-                                <RowDefinition Height="80"/>
-                                <RowDefinition Height="80"/>
-                                <RowDefinition Height="80"/>
-                                <RowDefinition Height="80"/>
-                            </Grid.RowDefinitions>
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="*"/>
-                                <ColumnDefinition Width="*"/>
-                                <ColumnDefinition Width="*"/>
-                            </Grid.ColumnDefinitions>
+                            <TextBlock Text="Utilisez le pavé pour une saisie sécurisée"
+                   FontFamily="Segoe UI"
+                   FontSize="16"
+                   Foreground="#666666"
+                   HorizontalAlignment="Center"
+                   Margin="0,0,0,35"/>
 
-                            <!-- Les boutons restent inchangés, mais seront plus grands grâce à la taille du Grid -->
-                            <Button Content="1" Grid.Row="0" Grid.Column="0"
-                                    Style="{StaticResource NumericButtonStyle}"
-                                    Margin="4" x:Name="Btn1" FontSize="28"/>
-                            <Button Content="2" Grid.Row="0" Grid.Column="1"
-                                    Style="{StaticResource NumericButtonStyle}"
-                                    Margin="4" x:Name="Btn2" FontSize="28"/>
-                            <Button Content="3" Grid.Row="0" Grid.Column="2"
-                                    Style="{StaticResource NumericButtonStyle}"
-                                    Margin="4" x:Name="Btn3" FontSize="28"/>
+                            <!-- Numeric Keypad -->
+                            <Grid Width="400">
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="80"/>
+                                    <RowDefinition Height="80"/>
+                                    <RowDefinition Height="80"/>
+                                    <RowDefinition Height="80"/>
+                                    <RowDefinition Height="80"/>
+                                </Grid.RowDefinitions>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
 
-                            <Button Content="4" Grid.Row="1" Grid.Column="0"
-                                    Style="{StaticResource NumericButtonStyle}"
-                                    Margin="4" x:Name="Btn4" FontSize="28"/>
-                            <Button Content="5" Grid.Row="1" Grid.Column="1"
-                                    Style="{StaticResource NumericButtonStyle}"
-                                    Margin="4" x:Name="Btn5" FontSize="28"/>
-                            <Button Content="6" Grid.Row="1" Grid.Column="2"
-                                    Style="{StaticResource NumericButtonStyle}"
-                                    Margin="4" x:Name="Btn6" FontSize="28"/>
+                                <Button Content="1" Grid.Row="0" Grid.Column="0"
+                    Style="{StaticResource NumericButtonStyle}"
+                    Margin="4" x:Name="Btn1" FontSize="28"/>
+                                <Button Content="2" Grid.Row="0" Grid.Column="1"
+                    Style="{StaticResource NumericButtonStyle}"
+                    Margin="4" x:Name="Btn2" FontSize="28"/>
+                                <Button Content="3" Grid.Row="0" Grid.Column="2"
+                    Style="{StaticResource NumericButtonStyle}"
+                    Margin="4" x:Name="Btn3" FontSize="28"/>
 
-                            <Button Content="7" Grid.Row="2" Grid.Column="0"
-                                    Style="{StaticResource NumericButtonStyle}"
-                                    Margin="4" x:Name="Btn7" FontSize="28"/>
-                            <Button Content="8" Grid.Row="2" Grid.Column="1"
-                                    Style="{StaticResource NumericButtonStyle}"
-                                    Margin="4" x:Name="Btn8" FontSize="28"/>
-                            <Button Content="9" Grid.Row="2" Grid.Column="2"
-                                    Style="{StaticResource NumericButtonStyle}"
-                                    Margin="4" x:Name="Btn9" FontSize="28"/>
+                                <Button Content="4" Grid.Row="1" Grid.Column="0"
+                    Style="{StaticResource NumericButtonStyle}"
+                    Margin="4" x:Name="Btn4" FontSize="28"/>
+                                <Button Content="5" Grid.Row="1" Grid.Column="1"
+                    Style="{StaticResource NumericButtonStyle}"
+                    Margin="4" x:Name="Btn5" FontSize="28"/>
+                                <Button Content="6" Grid.Row="1" Grid.Column="2"
+                    Style="{StaticResource NumericButtonStyle}"
+                    Margin="4" x:Name="Btn6" FontSize="28"/>
 
-                            <Button Content="Clear" Grid.Row="3" Grid.Column="0"
-                                    Style="{StaticResource ClearButtonStyle}"
-                                    Margin="4" x:Name="BtnClear" FontSize="20"/>
-                            <Button Content="0" Grid.Row="3" Grid.Column="1"
-                                    Style="{StaticResource NumericButtonStyle}"
-                                    Margin="4" x:Name="Btn0" FontSize="28"/>
-                            <Button Content="⌫" Grid.Row="3" Grid.Column="2"
-                                    Style="{StaticResource ClearButtonStyle}"
-                                    Margin="4" x:Name="BtnDelete" FontSize="24"/>
+                                <Button Content="7" Grid.Row="2" Grid.Column="0"
+                    Style="{StaticResource NumericButtonStyle}"
+                    Margin="4" x:Name="Btn7" FontSize="28"/>
+                                <Button Content="8" Grid.Row="2" Grid.Column="1"
+                    Style="{StaticResource NumericButtonStyle}"
+                    Margin="4" x:Name="Btn8" FontSize="28"/>
+                                <Button Content="9" Grid.Row="2" Grid.Column="2"
+                    Style="{StaticResource NumericButtonStyle}"
+                    Margin="4" x:Name="Btn9" FontSize="28"/>
 
-                            <Button Content="ENTER" Grid.Row="4" Grid.Column="0" Grid.ColumnSpan="3"
-                                    Style="{StaticResource EnterButtonStyle}"
-                                    Margin="4" x:Name="BtnEnter"
-                                    FontSize="28" Click="BtnEnter_Click"/>
-                        </Grid>
-                    </StackPanel>
+                                <Button Content="Effacer" Grid.Row="3" Grid.Column="0"
+                    Style="{StaticResource ClearButtonStyle}"
+                    Margin="4" x:Name="BtnClear" FontSize="16"/>
+                                <Button Content="0" Grid.Row="3" Grid.Column="1"
+                    Style="{StaticResource NumericButtonStyle}"
+                    Margin="4" x:Name="Btn0" FontSize="28"/>
+                                <Button Content="⌫" Grid.Row="3" Grid.Column="2"
+                    Style="{StaticResource ClearButtonStyle}"
+                    Margin="4" x:Name="BtnDelete" FontSize="24"/>
+
+                                <Button Content="ENTRÉE" Grid.Row="4" Grid.Column="0" Grid.ColumnSpan="3"
+                    Style="{StaticResource EnterButtonStyle}"
+                    Margin="4" x:Name="BtnEnter"
+                    FontSize="28" Click="BtnEnter_Click"/>
+                            </Grid>
+                        </StackPanel>
+                    </Grid>
                 </Border>
             </Grid>
         </Border>

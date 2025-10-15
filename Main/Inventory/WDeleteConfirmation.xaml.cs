@@ -31,32 +31,40 @@ namespace Superete.Main.Inventory
         Article a; List<Article> la; CMainI main; CSingleRowFamilly sf;
         private async void DeleteButton_Click(object sender, RoutedEventArgs e)
         {
-            Operation Operation = new Operation();
-            Operation.OperationType = "Delete";
-            Operation.PrixOperation = a.Quantite * a.PrixAchat;
-
-            Operation.UserID = main.u.UserID;
-
-            int idd = await Operation.InsertOperationAsync();
-            OperationArticle ofa = new OperationArticle();
-            ofa.ArticleID = a.ArticleID;
-            ofa.OperationID = idd;
-            ofa.QteArticle = Convert.ToInt32(a.Quantite);
-            await ofa.InsertOperationArticleAsync();
-            a.DeleteArticleAsync();
-            foreach (Article article in la)
+            try
             {
-                if(article.ArticleID==a.ArticleID)
+                Operation Operation = new Operation();
+                Operation.OperationType = "Delete";
+                Operation.PrixOperation = a.Quantite * a.PrixAchat;
+
+                Operation.UserID = main.u.UserID;
+
+                int idd = await Operation.InsertOperationAsync();
+                OperationArticle ofa = new OperationArticle();
+                ofa.ArticleID = a.ArticleID;
+                ofa.OperationID = idd;
+                ofa.QteArticle = Convert.ToInt32(a.Quantite);
+                await ofa.InsertOperationArticleAsync();
+                a.DeleteArticleAsync();
+                foreach (Article article in la)
                 {
-                    la.Remove(article);
-                    break;
+                    if (article.ArticleID == a.ArticleID)
+                    {
+                        la.Remove(article);
+                        break;
+                    }
                 }
+                sf?.LoadArticles(la);
+                main?.LoadArticles(la);
+                WCongratulations wCongratulations = new WCongratulations("Suppresion réussite", "Suppresion a ete effectue avec succes",1);
+                wCongratulations.Show();
             }
-            sf?.LoadArticles(la);
-            main?.LoadArticles(la);
-            WCongratulations wCongratulations = new WCongratulations(2);
-            wCongratulations.Show();
-            this.Close();
+            catch (Exception ex)
+            {
+
+                WCongratulations wCongratulations = new WCongratulations("Suppresion échoué", "Suppresion n'a pas a ete effectue ", 0);
+                wCongratulations.Show();
+            }
         }
 
         private void CancelButton_Click(object sender, RoutedEventArgs e)

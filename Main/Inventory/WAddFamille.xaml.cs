@@ -59,7 +59,7 @@ namespace Superete.Main.Inventory
                 ff.FamilleName = FamillyName.Text;
                 ff.NbrArticle = 0;
                 int id = await ff.InsertFamilleAsync();
-                f.FamilleID = id;
+                ff.FamilleID = id;
                 lf.Add(ff);
                 if (ww == 1)
                 {
@@ -77,7 +77,7 @@ namespace Superete.Main.Inventory
                 }
                 else
                 {
-                    ar.LoadFamillies(lf);
+                    ar.LoadFamillies(lf,1);
                 }
                     
                 this.Close();

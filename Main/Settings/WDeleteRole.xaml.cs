@@ -34,16 +34,30 @@ namespace Superete.Main.Settings
 
         private async void ConfirmButton_Click_1(object sender, RoutedEventArgs e)
         {
-            if (lu.Where(u => u.RoleID == r.RoleID).Count() > 0)
+            try
             {
-                MessageBox.Show("Impossible de supprimer ce rôle car des utilisateurs y sont encore associés.", "Erreur", MessageBoxButton.OK, MessageBoxImage.Error);
-                return;
+                if (lu.Where(u => u.RoleID == r.RoleID).Count() > 0)
+                {
+                    MessageBox.Show("Impossible de supprimer ce rôle car des utilisateurs y sont encore associés.", "Erreur", MessageBoxButton.OK, MessageBoxImage.Error);
+                    return;
+                }
+                List<Role> newR = lr;
+                await r.DeleteRoleAsync();
+                newR.Remove(r);
+                Roles.LoadRoles();
+
+                //this.Close();
+
+
+                WCongratulations wCongratulations = new WCongratulations("Suppression réussite", "Suppression a ete effectue avec succes", 1);
+                wCongratulations.ShowDialog();
             }
-            List<Role> newR = lr;
-            await r.DeleteRoleAsync();
-            newR.Remove(r);
-            Roles.LoadRoles();
-            this.Close();
+            catch (Exception ex)
+            {
+
+                WCongratulations wCongratulations = new WCongratulations("Suppression échoué", "Suppression n'a pas ete effectue ", 0);
+                wCongratulations.ShowDialog();
+            }
         }
     }
 }

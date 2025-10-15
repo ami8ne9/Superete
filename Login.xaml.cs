@@ -97,16 +97,24 @@ namespace Superete
             List<User> lu=await u.GetUsersAsync();
             foreach (User user in lu)
             {
-                if (user.Code == Convert.ToInt32(PasswordInput.Password))
+                if (user.Code.ToString() == PasswordInput.Password)
                 {
 
                     main.load_main(user);
                     return;
                 }
             }
-            PasswordInput.Clear();
+
+            passwordBuilder.Clear();
+            PasswordInput.Password = string.Empty;
             MessageBox.Show("Wrong Code");
 
+        }
+
+        private void BtnShutdown_Click(object sender, RoutedEventArgs e)
+        {
+            Exit exit = new Exit(null, 0);
+            exit.ShowDialog();
         }
     }
 }

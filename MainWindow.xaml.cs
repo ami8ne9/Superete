@@ -164,5 +164,14 @@ namespace Superete
             loginPage.Margin = new Thickness(0);
             MainGrid.Children.Add(loginPage);
         }
+        public void load_Login()
+        {
+            MainGrid.Children.Clear();
+            Login loginPage = new Login(this);
+            loginPage.HorizontalAlignment = HorizontalAlignment.Stretch;
+            loginPage.VerticalAlignment = VerticalAlignment.Stretch;
+            loginPage.Margin = new Thickness(0);
+            MainGrid.Children.Add(loginPage);
+        }
     }
 }

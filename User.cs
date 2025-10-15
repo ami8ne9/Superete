@@ -9,7 +9,7 @@ namespace Superete {
     {
         public int UserID { get; set; }
         public string UserName { get; set; }
-        public int Code { get; set; }
+        public string Code { get; set; }
         public int RoleID { get; set; }
         public int Etat { get; set; }
 
@@ -37,7 +37,7 @@ namespace Superete {
                         {
                             UserID = Convert.ToInt32(reader["UserID"]),
                             UserName = reader["UserName"].ToString(),
-                            Code = Convert.ToInt32(reader["Code"]),
+                            Code = reader["Code"].ToString(),
                             RoleID = Convert.ToInt32(reader["RoleID"]),
                             Etat = Convert.ToInt32(reader["Etat"])
                         };

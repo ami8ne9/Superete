@@ -141,6 +141,8 @@ namespace Superete.Main.ProjectManagment
                 Start.Text = "M";
                 OperationType1.Text = "Modification #" + so.op.OperationID.ToString();
                 OperationType2.Text = "Modification";
+                PaymentTypeLabel.Visibility = Visibility.Collapsed;
+                PaymentType.Visibility = Visibility.Collapsed;
                 FC.Visibility = Visibility.Collapsed;
                 FCName.Visibility = Visibility.Collapsed;
                 ArticleOperation.Visibility = Visibility.Collapsed;
@@ -152,7 +154,6 @@ namespace Superete.Main.ProjectManagment
                 RightSideContainer.Width = new GridLength(0);
                 this.Height= 520;
                 this.Width = 600;
-                Print.Visibility = Visibility.Collapsed;
 
             }
             else if (so.op.OperationType.StartsWith("D"))
@@ -161,6 +162,8 @@ namespace Superete.Main.ProjectManagment
                 Start.Text = "S";
                 OperationType1.Text = "Suppression #" + so.op.OperationID.ToString();
                 OperationType2.Text = "Suppression";
+                PaymentTypeLabel.Visibility = Visibility.Collapsed;
+                PaymentType.Visibility = Visibility.Collapsed;
                 FC.Visibility = Visibility.Collapsed;
                 FCName.Visibility = Visibility.Collapsed;
                 ArticleOperation.Visibility = Visibility.Collapsed;
@@ -173,7 +176,6 @@ namespace Superete.Main.ProjectManagment
                 RightSideContainer.Width = new GridLength(0);
                 this.Height = 520;
                 this.Width = 600;
-                Print.Visibility = Visibility.Collapsed;
 
             }
             else if (so.op.OperationType.StartsWith("S"))
@@ -191,6 +193,8 @@ namespace Superete.Main.ProjectManagment
                         break;
                     }
                 }
+                PaymentTypeLabel.Visibility = Visibility.Collapsed;
+                PaymentType.Visibility = Visibility.Collapsed;
                 ArticleOperation.Visibility = Visibility.Collapsed;
                 TotalPriceLabel.Text = "Payement Value";
                 ArticlesCountLabel.Visibility = Visibility.Collapsed;
@@ -200,7 +204,6 @@ namespace Superete.Main.ProjectManagment
 
                 this.Height = 520;
                 this.Width = 600;
-                Print.Visibility = Visibility.Collapsed;
 
             }
             else if (so.op.OperationType.StartsWith("P"))
@@ -209,6 +212,8 @@ namespace Superete.Main.ProjectManagment
                 Start.Text = "P";
                 OperationType1.Text = "Payement de Credit Client#" + so.op.OperationID.ToString();
                 OperationType2.Text = "Payement de Credit Client";
+                PaymentTypeLabel.Visibility = Visibility.Collapsed;
+                PaymentType.Visibility = Visibility.Collapsed;
                 foreach (Client c in so.main.main.lc)
                 {
                     if (so.op.ClientID == c.ClientID)
@@ -226,7 +231,6 @@ namespace Superete.Main.ProjectManagment
                 RightSideContainer.Width = new GridLength(0);
                 this.Height = 520;
                 this.Width = 600;
-                Print.Visibility = Visibility.Collapsed;
 
             }
             LoadArticles();
@@ -235,6 +239,7 @@ namespace Superete.Main.ProjectManagment
             {
                 IconColor.Background = (SolidColorBrush)(new BrushConverter().ConvertFrom("#828181"));
                 OperationType1.Text += " (Reversed)";
+                ReverseAritcles.Visibility = Visibility.Collapsed;
             }
         }
         public CSingleOperation so;int count;

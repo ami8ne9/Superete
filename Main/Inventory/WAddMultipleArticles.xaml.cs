@@ -58,6 +58,11 @@ namespace Superete.Main.Inventory
 
         private void CashButton_Click(object sender, RoutedEventArgs e)
         {
+            if (ArticlesContainer.Children.Count == 0)
+            {
+                MessageBox.Show("There is no Aticles");
+                return;
+            }
             int MethodID = 0;
             foreach (PaymentMethod p in main.main.lp)
             {
@@ -72,6 +77,11 @@ namespace Superete.Main.Inventory
 
         private void HalfButton_Click(object sender, RoutedEventArgs e)
         {
+            if (ArticlesContainer.Children.Count == 0)
+            {
+                MessageBox.Show("There is no Aticles");
+                return;
+            }
             int MethodID = 0;
             foreach (PaymentMethod p in main.main.lp)
             {
@@ -86,6 +96,11 @@ namespace Superete.Main.Inventory
 
         private void CreditButton_Click(object sender, RoutedEventArgs e)
         {
+            if (ArticlesContainer.Children.Count == 0)
+            {
+                MessageBox.Show("There is no Aticles");
+                return;
+            }
             int MethodID = 0;
             foreach (PaymentMethod p in main.main.lp)
             {

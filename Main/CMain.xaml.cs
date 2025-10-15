@@ -27,7 +27,7 @@ namespace Superete.Main
             this.u = u;
             Name.Text = u.UserName;
         }
-        MainWindow main; User u;
+        public MainWindow main; User u;
 
 
         private void Button_Click_1(object sender, RoutedEventArgs e)
@@ -70,6 +70,12 @@ namespace Superete.Main
         private void Button_Click_3(object sender, RoutedEventArgs e)
         {
             main.load_fournisseur(u);
+        }
+
+        private void Button_Click_6(object sender, RoutedEventArgs e)
+        {
+            Exit exit=new Exit(this,1);
+            exit.ShowDialog();
         }
     }
 }

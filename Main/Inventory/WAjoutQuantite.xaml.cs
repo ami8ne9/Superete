@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Sockets;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
@@ -11,7 +13,6 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
-using System.Text.RegularExpressions;
 
 namespace Superete.Main.Inventory
 {
@@ -35,6 +36,18 @@ namespace Superete.Main.Inventory
             }
 
             LoadPayments(ns.main.main.lp);
+            foreach (Role r in ns.main.main.lr)
+            {
+                if (ns.main.u.RoleID == r.RoleID)
+                {
+                    if (r.SolderFournisseur == false)
+                    {
+                        HalfButton.IsEnabled = false;
+                        CreditButton.IsEnabled = false;
+                    }
+                    break;
+                }
+            }
         }
         public Article a;public CSingleRowArticle sa;int s;public WNouveauStock ns;public int qte;
         private void CloseButton_Click(object sender, RoutedEventArgs e)

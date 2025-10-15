@@ -38,6 +38,21 @@ namespace Superete.Main.Inventory
                     Fournisseur.Text = fo.Nom;
                     break;
                 }
+            foreach (Role r in main.main.lr)
+            {
+                if (main.u.RoleID == r.RoleID)
+                {
+                    if (r.DeleteArticle == false )
+                    {
+                        Deletebtn.IsEnabled = false;
+                    }
+                    if (r.EditArticle == false)
+                    {
+                        Editbtn.IsEnabled = false;
+                    }
+                    break;
+                }
+            }
             PrixVente.Text = a.PrixVente.ToString("0.00") + " Dh";
             PrixAchat.Text=a.PrixAchat.ToString("0.00") + " Dh";
             PrixMP.Text=a.PrixMP.ToString("0.00") + " Dh";

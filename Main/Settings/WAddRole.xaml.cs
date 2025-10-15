@@ -70,80 +70,122 @@ namespace Superete.Main.Settings
 
         private async void AppliquerButton_Click(object sender, RoutedEventArgs e)
         {
-            if (string.IsNullOrWhiteSpace(RoleName.Text))
+            try
             {
-                MessageBox.Show("Le nom du rôle ne peut pas être vide.", "Erreur", MessageBoxButton.OK, MessageBoxImage.Error);
-                return;
-            }
-            if (lr.Any(r => r.RoleName.Equals(RoleName.Text, StringComparison.OrdinalIgnoreCase)))
-            {
-                MessageBox.Show("Un rôle avec ce nom existe déjà.", "Erreur", MessageBoxButton.OK, MessageBoxImage.Error);
-                return;
-            }
-            Role newRole = new Role
-            {
-                RoleName = RoleName.Text,
-
-                // Client Permissions
-                CreateClient = check(CreateClient),
-                ModifyClient = check(ModifyClient),
-                DeleteClient = check(DeleteClient),
-                ViewClient = check(ViewClient),
-                ViewOperationClient = check(ViewOperationClient),
-                PayeClient = check(PayeClient),
-
-                // Fournisseur Permissions
-                CreateFournisseur = check(CreateFournisseur),
-                ModifyFournisseur = check(ModifyFournisseur),
-                DeleteFournisseur = check(DeleteFournisseur),
-                ViewFournisseur = check(ViewFournisseur),
-                ViewOperationFournisseur = check(ViewOperationFournisseur),
-                PayeFournisseur = check(PayeFournisseur),
-
-                // Operations / Movements
-                ReverseOperation = check(ReverseOperation),
-                ReverseMouvment = check(ReverseMouvment),
-                ViewOperation = check(ViewOperation),
-                ViewMouvment = check(ViewMouvment),
-
-                // Management & Settings
-                ViewProjectManagment = check(ViewProjectManagment),
-                ViewSettings = check(ViewSettings),
-                ModifyTicket = check(ModifyTicket),
-
-                // Users & Roles
-                ViewUsers = check(ViewUsers),
-                AddUsers = check(AddUsers),
-                EditUsers = check(EditUsers),
-                DeleteUsers = check(DeleteUsers),
-                ViewRoles = check(ViewRoles),
-                AddRoles = check(AddRoles),
-                DeleteRoles = check(DeleteRoles),
-
-                // Familles
-                ViewFamilly = check(ViewFamilly),
-                AddFamilly = check(AddFamilly),
-                EditFamilly = check(EditFamilly),
-                DeleteFamilly = check(DeleteFamilly)
-            };
-
-
-            int id = await newRole.InsertRoleAsync();
-            newRole.RoleID = id;
-            lr.Add(newRole);
-            foreach (Role r in roles.CUM.sp.main.lr)
-            {
-                if (roles.CUM.u.RoleID == r.RoleID)
+                if (string.IsNullOrWhiteSpace(RoleName.Text))
                 {
-                    if (r.ViewRoles == true)
-                    {
-                        roles.LoadRoles();
-                    }
-                    break;
+                    MessageBox.Show("Le nom du rôle ne peut pas être vide.", "Erreur", MessageBoxButton.OK, MessageBoxImage.Error);
+                    return;
                 }
+                if (lr.Any(r => r.RoleName.Equals(RoleName.Text, StringComparison.OrdinalIgnoreCase)))
+                {
+                    MessageBox.Show("Un rôle avec ce nom existe déjà.", "Erreur", MessageBoxButton.OK, MessageBoxImage.Error);
+                    return;
+                }
+                Role newRole = new Role
+                {
+                    RoleName = RoleName.Text,
+
+                    // Client Permissions
+                    CreateClient = check(CreateClient),
+                    ModifyClient = check(ModifyClient),
+                    DeleteClient = check(DeleteClient),
+                    ViewClient = check(ViewClient),
+                    ViewOperationClient = check(ViewOperationClient),
+                    PayeClient = check(PayeClient),
+
+                    // Fournisseur Permissions
+                    CreateFournisseur = check(CreateFournisseur),
+                    ModifyFournisseur = check(ModifyFournisseur),
+                    DeleteFournisseur = check(DeleteFournisseur),
+                    ViewFournisseur = check(ViewFournisseur),
+                    ViewOperationFournisseur = check(ViewOperationFournisseur),
+                    PayeFournisseur = check(PayeFournisseur),
+
+                    // Operations / Movements
+                    ReverseOperation = check(ReverseOperation),
+                    ReverseMouvment = check(ReverseMouvment),
+                    ViewOperation = check(ViewOperation),
+                    ViewMouvment = check(ViewMouvment),
+
+                    // Management & Settings
+                    ViewProjectManagment = check(ViewProjectManagment),
+                    ViewSettings = check(ViewSettings),
+
+                    // Users & Roles
+                    ViewUsers = check(ViewUsers),
+                    AddUsers = check(AddUsers),
+                    EditUsers = check(EditUsers),
+                    DeleteUsers = check(DeleteUsers),
+                    ViewRoles = check(ViewRoles),
+                    AddRoles = check(AddRoles),
+                    DeleteRoles = check(DeleteRoles),
+
+                    // Familles
+                    ViewFamilly = check(ViewFamilly),
+                    AddFamilly = check(AddFamilly),
+                    EditFamilly = check(EditFamilly),
+                    DeleteFamilly = check(DeleteFamilly),
+
+                    // Articles
+                    AddArticle = check(AddArticle),
+                    DeleteArticle = check(DeleteArticle),
+                    EditArticle = check(EditArticle),
+                    ViewArticle = check(ViewArticle),
+
+                    // Reports & Tickets
+                    Repport = check(Repport),
+                    Ticket = check(Ticket),
+                    ViewFacture = check(ViewFacture),
+
+                    // Settlements
+                    SolderFournisseur = check(SolderFournisseur),
+                    SolderClient = check(SolderClient),
+
+                    // Invoice Settings
+                    ViewFactureSettings = check(ViewFactureSettings),
+                    ModifyFactureSettings = check(ModifyFactureSettings),
+
+                    // Payment Methods
+                    ViewPaymentMethod = check(ViewPaymentMethod),
+                    AddPaymentMethod = check(AddPaymentMethod),
+                    ModifyPaymentMethod = check(ModifyPaymentMethod),
+                    DeletePaymentMethod = check(DeletePaymentMethod),
+
+                    // System Actions
+                    ViewApropos = check(ViewApropos),
+                    Logout = check(Logout),
+                    ViewExit = check(Exit),
+                    ViewShutDown = check(ShutDown)
+                };
+
+
+                int id = await newRole.InsertRoleAsync();
+                newRole.RoleID = id;
+                lr.Add(newRole);
+                foreach (Role r in roles.CUM.sp.main.lr)
+                {
+                    if (roles.CUM.u.RoleID == r.RoleID)
+                    {
+                        if (r.ViewRoles == true)
+                        {
+                            roles.LoadRoles();
+                        }
+                        break;
+                    }
+                }
+
+                //this.Close();
+
+                WCongratulations wCongratulations = new WCongratulations("Ajout avec succès", "l'ajout a ete effectue avec succes", 1);
+                wCongratulations.ShowDialog();
             }
-            
-            this.Close();
+            catch (Exception ex)
+            {
+
+                WCongratulations wCongratulations = new WCongratulations("Ajout échoué", "l'ajout n'a pas ete effectue ", 0);
+                wCongratulations.ShowDialog();
+            }
         }
         private bool check(CheckBox cb)
         {

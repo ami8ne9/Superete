@@ -68,38 +68,51 @@ namespace Superete.Main.Settings
 
         private async void RegisterButton_Click(object sender, RoutedEventArgs e)
         {
-            List<User> newU = lu;
-            if (Name.Text == "" || Code.Password == "")
+            try
             {
-                MessageBox.Show("Please fill all the fields");
-                return;
-            }
-            u.UserName = Name.Text;
-            u.Code = Convert.ToInt32(Code.Password);
-            foreach (Role role in lr)
-            {
-                if (role.RoleName == Roles.SelectedItem.ToString())
+                List<User> newU = lu;
+                if (Name.Text == "" || Code.Password == "")
                 {
-                    u.RoleID = role.RoleID;
-                    break;
+                    MessageBox.Show("Please fill all the fields");
+                    return;
                 }
-            }
-            u.Etat = 1;
-            
-            foreach(User user in newU)
-            {
-                if(user.UserID==u.UserID)
+                u.UserName = Name.Text;
+                u.Code = Code.Password;
+                foreach (Role role in lr)
                 {
-                    user.UserName = u.UserName;
-                    user.Code = u.Code;
-                    user.RoleID = u.RoleID;
-                    
-                    break;
+                    if (role.RoleName == Roles.SelectedItem.ToString())
+                    {
+                        u.RoleID = role.RoleID;
+                        break;
+                    }
                 }
+                u.Etat = 1;
+
+                foreach (User user in newU)
+                {
+                    if (user.UserID == u.UserID)
+                    {
+                        user.UserName = u.UserName;
+                        user.Code = u.Code;
+                        user.RoleID = u.RoleID;
+
+                        break;
+                    }
+                }
+                await u.UpdateUserAsync();
+                CUM.Load_users();
+                //this.Close();
+
+
+                WCongratulations wCongratulations = new WCongratulations("Modification avec succès", "la Modification a ete effectue avec succes", 1);
+                wCongratulations.ShowDialog();
             }
-            await u.UpdateUserAsync();
-            CUM.Load_users();
-            this.Close();
+            catch (Exception ex)
+            {
+
+                WCongratulations wCongratulations = new WCongratulations("Modification échoué", "la Modification n'a pas ete effectue ", 0);
+                wCongratulations.ShowDialog();
+            }
         }
 
         private void addRole_Click(object sender, RoutedEventArgs e)

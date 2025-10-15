@@ -12,26 +12,30 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 
-namespace Superete.Main.Inventory
+namespace Superete.Main
 {
     /// <summary>
     /// Interaction logic for WCongratulations.xaml
     /// </summary>
     public partial class WCongratulations : Window
     {
-        public WCongratulations(int s)
+        public WCongratulations(string Headerr,string Messagee,int s)
         {
             InitializeComponent();
-            if (s == 1)
+            if (s == 0)
             {
-                Header.Text = "Modification Effectue";
-                MessageText.Text = "Votre article a ete modifier";
+                SuccessIcon.Background = (SolidColorBrush)new BrushConverter().ConvertFromString("#fa1302");
+                btn.Background = (SolidColorBrush)new BrushConverter().ConvertFromString("#fa1302");
             }
-            else if(s == 2) {
+            else if(s == 1) {
 
-                Header.Text = "Suppresion Effectue";
-                MessageText.Text = "Votre article a ete supprimmer";
+
+                SuccessIcon.Background = (SolidColorBrush)new BrushConverter().ConvertFromString("#10B981");
+                btn.Background =(SolidColorBrush)new BrushConverter().ConvertFromString("#10B981");
             }
+
+            Header.Text = Headerr;
+            Message.Text = Messagee;
         }
 
         private void OkButton_Click(object sender, RoutedEventArgs e)

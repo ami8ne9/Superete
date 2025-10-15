@@ -59,6 +59,7 @@
     <Compile Include="Article.cs" />
     <Compile Include="Client.cs" />
     <Compile Include="Credit.cs" />
+    <Compile Include="FactureSettings.cs" />
     <Compile Include="Famille.cs" />
     <Compile Include="Fournisseur.cs" />
     <Compile Include="GlobalButtonWindow.xaml.cs">
@@ -84,6 +85,9 @@
     </Compile>
     <Compile Include="Main\CMain.xaml.cs">
       <DependentUpon>CMain.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Main\Exit.xaml.cs">
+      <DependentUpon>Exit.xaml</DependentUpon>
     </Compile>
     <Compile Include="Main\FournisseurPage\CMainF.xaml.cs">
       <DependentUpon>CMainF.xaml</DependentUpon>
@@ -133,7 +137,7 @@
     <Compile Include="Main\Inventory\WConfirmTransaction.xaml.cs">
       <DependentUpon>WConfirmTransaction.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Main\Inventory\WCongratulations.xaml.cs">
+    <Compile Include="Main\WCongratulations.xaml.cs">
       <DependentUpon>WCongratulations.xaml</DependentUpon>
     </Compile>
     <Compile Include="Main\Inventory\WDeleteConfirmation.xaml.cs">
@@ -178,6 +182,9 @@
     <Compile Include="Main\ProjectManagment\WReverseMouvmentConfirmation.xaml.cs">
       <DependentUpon>WReverseMouvmentConfirmation.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Main\Settings\CFactureSettings.xaml.cs">
+      <DependentUpon>CFactureSettings.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Main\Settings\CSingleRole.xaml.cs">
       <DependentUpon>CSingleRole.xaml</DependentUpon>
     </Compile>
@@ -186,6 +193,9 @@
     </Compile>
     <Compile Include="Main\Settings\CUserManagment.xaml.cs">
       <DependentUpon>CUserManagment.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Main\Settings\PaymentMethodSettings.xaml.cs">
+      <DependentUpon>PaymentMethodSettings.xaml</DependentUpon>
     </Compile>
     <Compile Include="Main\Settings\SettingsPage.xaml.cs">
       <DependentUpon>SettingsPage.xaml</DependentUpon>
@@ -201,6 +211,9 @@
     </Compile>
     <Compile Include="Main\Settings\WDeleteUser.xaml.cs">
       <DependentUpon>WDeleteUser.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Main\Settings\WFacturePreview.xaml.cs">
+      <DependentUpon>WFacturePreview.xaml</DependentUpon>
     </Compile>
     <Compile Include="Main\Settings\WRoles.xaml.cs">
       <DependentUpon>WRoles.xaml</DependentUpon>
@@ -291,6 +304,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="Main\Exit.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Main\FournisseurPage\CMainF.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -355,7 +372,7 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Main\Inventory\WCongratulations.xaml">
+    <Page Include="Main\WCongratulations.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -415,6 +432,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="Main\Settings\CFactureSettings.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="Main\Settings\CSingleRole.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -426,6 +447,10 @@
     <Page Include="Main\Settings\CUserManagment.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Main\Settings\PaymentMethodSettings.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
     </Page>
     <Page Include="Main\Settings\SettingsPage.xaml">
       <SubType>Designer</SubType>
@@ -446,6 +471,10 @@
     <Page Include="Main\Settings\WDeleteUser.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Main\Settings\WFacturePreview.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
     </Page>
     <Page Include="Main\Settings\WRoles.xaml">
       <SubType>Designer</SubType>
@@ -525,6 +554,9 @@
     <Resource Include="Main\images\management.png" />
     <Resource Include="Main\images\parametres.png" />
     <Resource Include="Main\images\revenu.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Main\images\4866608.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

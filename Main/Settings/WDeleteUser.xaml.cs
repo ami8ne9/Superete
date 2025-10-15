@@ -38,12 +38,23 @@ namespace Superete.Main.Settings
 
         private async void ConfirmButton_Click(object sender, RoutedEventArgs e)
         {
+            try
+            {
+                List<User> newU = lu;
+                await u.DeleteUserAsync();
+                newU.Remove(u);
+                CUM.Load_users();
+                //this.Close();
 
-            List<User> newU = lu;
-            await u.DeleteUserAsync();
-            newU.Remove(u);
-            CUM.Load_users();
-            this.Close();
+                WCongratulations wCongratulations = new WCongratulations("Suppression réussite", "Suppression a ete effectue avec succes", 1);
+                wCongratulations.ShowDialog();
+
+            }
+            catch (Exception ex)
+            {
+                WCongratulations wCongratulations = new WCongratulations("Suppression échoué", "Suppression n'a pas ete effectue ", 0);
+                wCongratulations.ShowDialog();
+            }
         }
     }
 }

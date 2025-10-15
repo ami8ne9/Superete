@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Sockets;
 using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
@@ -40,6 +41,22 @@ namespace Superete.Main.Vente
             }
             LoadArticles(la);
             LoadPayments(main.lp);
+            foreach (Role r in lr)
+            {
+                if (u.RoleID == r.RoleID)
+                {
+                    if (r.Ticket == false)
+                    {
+                        Ticket.IsChecked = false;
+                        Ticket.IsEnabled = false;
+                    }
+                    if (r.SolderClient == false) { 
+                        HalfButton.IsEnabled = false;
+                        CreditButton.IsEnabled = false;
+                    }
+                    break;
+                }
+            }
         }
 
         public User u;List<Famille> lf;public List<Article> la; public MainWindow main;public decimal TotalNett=0; public int NbrA = 0; public List<Fournisseur> lfo;

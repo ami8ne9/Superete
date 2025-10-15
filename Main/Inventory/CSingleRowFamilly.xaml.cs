@@ -48,17 +48,28 @@ namespace Superete.Main.Inventory
         public Famille f; List<Famille> lf; WManageFamillies main; List<Article> la; public CMainI Main;
         private void MyGrid_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
-            main.Width=1100;
-            double screenWidth = SystemParameters.WorkArea.Width;
-            double screenHeight = SystemParameters.WorkArea.Height;
-            main.Left = (screenWidth - main.Width) / 2;
-            main.Top = (screenHeight - main.Height) / 2;
-            main.ArticlesColumn.Width = new GridLength(3, GridUnitType.Star);
-            main.ArticlesTitle.Text =$"Articles de {f.FamilleName}";
-            LoadArticles(la);
-            if (la.Where(a => a.FamillyID == f.FamilleID).ToList().Count == 0)
+            foreach (Role r in Main.main.lr)
             {
-                main.ArticlesContainer.Children.Add(new TextBlock() { Text = "Aucun article dans cette famille.", FontSize = 16, HorizontalAlignment = HorizontalAlignment.Center, VerticalAlignment = VerticalAlignment.Center });
+                if (Main.u.RoleID == r.RoleID)
+                {
+                    if (r.ViewArticle == true)
+                    {
+
+                        main.Width = 1100;
+                        double screenWidth = SystemParameters.WorkArea.Width;
+                        double screenHeight = SystemParameters.WorkArea.Height;
+                        main.Left = (screenWidth - main.Width) / 2;
+                        main.Top = (screenHeight - main.Height) / 2;
+                        main.ArticlesColumn.Width = new GridLength(3, GridUnitType.Star);
+                        main.ArticlesTitle.Text = $"Articles de {f.FamilleName}";
+                        LoadArticles(la);
+                        if (la.Where(a => a.FamillyID == f.FamilleID).ToList().Count == 0)
+                        {
+                            main.ArticlesContainer.Children.Add(new TextBlock() { Text = "Aucun article dans cette famille.", FontSize = 16, HorizontalAlignment = HorizontalAlignment.Center, VerticalAlignment = VerticalAlignment.Center });
+                        }
+                    }
+                    break;
+                }
             }
         }
         public void LoadArticles(List<Article> laa)

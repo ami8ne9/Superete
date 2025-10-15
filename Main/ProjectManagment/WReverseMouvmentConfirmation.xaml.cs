@@ -43,12 +43,25 @@ namespace Superete.Main.ProjectManagment
 
         private void ContinueButton_Click(object sender, RoutedEventArgs e)
         {
-            sm.opa.Reversed = true;
-            sm.opa.UpdateOperationArticleAsync();
-            sm.main.LoadOperations(sm.main.main.lo);
-            sm.main.LoadMouvments(sm.main.main.loa);
-            sm.main.LoadStats();
-            this.Close();
+            try
+            {
+                sm.opa.Reversed = true;
+                sm.opa.UpdateOperationArticleAsync();
+                sm.main.LoadOperations(sm.main.main.lo);
+                sm.main.LoadMouvments(sm.main.main.loa);
+                sm.main.LoadStats();
+                sm.main.LoadStatistics();
+                //this.Close();
+
+                WCongratulations wCongratulations = new WCongratulations("Reverse réussie", "Reverse a ete effectue avec succes", 1);
+                wCongratulations.ShowDialog();
+            }
+            catch (Exception ex)
+            {
+
+                WCongratulations wCongratulations = new WCongratulations("Reverse échoué", "Reverse n'a pas ete effectue ", 0);
+                wCongratulations.ShowDialog();
+            }
         }
     }
 }

@@ -10,6 +10,7 @@ namespace Superete
     {
         public int PaymentMethodID { get; set; }
         public string PaymentMethodName { get; set; }
+        public string ImagePath { get; set; } // New property for image
 
         private static readonly string ConnectionString = "Server=localhost\\SQLEXPRESS;Database=SUPERETE;Trusted_Connection=True;";
 
@@ -30,7 +31,8 @@ namespace Superete
                         PaymentMethod method = new PaymentMethod
                         {
                             PaymentMethodID = Convert.ToInt32(reader["PaymentMethodID"]),
-                            PaymentMethodName = reader["PaymentMethodName"].ToString()
+                            PaymentMethodName = reader["PaymentMethodName"].ToString(),
+                            ImagePath = reader["ImagePath"]?.ToString() ?? ""
                         };
                         methods.Add(method);
                     }
@@ -42,7 +44,7 @@ namespace Superete
         // Insert new payment method
         public async Task<int> InsertPaymentMethodAsync()
         {
-            string query = "INSERT INTO PaymentMethod (PaymentMethodName) VALUES (@PaymentMethodName); SELECT SCOPE_IDENTITY();";
+            string query = "INSERT INTO PaymentMethod (PaymentMethodName, ImagePath) VALUES (@PaymentMethodName, @ImagePath); SELECT SCOPE_IDENTITY();";
 
             using (SqlConnection connection = new SqlConnection(ConnectionString))
             {
@@ -52,6 +54,7 @@ namespace Superete
                     using (SqlCommand cmd = new SqlCommand(query, connection))
                     {
                         cmd.Parameters.AddWithValue("@PaymentMethodName", this.PaymentMethodName ?? (object)DBNull.Value);
+                        cmd.Parameters.AddWithValue("@ImagePath", this.ImagePath ?? (object)DBNull.Value);
                         object result = await cmd.ExecuteScalarAsync();
                         return Convert.ToInt32(result);
                     }
@@ -67,7 +70,7 @@ namespace Superete
         // Update existing payment method
         public async Task<int> UpdatePaymentMethodAsync()
         {
-            string query = "UPDATE PaymentMethod SET PaymentMethodName=@PaymentMethodName WHERE PaymentMethodID=@PaymentMethodID";
+            string query = "UPDATE PaymentMethod SET PaymentMethodName=@PaymentMethodName, ImagePath=@ImagePath WHERE PaymentMethodID=@PaymentMethodID";
 
             using (SqlConnection connection = new SqlConnection(ConnectionString))
             {
@@ -77,6 +80,7 @@ namespace Superete
                     try
                     {
                         cmd.Parameters.AddWithValue("@PaymentMethodName", this.PaymentMethodName ?? (object)DBNull.Value);
+                        cmd.Parameters.AddWithValue("@ImagePath", this.ImagePath ?? (object)DBNull.Value);
                         cmd.Parameters.AddWithValue("@PaymentMethodID", this.PaymentMethodID);
                         await cmd.ExecuteNonQueryAsync();
                         return 1;

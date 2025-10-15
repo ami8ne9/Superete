@@ -23,11 +23,17 @@
                 <Trigger Property="IsMouseOver" Value="True">
                     <Setter Property="Opacity" Value="0.85"/>
                 </Trigger>
+                <Trigger Property="IsEnabled" Value="False">
+                    <Setter Property="Opacity" Value="0.5"/>
+                    <Setter Property="Background" Value="#E5E7EB"/>
+                    <Setter Property="Foreground" Value="#9CA3AF"/>
+                    <Setter Property="Cursor" Value="No"/>
+                </Trigger>
             </Style.Triggers>
         </Style>
     </UserControl.Resources>
 
-    <Border Background="White" Margin="0,0,0,-15" CornerRadius="4">
+    <Border Background="White" Margin="0,0,0,0" CornerRadius="4">
         <Grid Margin="24,0">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="80"/>
@@ -97,9 +103,9 @@
 
             <StackPanel Grid.Column="9" Orientation="Horizontal" HorizontalAlignment="Center" Width="140">
                 <Button Content="Edit" Background="#4A90E2" Style="{StaticResource ActionButtonStyle}" 
-                        Click="EditButton_Click" Width="65"/>
+                        Click="EditButton_Click" Width="65" x:Name="Editbtn"/>
                 <Button Content="Delete" Background="#E74C3C" Style="{StaticResource ActionButtonStyle}" 
-                        Click="DeleteButton_Click" Width="65"/>
+                        Click="DeleteButton_Click" Width="65" Name="Deletebtn"/>
             </StackPanel>
         </Grid>
     </Border>

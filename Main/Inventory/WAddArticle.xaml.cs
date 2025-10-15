@@ -32,8 +32,9 @@ namespace Superete.Main.Inventory
             this.main = main;
             this.ea = ea;
             this.ns = ns;
-            LoadFamillies(lf);
-            LoadFournisseurs(lfo);
+            LoadFamillies(lf,0);
+
+            LoadFournisseurs(lfo,0);
 
             LoadPayments(main.main.lp);
             foreach (Role r in main.main.lr)
@@ -47,6 +48,11 @@ namespace Superete.Main.Inventory
                     if (r.CreateFournisseur == false)
                     {
                         AjouterFournisseur.IsEnabled = false;
+                    }
+                    if(r.SolderFournisseur == false)
+                    {
+                        CreditButton.IsEnabled = false;
+                        HalfButton.IsEnabled = false;
                     }
                     break;
                 }
@@ -82,7 +88,7 @@ namespace Superete.Main.Inventory
 
                     }
                 }
-                LoadFournisseurs(lfo.Except(lfoo).ToList());
+                LoadFournisseurs(lfo.Except(lfoo).ToList(),0);
                 foreach (Famille f in lf)
                     if (f.FamilleID == a.FamillyID)
                     {
@@ -162,20 +168,28 @@ namespace Superete.Main.Inventory
             wAddFournisseur.ShowDialog();
 
         }
-        public void LoadFournisseurs(List<Fournisseur> lfo)
+        public void LoadFournisseurs(List<Fournisseur> lfo,int i)
         {
             FournisseurList.Items.Clear();
             foreach (Fournisseur fo in lfo)
             {
                 FournisseurList.Items.Add(fo.Nom);
             }
+            if (i == 1)
+            {
+                FournisseurList.SelectedIndex = FournisseurList.Items.Count-1;
+            }
         }
-        public void LoadFamillies(List<Famille> lf)
+        public void LoadFamillies(List<Famille> lf,int i)
         {
             FamilliesList.Items.Clear();
             foreach (Famille f in lf)
             {
                 FamilliesList.Items.Add(f.FamilleName);
+            }
+            if(i == 1)
+            {
+                FamilliesList.SelectedIndex = FamilliesList.Items.Count-1;
             }
         }
         public void LoadPayments(List<PaymentMethod> lp)
@@ -189,158 +203,166 @@ namespace Superete.Main.Inventory
 
         private async void EnregistrerButton_Click(object sender, RoutedEventArgs e)
         {
-            bool modifier= false;
-            if (ArticleName.Text=="" || Code.Text=="" || PrixV.Text=="" || PrixA.Text=="" || PrixMP.Text=="" || Quantite.Text == "")
+            try
             {
-                MessageBox.Show("Veuillez remplir tous les champs.");
-                return;
-            }
-            if(ArticleName.Text != a.ArticleName || Code.Text != a.Code.ToString() || PrixV.Text != a.PrixVente.ToString() || PrixA.Text != a.PrixAchat.ToString() || PrixMP.Text != a.PrixMP.ToString() || Quantite.Text != a.Quantite.ToString())
-            {
-                modifier = true;
-            }
-            if (Convert.ToDecimal(PrixV.Text) < Convert.ToDecimal(PrixA.Text))
-            {
-                MessageBox.Show("Le prix de vente doit être Superieure ou égal au prix d'achat.");
-                return;
-            }
-            if (Convert.ToDecimal(PrixV.Text)< Convert.ToDecimal(PrixMP.Text))
-            {
-                MessageBox.Show("Le prix de vente doit être Superieure ou égal au prix mp.");
-                return;
-            }
-            if (Convert.ToDecimal(PrixA.Text) > Convert.ToDecimal(PrixMP.Text))
-            {
-                MessageBox.Show("Le prix mp doit être Superieure ou égal au prix d'achat.");
-                return;
-            }
-            if (Convert.ToInt32(Quantite.Text) == 0)
-            {
-                MessageBox.Show("Donner une quntite.");
-                return;
-            }
-            if (ArticleName.Text != a.ArticleName && Code.Text == a.Code.ToString())
-            {
-                MessageBoxResult result = MessageBox.Show(
-                    "Changer le nom de cet article changera le nom de tous les articles avec le même code, voulez-vous continuer?",  
-                    "Confirmation",  
-                    MessageBoxButton.YesNo, 
-                    MessageBoxImage.Question 
-                );
-
-                if (result == MessageBoxResult.Yes)
+                bool modifier = false;
+                if (ArticleName.Text == "" || Code.Text == "" || PrixV.Text == "" || PrixA.Text == "" || PrixMP.Text == "" || Quantite.Text == "")
                 {
-                    foreach(Article ar in la)
-                    {
-                        if (ar.Code == a.Code)
-                        {
-                            ar.ArticleName = ArticleName.Text;
-                            ar.UpdateArticleAsync();
-                        }
-                    }
-                }
-                else if (result == MessageBoxResult.No)
-                {
+                    MessageBox.Show("Veuillez remplir tous les champs.");
                     return;
                 }
-
-            }
-            if (Code.Text != a.Code.ToString() && ArticleName.Text == a.ArticleName)
-            {
-                MessageBoxResult result = MessageBox.Show(
-                    "Changer le Code de cet article changera le Code de tous les articles avec le même nom, voulez-vous continuer?",
-                    "Confirmation",
-                    MessageBoxButton.YesNo,
-                    MessageBoxImage.Question
-                );
-
-                if (result == MessageBoxResult.Yes)
+                if (ArticleName.Text != a.ArticleName || Code.Text != a.Code.ToString() || PrixV.Text != a.PrixVente.ToString() || PrixA.Text != a.PrixAchat.ToString() || PrixMP.Text != a.PrixMP.ToString() || Quantite.Text != a.Quantite.ToString())
                 {
-                    foreach (Article ar in la)
-                    {
-                        if (ar.ArticleName == a.ArticleName)
-                        {
-                            ar.Code = Convert.ToInt32(Code.Text);
-                            ar.UpdateArticleAsync();
-                        }
-                    }
+                    modifier = true;
                 }
-                else if (result == MessageBoxResult.No)
+                if (Convert.ToDecimal(PrixV.Text) < Convert.ToDecimal(PrixA.Text))
                 {
+                    MessageBox.Show("Le prix de vente doit être Superieure ou égal au prix d'achat.");
                     return;
                 }
-
-            }
-            a.Code = Convert.ToInt32(Code.Text);
-            a.ArticleName = ArticleName.Text;
-            a.PrixVente = Convert.ToDecimal(PrixV.Text);
-            a.PrixAchat = Convert.ToDecimal(PrixA.Text);
-            a.PrixMP = Convert.ToDecimal(PrixMP.Text);
-            
-            if (a.Quantite != Convert.ToInt32(Quantite.Text))
-            {
-                Operation Operation = new Operation();
-                Operation.OperationType = "ModificationQu";
-                Operation.PrixOperation = (a.Quantite - Convert.ToInt32(Quantite.Text))*a.PrixAchat;
-
-                Operation.UserID = main.u.UserID;
-
-                int idd = await Operation.InsertOperationAsync();
-                OperationArticle ofa = new OperationArticle();
-                ofa.ArticleID = a.ArticleID;
-                ofa.OperationID = idd;
-                ofa.QteArticle = Convert.ToInt32(a.Quantite);
-                await ofa.InsertOperationArticleAsync();
-                a.Quantite = Convert.ToInt32(Quantite.Text);
-
-            }
-
-
-            foreach (Famille f in lf)
-                if (f.FamilleName == FamilliesList.SelectedItem)
+                if (Convert.ToDecimal(PrixV.Text) < Convert.ToDecimal(PrixMP.Text))
                 {
-                    if (a.FamillyID != f.FamilleID)
+                    MessageBox.Show("Le prix de vente doit être Superieure ou égal au prix mp.");
+                    return;
+                }
+                if (Convert.ToDecimal(PrixA.Text) > Convert.ToDecimal(PrixMP.Text))
+                {
+                    MessageBox.Show("Le prix mp doit être Superieure ou égal au prix d'achat.");
+                    return;
+                }
+                if (Convert.ToInt32(Quantite.Text) == 0)
+                {
+                    MessageBox.Show("Donner une quntite.");
+                    return;
+                }
+                if (ArticleName.Text != a.ArticleName && Code.Text == a.Code.ToString())
+                {
+                    MessageBoxResult result = MessageBox.Show(
+                        "Changer le nom de cet article changera le nom de tous les articles avec le même code, voulez-vous continuer?",
+                        "Confirmation",
+                        MessageBoxButton.YesNo,
+                        MessageBoxImage.Question
+                    );
+
+                    if (result == MessageBoxResult.Yes)
                     {
-                        modifier = true;
-                        a.FamillyID = f.FamilleID;
+                        foreach (Article ar in la)
+                        {
+                            if (ar.Code == a.Code)
+                            {
+                                ar.ArticleName = ArticleName.Text;
+                                ar.UpdateArticleAsync();
+                            }
+                        }
+                    }
+                    else if (result == MessageBoxResult.No)
+                    {
+                        return;
                     }
 
-                    break;
                 }
-            foreach (Fournisseur fo in lfo)
-            {
-                
-                if (fo.Nom == FournisseurList.SelectedItem)
+                if (Code.Text != a.Code.ToString() && ArticleName.Text == a.ArticleName)
                 {
-                    if (a.FournisseurID != fo.FournisseurID)
+                    MessageBoxResult result = MessageBox.Show(
+                        "Changer le Code de cet article changera le Code de tous les articles avec le même nom, voulez-vous continuer?",
+                        "Confirmation",
+                        MessageBoxButton.YesNo,
+                        MessageBoxImage.Question
+                    );
+
+                    if (result == MessageBoxResult.Yes)
                     {
-                        modifier = true;
-                        a.FournisseurID = fo.FournisseurID;
+                        foreach (Article ar in la)
+                        {
+                            if (ar.ArticleName == a.ArticleName)
+                            {
+                                ar.Code = Convert.ToInt32(Code.Text);
+                                ar.UpdateArticleAsync();
+                            }
+                        }
                     }
-                        
-                    
-                    break;
+                    else if (result == MessageBoxResult.No)
+                    {
+                        return;
+                    }
+
                 }
-            }
-            
-            a.UpdateArticleAsync();
-            for (int i = 0; i < la.Count; i++)
-            {
-                if (la[i].ArticleID == a.ArticleID)
+                a.Code = Convert.ToInt32(Code.Text);
+                a.ArticleName = ArticleName.Text;
+                a.PrixVente = Convert.ToDecimal(PrixV.Text);
+                a.PrixAchat = Convert.ToDecimal(PrixA.Text);
+                a.PrixMP = Convert.ToDecimal(PrixMP.Text);
+
+                if (a.Quantite != Convert.ToInt32(Quantite.Text))
                 {
-                    la[i] = a;
-                    break;
+                    Operation Operation = new Operation();
+                    Operation.OperationType = "ModificationQu";
+                    Operation.PrixOperation = (a.Quantite - Convert.ToInt32(Quantite.Text)) * a.PrixAchat;
+
+                    Operation.UserID = main.u.UserID;
+
+                    int idd = await Operation.InsertOperationAsync();
+                    OperationArticle ofa = new OperationArticle();
+                    ofa.ArticleID = a.ArticleID;
+                    ofa.OperationID = idd;
+                    ofa.QteArticle = Convert.ToInt32(a.Quantite);
+                    await ofa.InsertOperationArticleAsync();
+                    a.Quantite = Convert.ToInt32(Quantite.Text);
+
+                }
+
+
+                foreach (Famille f in lf)
+                    if (f.FamilleName == FamilliesList.SelectedItem)
+                    {
+                        if (a.FamillyID != f.FamilleID)
+                        {
+                            modifier = true;
+                            a.FamillyID = f.FamilleID;
+                        }
+
+                        break;
+                    }
+                foreach (Fournisseur fo in lfo)
+                {
+
+                    if (fo.Nom == FournisseurList.SelectedItem)
+                    {
+                        if (a.FournisseurID != fo.FournisseurID)
+                        {
+                            modifier = true;
+                            a.FournisseurID = fo.FournisseurID;
+                        }
+
+
+                        break;
+                    }
+                }
+
+                a.UpdateArticleAsync();
+                for (int i = 0; i < la.Count; i++)
+                {
+                    if (la[i].ArticleID == a.ArticleID)
+                    {
+                        la[i] = a;
+                        break;
+                    }
+                }
+                if (modifier == true)
+                {
+                    main.LoadArticles(la);
+                    WCongratulations wCongratulations = new WCongratulations("Modification avec succes","La modification a ete effectue avec succes",1);
+                    wCongratulations.ShowDialog();
                 }
             }
-            if (modifier == true)
+            catch (Exception ex)
             {
-                main.LoadArticles(la);
-                WCongratulations wCongratulations = new WCongratulations(1);
-                wCongratulations.Show();
+                WCongratulations wCongratulations = new WCongratulations("Modification a échoué", "La modification n'a pas ete effectue", 0);
+                wCongratulations.ShowDialog();
+
             }
                 
 
-            this.Close();
         }
 
         private void CancelButton_Click(object sender, RoutedEventArgs e)
@@ -414,7 +436,7 @@ namespace Superete.Main.Inventory
                 return;
             }
             
-            a.Code = Convert.ToInt32(Code.Text);
+            a.Code = Convert.ToInt64(Code.Text);
             a.ArticleName = ArticleName.Text;
             a.PrixVente = Convert.ToDecimal(PrixV.Text);
             a.PrixAchat = Convert.ToDecimal(PrixA.Text);

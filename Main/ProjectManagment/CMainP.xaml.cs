@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -21,9 +22,12 @@ namespace Superete.Main.ProjectManagment
     /// </summary>
     public partial class CMainP : UserControl
     {
+        bool isInitialized = false;
         public CMainP(User u, MainWindow main)
         {
             InitializeComponent();
+
+            this.Loaded += (s, e) => isInitialized = true;
             this.u = u;
             this.main = main;
 
@@ -61,22 +65,27 @@ namespace Superete.Main.ProjectManagment
                         StockButton.Foreground = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#1E90FF"));
                         StockButton.BorderBrush = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#1E90FF"));
                     }
-                    break;
-                }
-            }
-
-            foreach (Role r in main.lr)
-            {
-                if (u.RoleID == r.RoleID)
-                {
                     if (r.ViewMouvment == false)
                     {
                         StockButton.IsEnabled = false;
                         MouvmentContent.Visibility = Visibility.Collapsed;
                     }
+                    if (r.ViewMouvment == false || r.ViewOperation == false)
+                    {
+                        StockButton.Foreground = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#6B7280"));
+                        StockButton.BorderBrush = new SolidColorBrush((Color)ColorConverter.ConvertFromString("Transparent"));
+                        Repportbtn.Foreground = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#1E90FF"));
+                        Repportbtn.BorderBrush = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#1E90FF"));
+                    }
+
+                    if (r.Repport == false)
+                    {
+                        Repportbtn.IsEnabled = false;
+                    }
                     break;
                 }
             }
+
 
             // ✅ Load data
             LoadOperations(main.lo);
@@ -95,6 +104,15 @@ namespace Superete.Main.ProjectManagment
                 CSingleOperation wSingleOperation = new CSingleOperation(this, operation);
                 OperationsContainer.Children.Add(wSingleOperation);
             }
+            if (i <= 10)
+            {
+                SeeMoreContainer.Visibility = Visibility.Collapsed;
+            }
+            else
+            {
+
+                SeeMoreContainer.Visibility = Visibility.Visible;
+            }
 
         }
         public void LoadMouvments(List<OperationArticle> loa)
@@ -109,6 +127,15 @@ namespace Superete.Main.ProjectManagment
                 MouvmentContainer.Children.Add(wSingleMouvment);
             }
 
+            if (i <= 10)
+            {
+                ViewMoreContainer1.Visibility = Visibility.Collapsed;
+            }
+            else
+            {
+
+                ViewMoreContainer1.Visibility = Visibility.Visible;
+            }
         }
         public void LoadStats()
         {
@@ -171,7 +198,7 @@ namespace Superete.Main.ProjectManagment
         private void ToutButton_Click(object sender, RoutedEventArgs e)
         {
             SearchInput.Text = "";
-
+            index = 10;
             TypeOperationFilter.SelectedIndex = 0;
             StatusFilter.SelectedIndex = 0;
             DateFilter.SelectedIndex = 0;
@@ -393,11 +420,12 @@ namespace Superete.Main.ProjectManagment
         private void ToutMouvmentButton_Click(object sender, RoutedEventArgs e)
         {
             SearchMouvmentInput.Text = "";
-
+            index2 = 10;
             TypeMouvmentFilter.SelectedIndex = 0;
             StatusMouvmenttFilter.SelectedIndex = 0;
             StatusMouvmentReversedFilter.SelectedIndex = 0;
             SearchTypeFilter.SelectedIndex = 0;
+            DateMouvmentFilter.SelectedIndex = 0;
 
             LoadOperations(main.lo);
         }
@@ -508,14 +536,37 @@ namespace Superete.Main.ProjectManagment
 
         }
         // Reports logic
+        public string selectedbtn="day";
         private void DayButton_Click(object sender, RoutedEventArgs e)
         {
+            selectedbtn = "day";
+            index3 = 10; index4 = 10;
+            DayDatePicker.SelectedDate = null;
+            BoughtText.Text = "0.00 DH";
+            RevenueText.Text = "0.00 DH";
+            SoldText.Text = "0.00 DH";
+            DifferenceText.Text = "0.00 DH";
+            ArticlesSoldText.Text = "0";
+            ArticlesBoughtText.Text = "0";
+            SoldOpsText.Text = "0";
+            BoughtOpsText.Text = "0";
             SetSelectedButton(DayButton);
             ShowView(DayView);
         }
 
         private void MonthButton_Click(object sender, RoutedEventArgs e)
         {
+            selectedbtn = "month";
+            index3 = 10; index4 = 10;
+
+            BoughtText.Text = "0.00 DH";
+            RevenueText.Text = "0.00 DH";
+            SoldText.Text = "0.00 DH";
+            DifferenceText.Text = "0.00 DH";
+            ArticlesSoldText.Text = "0";
+            ArticlesBoughtText.Text = "0";
+            SoldOpsText.Text = "0";
+            BoughtOpsText.Text = "0";
             SetSelectedButton(MonthButton);
             ShowView(MonthView);
             PopulateYearComboBox(MonthYearComboBox);
@@ -523,6 +574,17 @@ namespace Superete.Main.ProjectManagment
 
         private void YearButton_Click(object sender, RoutedEventArgs e)
         {
+            selectedbtn = "year";
+            index3 = 10; index4 = 10;
+
+            BoughtText.Text = "0.00 DH";
+            RevenueText.Text = "0.00 DH";
+            SoldText.Text = "0.00 DH";
+            DifferenceText.Text = "0.00 DH";
+            ArticlesSoldText.Text = "0";
+            ArticlesBoughtText.Text = "0";
+            SoldOpsText.Text = "0";
+            BoughtOpsText.Text = "0";
             SetSelectedButton(YearButton);
             ShowView(YearView);
             PopulateYearComboBox(YearComboBox);
@@ -530,20 +592,46 @@ namespace Superete.Main.ProjectManagment
 
         private void CustomButton_Click(object sender, RoutedEventArgs e)
         {
+            selectedbtn = "personalized";
+            index3 = 10; index4 = 10;
+            StartDatePicker = null;
+            EndDatePicker = null;
+            BoughtText.Text = "0.00 DH";
+            RevenueText.Text = "0.00 DH";
+            SoldText.Text = "0.00 DH";
+            DifferenceText.Text = "0.00 DH";
+            ArticlesSoldText.Text = "0";
+            ArticlesBoughtText.Text = "0";
+            SoldOpsText.Text = "0";
+            BoughtOpsText.Text = "0";
             SetSelectedButton(CustomButton);
             ShowView(CustomView);
         }
 
         private void SetSelectedButton(Button selected)
         {
-            // Reset all buttons
-            DayButton.Style = (Style)FindResource("FilterButtonStyle");
-            MonthButton.Style = (Style)FindResource("FilterButtonStyle");
-            YearButton.Style = (Style)FindResource("FilterButtonStyle");
-            CustomButton.Style = (Style)FindResource("FilterButtonStyle");
+            // Reset all buttons to default style
+            ResetButtonStyle(DayButton);
+            ResetButtonStyle(MonthButton);
+            ResetButtonStyle(YearButton);
+            ResetButtonStyle(CustomButton);
 
-            // Set selected button
-            selected.Style = (Style)FindResource("SelectedFilterButtonStyle");
+            // Set selected button to active style
+            SetActiveButtonStyle(selected);
+        }
+
+        private void ResetButtonStyle(Button button)
+        {
+            button.Background = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#FFFFFF"));
+            button.BorderBrush = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#E2E8F0"));
+            button.Foreground = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#64748B"));
+        }
+
+        private void SetActiveButtonStyle(Button button)
+        {
+            button.Background = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#4F46E5"));
+            button.BorderBrush = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#4F46E5"));
+            button.Foreground = new SolidColorBrush(Colors.White);
         }
 
         private void ShowView(FrameworkElement viewToShow)
@@ -569,13 +657,506 @@ namespace Superete.Main.ProjectManagment
 
         private void DatePicker_Changed(object sender, EventArgs e)
         {
-            // Load statistics based on selected date range
+            if (!isInitialized)
+                return;
             LoadStatistics();
-        }
 
-        private void LoadStatistics()
+        }
+        private DateTime? _previousDate;
+        private void DatePicker_Changed1(object sender, EventArgs e)
         {
-            // Your logic to load and display statistics
+            if (!isInitialized)
+                return;
+            if (StartDatePicker.SelectedDate.HasValue && EndDatePicker.SelectedDate.HasValue)
+            {
+                DateTime selectedDate = StartDatePicker.SelectedDate.Value;
+                DateTime selectedDate1 = EndDatePicker.SelectedDate.Value;
+                if (selectedDate1 < selectedDate)
+                {
+                    MessageBox.Show("la date de fin est plus petit que la date de comencer");
+                    if (sender == StartDatePicker)
+                    {
+
+                        StartDatePicker.SelectedDateChanged -= DatePicker_Changed1; // pour éviter la boucle
+                        StartDatePicker.SelectedDate = _previousDate;
+                        StartDatePicker.SelectedDateChanged += DatePicker_Changed1;
+                    }
+                    else if (sender == EndDatePicker)
+                    {
+                        EndDatePicker.SelectedDateChanged -= DatePicker_Changed1; // pour éviter la boucle
+                        EndDatePicker.SelectedDate = _previousDate;
+                        EndDatePicker.SelectedDateChanged += DatePicker_Changed1;
+                    }
+                    return;
+                }
+            }
+            if (sender == StartDatePicker)
+            {
+
+                _previousDate = StartDatePicker.SelectedDate;
+            }
+            else if (sender == EndDatePicker)
+            {
+                _previousDate = EndDatePicker.SelectedDate;
+            }
+            LoadStatistics();
+
+        }
+        public int index3=10;
+        public int index4=10;
+        public void LoadOpeerationsMouvment(List<Operation> lo)
+        {
+            int i = 1;
+            RevenueOperationsContainer.Children.Clear();
+            foreach (Operation operation in lo)
+            {
+                if (i > index3) break;
+                i++;
+                CSingleOperation wSingleOperation = new CSingleOperation(this, operation);
+                RevenueOperationsContainer.Children.Add(wSingleOperation);
+            }
+        }
+        public void LoadOpeerationsArticleMouvment(List<OperationArticle> loa)
+        {
+            int i = 1;
+            RevenueArticlesContainer.Children.Clear();
+            foreach (OperationArticle operationA in loa)
+            {
+                if (i > index3) break;
+                i++;
+                CSingleMouvment wSingleMouvment = new CSingleMouvment(this, operationA);
+                RevenueArticlesContainer.Children.Add(wSingleMouvment);
+            }
+        }
+        List<Operation> LOperation=new List<Operation>();
+
+        List<OperationArticle> LOperationArticle=new List<OperationArticle>();
+
+        private void Button2_Click(object sender, RoutedEventArgs e)
+        {
+            index3 = index3 + 10;
+            LoadOpeerationsMouvment(LOperation);
+        }
+        private void Button3_Click(object sender, RoutedEventArgs e)
+        {
+            index4 = index3 + 10;
+            LoadOpeerationsArticleMouvment(LOperationArticle);
+        }
+        public void LoadStatistics()
+        {
+            Decimal revenue = 0;
+            Decimal achete = 0;
+            Decimal vendus = 0;
+            Decimal reverse = 0;
+            int articleVendus= 0;
+            int articleAchete= 0;
+            int OperationVente= 0;
+            int OperationAchete= 0;
+            int OperationNbr= 0;
+            int MouvmentNbr = 0;
+            if (selectedbtn == "day")
+            {
+                if (DayDatePicker.SelectedDate.HasValue)
+                {
+
+                    DateTime selectedDate = DayDatePicker.SelectedDate.Value.Date;
+                    RevenueOperationsContainer.Children.Clear();
+                    RevenueArticlesContainer.Children.Clear();   
+                    foreach (Operation o in main.lo)
+                    {
+                        if (o.DateOperation.Date == selectedDate)
+                        {
+                            OperationNbr++;
+                            LOperation.Add(o);
+                            if (OperationNbr <= 10)
+                            {
+                                CSingleOperation wSingleOperation = new CSingleOperation(this, o);
+                                RevenueOperationsContainer.Children.Add(wSingleOperation);
+                            }
+                            if (o.OperationType.StartsWith("V"))
+                            {
+                                OperationVente++;
+
+                                foreach (OperationArticle oa in main.loa)
+                                {
+                                    if (oa.OperationID == o.OperationID)
+                                    {
+                                        articleVendus++;
+                                        MouvmentNbr++;
+                                        LOperationArticle.Add(oa);
+                                        if (MouvmentNbr <= 10)
+                                        {
+                                            CSingleMouvment wSingleMouvment = new CSingleMouvment(this, oa);
+                                            RevenueArticlesContainer.Children.Add(wSingleMouvment);
+                                        }
+                                        foreach (Article a in main.la)
+                                        {
+                                            if (oa.ArticleID == a.ArticleID)
+                                            {
+                                                if (oa.Reversed == true)
+                                                {
+                                                    reverse += oa.QteArticle * a.PrixVente;
+                                                }
+                                                else
+                                                {
+                                                    vendus += oa.QteArticle * a.PrixVente;
+                                                }
+                                                break;
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                            else if (o.OperationType.StartsWith("A"))
+                            {
+                                OperationAchete++;
+
+                                foreach (OperationArticle oa in main.loa)
+                                {
+                                    if (oa.OperationID == o.OperationID)
+                                    {
+                                        articleAchete++;
+                                        MouvmentNbr++;
+
+                                        LOperationArticle.Add(oa);
+                                        if (MouvmentNbr <= 10)
+                                        {
+                                            CSingleMouvment wSingleMouvment = new CSingleMouvment(this, oa);
+                                            RevenueArticlesContainer.Children.Add(wSingleMouvment);
+                                        }
+                                        foreach (Article a in main.la)
+                                        {
+                                            if (oa.ArticleID == a.ArticleID)
+                                            {
+                                                if (oa.Reversed == true)
+                                                {
+                                                    reverse -= oa.QteArticle * a.PrixVente;
+                                                }
+                                                else
+                                                {
+                                                    achete += oa.QteArticle * a.PrixVente;
+                                                }
+                                                break;
+                                            }
+                                        }
+                                    }
+                                }
+
+                            }
+                            
+                        }
+                    }
+                    revenue = vendus - achete;
+                }
+            }
+            else if(selectedbtn == "month")
+            {
+                if (MonthComboBox.SelectedItem != null && MonthYearComboBox.SelectedItem != null)
+                {
+
+                    RevenueOperationsContainer.Children.Clear();
+                    RevenueArticlesContainer.Children.Clear();
+                    foreach (Operation o in main.lo)
+                    {
+                        
+                        if (o.DateOperation.Date.ToString("MMMM", new CultureInfo("fr-FR")).ToLower() == MonthComboBox.SelectedValue.ToString().ToLower().Replace("system.windows.controls.comboboxitem: ", "") && o.DateOperation.Date.Year.ToString() == MonthYearComboBox.SelectedValue.ToString())
+                        {
+
+                            OperationNbr++;
+
+                            LOperation.Add(o);
+                            if (OperationNbr <= 10)
+                            {
+                                CSingleOperation wSingleOperation = new CSingleOperation(this, o);
+                                RevenueOperationsContainer.Children.Add(wSingleOperation);
+                            }
+                            if (o.OperationType.StartsWith("V"))
+                            {
+                                OperationVente++;
+
+                                foreach (OperationArticle oa in main.loa)
+                                {
+                                    if (oa.OperationID == o.OperationID)
+                                    {
+                                        MouvmentNbr++;
+                                        LOperationArticle.Add(oa);
+                                        if (MouvmentNbr <= 10)
+                                        {
+                                            CSingleMouvment wSingleMouvment = new CSingleMouvment(this, oa);
+                                            RevenueArticlesContainer.Children.Add(wSingleMouvment);
+                                        }
+                                        articleVendus++;
+                                        foreach (Article a in main.la)
+                                        {
+                                            if (oa.ArticleID == a.ArticleID)
+                                            {
+                                                if (oa.Reversed == true)
+                                                {
+                                                    reverse += oa.QteArticle * a.PrixVente;
+                                                }
+                                                else
+                                                {
+                                                    vendus += oa.QteArticle * a.PrixVente;
+                                                }
+                                                break;
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                            else if (o.OperationType.StartsWith("A"))
+                            {
+                                OperationAchete++;
+
+                                foreach (OperationArticle oa in main.loa)
+                                {
+                                    if (oa.OperationID == o.OperationID)
+                                    {
+
+                                        MouvmentNbr++;
+                                        LOperationArticle.Add(oa);
+                                        if (MouvmentNbr <= 10)
+                                        {
+                                            CSingleMouvment wSingleMouvment = new CSingleMouvment(this, oa);
+                                            RevenueArticlesContainer.Children.Add(wSingleMouvment);
+                                        }
+                                        articleAchete++;
+                                        foreach (Article a in main.la)
+                                        {
+                                            if (oa.ArticleID == a.ArticleID)
+                                            {
+                                                if (oa.Reversed == true)
+                                                {
+                                                    reverse -= oa.QteArticle * a.PrixVente;
+                                                }
+                                                else
+                                                {
+                                                    achete += oa.QteArticle * a.PrixVente;
+                                                }
+                                                break;
+                                            }
+                                        }
+                                    }
+                                }
+
+                            }
+
+                        }
+                    }
+                    revenue = vendus - achete;
+                }
+
+            }
+            else if (selectedbtn == "year")
+            {
+                if (YearComboBox.SelectedItem != null)
+                {
+                    RevenueOperationsContainer.Children.Clear();
+                    RevenueArticlesContainer.Children.Clear();
+                    foreach (Operation o in main.lo)
+                    {
+                        
+                        if (o.DateOperation.Date.Year.ToString() == YearComboBox.SelectedValue.ToString())
+                        {
+                            OperationNbr++;
+                            LOperation.Add(o);
+                            if (OperationNbr <= 10)
+                            {
+                                CSingleOperation wSingleOperation = new CSingleOperation(this, o);
+                                RevenueOperationsContainer.Children.Add(wSingleOperation);
+                            }
+
+                            if (o.OperationType.StartsWith("V"))
+                            {
+                                OperationVente++;
+
+                                foreach (OperationArticle oa in main.loa)
+                                {
+                                    if (oa.OperationID == o.OperationID)
+                                    {
+
+                                        MouvmentNbr++;
+                                        LOperationArticle.Add(oa);
+                                        if (MouvmentNbr <= 10)
+                                        {
+                                            CSingleMouvment wSingleMouvment = new CSingleMouvment(this, oa);
+                                            RevenueArticlesContainer.Children.Add(wSingleMouvment);
+                                        }
+                                        articleVendus++;
+                                        foreach (Article a in main.la)
+                                        {
+                                            if (oa.ArticleID == a.ArticleID)
+                                            {
+                                                if (oa.Reversed == true)
+                                                {
+                                                    reverse += oa.QteArticle * a.PrixVente;
+                                                }
+                                                else
+                                                {
+                                                    vendus += oa.QteArticle * a.PrixVente;
+                                                }
+                                                break;
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                            else if (o.OperationType.StartsWith("A"))
+                            {
+                                OperationAchete++;
+
+                                foreach (OperationArticle oa in main.loa)
+                                {
+                                    if (oa.OperationID == o.OperationID)
+                                    {
+                                        MouvmentNbr++;
+                                        LOperationArticle.Add(oa);
+                                        if (MouvmentNbr <= 10)
+                                        {
+                                            CSingleMouvment wSingleMouvment = new CSingleMouvment(this, oa);
+                                            RevenueArticlesContainer.Children.Add(wSingleMouvment);
+                                        }
+                                        articleAchete++;
+                                        foreach (Article a in main.la)
+                                        {
+                                            if (oa.ArticleID == a.ArticleID)
+                                            {
+                                                if (oa.Reversed == true)
+                                                {
+                                                    reverse -= oa.QteArticle * a.PrixVente;
+                                                }
+                                                else
+                                                {
+                                                    achete += oa.QteArticle * a.PrixVente;
+                                                }
+                                                break;
+                                            }
+                                        }
+                                    }
+                                }
+
+                            }
+
+                        }
+                    }
+                    revenue = vendus - achete;
+                }
+
+            }
+            else if(selectedbtn== "personalized")
+            {
+                RevenueOperationsContainer.Children.Clear();
+                RevenueArticlesContainer.Children.Clear();
+                if (StartDatePicker.SelectedDate.HasValue && EndDatePicker.SelectedDate.HasValue)
+                {
+                    DateTime selectedDate = StartDatePicker.SelectedDate.Value;
+                    DateTime selectedDate1 = EndDatePicker.SelectedDate.Value;
+                    foreach (Operation o in main.lo)
+                    {
+                       
+                        if (o.DateOperation.Date > selectedDate && o.DateOperation.Date < selectedDate1)
+                        {
+                            OperationNbr++;
+                            LOperation.Add(o);
+                            if (OperationNbr <= 10)
+                            {
+                                CSingleOperation wSingleOperation = new CSingleOperation(this, o);
+                                RevenueOperationsContainer.Children.Add(wSingleOperation);
+                            }
+                            if (o.OperationType.StartsWith("V"))
+                            {
+                                OperationVente++;
+
+                                foreach (OperationArticle oa in main.loa)
+                                {
+                                    if (oa.OperationID == o.OperationID)
+                                    {
+                                        
+                                        articleVendus++;
+
+                                        MouvmentNbr++;
+                                        LOperationArticle.Add(oa);
+                                        if (MouvmentNbr <= 10)
+                                        {
+                                            CSingleMouvment wSingleMouvment = new CSingleMouvment(this, oa);
+                                            RevenueArticlesContainer.Children.Add(wSingleMouvment);
+                                        }
+                                        foreach (Article a in main.la)
+                                        {
+                                            if (oa.ArticleID == a.ArticleID)
+                                            {
+                                                if (oa.Reversed == true)
+                                                {
+                                                    reverse += oa.QteArticle * a.PrixVente;
+                                                }
+                                                else
+                                                {
+                                                    vendus += oa.QteArticle * a.PrixVente;
+                                                }
+                                                break;
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                            else if (o.OperationType.StartsWith("A"))
+                            {
+                                OperationAchete++;
+
+                                foreach (OperationArticle oa in main.loa)
+                                {
+                                    if (oa.OperationID == o.OperationID)
+                                    {
+                                        
+                                        articleAchete++;
+                                        MouvmentNbr++;
+                                        LOperationArticle.Add(oa);
+                                        if (MouvmentNbr <= 10)
+                                        {
+                                            CSingleMouvment wSingleMouvment = new CSingleMouvment(this, oa);
+                                            RevenueArticlesContainer.Children.Add(wSingleMouvment);
+                                        }
+                                        foreach (Article a in main.la)
+                                        {
+                                            if (oa.ArticleID == a.ArticleID)
+                                            {
+                                                if (oa.Reversed == true)
+                                                {
+                                                    reverse -= oa.QteArticle * a.PrixVente;
+                                                }
+                                                else
+                                                {
+                                                    achete += oa.QteArticle * a.PrixVente;
+                                                }
+                                                break;
+                                            }
+                                        }
+                                    }
+                                }
+
+                            }
+
+                        }
+                    }
+                    revenue = vendus - achete;
+                }
+            }
+            if (OperationVente > 10)
+            {
+                SeeMoreContainer2.Visibility = Visibility.Visible;
+            }
+            if (articleVendus > 10)
+            {
+                SeeMoreContainer3.Visibility = Visibility.Visible;
+            }
+            BoughtText.Text = achete.ToString("0.00") + " DH";
+            RevenueText.Text = revenue.ToString("0.00") + " DH";
+            SoldText.Text = vendus.ToString("0.00") + " DH";
+            DifferenceText.Text = reverse.ToString("0.00") + " DH";
+            ArticlesSoldText.Text = articleVendus.ToString();
+            ArticlesBoughtText.Text = articleAchete.ToString();
+            SoldOpsText.Text = OperationVente.ToString();
+            BoughtOpsText.Text = OperationAchete.ToString();
         }
 
     }

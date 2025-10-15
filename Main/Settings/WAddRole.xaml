@@ -464,7 +464,193 @@
                             </Grid>
                         </StackPanel>
                     </Border>
+                    <!-- Articles -->
+                    <Border Style="{StaticResource RoleSectionStyle}">
+                        <StackPanel>
+                            <TextBlock Text="Articles" 
+                                      FontWeight="SemiBold" 
+                                      FontSize="15" 
+                                      Foreground="#1F2937" 
+                                      Margin="0,0,0,12"/>
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                </Grid.RowDefinitions>
 
+                                <CheckBox x:Name="ViewArticle" Content="Voir Articles" 
+                                         Style="{StaticResource ModernCheckBoxStyle}" 
+                                         Grid.Column="0" Grid.Row="0" Margin="0,0,0,10"/>
+                                <CheckBox x:Name="AddArticle" Content="Ajouter Articles" 
+                                         Style="{StaticResource ModernCheckBoxStyle}" 
+                                         Grid.Column="1" Grid.Row="0" Margin="0,0,0,10"/>
+                                <CheckBox x:Name="EditArticle" Content="Modifier Articles" 
+                                         Style="{StaticResource ModernCheckBoxStyle}" 
+                                         Grid.Column="0" Grid.Row="1" Margin="0,0,0,10"/>
+                                <CheckBox x:Name="DeleteArticle" Content="Supprimer Articles" 
+                                         Style="{StaticResource ModernCheckBoxStyle}" 
+                                         Grid.Column="1" Grid.Row="1" Margin="0,0,0,10"/>
+                            </Grid>
+                        </StackPanel>
+                    </Border>
+
+                    <!-- Reports & Tickets -->
+                    <Border Style="{StaticResource RoleSectionStyle}">
+                        <StackPanel>
+                            <TextBlock Text="Rapports et Tickets" 
+                                      FontWeight="SemiBold" 
+                                      FontSize="15" 
+                                      Foreground="#1F2937" 
+                                      Margin="0,0,0,12"/>
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                </Grid.RowDefinitions>
+
+                                <CheckBox x:Name="Repport" Content="Voir Rapports" 
+                                         Style="{StaticResource ModernCheckBoxStyle}" 
+                                         Grid.Column="0" Grid.Row="0" Margin="0,0,0,10"/>
+                                <CheckBox x:Name="Ticket" Content="Voir Tickets" 
+                                         Style="{StaticResource ModernCheckBoxStyle}" 
+                                         Grid.Column="1" Grid.Row="0" Margin="0,0,0,10"/>
+                                <CheckBox x:Name="ViewFacture" Content="Voir Factures" 
+                                         Style="{StaticResource ModernCheckBoxStyle}" 
+                                         Grid.Column="0" Grid.Row="1" Margin="0,0,0,10"/>
+                            </Grid>
+                        </StackPanel>
+                    </Border>
+
+                    <!-- Settlements -->
+                    <Border Style="{StaticResource RoleSectionStyle}">
+                        <StackPanel>
+                            <TextBlock Text="Règlements" 
+                                      FontWeight="SemiBold" 
+                                      FontSize="15" 
+                                      Foreground="#1F2937" 
+                                      Margin="0,0,0,12"/>
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto"/>
+                                </Grid.RowDefinitions>
+
+                                <CheckBox x:Name="SolderFournisseur" Content="Solder Fournisseur" 
+                                         Style="{StaticResource ModernCheckBoxStyle}" 
+                                         Grid.Column="0" Grid.Row="0" Margin="0,0,0,10"/>
+                                <CheckBox x:Name="SolderClient" Content="Solder Client" 
+                                         Style="{StaticResource ModernCheckBoxStyle}" 
+                                         Grid.Column="1" Grid.Row="0" Margin="0,0,0,10"/>
+                            </Grid>
+                        </StackPanel>
+                    </Border>
+
+                    <!-- Invoice Settings -->
+                    <Border Style="{StaticResource RoleSectionStyle}">
+                        <StackPanel>
+                            <TextBlock Text="Paramètres Factures" 
+                                      FontWeight="SemiBold" 
+                                      FontSize="15" 
+                                      Foreground="#1F2937" 
+                                      Margin="0,0,0,12"/>
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto"/>
+                                </Grid.RowDefinitions>
+
+                                <CheckBox x:Name="ViewFactureSettings" Content="Voir Paramètres" 
+                                         Style="{StaticResource ModernCheckBoxStyle}" 
+                                         Grid.Column="0" Grid.Row="0" Margin="0,0,0,10"/>
+                                <CheckBox x:Name="ModifyFactureSettings" Content="Modifier Paramètres" 
+                                         Style="{StaticResource ModernCheckBoxStyle}" 
+                                         Grid.Column="1" Grid.Row="0" Margin="0,0,0,10"/>
+                            </Grid>
+                        </StackPanel>
+                    </Border>
+
+                    <!-- Payment Methods -->
+                    <Border Style="{StaticResource RoleSectionStyle}">
+                        <StackPanel>
+                            <TextBlock Text="Méthodes de Paiement" 
+                                      FontWeight="SemiBold" 
+                                      FontSize="15" 
+                                      Foreground="#1F2937" 
+                                      Margin="0,0,0,12"/>
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                </Grid.RowDefinitions>
+
+                                <CheckBox x:Name="ViewPaymentMethod" Content="Voir Méthodes" 
+                                         Style="{StaticResource ModernCheckBoxStyle}" 
+                                         Grid.Column="0" Grid.Row="0" Margin="0,0,0,10"/>
+                                <CheckBox x:Name="AddPaymentMethod" Content="Ajouter Méthodes" 
+                                         Style="{StaticResource ModernCheckBoxStyle}" 
+                                         Grid.Column="1" Grid.Row="0" Margin="0,0,0,10"/>
+                                <CheckBox x:Name="ModifyPaymentMethod" Content="Modifier Méthodes" 
+                                         Style="{StaticResource ModernCheckBoxStyle}" 
+                                         Grid.Column="0" Grid.Row="1" Margin="0,0,0,10"/>
+                                <CheckBox x:Name="DeletePaymentMethod" Content="Supprimer Méthodes" 
+                                         Style="{StaticResource ModernCheckBoxStyle}" 
+                                         Grid.Column="1" Grid.Row="1" Margin="0,0,0,10"/>
+                            </Grid>
+                        </StackPanel>
+                    </Border>
+
+                    <!-- System Actions -->
+                    <Border Style="{StaticResource RoleSectionStyle}">
+                        <StackPanel>
+                            <TextBlock Text="Actions Système" 
+                                      FontWeight="SemiBold" 
+                                      FontSize="15" 
+                                      Foreground="#1F2937" 
+                                      Margin="0,0,0,12"/>
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                </Grid.RowDefinitions>
+
+                                <CheckBox x:Name="ViewApropos" Content="Voir À Propos" 
+                                         Style="{StaticResource ModernCheckBoxStyle}" 
+                                         Grid.Column="0" Grid.Row="0" Margin="0,0,0,10"/>
+                                <CheckBox x:Name="Logout" Content="Déconnexion" 
+                                         Style="{StaticResource ModernCheckBoxStyle}" 
+                                         Grid.Column="1" Grid.Row="0" Margin="0,0,0,10"/>
+                                <CheckBox x:Name="Exit" Content="Quitter Application" 
+                                         Style="{StaticResource ModernCheckBoxStyle}" 
+                                         Grid.Column="0" Grid.Row="1" Margin="0,0,0,10"/>
+                                <CheckBox x:Name="ShutDown" Content="Arrêter Système" 
+                                         Style="{StaticResource ModernCheckBoxStyle}" 
+                                         Grid.Column="1" Grid.Row="1" Margin="0,0,0,10"/>
+                            </Grid>
+                        </StackPanel>
+                    </Border>
                 </StackPanel>
             </ScrollViewer>
 
