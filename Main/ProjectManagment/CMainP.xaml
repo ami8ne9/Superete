@@ -335,7 +335,7 @@ Cursor="Hand">
         </Border>
 
         <!-- Content Area -->
-        <Grid Grid.Row="1" x:Name="OperationsContent" Visibility="Collapsed">
+        <Grid Grid.Row="1" x:Name="OperationsContent">
             <!-- Operations Content -->
             <Grid >
                 <Grid.RowDefinitions>
@@ -1271,7 +1271,7 @@ Padding="12,6" Click="Button1_Click">
                 </StackPanel>
             </ScrollViewer>
         </Grid>
-        <Grid Background="#F5F7FA" Grid.Row="1" x:Name="RapportContent" >
+        <Grid Background="#F5F7FA" Grid.Row="1" x:Name="RapportContent" Visibility="Collapsed">
 
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto"/>

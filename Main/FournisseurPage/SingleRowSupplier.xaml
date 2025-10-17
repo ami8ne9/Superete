@@ -99,10 +99,10 @@
 
                 <!-- Action Buttons -->
                 <StackPanel Grid.Column="5" Orientation="Horizontal" HorizontalAlignment="Right">
-                    <Button Style="{StaticResource UpdateButtonStyle}" Content="Update" Click="Update_Click"/>
-                    <Button Style="{StaticResource DeleteButtonStyle}" Content="Delete" Click="Delete_Click"/>
-                    <Button Style="{StaticResource PaidButtonStyle}" Content="Pay" Click="Paid_Click"/>
-                    <Button Style="{StaticResource OperationButtonStyle}" Content="Operations" Click="Operations_Click"/>
+                    <Button Style="{StaticResource UpdateButtonStyle}" Content="Update" Click="Update_Click" Name="Update"/>
+                    <Button Style="{StaticResource DeleteButtonStyle}" Content="Delete" Click="Delete_Click" Name="Delete"/>
+                    <Button Style="{StaticResource PaidButtonStyle}" Content="Pay" Click="Paid_Click" Name="Paid"/>
+                    <Button Style="{StaticResource OperationButtonStyle}" Content="Operations" Click="Operations_Click" Name="Operation"/>
                 </StackPanel>
             </Grid>
         </Border>

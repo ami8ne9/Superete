@@ -20,6 +20,32 @@ namespace Superete.Main.ClientPage
             _main = main;
             _currentUser = currentUser;
             DataContextChanged += SingleRowClient_DataContextChanged;
+            foreach (Role r in _main.lr)
+            {
+                if (_currentUser.RoleID == r.RoleID)
+                {
+                    if (!r.ModifyClient)
+                    {
+                        Update.IsEnabled = false;
+                    }
+                    if (!r.DeleteClient)
+                    {
+                        Delete.IsEnabled = false;
+                    }
+                    if(!r.PayeClient && !r.ViewCreditClient)
+                    {
+                        Paye.IsEnabled = false;
+                    }
+                    if (!r.ViewOperation)
+                    {
+                        Operation.IsEnabled = false;
+                    }
+                    if (!r.ViewCreditClient)
+                    {
+                        BalanceText.Visibility = Visibility.Collapsed;
+                    }
+                }
+            }
         }
 
         private void SingleRowClient_DataContextChanged(object sender, DependencyPropertyChangedEventArgs e)
@@ -115,7 +141,7 @@ namespace Superete.Main.ClientPage
         private void Operations_Click(object sender, RoutedEventArgs e)
         {
             if (!(DataContext is Client client)) return;
-            var wnd = new ClientOperationsWindow(client);
+            var wnd = new ClientOperationsWindow(client, _currentUser);
             wnd.ShowDialog();
         }
     }

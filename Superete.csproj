@@ -137,6 +137,9 @@
     <Compile Include="Main\Inventory\WConfirmTransaction.xaml.cs">
       <DependentUpon>WConfirmTransaction.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Main\Settings\CAproposDeNous.xaml.cs">
+      <DependentUpon>CAproposDeNous.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Main\WCongratulations.xaml.cs">
       <DependentUpon>WCongratulations.xaml</DependentUpon>
     </Compile>
@@ -369,6 +372,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Main\Inventory\WConfirmTransaction.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Main\Settings\CAproposDeNous.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

@@ -12,14 +12,15 @@ namespace Superete.Main.FournisseurPage
     {
         private MainWindow _mainWindow;
         private Fournisseur _currentSupplier;
+        private User _user;
         private bool _isArticlesPanelVisible = false;
 
-        public SupplierOperationsWindow(MainWindow mainWindow, Fournisseur supplier)
+        public SupplierOperationsWindow(MainWindow mainWindow, Fournisseur supplier,User u)
         {
             InitializeComponent();
             _mainWindow = mainWindow;
             _currentSupplier = supplier;
-
+            _user = u;
             // Give the window a name so we can animate it
             this.Name = "MainWindow";
 
@@ -50,6 +51,9 @@ namespace Superete.Main.FournisseurPage
                 {
                     operations = operations.Where(op => op.FournisseurID == _currentSupplier.FournisseurID).ToList();
                 }
+
+                // Sort operations by date - newest first (descending order)
+                operations = operations.OrderByDescending(op => op.Date).ToList();
 
                 OperationsList.ItemsSource = operations;
 
@@ -88,43 +92,74 @@ namespace Superete.Main.FournisseurPage
             {
                 try
                 {
-                    // Get operation articles from MainWindow list
-                    var operationArticles = _mainWindow.loa
-                        .Where(oa => oa.OperationID == selectedOperation.OperationID)
-                        .ToList();
+                    // Check if this is a payment operation (no articles)
+                    bool isPaymentOperation = IsPaymentOperation(selectedOperation.OperationType);
 
-                    // Get all articles from MainWindow list
-                    var allArticles = _mainWindow.laa;
-
-                    // Get all families from MainWindow list
-                    var allFamilies = _mainWindow.lf;
-
-                    // Create enriched operation articles with article details
-                    var enrichedOperationArticles = operationArticles.Select(oa =>
+                    if (isPaymentOperation)
                     {
-                        var article = allArticles.FirstOrDefault(a => a.ArticleID == oa.ArticleID);
-                        var famille = allFamilies?.FirstOrDefault(f => f.FamilleID == article?.FamillyID);
+                        // For payment operations, hide the panel - no reaction
+                        ArticlesList.ItemsSource = null;
+                        ClearSummary();
+                        HideArticlesPanel();
+                        // Deselect the item to prevent it from staying selected
+                        OperationsList.SelectedItem = null;
+                        return;
+                    }
+                    else
+                    {
+                        // Get operation articles from MainWindow list
+                        var operationArticles = _mainWindow.loa
+                            .Where(oa => oa.OperationID == selectedOperation.OperationID)
+                            .ToList();
 
-                        return new EnrichedOperationArticle
+                        // Check if there are any articles
+                        if (operationArticles.Count == 0)
                         {
-                            OperationID = oa.OperationID,
-                            ArticleID = oa.ArticleID,
-                            QteArticle = oa.QteArticle,
-                            UnitPrice = article?.PrixAchat ?? 0,
-                            Total = oa.QteArticle * (article?.PrixAchat ?? 0),
-                            ArticleName = article?.ArticleName ?? "Article inconnu",
-                            Famille = famille?.FamilleName ?? "N/A"
-                        };
-                    }).ToList();
+                            MessageBox.Show($"Aucun article trouvé pour l'opération #{selectedOperation.OperationID}",
+                                          "Information", MessageBoxButton.OK, MessageBoxImage.Information);
+                            ArticlesList.ItemsSource = null;
+                            ClearSummary();
+                            HideArticlesPanel();
+                            return;
+                        }
 
-                    ArticlesList.ItemsSource = enrichedOperationArticles;
+                        // Get all articles from MainWindow list
+                        var allArticles = _mainWindow.laa;
 
-                    // Update the summary and operation info
-                    UpdateSummary(selectedOperation, operationArticles);
-                    OperationInfoText.Text = $"Opération #{selectedOperation.OperationID} - {selectedOperation.DateOperation:dd/MM/yyyy} - {selectedOperation.OperationType ?? "N/A"}";
+                        // Get all families from MainWindow list
+                        var allFamilies = _mainWindow.lf;
 
-                    // Show articles panel
-                    ShowArticlesPanel();
+                        // Create enriched operation articles with article details
+                        var enrichedOperationArticles = operationArticles.Select(oa =>
+                        {
+                            var article = allArticles.FirstOrDefault(a => a.ArticleID == oa.ArticleID);
+                            var famille = allFamilies?.FirstOrDefault(f => f.FamilleID == article?.FamillyID);
+
+                            return new EnrichedOperationArticle
+                            {
+                                OperationID = oa.OperationID,
+                                ArticleID = oa.ArticleID,
+                                QteArticle = oa.QteArticle,
+                                UnitPrice = article?.PrixAchat ?? 0,
+                                Total = oa.QteArticle * (article?.PrixAchat ?? 0),
+                                ArticleName = article?.ArticleName ?? "Article inconnu",
+                                Famille = famille?.FamilleName ?? "N/A",
+                                IsReversed = oa.Reversed // Add reversed status
+                            };
+                        }).ToList();
+
+                        ArticlesList.ItemsSource = enrichedOperationArticles;
+
+                        // Update the summary and operation info
+                        UpdateSummary(selectedOperation, operationArticles);
+
+                        // Update operation info text with reversed status
+                        string reversedText = selectedOperation.Reversed ? " (Reversed)" : "";
+                        OperationInfoText.Text = $"Opération #{selectedOperation.OperationID} - {selectedOperation.DateOperation:dd/MM/yyyy} - {selectedOperation.OperationType ?? "N/A"}{reversedText}";
+
+                        // Show articles panel
+                        ShowArticlesPanel();
+                    }
                 }
                 catch (System.Exception ex)
                 {
@@ -147,8 +182,64 @@ namespace Superete.Main.FournisseurPage
             }
         }
 
+        private bool IsPaymentOperation(string operationType)
+        {
+            if (string.IsNullOrEmpty(operationType))
+                return false;
+
+            // Check if operation type contains payment-related keywords
+            string lowerType = operationType.ToLower();
+            return lowerType.Contains("payment") ||
+                   lowerType.Contains("paiement") ||
+                   lowerType.Contains("règlement") ||
+                   lowerType.Contains("reglement");
+        }
+
+        private void ShowPaymentDetails(Operation operation)
+        {
+            // Create a single item list to show payment information
+            var paymentInfo = new List<EnrichedOperationArticle>
+            {
+                new EnrichedOperationArticle
+                {
+                    OperationID = operation.OperationID,
+                    ArticleID = 0,
+                    QteArticle = 1,
+                    UnitPrice = operation.PrixOperation,
+                    Total = operation.PrixOperation,
+                    ArticleName = $"Paiement - {operation.OperationType}",
+                    Famille = "Paiement",
+                    IsReversed = operation.Reversed
+                }
+            };
+
+            ArticlesList.ItemsSource = paymentInfo;
+
+            // Update summary for payment
+            TotalArticlesText.Text = "1";
+            TotalQuantityText.Text = "1";
+            TotalAmountText.Text = operation.PrixOperation.ToString("C2");
+
+            // Update operation info with reversed status
+            string reversedText = operation.Reversed ? " (Reversed)" : "";
+            OperationInfoText.Text = $"Opération #{operation.OperationID} - {operation.DateOperation:dd/MM/yyyy} - {operation.OperationType ?? "N/A"}{reversedText}";
+
+            // Show articles panel
+            ShowArticlesPanel();
+        }
+
         private void ShowArticlesPanel()
         {
+            foreach (Role r in _mainWindow.lr)
+            {
+                if (r.RoleID == _user.RoleID)
+                {
+                    if (!r.ViewMouvment)
+                    {
+                        return;
+                    }
+                }
+            }
             if (!_isArticlesPanelVisible)
             {
                 _isArticlesPanelVisible = true;
@@ -269,6 +360,11 @@ namespace Superete.Main.FournisseurPage
             MessageBox.Show("Fonctionnalité d'export à implémenter",
                            "Information", MessageBoxButton.OK, MessageBoxImage.Information);
         }
+
+        private void CloseWindowButton_Click(object sender, RoutedEventArgs e)
+        {
+            this.Close();
+        }
     }
 
     // Helper class to bind enriched operation article data
@@ -281,5 +377,6 @@ namespace Superete.Main.FournisseurPage
         public decimal Total { get; set; }
         public string ArticleName { get; set; }
         public string Famille { get; set; }
+        public bool IsReversed { get; set; } // Add reversed property
     }
 }

@@ -19,6 +19,28 @@ namespace Superete.Main.FournisseurPage
             _main = main;
             _currentUser = currentUser;
             DataContextChanged += SingleRowSupplier_DataContextChanged;
+            foreach (Role r in _main.lr)
+            {
+                if (_currentUser.RoleID == r.RoleID)
+                {
+                    if (!r.ModifyFournisseur)
+                    {
+                        Update.IsEnabled = false;
+                    }
+                    if (!r.DeleteFournisseur)
+                    {
+                        Delete.IsEnabled = false;
+                    }
+                    if (!r.PayeFournisseur && !r.ViewCreditFournisseur)
+                    {
+                        Paid.IsEnabled = false;
+                    }
+                    if (!r.ViewOperation)
+                    {
+                        Operation.IsEnabled = false;
+                    }
+                }
+            }
         }
 
 
@@ -97,7 +119,7 @@ namespace Superete.Main.FournisseurPage
             if (!(DataContext is Fournisseur f)) return;
             if (_main == null) return;
 
-            var window = new SupplierOperationsWindow(_main, f);
+            var window = new SupplierOperationsWindow(_main, f,_currentUser);
             window.ShowDialog();
         }
 

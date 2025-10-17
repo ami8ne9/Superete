@@ -34,14 +34,20 @@ namespace Superete.Main.ClientPage
                         existing.Etat = false; // keep object in list but mark inactive
                     }
 
-                    MessageBox.Show("Client hidden (soft deleted).", "Done",
-                        MessageBoxButton.OK, MessageBoxImage.Information);
-                    DialogResult = true;
-                    Close();
+                    //MessageBox.Show("Client hidden (soft deleted).", "Done",
+                    //    MessageBoxButton.OK, MessageBoxImage.Information);
+                    //DialogResult = true;
+                    //Close();
+
+                    WCongratulations wCongratulations = new WCongratulations("Suppression Succes", "Client Supprimer avec succes", 1);
+                    wCongratulations.ShowDialog();
                 }
                 else
                 {
-                    MessageBox.Show("Operation failed.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                    //MessageBox.Show("Operation failed.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+
+                    WCongratulations wCongratulations = new WCongratulations("Suppression Echoue", "Client n'a pas ete Supprimer", 0);
+                    wCongratulations.ShowDialog();
                 }
             }
             catch (System.Exception ex)

@@ -12,13 +12,29 @@ namespace Superete.Main.FournisseurPage
         private readonly Fournisseur _supplier;
         private Credit[] _supplierCredits;
 
-        public PaidSupplierWindow(User u,MainWindow mainWindow, Fournisseur supplier)
+        public PaidSupplierWindow(User u, MainWindow mainWindow, Fournisseur supplier)
         {
             InitializeComponent();
             _currentUser = u;
             _mainWindow = mainWindow;
             _supplier = supplier;
             Loaded += PaidSupplierWindow_Loaded;
+            foreach (Role r in _mainWindow.lr)
+            {
+                if (_currentUser.RoleID == r.RoleID)
+                {
+                    if (!r.ViewCreditFournisseur)
+                    {
+                        Credit.Visibility = Visibility.Collapsed;
+                        Remaining.Visibility = Visibility.Collapsed;
+                        PayMaxButton.IsEnabled = false;
+                    }
+                    if (!r.PayeFournisseur)
+                    {
+                        ProcessPaymentButton.IsEnabled = false;
+                    }
+                }
+            }
         }
 
         private void PaidSupplierWindow_Loaded(object sender, RoutedEventArgs e)
@@ -29,7 +45,7 @@ namespace Superete.Main.FournisseurPage
 
         private int GetCurrentUserId()
         {
-           
+
             return _currentUser.UserID;
 
         }
@@ -61,10 +77,14 @@ namespace Superete.Main.FournisseurPage
         private void CloseButton_Click(object sender, RoutedEventArgs e) => Close();
 
         private void CancelButton_Click(object sender, RoutedEventArgs e) => Close();
-        private async Task CreatePaymentOperationAsync(decimal paidAmount,int credidID)
+
+        private async Task CreatePaymentOperationAsync(decimal paidAmount, int credidID)
         {
             try
             {
+                // Create operation with current date
+                DateTime currentDate = DateTime.Now;
+
                 var op = new Operation
                 {
                     ClientID = null,
@@ -74,7 +94,8 @@ namespace Superete.Main.FournisseurPage
                     Remise = 0m,
                     CreditValue = -paidAmount,
                     UserID = GetCurrentUserId(),
-                    DateOperation = DateTime.Now,
+                    DateOperation = currentDate,
+                    Date = currentDate, // Set Date property as well
                     OperationType = "SUPPLIER_PAYMENT",
                     //Reversed = false,
                     Etat = true
@@ -85,6 +106,9 @@ namespace Superete.Main.FournisseurPage
                 if (opId > 0)
                 {
                     op.OperationID = opId;
+                    // Ensure date is set before adding to list
+                    op.DateOperation = currentDate;
+                    op.Date = currentDate;
                     _mainWindow.lo.Add(op);
                 }
             }
@@ -98,52 +122,66 @@ namespace Superete.Main.FournisseurPage
 
         private async void ProcessPaymentButton_Click(object sender, RoutedEventArgs e)
         {
-            if (!decimal.TryParse(PaymentAmountTextBox.Text, out decimal amount) || amount <= 0)
+            try
             {
-                MessageBox.Show("Enter a valid payment amount.", "Validation", MessageBoxButton.OK, MessageBoxImage.Warning);
-                return;
-            }
-
-            decimal remaining = amount;
-            int creditId=0;
-
-            // Apply to oldest credits first (by CreditID)
-            foreach (var credit in _supplierCredits.OrderBy(c => c.CreditID))
-            {
-                if (remaining <= 0) break;
-                if (credit.Difference <= 0) continue;
-                
-                decimal apply = Math.Min(credit.Difference, remaining);
-                credit.Paye += apply;
-                credit.Difference = credit.Total - credit.Paye;
-                remaining -= apply;
-                creditId = credit.CreditID;
-
-                // Persist to database
-                await credit.UpdateCreditAsync();
-
-                // Update the credit in MainWindow list
-                var creditInList = _mainWindow.credits.FirstOrDefault(c => c.CreditID == credit.CreditID);
-                if (creditInList != null)
+                if (!decimal.TryParse(PaymentAmountTextBox.Text, out decimal amount) || amount <= 0)
                 {
-                    creditInList.Paye = credit.Paye;
-                    creditInList.Difference = credit.Difference;
+                    MessageBox.Show("Veuillez entrer un montant de paiement valide.", "Validation", MessageBoxButton.OK, MessageBoxImage.Warning);
+                    return;
                 }
-            }
-            await CreatePaymentOperationAsync(amount, creditId);
 
-            if (remaining > 0)
+                // Calculate total outstanding credit
+                decimal totalOutstanding = _supplierCredits.Sum(c => c.Difference);
+
+                // Check if payment amount exceeds outstanding credit
+                if (amount > totalOutstanding)
+                {
+                    MessageBox.Show($"Le montant du paiement ({amount:N2} DH) dépasse le crédit restant ({totalOutstanding:N2} DH).\n\nVeuillez entrer un montant inférieur ou égal à {totalOutstanding:N2} DH.",
+                        "Montant Invalide", MessageBoxButton.OK, MessageBoxImage.Error);
+                    return;
+                }
+
+                decimal remaining = amount;
+                int creditId = 0;
+
+                // Apply to oldest credits first (by CreditID)
+                foreach (var credit in _supplierCredits.OrderBy(c => c.CreditID))
+                {
+                    if (remaining <= 0) break;
+                    if (credit.Difference <= 0) continue;
+
+                    decimal apply = Math.Min(credit.Difference, remaining);
+                    credit.Paye += apply;
+                    credit.Difference = credit.Total - credit.Paye;
+                    remaining -= apply;
+                    creditId = credit.CreditID;
+
+                    // Persist to database
+                    await credit.UpdateCreditAsync();
+
+                    // Update the credit in MainWindow list
+                    var creditInList = _mainWindow.credits.FirstOrDefault(c => c.CreditID == credit.CreditID);
+                    if (creditInList != null)
+                    {
+                        creditInList.Paye = credit.Paye;
+                        creditInList.Difference = credit.Difference;
+                    }
+                }
+
+                await CreatePaymentOperationAsync(amount, creditId);
+
+                //MessageBox.Show("Paiement traité avec succès.", "Succès", MessageBoxButton.OK, MessageBoxImage.Information);
+                WCongratulations wCongratulations = new WCongratulations("Paiement avec Succes", $"Paiement de {amount:N2} DH traité avec succès.", 1);
+                wCongratulations.ShowDialog();
+                //DialogResult = true;
+                //Close();
+            }
+            catch (Exception ex)
             {
-                MessageBox.Show($"Payment processed, remaining amount {remaining:N2} DH was not applied (no outstanding credit).", "Note", MessageBoxButton.OK, MessageBoxImage.Information);
+                WCongratulations wCongratulations = new WCongratulations("Payement Echoue", "Payement n'a pas ete effectue", 0);
+                wCongratulations.ShowDialog();
             }
-            else
-            {
-                MessageBox.Show("Payment processed.", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
-            }
-
-            DialogResult = true;
-            Close();
-
         }
+
     }
 }

@@ -26,7 +26,20 @@ namespace Superete.Main.ClientPage
 
         private void ClientWindow_Loaded(object sender, RoutedEventArgs e)
         {
-            LoadAllData();
+            foreach (Role r in _main.lr)
+            {
+                if (_currentUser.RoleID == r.RoleID)
+                {
+                    if (r.ViewClient)
+                    {
+                        LoadAllData();
+                    }
+                    if (!r.CreateClient)
+                    {
+                        AddBtn.IsEnabled = true;
+                    }
+                }
+            }
         }
 
         public void LoadAllData()
@@ -51,30 +64,40 @@ namespace Superete.Main.ClientPage
 
         private void RefreshClientDisplay()
         {
-            try
+            foreach (Role r in _main.lr)
             {
-                ClientsContainer.Children.Clear();
-
-                if (_allClients == null || _allClients.Count == 0)
+                if (_currentUser.RoleID == r.RoleID)
                 {
-                    System.Diagnostics.Debug.WriteLine("No clients to display");
-                    return;
-                }
+                    if (r.ViewClient)
+                    {
+                        try
+                        {
+                            ClientsContainer.Children.Clear();
 
-                var activeClients = _allClients.Where(c => c.Etat).ToList();
-                System.Diagnostics.Debug.WriteLine($"Active clients: {activeClients.Count}");
+                            if (_allClients == null || _allClients.Count == 0)
+                            {
+                                System.Diagnostics.Debug.WriteLine("No clients to display");
+                                return;
+                            }
 
-                foreach (var client in activeClients)
-                {
-                    var clientRow = CreateClientRow(client);
-                    ClientsContainer.Children.Add(clientRow);
+                            var activeClients = _allClients.Where(c => c.Etat).ToList();
+                            System.Diagnostics.Debug.WriteLine($"Active clients: {activeClients.Count}");
+
+                            foreach (var client in activeClients)
+                            {
+                                var clientRow = CreateClientRow(client);
+                                ClientsContainer.Children.Add(clientRow);
+                            }
+                        }
+                        catch (Exception ex)
+                        {
+                            MessageBox.Show($"Error refreshing client display: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                            System.Diagnostics.Debug.WriteLine($"Error in RefreshClientDisplay: {ex}");
+                        }
+                    }
                 }
             }
-            catch (Exception ex)
-            {
-                MessageBox.Show($"Error refreshing client display: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
-                System.Diagnostics.Debug.WriteLine($"Error in RefreshClientDisplay: {ex}");
-            }
+           
         }
 
         private UserControl CreateClientRow(Client client)

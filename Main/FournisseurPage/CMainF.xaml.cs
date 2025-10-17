@@ -28,12 +28,31 @@ namespace Superete.Main.FournisseurPage
 
         private void MainWindow_Loaded(object sender, RoutedEventArgs e)
         {
-            LoadAllData();
+            foreach(Role r in _mainWindow.lr)
+            {
+                if (_currentUser.RoleID == r.RoleID)
+                {
+                    if (r.ViewFournisseur==true)
+                    {
+                        LoadAllData();
+                    }
+                }
+            }
+            
         }
 
         public void ReloadSuppliers()
         {
-            LoadAllData();
+            foreach (Role r in _mainWindow.lr)
+            {
+                if (_currentUser.RoleID == r.RoleID)
+                {
+                    if (r.ViewFournisseur==true)
+                    {
+                        LoadAllData();
+                    }
+                }
+            }
         }
 
         public void LoadAllData()

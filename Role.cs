@@ -78,6 +78,16 @@ namespace Superete
         public bool ViewExit { get; set; }
         public bool ViewShutDown { get; set; }
 
+        // ✅ NEW PERMISSIONS ADDED
+        public bool ViewClientsPage { get; set; }
+        public bool ViewFournisseurPage { get; set; }
+        public bool ViewInventrory { get; set; }
+        public bool ViewVente { get; set; }
+        public bool CashClient { get; set; }
+        public bool CashFournisseur { get; set; }
+        public bool ViewCreditClient { get; set; }
+        public bool ViewCreditFournisseur { get; set; }
+
         private static readonly string ConnectionString =
             "Server=localhost\\SQLEXPRESS;Database=SUPERETE;Trusted_Connection=True;";
 
@@ -157,7 +167,17 @@ namespace Superete
                             ViewApropos = Convert.ToBoolean(reader["ViewApropos"]),
                             Logout = Convert.ToBoolean(reader["Logout"]),
                             ViewExit = Convert.ToBoolean(reader["ViewExit"]),
-                            ViewShutDown = Convert.ToBoolean(reader["ViewShutDown"])
+                            ViewShutDown = Convert.ToBoolean(reader["ViewShutDown"]),
+
+                            // ✅ NEW FIELDS
+                            ViewClientsPage = Convert.ToBoolean(reader["ViewClientsPage"]),
+                            ViewFournisseurPage = Convert.ToBoolean(reader["ViewFournisseurPage"]),
+                            ViewInventrory = Convert.ToBoolean(reader["ViewInventrory"]),
+                            ViewVente = Convert.ToBoolean(reader["ViewVente"]),
+                            CashClient = Convert.ToBoolean(reader["CashClient"]),
+                            CashFournisseur = Convert.ToBoolean(reader["CashFournisseur"]),
+                            ViewCreditClient = Convert.ToBoolean(reader["ViewCreditClient"]),
+                            ViewCreditFournisseur = Convert.ToBoolean(reader["ViewCreditFournisseur"])
                         };
                         roles.Add(role);
                     }
@@ -181,7 +201,8 @@ namespace Superete
                     AddArticle, DeleteArticle, EditArticle, ViewArticle, Repport, Ticket, SolderFournisseur, SolderClient,
                     ViewFactureSettings, ModifyFactureSettings, ViewFacture,
                     ViewPaymentMethod, AddPaymentMethod, ModifyPaymentMethod, DeletePaymentMethod,
-                    ViewApropos, Logout, ViewExit, ViewShutDown
+                    ViewApropos, Logout, ViewExit, ViewShutDown,
+                    ViewClientsPage, ViewFournisseurPage, ViewInventrory, ViewVente, CashClient, CashFournisseur, ViewCreditClient, ViewCreditFournisseur
                 ) VALUES (
                     @RoleName, @CreateClient, @ModifyClient, @DeleteClient, @ViewOperationClient, @PayeClient, @ViewClient,
                     @CreateFournisseur, @ModifyFournisseur, @DeleteFournisseur, @ViewOperationFournisseur, @PayeFournisseur, @ViewFournisseur,
@@ -193,7 +214,8 @@ namespace Superete
                     @AddArticle, @DeleteArticle, @EditArticle, @ViewArticle, @Repport, @Ticket, @SolderFournisseur, @SolderClient,
                     @ViewFactureSettings, @ModifyFactureSettings, @ViewFacture,
                     @ViewPaymentMethod, @AddPaymentMethod, @ModifyPaymentMethod, @DeletePaymentMethod,
-                    @ViewApropos, @Logout, @ViewExit, @ViewShutDown
+                    @ViewApropos, @Logout, @ViewExit, @ViewShutDown,
+                    @ViewClientsPage, @ViewFournisseurPage, @ViewInventrory, @ViewVente, @CashClient, @CashFournisseur, @ViewCreditClient, @ViewCreditFournisseur
                 );
                 SELECT SCOPE_IDENTITY();";
 
@@ -216,7 +238,9 @@ namespace Superete
                     AddArticle=@AddArticle, DeleteArticle=@DeleteArticle, EditArticle=@EditArticle, ViewArticle=@ViewArticle, Repport=@Repport, Ticket=@Ticket, SolderFournisseur=@SolderFournisseur, SolderClient=@SolderClient,
                     ViewFactureSettings=@ViewFactureSettings, ModifyFactureSettings=@ModifyFactureSettings, ViewFacture=@ViewFacture,
                     ViewPaymentMethod=@ViewPaymentMethod, AddPaymentMethod=@AddPaymentMethod, ModifyPaymentMethod=@ModifyPaymentMethod, DeletePaymentMethod=@DeletePaymentMethod,
-                    ViewApropos=@ViewApropos, Logout=@Logout, ViewExit=@ViewExit, ViewShutDown=@ViewShutDown
+                    ViewApropos=@ViewApropos, Logout=@Logout, ViewExit=@ViewExit, ViewShutDown=@ViewShutDown,
+                    ViewClientsPage=@ViewClientsPage, ViewFournisseurPage=@ViewFournisseurPage, ViewInventrory=@ViewInventrory, ViewVente=@ViewVente, 
+                    CashClient=@CashClient, CashFournisseur=@CashFournisseur, ViewCreditClient=@ViewCreditClient, ViewCreditFournisseur=@ViewCreditFournisseur
                 WHERE RoleID=@RoleID";
 
             return await ExecuteSaveAsync(query, true);
@@ -233,7 +257,6 @@ namespace Superete
                     cmd.Parameters.AddWithValue("@RoleName", RoleName);
                     if (isUpdate) cmd.Parameters.AddWithValue("@RoleID", RoleID);
 
-                    // loop over all bool properties dynamically
                     foreach (var prop in GetType().GetProperties())
                     {
                         if (prop.PropertyType == typeof(bool))

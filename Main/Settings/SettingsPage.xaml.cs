@@ -21,7 +21,7 @@ namespace Superete.Main.Settings
     public partial class SettingsPage : UserControl
     {
         public User u;
-         List<User> lu;
+        List<User> lu;
         public MainWindow main;
         public List<Role> lr;
         List<Famille> lf;
@@ -34,9 +34,55 @@ namespace Superete.Main.Settings
             this.lr = lr;
             this.lf = lf;
             this.main = main;
-
-            // Load default view (User Management)
             LoadUserManagement();
+            foreach (Role r in lr)
+            {
+                if (r.RoleID == u.RoleID)
+                {
+                    if (r.ViewUsers == false && r.AddUsers==false)
+                    {
+                        UserManagementBtn.IsEnabled = false;
+                        ResetButtonStyles();
+                        ConfigurationBtn.Style = (Style)FindResource("ActiveNavigationItemStyle");
+                        LoadFactureSettings();
+                    }
+                    if (r.ViewFactureSettings == false)
+                    {
+                        ConfigurationBtn.IsEnabled = false;
+
+                    }
+                    if (r.ViewUsers == false && r.AddUsers == false && r.ViewFactureSettings == false)
+                    {
+                        ResetButtonStyles();
+                        DatabaseSettingsBtn.Style = (Style)FindResource("ActiveNavigationItemStyle");
+                        ContentGrid.Children.Clear();
+                        Superete.Settings.PaymentMethodSettings PaimentSettings = new Superete.Settings.PaymentMethodSettings(this);
+                        PaimentSettings.HorizontalAlignment = HorizontalAlignment.Stretch;
+                        PaimentSettings.VerticalAlignment = VerticalAlignment.Stretch;
+                        PaimentSettings.Margin = new Thickness(32, 24, 32, 24);
+                        ContentGrid.Children.Add(PaimentSettings);
+                    }
+                    if (r.ViewPaymentMethod == false)
+                    {
+                        DatabaseSettingsBtn.IsEnabled = false;
+                    }
+                    if (r.ViewUsers == false && r.AddUsers == false && r.ViewFactureSettings == false && r.ViewPaymentMethod == false)
+                    {
+                        ResetButtonStyles();
+
+                        // Set À propos button as active
+                        AProposBtn.Style = (Style)FindResource("ActiveNavigationItemStyle");
+
+                        // Load À propos de nous Control
+                        LoadAProposDeNous();
+                    }
+                    if (r.ViewApropos == false)
+                    {
+                        AProposBtn.IsEnabled = false;
+                    }
+                }
+            }
+            // Load default view (User Management)
         }
 
         private void NavigationItem_Click(object sender, RoutedEventArgs e)
@@ -57,36 +103,6 @@ namespace Superete.Main.Settings
             {
                 LoadUserManagement();
             }
-            else if (clickedButton == DatabaseSettingsBtn)
-            {
-                // TODO: Load Database Settings
-                LoadPlaceholder("Database Settings");
-            }
-            else if (clickedButton == SecurityBtn)
-            {
-                // TODO: Load Security Settings
-                LoadPlaceholder("Security");
-            }
-            else if (clickedButton == NotificationsBtn)
-            {
-                // TODO: Load Notifications Settings
-                LoadPlaceholder("Notifications");
-            }
-            else if (clickedButton == ReportsBtn)
-            {
-                // TODO: Load Reports Settings
-                LoadPlaceholder("Reports");
-            }
-            else if (clickedButton == SystemLogsBtn)
-            {
-                // TODO: Load System Logs
-                LoadPlaceholder("System Logs");
-            }
-            else if (clickedButton == PreferencesBtn)
-            {
-                // TODO: Load Preferences
-                LoadPlaceholder("Preferences");
-            }
         }
 
         private void FactureSettings_Click(object sender, RoutedEventArgs e)
@@ -99,6 +115,35 @@ namespace Superete.Main.Settings
 
             // Load Facture Settings Control
             LoadFactureSettings();
+        }
+
+        private void PaimentMehode_Click(object sender, RoutedEventArgs e)
+        {
+            // Reset all button styles
+            ResetButtonStyles();
+
+            // Set Payment Method button as active
+            DatabaseSettingsBtn.Style = (Style)FindResource("ActiveNavigationItemStyle");
+
+            // Load Payment Method Settings
+            ContentGrid.Children.Clear();
+            Superete.Settings.PaymentMethodSettings PaimentSettings = new Superete.Settings.PaymentMethodSettings(this);
+            PaimentSettings.HorizontalAlignment = HorizontalAlignment.Stretch;
+            PaimentSettings.VerticalAlignment = VerticalAlignment.Stretch;
+            PaimentSettings.Margin = new Thickness(32, 24, 32, 24);
+            ContentGrid.Children.Add(PaimentSettings);
+        }
+
+        private void APropos_Click(object sender, RoutedEventArgs e)
+        {
+            // Reset all button styles
+            ResetButtonStyles();
+
+            // Set À propos button as active
+            AProposBtn.Style = (Style)FindResource("ActiveNavigationItemStyle");
+
+            // Load À propos de nous Control
+            LoadAProposDeNous();
         }
 
         private void LoadUserManagement()
@@ -121,46 +166,14 @@ namespace Superete.Main.Settings
             ContentGrid.Children.Add(factureSettings);
         }
 
-        private void LoadPlaceholder(string title)
+        private void LoadAProposDeNous()
         {
             ContentGrid.Children.Clear();
-
-            // Create a placeholder view
-            Border placeholder = new Border
-            {
-                Background = new SolidColorBrush(Colors.White),
-                CornerRadius = new CornerRadius(8),
-                Margin = new Thickness(20),
-                Padding = new Thickness(40)
-            };
-
-            StackPanel stack = new StackPanel
-            {
-                HorizontalAlignment = HorizontalAlignment.Center,
-                VerticalAlignment = VerticalAlignment.Center
-            };
-
-            TextBlock titleBlock = new TextBlock
-            {
-                Text = title,
-                FontSize = 32,
-                FontWeight = FontWeights.Bold,
-                Foreground = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#1F2937")),
-                Margin = new Thickness(0, 0, 0, 10)
-            };
-
-            TextBlock messageBlock = new TextBlock
-            {
-                Text = "Cette section est en cours de développement",
-                FontSize = 16,
-                Foreground = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#6B7280"))
-            };
-
-            stack.Children.Add(titleBlock);
-            stack.Children.Add(messageBlock);
-            placeholder.Child = stack;
-
-            ContentGrid.Children.Add(placeholder);
+            CAproposDeNous aproposDeNous = new CAproposDeNous(this);
+            aproposDeNous.HorizontalAlignment = HorizontalAlignment.Stretch;
+            aproposDeNous.VerticalAlignment = VerticalAlignment.Stretch;
+            aproposDeNous.Margin = new Thickness(32, 24, 32, 24);
+            ContentGrid.Children.Add(aproposDeNous);
         }
 
         private void ResetButtonStyles()
@@ -170,31 +183,12 @@ namespace Superete.Main.Settings
             UserManagementBtn.Style = normalStyle;
             ConfigurationBtn.Style = normalStyle;
             DatabaseSettingsBtn.Style = normalStyle;
-            SecurityBtn.Style = normalStyle;
-            NotificationsBtn.Style = normalStyle;
-            ReportsBtn.Style = normalStyle;
-            SystemLogsBtn.Style = normalStyle;
-            PreferencesBtn.Style = normalStyle;
+            AProposBtn.Style = normalStyle;
         }
 
         private void Button_Click(object sender, RoutedEventArgs e)
         {
             main.load_main(u);
-        }
-
-        private void PaimentMehode_Click(object sender, RoutedEventArgs e)
-        {
-            {
-
-                ResetButtonStyles();
-                DatabaseSettingsBtn.Style = (Style)FindResource("ActiveNavigationItemStyle");
-                ContentGrid.Children.Clear();
-                Superete.Settings.PaymentMethodSettings PaimentSettings = new Superete.Settings.PaymentMethodSettings(this);
-                PaimentSettings.HorizontalAlignment = HorizontalAlignment.Stretch;
-                PaimentSettings.VerticalAlignment = VerticalAlignment.Stretch;
-                PaimentSettings.Margin = new Thickness(32, 24, 32, 24);
-                ContentGrid.Children.Add(PaimentSettings);
-            }
         }
     }
 }

@@ -20,12 +20,44 @@
             </Setter>
         </Style>
 
+        <!-- Close Button Style -->
+        <Style x:Key="CloseButtonStyle" TargetType="Button">
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="Foreground" Value="#9CA3AF"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Width" Value="32"/>
+            <Setter Property="Height" Value="32"/>
+            <Setter Property="FontSize" Value="20"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border Background="{TemplateBinding Background}"
+                                CornerRadius="6">
+                            <TextBlock Text="×"
+                                      HorizontalAlignment="Center"
+                                      VerticalAlignment="Center"
+                                      Foreground="{TemplateBinding Foreground}"
+                                      FontSize="20"
+                                      FontWeight="Bold"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter Property="Background" Value="#F3F4F6"/>
+                                <Setter Property="Foreground" Value="#EF4444"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
         <!-- Modern ListView Style -->
         <Style x:Key="ModernListView" TargetType="ListView">
             <Setter Property="BorderThickness" Value="0"/>
             <Setter Property="Background" Value="Transparent"/>
-            <Setter Property="ScrollViewer.HorizontalScrollBarVisibility" Value="Auto"/>
-            <Setter Property="ScrollViewer.VerticalScrollBarVisibility" Value="Auto"/>
+            <Setter Property="ScrollViewer.HorizontalScrollBarVisibility" Value="Disabled"/>
+            <Setter Property="ScrollViewer.VerticalScrollBarVisibility" Value="Visible"/>
             <Setter Property="AlternationCount" Value="2"/>
         </Style>
 
@@ -172,6 +204,82 @@
             </Setter>
         </Style>
 
+        <!-- Custom ScrollBar Style -->
+        <Style x:Key="CustomScrollBar" TargetType="ScrollBar">
+            <Setter Property="Background" Value="#F1F5F9"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Width" Value="12"/>
+            <Setter Property="MinWidth" Value="12"/>
+            <Setter Property="Margin" Value="0,0,2,0"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="ScrollBar">
+                        <Grid>
+                            <Border Background="{TemplateBinding Background}" 
+                                    CornerRadius="6"
+                                    Margin="2"/>
+                            <Track x:Name="PART_Track" IsDirectionReversed="True">
+                                <Track.Thumb>
+                                    <Thumb>
+                                        <Thumb.Style>
+                                            <Style TargetType="Thumb">
+                                                <Setter Property="Background" Value="#CBD5E1"/>
+                                                <Setter Property="BorderThickness" Value="0"/>
+                                                <Setter Property="Template">
+                                                    <Setter.Value>
+                                                        <ControlTemplate TargetType="Thumb">
+                                                            <Border Background="{TemplateBinding Background}"
+                                                                    CornerRadius="6"
+                                                                    Margin="2">
+                                                                <Border.Style>
+                                                                    <Style TargetType="Border">
+                                                                        <Style.Triggers>
+                                                                            <Trigger Property="IsMouseOver" Value="True">
+                                                                                <Setter Property="Background" Value="#94A3B8"/>
+                                                                            </Trigger>
+                                                                        </Style.Triggers>
+                                                                    </Style>
+                                                                </Border.Style>
+                                                            </Border>
+                                                        </ControlTemplate>
+                                                    </Setter.Value>
+                                                </Setter>
+                                            </Style>
+                                        </Thumb.Style>
+                                    </Thumb>
+                                </Track.Thumb>
+                            </Track>
+                        </Grid>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!-- Custom ScrollViewer Style for Articles List -->
+        <Style x:Key="CustomScrollViewer" TargetType="ScrollViewer">
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="ScrollViewer">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+                            <ScrollContentPresenter Grid.Column="0"/>
+                            <ScrollBar Grid.Column="1" 
+                                      x:Name="PART_VerticalScrollBar"
+                                      Orientation="Vertical"
+                                      Value="{TemplateBinding VerticalOffset}"
+                                      Maximum="{TemplateBinding ScrollableHeight}"
+                                      ViewportSize="{TemplateBinding ViewportHeight}"
+                                      Visibility="{TemplateBinding ComputedVerticalScrollBarVisibility}"
+                                      Style="{StaticResource CustomScrollBar}"/>
+                        </Grid>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
     </Window.Resources>
 
     <Grid x:Name="MainGrid">
@@ -180,6 +288,17 @@
             <ColumnDefinition x:Name="ArticlesColumn" Width="0"/>
         </Grid.ColumnDefinitions>
 
+        <!-- Close Button -->
+        <Button x:Name="CloseWindowButton"
+                Grid.Column="0"
+                Grid.ColumnSpan="2"
+                Style="{StaticResource CloseButtonStyle}"
+                HorizontalAlignment="Right"
+                VerticalAlignment="Top"
+                Margin="0,20,20,0"
+                Panel.ZIndex="999"
+                Click="CloseWindowButton_Click"/>
+
         <!-- Liste des opérations -->
         <Border Grid.Column="0" Style="{StaticResource CardStyle}" Margin="15,15,15,15">
             <StackPanel>
@@ -187,14 +306,27 @@
                 <ListView x:Name="OperationsList" 
                          Style="{StaticResource ModernListView}"
                          SelectionChanged="OperationsList_SelectionChanged"
-                         ItemContainerStyle="{StaticResource ModernListViewItem}" Width="591">
+                         ItemContainerStyle="{StaticResource ModernListViewItem}" 
+                         Width="593"
+                         Height="550">
                     <ListView.View>
                         <GridView ColumnHeaderContainerStyle="{StaticResource ModernGridViewColumnHeader}">
                             <GridViewColumn Header="Date" Width="100">
                                 <GridViewColumn.CellTemplate>
                                     <DataTemplate>
-                                        <TextBlock Text="{Binding Date, StringFormat='dd/MM/yyyy', FallbackValue='N/A'}" 
-                                                 FontSize="13" FontWeight="Medium" Foreground="#64748B"/>
+                                        <TextBlock FontSize="13" FontWeight="Medium">
+                                            <TextBlock.Style>
+                                                <Style TargetType="TextBlock">
+                                                    <Setter Property="Foreground" Value="#64748B"/>
+                                                    <Setter Property="Text" Value="{Binding Date, StringFormat='dd/MM/yyyy', FallbackValue='N/A'}"/>
+                                                    <Style.Triggers>
+                                                        <DataTrigger Binding="{Binding Reversed}" Value="True">
+                                                            <Setter Property="Foreground" Value="#9CA3AF"/>
+                                                        </DataTrigger>
+                                                    </Style.Triggers>
+                                                </Style>
+                                            </TextBlock.Style>
+                                        </TextBlock>
                                     </DataTemplate>
                                 </GridViewColumn.CellTemplate>
                             </GridViewColumn>
@@ -202,23 +334,97 @@
                             <GridViewColumn Header="ID" Width="60">
                                 <GridViewColumn.CellTemplate>
                                     <DataTemplate>
-                                        <Border Background="#F1F5F9" CornerRadius="6" Padding="6,3">
-                                            <TextBlock Text="{Binding OperationID}" 
-                                                     FontWeight="Bold" Foreground="#475569"
-                                                     HorizontalAlignment="Center"/>
+                                        <Border CornerRadius="6" Padding="6,3">
+                                            <Border.Style>
+                                                <Style TargetType="Border">
+                                                    <Setter Property="Background" Value="#F1F5F9"/>
+                                                    <Style.Triggers>
+                                                        <DataTrigger Binding="{Binding Reversed}" Value="True">
+                                                            <Setter Property="Background" Value="#E5E7EB"/>
+                                                        </DataTrigger>
+                                                    </Style.Triggers>
+                                                </Style>
+                                            </Border.Style>
+                                            <TextBlock FontWeight="Bold" HorizontalAlignment="Center">
+                                                <TextBlock.Style>
+                                                    <Style TargetType="TextBlock">
+                                                        <Setter Property="Foreground" Value="#475569"/>
+                                                        <Setter Property="Text" Value="{Binding OperationID}"/>
+                                                        <Style.Triggers>
+                                                            <DataTrigger Binding="{Binding Reversed}" Value="True">
+                                                                <Setter Property="Foreground" Value="#9CA3AF"/>
+                                                            </DataTrigger>
+                                                        </Style.Triggers>
+                                                    </Style>
+                                                </TextBlock.Style>
+                                            </TextBlock>
                                         </Border>
                                     </DataTemplate>
                                 </GridViewColumn.CellTemplate>
                             </GridViewColumn>
 
-                            <GridViewColumn Header="Type" Width="100">
+                            <GridViewColumn Header="Type" Width="140">
                                 <GridViewColumn.CellTemplate>
                                     <DataTemplate>
-                                        <Border Style="{StaticResource OperationTypeStyle}">
-                                            <TextBlock Text="{Binding OperationType, FallbackValue=N/A}" 
-                                                     FontSize="12" FontWeight="SemiBold"
-                                                     Foreground="#4338CA" 
-                                                     HorizontalAlignment="Center"/>
+                                        <Border CornerRadius="10" Padding="10,6">
+                                            <Border.Style>
+                                                <Style TargetType="Border">
+                                                    <Setter Property="Background">
+                                                        <Setter.Value>
+                                                            <LinearGradientBrush StartPoint="0,0" EndPoint="1,0">
+                                                                <GradientStop Color="#EEF2FF" Offset="0"/>
+                                                                <GradientStop Color="#E0E7FF" Offset="1"/>
+                                                            </LinearGradientBrush>
+                                                        </Setter.Value>
+                                                    </Setter>
+                                                    <Setter Property="Effect">
+                                                        <Setter.Value>
+                                                            <DropShadowEffect Color="#6366F120" BlurRadius="4" ShadowDepth="1" Opacity="0.3"/>
+                                                        </Setter.Value>
+                                                    </Setter>
+                                                    <Style.Triggers>
+                                                        <DataTrigger Binding="{Binding Reversed}" Value="True">
+                                                            <Setter Property="Background">
+                                                                <Setter.Value>
+                                                                    <LinearGradientBrush StartPoint="0,0" EndPoint="1,0">
+                                                                        <GradientStop Color="#F3F4F6" Offset="0"/>
+                                                                        <GradientStop Color="#E5E7EB" Offset="1"/>
+                                                                    </LinearGradientBrush>
+                                                                </Setter.Value>
+                                                            </Setter>
+                                                        </DataTrigger>
+                                                    </Style.Triggers>
+                                                </Style>
+                                            </Border.Style>
+                                            <StackPanel Orientation="Vertical" HorizontalAlignment="Center">
+                                                <TextBlock FontSize="12" FontWeight="SemiBold" HorizontalAlignment="Center">
+                                                    <TextBlock.Style>
+                                                        <Style TargetType="TextBlock">
+                                                            <Setter Property="Foreground" Value="#4338CA"/>
+                                                            <Setter Property="Text" Value="{Binding OperationType, FallbackValue=N/A}"/>
+                                                            <Style.Triggers>
+                                                                <DataTrigger Binding="{Binding Reversed}" Value="True">
+                                                                    <Setter Property="Foreground" Value="#9CA3AF"/>
+                                                                </DataTrigger>
+                                                            </Style.Triggers>
+                                                        </Style>
+                                                    </TextBlock.Style>
+                                                </TextBlock>
+                                                <TextBlock FontSize="9" FontWeight="Medium" HorizontalAlignment="Center" Margin="0,2,0,0">
+                                                    <TextBlock.Style>
+                                                        <Style TargetType="TextBlock">
+                                                            <Setter Property="Visibility" Value="Collapsed"/>
+                                                            <Setter Property="Foreground" Value="#9CA3AF"/>
+                                                            <Style.Triggers>
+                                                                <DataTrigger Binding="{Binding Reversed}" Value="True">
+                                                                    <Setter Property="Visibility" Value="Visible"/>
+                                                                    <Setter Property="Text" Value="(Reversed)"/>
+                                                                </DataTrigger>
+                                                            </Style.Triggers>
+                                                        </Style>
+                                                    </TextBlock.Style>
+                                                </TextBlock>
+                                            </StackPanel>
                                         </Border>
                                     </DataTemplate>
                                 </GridViewColumn.CellTemplate>
@@ -227,9 +433,26 @@
                             <GridViewColumn Header="Montant" Width="100">
                                 <GridViewColumn.CellTemplate>
                                     <DataTemplate>
-                                        <TextBlock Text="{Binding PrixOperation, StringFormat='C2', FallbackValue='0,00 €'}" 
-                                                 Style="{StaticResource AmountTextStyle}"
-                                                 FontSize="13"/>
+                                        <TextBlock FontSize="13" FontWeight="SemiBold">
+                                            <TextBlock.Style>
+                                                <Style TargetType="TextBlock">
+                                                    <Setter Property="Foreground">
+                                                        <Setter.Value>
+                                                            <LinearGradientBrush StartPoint="0,0" EndPoint="1,0">
+                                                                <GradientStop Color="#059669" Offset="0"/>
+                                                                <GradientStop Color="#047857" Offset="1"/>
+                                                            </LinearGradientBrush>
+                                                        </Setter.Value>
+                                                    </Setter>
+                                                    <Setter Property="Text" Value="{Binding PrixOperation, StringFormat='C2', FallbackValue='0,00 €'}"/>
+                                                    <Style.Triggers>
+                                                        <DataTrigger Binding="{Binding Reversed}" Value="True">
+                                                            <Setter Property="Foreground" Value="#9CA3AF"/>
+                                                        </DataTrigger>
+                                                    </Style.Triggers>
+                                                </Style>
+                                            </TextBlock.Style>
+                                        </TextBlock>
                                     </DataTemplate>
                                 </GridViewColumn.CellTemplate>
                             </GridViewColumn>
@@ -237,10 +460,30 @@
                             <GridViewColumn Header="Remise" Width="80">
                                 <GridViewColumn.CellTemplate>
                                     <DataTemplate>
-                                        <Border Background="#FEF2F2" CornerRadius="6" Padding="6,3">
-                                            <TextBlock Text="{Binding Remise, StringFormat='C2', FallbackValue='0,00 €'}" 
-                                                     FontSize="12" FontWeight="Medium" Foreground="#DC2626"
-                                                     HorizontalAlignment="Center"/>
+                                        <Border CornerRadius="6" Padding="6,3">
+                                            <Border.Style>
+                                                <Style TargetType="Border">
+                                                    <Setter Property="Background" Value="#FEF2F2"/>
+                                                    <Style.Triggers>
+                                                        <DataTrigger Binding="{Binding Reversed}" Value="True">
+                                                            <Setter Property="Background" Value="#F3F4F6"/>
+                                                        </DataTrigger>
+                                                    </Style.Triggers>
+                                                </Style>
+                                            </Border.Style>
+                                            <TextBlock FontSize="12" FontWeight="Medium" HorizontalAlignment="Center">
+                                                <TextBlock.Style>
+                                                    <Style TargetType="TextBlock">
+                                                        <Setter Property="Foreground" Value="#DC2626"/>
+                                                        <Setter Property="Text" Value="{Binding Remise, StringFormat='C2', FallbackValue='0,00 €'}"/>
+                                                        <Style.Triggers>
+                                                            <DataTrigger Binding="{Binding Reversed}" Value="True">
+                                                                <Setter Property="Foreground" Value="#9CA3AF"/>
+                                                            </DataTrigger>
+                                                        </Style.Triggers>
+                                                    </Style>
+                                                </TextBlock.Style>
+                                            </TextBlock>
                                         </Border>
                                     </DataTemplate>
                                 </GridViewColumn.CellTemplate>
@@ -249,16 +492,34 @@
                             <GridViewColumn Header="Crédit" Width="80">
                                 <GridViewColumn.CellTemplate>
                                     <DataTemplate>
-                                        <Border Background="#FFFBEB" CornerRadius="6" Padding="6,3">
-                                            <TextBlock Text="{Binding CreditValue, StringFormat='C2', FallbackValue='0,00 €'}" 
-                                                     FontSize="12" FontWeight="Medium" Foreground="#D97706"
-                                                     HorizontalAlignment="Center"/>
+                                        <Border CornerRadius="6" Padding="6,3">
+                                            <Border.Style>
+                                                <Style TargetType="Border">
+                                                    <Setter Property="Background" Value="#FFFBEB"/>
+                                                    <Style.Triggers>
+                                                        <DataTrigger Binding="{Binding Reversed}" Value="True">
+                                                            <Setter Property="Background" Value="#F3F4F6"/>
+                                                        </DataTrigger>
+                                                    </Style.Triggers>
+                                                </Style>
+                                            </Border.Style>
+                                            <TextBlock FontSize="12" FontWeight="Medium" HorizontalAlignment="Center">
+                                                <TextBlock.Style>
+                                                    <Style TargetType="TextBlock">
+                                                        <Setter Property="Foreground" Value="#D97706"/>
+                                                        <Setter Property="Text" Value="{Binding CreditValue, StringFormat='C2', FallbackValue='0,00 €'}"/>
+                                                        <Style.Triggers>
+                                                            <DataTrigger Binding="{Binding Reversed}" Value="True">
+                                                                <Setter Property="Foreground" Value="#9CA3AF"/>
+                                                            </DataTrigger>
+                                                        </Style.Triggers>
+                                                    </Style>
+                                                </TextBlock.Style>
+                                            </TextBlock>
                                         </Border>
                                     </DataTemplate>
                                 </GridViewColumn.CellTemplate>
                             </GridViewColumn>
-
-                           
                         </GridView>
                     </ListView.View>
                 </ListView>
@@ -308,17 +569,40 @@
                 </DockPanel>
 
                 <ListView x:Name="ArticlesList" 
-                         Style="{StaticResource ModernListView}"
-                         ItemContainerStyle="{StaticResource ModernListViewItem}" Width="700">
+                          Style="{StaticResource ModernListView}"
+                          ItemContainerStyle="{StaticResource ModernListViewItem}" 
+                          Width="700"
+                          Height="550">
+
                     <ListView.View>
                         <GridView ColumnHeaderContainerStyle="{StaticResource ModernGridViewColumnHeader}">
                             <GridViewColumn Header="ID Article" Width="80">
                                 <GridViewColumn.CellTemplate>
                                     <DataTemplate>
-                                        <Border Background="#F1F5F9" CornerRadius="6" Padding="6,3">
-                                            <TextBlock Text="{Binding ArticleID}" 
-                                                     FontWeight="Bold" Foreground="#475569"
-                                                     HorizontalAlignment="Center"/>
+                                        <Border CornerRadius="6" Padding="6,3">
+                                            <Border.Style>
+                                                <Style TargetType="Border">
+                                                    <Setter Property="Background" Value="#F1F5F9"/>
+                                                    <Style.Triggers>
+                                                        <DataTrigger Binding="{Binding IsReversed}" Value="True">
+                                                            <Setter Property="Background" Value="#E5E7EB"/>
+                                                        </DataTrigger>
+                                                    </Style.Triggers>
+                                                </Style>
+                                            </Border.Style>
+                                            <TextBlock FontWeight="Bold" HorizontalAlignment="Center">
+                                                <TextBlock.Style>
+                                                    <Style TargetType="TextBlock">
+                                                        <Setter Property="Foreground" Value="#475569"/>
+                                                        <Setter Property="Text" Value="{Binding ArticleID}"/>
+                                                        <Style.Triggers>
+                                                            <DataTrigger Binding="{Binding IsReversed}" Value="True">
+                                                                <Setter Property="Foreground" Value="#9CA3AF"/>
+                                                            </DataTrigger>
+                                                        </Style.Triggers>
+                                                    </Style>
+                                                </TextBlock.Style>
+                                            </TextBlock>
                                         </Border>
                                     </DataTemplate>
                                 </GridViewColumn.CellTemplate>
@@ -327,9 +611,35 @@
                             <GridViewColumn Header="Nom Article" Width="180">
                                 <GridViewColumn.CellTemplate>
                                     <DataTemplate>
-                                        <TextBlock Text="{Binding ArticleName}" 
-                                                 FontWeight="SemiBold" Foreground="#1E293B"
-                                                 TextWrapping="Wrap" FontSize="13"/>
+                                        <StackPanel>
+                                            <TextBlock FontWeight="SemiBold" TextWrapping="Wrap" FontSize="13">
+                                                <TextBlock.Style>
+                                                    <Style TargetType="TextBlock">
+                                                        <Setter Property="Foreground" Value="#1E293B"/>
+                                                        <Setter Property="Text" Value="{Binding ArticleName}"/>
+                                                        <Style.Triggers>
+                                                            <DataTrigger Binding="{Binding IsReversed}" Value="True">
+                                                                <Setter Property="Foreground" Value="#9CA3AF"/>
+                                                            </DataTrigger>
+                                                        </Style.Triggers>
+                                                    </Style>
+                                                </TextBlock.Style>
+                                            </TextBlock>
+                                            <TextBlock FontSize="9" FontWeight="Medium" Margin="0,2,0,0">
+                                                <TextBlock.Style>
+                                                    <Style TargetType="TextBlock">
+                                                        <Setter Property="Visibility" Value="Collapsed"/>
+                                                        <Setter Property="Foreground" Value="#9CA3AF"/>
+                                                        <Style.Triggers>
+                                                            <DataTrigger Binding="{Binding IsReversed}" Value="True">
+                                                                <Setter Property="Visibility" Value="Visible"/>
+                                                                <Setter Property="Text" Value="(Reversed)"/>
+                                                            </DataTrigger>
+                                                        </Style.Triggers>
+                                                    </Style>
+                                                </TextBlock.Style>
+                                            </TextBlock>
+                                        </StackPanel>
                                     </DataTemplate>
                                 </GridViewColumn.CellTemplate>
                             </GridViewColumn>
@@ -338,16 +648,43 @@
                                 <GridViewColumn.CellTemplate>
                                     <DataTemplate>
                                         <Border CornerRadius="8" Padding="8,4">
-                                            <Border.Background>
-                                                <LinearGradientBrush StartPoint="0,0" EndPoint="1,0">
-                                                    <GradientStop Color="#F3F4F6" Offset="0"/>
-                                                    <GradientStop Color="#E5E7EB" Offset="1"/>
-                                                </LinearGradientBrush>
-                                            </Border.Background>
-                                            <TextBlock Text="{Binding Famille}" 
-                                                     FontSize="12" FontWeight="Medium"
-                                                     Foreground="#374151" 
-                                                     HorizontalAlignment="Center"/>
+                                            <Border.Style>
+                                                <Style TargetType="Border">
+                                                    <Setter Property="Background">
+                                                        <Setter.Value>
+                                                            <LinearGradientBrush StartPoint="0,0" EndPoint="1,0">
+                                                                <GradientStop Color="#F3F4F6" Offset="0"/>
+                                                                <GradientStop Color="#E5E7EB" Offset="1"/>
+                                                            </LinearGradientBrush>
+                                                        </Setter.Value>
+                                                    </Setter>
+                                                    <Style.Triggers>
+                                                        <DataTrigger Binding="{Binding IsReversed}" Value="True">
+                                                            <Setter Property="Background">
+                                                                <Setter.Value>
+                                                                    <LinearGradientBrush StartPoint="0,0" EndPoint="1,0">
+                                                                        <GradientStop Color="#E5E7EB" Offset="0"/>
+                                                                        <GradientStop Color="#D1D5DB" Offset="1"/>
+                                                                    </LinearGradientBrush>
+                                                                </Setter.Value>
+                                                            </Setter>
+                                                        </DataTrigger>
+                                                    </Style.Triggers>
+                                                </Style>
+                                            </Border.Style>
+                                            <TextBlock FontSize="12" FontWeight="Medium" HorizontalAlignment="Center">
+                                                <TextBlock.Style>
+                                                    <Style TargetType="TextBlock">
+                                                        <Setter Property="Foreground" Value="#374151"/>
+                                                        <Setter Property="Text" Value="{Binding Famille}"/>
+                                                        <Style.Triggers>
+                                                            <DataTrigger Binding="{Binding IsReversed}" Value="True">
+                                                                <Setter Property="Foreground" Value="#9CA3AF"/>
+                                                            </DataTrigger>
+                                                        </Style.Triggers>
+                                                    </Style>
+                                                </TextBlock.Style>
+                                            </TextBlock>
                                         </Border>
                                     </DataTemplate>
                                 </GridViewColumn.CellTemplate>
@@ -356,10 +693,30 @@
                             <GridViewColumn Header="Quantité" Width="80">
                                 <GridViewColumn.CellTemplate>
                                     <DataTemplate>
-                                        <Border Background="#EFF6FF" CornerRadius="8" Padding="8,4">
-                                            <TextBlock Text="{Binding QteArticle}" 
-                                                     FontWeight="Bold" Foreground="#2563EB"
-                                                     HorizontalAlignment="Center" FontSize="13"/>
+                                        <Border CornerRadius="8" Padding="8,4">
+                                            <Border.Style>
+                                                <Style TargetType="Border">
+                                                    <Setter Property="Background" Value="#EFF6FF"/>
+                                                    <Style.Triggers>
+                                                        <DataTrigger Binding="{Binding IsReversed}" Value="True">
+                                                            <Setter Property="Background" Value="#F3F4F6"/>
+                                                        </DataTrigger>
+                                                    </Style.Triggers>
+                                                </Style>
+                                            </Border.Style>
+                                            <TextBlock FontWeight="Bold" HorizontalAlignment="Center" FontSize="13">
+                                                <TextBlock.Style>
+                                                    <Style TargetType="TextBlock">
+                                                        <Setter Property="Foreground" Value="#2563EB"/>
+                                                        <Setter Property="Text" Value="{Binding QteArticle}"/>
+                                                        <Style.Triggers>
+                                                            <DataTrigger Binding="{Binding IsReversed}" Value="True">
+                                                                <Setter Property="Foreground" Value="#9CA3AF"/>
+                                                            </DataTrigger>
+                                                        </Style.Triggers>
+                                                    </Style>
+                                                </TextBlock.Style>
+                                            </TextBlock>
                                         </Border>
                                     </DataTemplate>
                                 </GridViewColumn.CellTemplate>
@@ -368,8 +725,19 @@
                             <GridViewColumn Header="Prix Unitaire" Width="100">
                                 <GridViewColumn.CellTemplate>
                                     <DataTemplate>
-                                        <TextBlock Text="{Binding UnitPrice, StringFormat='C2', FallbackValue='0,00 €'}" 
-                                                 FontSize="13" FontWeight="Medium" Foreground="#64748B"/>
+                                        <TextBlock FontSize="13" FontWeight="Medium">
+                                            <TextBlock.Style>
+                                                <Style TargetType="TextBlock">
+                                                    <Setter Property="Foreground" Value="#64748B"/>
+                                                    <Setter Property="Text" Value="{Binding UnitPrice, StringFormat='C2', FallbackValue='0,00 €'}"/>
+                                                    <Style.Triggers>
+                                                        <DataTrigger Binding="{Binding IsReversed}" Value="True">
+                                                            <Setter Property="Foreground" Value="#9CA3AF"/>
+                                                        </DataTrigger>
+                                                    </Style.Triggers>
+                                                </Style>
+                                            </TextBlock.Style>
+                                        </TextBlock>
                                     </DataTemplate>
                                 </GridViewColumn.CellTemplate>
                             </GridViewColumn>
@@ -377,9 +745,26 @@
                             <GridViewColumn Header="Total" Width="100">
                                 <GridViewColumn.CellTemplate>
                                     <DataTemplate>
-                                        <TextBlock Text="{Binding Total, StringFormat='C2', FallbackValue='0,00 €'}" 
-                                                 Style="{StaticResource AmountTextStyle}"
-                                                 FontSize="14" FontWeight="Bold"/>
+                                        <TextBlock FontSize="14" FontWeight="Bold">
+                                            <TextBlock.Style>
+                                                <Style TargetType="TextBlock">
+                                                    <Setter Property="Foreground">
+                                                        <Setter.Value>
+                                                            <LinearGradientBrush StartPoint="0,0" EndPoint="1,0">
+                                                                <GradientStop Color="#059669" Offset="0"/>
+                                                                <GradientStop Color="#047857" Offset="1"/>
+                                                            </LinearGradientBrush>
+                                                        </Setter.Value>
+                                                    </Setter>
+                                                    <Setter Property="Text" Value="{Binding Total, StringFormat='C2', FallbackValue='0,00 €'}"/>
+                                                    <Style.Triggers>
+                                                        <DataTrigger Binding="{Binding IsReversed}" Value="True">
+                                                            <Setter Property="Foreground" Value="#9CA3AF"/>
+                                                        </DataTrigger>
+                                                    </Style.Triggers>
+                                                </Style>
+                                            </TextBlock.Style>
+                                        </TextBlock>
                                     </DataTemplate>
                                 </GridViewColumn.CellTemplate>
                             </GridViewColumn>

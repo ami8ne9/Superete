@@ -23,16 +23,32 @@ namespace Superete.Main.Inventory
         {
             InitializeComponent();
             this.main = main;
-            foreach(Fournisseur f in main.main.lfo)
+            foreach (Fournisseur f in main.main.lfo)
             {
-                
+
                 SupplierComboBox.Items.Add(f.Nom);
             }
-            fo = main.main.lfo[0];
-            SupplierComboBox.SelectedIndex = 0;
+            foreach (Role r in main.main.lr)
+            {
+                if (main.u.RoleID == r.RoleID)
+                {
+                    if (r.SolderFournisseur == false)
+                    {
+                        CreditButton.IsEnabled = false;
+                        HalfButton.IsEnabled = false;
+                    }
+                    if (r.CashFournisseur == false)
+                    {
+                        CashButton.IsEnabled = false;
+                    }
+                    break;
+                }
+                fo = main.main.lfo[0];
+                SupplierComboBox.SelectedIndex = 0;
 
-            LoadPayments(main.main.lp);
+                LoadPayments(main.main.lp);
 
+            }
         }
         public CMainI main;public Fournisseur fo;
         public void LoadPayments(List<PaymentMethod> lp)

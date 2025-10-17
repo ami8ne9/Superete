@@ -45,6 +45,10 @@ namespace Superete.Main.Inventory
                         HalfButton.IsEnabled = false;
                         CreditButton.IsEnabled = false;
                     }
+                    if (r.CashFournisseur == false)
+                    {
+                        CashButton.IsEnabled = false;
+                    }
                     break;
                 }
             }

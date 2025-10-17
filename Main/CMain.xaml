@@ -63,6 +63,13 @@
                                     </Setter.Value>
                                 </Setter>
                             </Trigger>
+                            <Trigger Property="IsEnabled" Value="False">
+                                <Setter Property="Opacity" Value="0.5"/>
+                                <Setter Property="Background" Value="#E5E7EB"/>
+                                <Setter Property="Foreground" Value="#9CA3AF"/>
+                                <Setter Property="Cursor" Value="No"/>
+                            </Trigger>
+
                         </ControlTemplate.Triggers>
                     </ControlTemplate>
                 </Setter.Value>
@@ -208,7 +215,7 @@
 
                     <!-- First Row -->
                     <StackPanel Grid.Row="0" Grid.Column="0" Margin="8">
-                        <Button Style="{StaticResource ModuleButtonStyle}" 
+                        <Button Style="{StaticResource ModuleButtonStyle}" Name="VenteBtn"
                                 Click="Button_Click">
                             <Button.Background>
                                 <ImageBrush ImageSource="images/revenu.png" Stretch="Uniform"/>
@@ -221,7 +228,7 @@
                     </StackPanel>
 
                     <StackPanel Grid.Row="0" Grid.Column="1" Margin="8">
-                        <Button Style="{StaticResource ModuleButtonStyle}" 
+                        <Button Style="{StaticResource ModuleButtonStyle}" Name="InventoryBtn"
                                 Click="Button_Click_2">
                             <Button.Background>
                                 <ImageBrush ImageSource="images/inventaire.png" Stretch="Uniform"/>
@@ -234,7 +241,7 @@
                     </StackPanel>
 
                     <StackPanel Grid.Row="0" Grid.Column="2" Margin="8">
-                        <Button Style="{StaticResource ModuleButtonStyle}" 
+                        <Button Style="{StaticResource ModuleButtonStyle}" Name="ClientBtn"
                                 Click="Button_Click_4">
                             <Button.Background>
                                 <ImageBrush ImageSource="images/customer-review.png" Stretch="Uniform"/>
@@ -247,7 +254,7 @@
                     </StackPanel>
 
                     <StackPanel Grid.Row="0" Grid.Column="3" Margin="8">
-                        <Button Style="{StaticResource ModuleButtonStyle}" 
+                        <Button Style="{StaticResource ModuleButtonStyle}" Name="FournisseurBtn"
                                 Click="Button_Click_3">
                             <Button.Background>
                                 <ImageBrush ImageSource="images/4866608.png" Stretch="Uniform"/>
@@ -261,7 +268,7 @@
 
                     <!-- Second Row (Centered) -->
                     <StackPanel Grid.Row="1" Grid.Column="1" Margin="8">
-                        <Button Style="{StaticResource ModuleButtonStyle}" 
+                        <Button Style="{StaticResource ModuleButtonStyle}" Name="ProjectManagmentBtn"
                                 Click="Button_Click_5">
                             <Button.Background>
                                 <ImageBrush ImageSource="images/management.png" Stretch="Uniform"/>
@@ -274,7 +281,7 @@
                     </StackPanel>
 
                     <StackPanel Grid.Row="1" Grid.Column="2" Margin="8">
-                        <Button Style="{StaticResource ModuleButtonStyle}" 
+                        <Button Style="{StaticResource ModuleButtonStyle}" Name="SettingsBtn"
                                 Click="Button_Click_1">
                             <Button.Background>
                                 <ImageBrush ImageSource="images/parametres.png" Stretch="Uniform"/>

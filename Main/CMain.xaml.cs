@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Superete.Properties;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -26,8 +27,38 @@ namespace Superete.Main
             this.main = main;
             this.u = u;
             Name.Text = u.UserName;
+            foreach(Role r in main.lr)
+            {
+                if(r.RoleID == u.RoleID)
+                {
+                    if (r.ViewSettings == false)
+                    {
+                        SettingsBtn.IsEnabled = false;
+                    }
+                    if (r.ViewProjectManagment == false)
+                    {
+                        ProjectManagmentBtn.IsEnabled = false;
+                    }
+                    if (r.ViewVente == false)
+                    {
+                        VenteBtn.IsEnabled = false;
+                    }
+                    if (r.ViewInventrory == false)
+                    {
+                        InventoryBtn.IsEnabled = false;
+                    }
+                    if (r.ViewClientsPage == false)
+                    {
+                        ClientBtn.IsEnabled = false;
+                    }
+                    if (r.ViewFournisseurPage == false)
+                    {
+                        FournisseurBtn.IsEnabled = false;
+                    }
+                }
+            }
         }
-        public MainWindow main; User u;
+        public MainWindow main;public User u;
 
 
         private void Button_Click_1(object sender, RoutedEventArgs e)

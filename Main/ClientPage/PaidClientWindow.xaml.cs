@@ -26,6 +26,22 @@ namespace Superete.Main.ClientPage
             _originalPaidAmounts = new Dictionary<int, decimal>();
             SetupEventHandlers();
             Loaded += PaidClientWindow_Loaded;
+            foreach (Role r in _mainWindow.lr)
+            {
+                if (_currentUser.RoleID == r.RoleID)
+                {
+                    if (!r.ViewCreditClient)
+                    {
+                        Credit.Visibility = Visibility.Collapsed;
+                        Remaining.Visibility = Visibility.Collapsed;    
+                        PayMaxButton.IsEnabled = false;
+                    }
+                    if (!r.PayeClient)
+                    {
+                        ProcessPaymentButton.IsEnabled = false;
+                    }
+                }
+            }
         }
 
         private void SetupEventHandlers()
@@ -128,7 +144,7 @@ namespace Superete.Main.ClientPage
             {
                 if (!decimal.TryParse(PaymentAmountTextBox.Text, out decimal amount) || amount <= 0)
                 {
-                    MessageBox.Show("Enter a valid payment amount.", "Validation", MessageBoxButton.OK, MessageBoxImage.Warning);
+                    MessageBox.Show("Veuillez entrer un montant de paiement valide.", "Validation", MessageBoxButton.OK, MessageBoxImage.Warning);
                     return;
                 }
 
@@ -137,8 +153,8 @@ namespace Superete.Main.ClientPage
                 if (amount > totalDifference)
                 {
                     MessageBox.Show(
-                        $"Payment amount ({amount:N2} DH) cannot exceed remaining balance ({totalDifference:N2} DH).",
-                        "Validation Error",
+                        $"Le montant du paiement ({amount:N2} DH) dépasse le crédit restant ({totalDifference:N2} DH).\n\nVeuillez entrer un montant inférieur ou égal à {totalDifference:N2} DH.",
+                        "Montant Invalide",
                         MessageBoxButton.OK,
                         MessageBoxImage.Error);
                     return;
@@ -163,7 +179,7 @@ namespace Superete.Main.ClientPage
 
                     credit.Paye += payForThisCredit;
                     credit.Difference = credit.Total - credit.Paye;
-                    creditId=credit.CreditID;
+                    creditId = credit.CreditID;
                     creditsToUpdate.Add(credit);
 
                     remaining -= payForThisCredit;
@@ -175,7 +191,7 @@ namespace Superete.Main.ClientPage
                     int res = await credit.UpdateCreditAsync();
                     if (res == 0)
                     {
-                        MessageBox.Show("Error updating credits.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                        MessageBox.Show("Erreur lors de la mise à jour des crédits.", "Erreur", MessageBoxButton.OK, MessageBoxImage.Error);
                         return;
                     }
 
@@ -194,25 +210,34 @@ namespace Superete.Main.ClientPage
                 // Create operations
                 await CreatePaymentOperationAsync(amount, creditId);
 
-                MessageBox.Show(
-                    $"Payment of {amount:N2} DH processed successfully.",
-                    "Success", MessageBoxButton.OK, MessageBoxImage.Information);
+                //MessageBox.Show(
+                //    $"Paiement de {amount:N2} DH traité avec succès.",
+                //    "Succès", MessageBoxButton.OK, MessageBoxImage.Information);
+
 
                 PaymentAmountTextBox.Clear();
 
-                this.DialogResult = true;
-                this.Close();
+                //this.DialogResult = true;
+                //this.Close();
+                WCongratulations wCongratulations = new WCongratulations("Paiement avec Succes", $"Paiement de {amount:N2} DH traité avec succès.", 1);
+                wCongratulations.ShowDialog();
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Error while processing payment: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                //MessageBox.Show($"Erreur lors du traitement du paiement: {ex.Message}", "Erreur", MessageBoxButton.OK, MessageBoxImage.Error);
+
+                WCongratulations wCongratulations = new WCongratulations("Payement Echoue", "Payement n'a pas ete effectue", 0);
+                wCongratulations.ShowDialog();
             }
         }
 
-        private async Task CreatePaymentOperationAsync(decimal paidAmount,int creditID)
+        private async Task CreatePaymentOperationAsync(decimal paidAmount, int creditID)
         {
             try
             {
+                // Create operation with current date
+                DateTime currentDate = DateTime.Now;
+
                 var op = new Operation
                 {
                     ClientID = _client.ClientID,
@@ -222,7 +247,8 @@ namespace Superete.Main.ClientPage
                     Remise = 0m,
                     CreditValue = -paidAmount,
                     UserID = GetCurrentUserId(),
-                    DateOperation = DateTime.Now,
+                    DateOperation = currentDate,
+                    Date = currentDate, // Important: Set both Date properties
                     OperationType = "PAYMENT",
                     //Reversed = false,
                     Etat = true
@@ -235,20 +261,16 @@ namespace Superete.Main.ClientPage
                     op.OperationID = opId;
                     _mainWindow.lo.Add(op);
                 }
-
-                // ❌ remove this line to prevent duplicate operations
-                // await CreateDetailedCreditPaymentOperationsAsync(paidAmount);
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Payment saved but failed to record operation: {ex.Message}",
-                    "Warning", MessageBoxButton.OK, MessageBoxImage.Warning);
+                MessageBox.Show($"Paiement enregistré mais échec de l'enregistrement de l'opération: {ex.Message}",
+                    "Avertissement", MessageBoxButton.OK, MessageBoxImage.Warning);
             }
         }
 
         private int GetCurrentUserId()
         {
-           
             return _currentUser.UserID;
         }
     }

@@ -76,7 +76,7 @@
                 </Grid.RowDefinitions>
 
                 <!-- Balance Overview Cards -->
-                <Grid Grid.Row="0" Margin="0,0,0,25">
+                <Grid Grid.Row="0" Margin="0,0,0,25" Name="Credit">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="*"/>
                         <ColumnDefinition Width="15"/>
@@ -86,7 +86,7 @@
                     </Grid.ColumnDefinitions>
 
                     <!-- Total Credit Card -->
-                    <Border Grid.Column="0" 
+                    <Border Grid.Column="0" Name="Total"
                            Background="#EBF8FF" 
                            BorderBrush="#3B82F6" 
                            BorderThickness="2" 
@@ -107,7 +107,7 @@
                     </Border>
 
                     <!-- Total Paid Card -->
-                    <Border Grid.Column="2" 
+                    <Border Grid.Column="2" Name="Paid"
                            Background="#F0FDF4" 
                            BorderBrush="#10B981" 
                            BorderThickness="2" 
@@ -220,7 +220,7 @@
                 </Border>
 
                 <!-- Remaining Balance Display -->
-                <Border Grid.Row="2" 
+                <Border Grid.Row="2"  Name="Remaining"
                        Background="#FEF7FF" 
                        BorderBrush="#A855F7" 
                        BorderThickness="2" 

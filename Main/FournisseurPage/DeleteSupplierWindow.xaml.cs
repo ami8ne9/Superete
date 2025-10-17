@@ -31,14 +31,20 @@ namespace Superete.Main.FournisseurPage
                 {
                     supplierInList.Etat = false;
                 }
+                WCongratulations wCongratulations = new WCongratulations("Suppression Succes", "Fournisseur Supprimer avec succes", 1);
+                wCongratulations.ShowDialog();
+                //MessageBox.Show("Operation failed.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
 
-                MessageBox.Show("Supplier hidden (soft deleted).", "Done", MessageBoxButton.OK, MessageBoxImage.Information);
-                DialogResult = true;
-                Close();
+                
+                //MessageBox.Show("Supplier hidden (soft deleted).", "Done", MessageBoxButton.OK, MessageBoxImage.Information);
+                //DialogResult = true;
+                //Close();
             }
             else
             {
-                MessageBox.Show("Operation failed.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                //MessageBox.Show("Operation failed.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                WCongratulations wCongratulations = new WCongratulations("Suppression Echoue", "Fournisseur n'a pas ete Supprimer", 0);
+                wCongratulations.ShowDialog();
             }
         }
 

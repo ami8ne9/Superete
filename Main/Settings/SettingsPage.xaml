@@ -46,6 +46,13 @@
                             <Trigger Property="IsPressed" Value="True">
                                 <Setter TargetName="Border" Property="Background" Value="{StaticResource ActiveBrush}"/>
                             </Trigger>
+                            <Trigger Property="IsEnabled" Value="False">
+                                <Setter Property="Opacity" Value="0.5"/>
+                                <Setter Property="Background" Value="#E5E7EB"/>
+                                <Setter Property="Foreground" Value="#9CA3AF"/>
+                                <Setter Property="Cursor" Value="No"/>
+                            </Trigger>
+
                         </ControlTemplate.Triggers>
                     </ControlTemplate>
                 </Setter.Value>
@@ -57,6 +64,36 @@
             <Setter Property="Background" Value="{StaticResource ActiveBrush}"/>
             <Setter Property="Foreground" Value="{StaticResource PrimaryBrush}"/>
             <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border x:Name="Border" Background="{TemplateBinding Background}" 
+                    CornerRadius="8" Padding="{TemplateBinding Padding}">
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock x:Name="Icon" Text="{TemplateBinding Tag}" 
+                              FontFamily="Segoe MDL2 Assets" FontSize="16" 
+                              VerticalAlignment="Center" Margin="0,0,12,0"/>
+                                <ContentPresenter VerticalAlignment="Center"/>
+                            </StackPanel>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="Border" Property="Background" Value="{StaticResource HoverBrush}"/>
+                            </Trigger>
+                            <Trigger Property="IsPressed" Value="True">
+                                <Setter TargetName="Border" Property="Background" Value="{StaticResource ActiveBrush}"/>
+                            </Trigger>
+                            <Trigger Property="IsEnabled" Value="False">
+                                <Setter Property="Opacity" Value="0.5"/>
+                                <Setter Property="Background" Value="#E5E7EB"/>
+                                <Setter Property="Foreground" Value="#9CA3AF"/>
+                                <Setter Property="Cursor" Value="No"/>
+                            </Trigger>
+
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
         </Style>
     </UserControl.Resources>
 
@@ -94,28 +131,20 @@
                         </Button.Template>
                     </Button>
 
-                    <TextBlock Text="Settings" FontFamily="{StaticResource ModernFont}" 
+                    <TextBlock Text="Paramètres" FontFamily="{StaticResource ModernFont}" 
                                   FontSize="24" FontWeight="Bold" 
                                   Foreground="{StaticResource TextPrimaryBrush}" Padding="5"
                                   />
                 </StackPanel>
                 <!-- Navigation Items -->
                 <Button x:Name="UserManagementBtn" Style="{StaticResource ActiveNavigationItemStyle}" 
-                            Tag="&#xE716;" Content="User Management" Click="NavigationItem_Click"/>
+                            Tag="&#xE716;" Content="Gestion des Utilisateurs" Click="NavigationItem_Click"/>
                 <Button x:Name="ConfigurationBtn" Style="{StaticResource NavigationItemStyle}" 
-                            Tag="&#xE713;" Content="Facture Settings" Click="FactureSettings_Click"/>
+                            Tag="&#xE713;" Content="Paramètres de Facture" Click="FactureSettings_Click"/>
                 <Button x:Name="DatabaseSettingsBtn" Style="{StaticResource NavigationItemStyle}" 
-                            Tag="&#xE1C3;" Content="Methode de Paiment" Click="PaimentMehode_Click"/>
-                <Button x:Name="SecurityBtn" Style="{StaticResource NavigationItemStyle}" 
-                            Tag="&#xE72E;" Content="Security" Click="NavigationItem_Click"/>
-                <Button x:Name="NotificationsBtn" Style="{StaticResource NavigationItemStyle}" 
-                            Tag="&#xE7EE;" Content="Notifications" Click="NavigationItem_Click"/>
-                <Button x:Name="ReportsBtn" Style="{StaticResource NavigationItemStyle}" 
-                            Tag="&#xE8F1;" Content="Reports" Click="NavigationItem_Click"/>
-                <Button x:Name="SystemLogsBtn" Style="{StaticResource NavigationItemStyle}" 
-                            Tag="&#xE946;" Content="System Logs" Click="NavigationItem_Click"/>
-                <Button x:Name="PreferencesBtn" Style="{StaticResource NavigationItemStyle}" 
-                            Tag="&#xE713;" Content="Preferences" Click="NavigationItem_Click"/>
+                            Tag="&#xE1C3;" Content="Méthode de Paiement" Click="PaimentMehode_Click"/>
+                <Button x:Name="AProposBtn" Style="{StaticResource NavigationItemStyle}" 
+                            Tag="&#xE946;" Content="À propos de nous" Click="APropos_Click"/>
             </StackPanel>
         </Border>
         <Grid Grid.Column="1" x:Name="ContentGrid" Background="{StaticResource HoverBrush}"/>

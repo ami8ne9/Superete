@@ -73,11 +73,48 @@ namespace Superete.Main.FournisseurPage
                 return;
             }
 
+            // Check for duplicates (only when adding new supplier or when name/phone changed)
+            string newName = NameTextBox.Text.Trim();
+            string newPhone = PhoneTextBox.Text.Trim();
+
+            if (_mainWindow.lfo != null)
+            {
+                // Check for duplicate name
+                var existingName = _mainWindow.lfo.FirstOrDefault(f =>
+                    f.Nom.Equals(newName, StringComparison.OrdinalIgnoreCase) &&
+                    f.Etat &&
+                    (!_isEdit || f.FournisseurID != _editingSupplier.FournisseurID));
+
+                if (existingName != null)
+                {
+                    MessageBox.Show($"A supplier with the name '{newName}' already exists.",
+                        "Duplicate Name", MessageBoxButton.OK, MessageBoxImage.Warning);
+                    return;
+                }
+
+                // Check for duplicate phone number (only if phone is provided)
+                if (!string.IsNullOrWhiteSpace(newPhone))
+                {
+                    var existingPhone = _mainWindow.lfo.FirstOrDefault(f =>
+                        !string.IsNullOrWhiteSpace(f.Telephone) &&
+                        f.Telephone.Equals(newPhone, StringComparison.OrdinalIgnoreCase) &&
+                        f.Etat &&
+                        (!_isEdit || f.FournisseurID != _editingSupplier.FournisseurID));
+
+                    if (existingPhone != null)
+                    {
+                        MessageBox.Show($"A supplier with the phone number '{newPhone}' already exists.",
+                            "Duplicate Phone", MessageBoxButton.OK, MessageBoxImage.Warning);
+                        return;
+                    }
+                }
+            }
+
             if (_isEdit)
             {
                 // update fournisseur (name, phone)
-                _editingSupplier.Nom = NameTextBox.Text.Trim();
-                _editingSupplier.Telephone = PhoneTextBox.Text.Trim();
+                _editingSupplier.Nom = newName;
+                _editingSupplier.Telephone = newPhone;
                 int result = await _editingSupplier.UpdateFournisseurAsync();
 
                 if (result > 0)
@@ -111,21 +148,25 @@ namespace Superete.Main.FournisseurPage
                         }
                     }
 
-                    MessageBox.Show("Supplier updated.", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
+                    //MessageBox.Show("Supplier updated.", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
                     SupplierSaved?.Invoke(this, EventArgs.Empty);
-                    DialogResult = true;
-                    Close();
+                    //DialogResult = true;
+                    //Close();
+                    WCongratulations wCongratulations = new WCongratulations("Modification Succes", "Fournisseur Modifier avec succes", 1);
+                    wCongratulations.ShowDialog();
                 }
                 else
                 {
-                    MessageBox.Show("Update failed.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                    //MessageBox.Show("Update failed.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                    WCongratulations wCongratulations = new WCongratulations("Modification Echoue", "Fournisseur n'a pas ete Modifier", 0);
+                    wCongratulations.ShowDialog();
                 }
             }
             else
             {
                 // Insert new fournisseur
-                _editingSupplier.Nom = NameTextBox.Text.Trim();
-                _editingSupplier.Telephone = PhoneTextBox.Text.Trim();
+                _editingSupplier.Nom = newName;
+                _editingSupplier.Telephone = newPhone;
                 _editingSupplier.Etat = true;
 
                 int newId = await _editingSupplier.InsertFournisseurAsync();
@@ -157,14 +198,18 @@ namespace Superete.Main.FournisseurPage
                         }
                     }
 
-                    MessageBox.Show("Supplier added.", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
+                    //MessageBox.Show("Supplier added.", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
                     SupplierSaved?.Invoke(this, EventArgs.Empty);
-                    DialogResult = true;
-                    Close();
+                    //DialogResult = true;
+                    //Close();
+                    WCongratulations wCongratulations = new WCongratulations("Ajout Succes", "Fournisseur Ajouter avec succes", 1);
+                    wCongratulations.ShowDialog();
                 }
                 else
                 {
-                    MessageBox.Show("Insert failed.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                    //MessageBox.Show("Insert failed.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                    WCongratulations wCongratulations = new WCongratulations("Ajout Echoue", "Fournisseur n'a pas ete Ajouter", 0);
+                    wCongratulations.ShowDialog();
                 }
             }
         }

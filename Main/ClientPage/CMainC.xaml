@@ -154,7 +154,7 @@
 
                 <!-- Title -->
                 <StackPanel Grid.Column="1" HorizontalAlignment="Center" VerticalAlignment="Center">
-                    <TextBlock Text="Client MANAGEMENT" 
+                    <TextBlock Text="CLIENT MANAGEMENT" 
                               FontSize="22" FontWeight="Bold" Foreground="White"
                               HorizontalAlignment="Center"/>
                     <TextBlock Text="Manage your client relationships efficiently" 
@@ -272,8 +272,8 @@
             </Border>
 
             <!-- Add New Supplier Button -->
-            <Button Grid.Column="4" Width="150" Height="80" Margin="20,20,10,20"
-                    BorderThickness="0" Click="AddNewClient_Click" Cursor="Hand" FontSize="22">
+            <Button Grid.Column="4" Width="150" Height="80" Margin="20,20,10,20" Name="AddBtn"
+        BorderThickness="0" Click="AddNewClient_Click" Cursor="Hand" FontSize="22">
                 <Button.Background>
                     <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
                         <GradientStop Color="#10B981" Offset="0"/>
@@ -287,12 +287,20 @@
                                 <Border Width="40" Height="40" Background="White" CornerRadius="20" Opacity="0.2" Margin="0,0,0,4"/>
                                 <Border Width="40" Height="40" Background="Transparent" CornerRadius="20" Margin="0,-44,0,4">
                                     <TextBlock Text="+" FontSize="32" FontWeight="Bold" Foreground="White" 
-                                             HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                 HorizontalAlignment="Center" VerticalAlignment="Center"/>
                                 </Border>
                                 <TextBlock Text="New Client" FontSize="14" FontWeight="SemiBold" 
-                                          Foreground="White" Margin="0,5,0,0"/>
+                              Foreground="White" Margin="0,5,0,0"/>
                             </StackPanel>
                         </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsEnabled" Value="False">
+                                <Setter Property="Opacity" Value="0.5"/>
+                                <Setter Property="Background" Value="#E5E7EB"/>
+                                <Setter Property="Foreground" Value="#9CA3AF"/>
+                                <Setter Property="Cursor" Value="No"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
                     </ControlTemplate>
                 </Button.Template>
             </Button>

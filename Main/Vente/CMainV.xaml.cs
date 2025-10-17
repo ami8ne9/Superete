@@ -54,6 +54,10 @@ namespace Superete.Main.Vente
                         HalfButton.IsEnabled = false;
                         CreditButton.IsEnabled = false;
                     }
+                    if (r.CashClient == false)
+                    {
+                        CashButton.IsEnabled = false;
+                    }
                     break;
                 }
             }

@@ -29,6 +29,28 @@ namespace Superete.Main
                 Logout.Visibility = Visibility.Collapsed;
                 this.Height = 280;
             }
+            else
+            {
+                foreach (Role r in main.main.lr)
+                {
+                    if (r.RoleID == main.u.RoleID)
+                    {
+                        if (r.Logout == false)
+                        {
+                            Logout.IsEnabled = false;
+                        }
+                        if (r.ViewShutDown == false)
+                        {
+                            ShutDown.IsEnabled = false;
+                        }
+                        if (r.ViewExit == false)
+                        {
+                            Exitt.IsEnabled = false;
+                        }
+                    }
+                }
+            }
+                
         }
         int i; CMain main;
         private void Button_Click(object sender, RoutedEventArgs e)

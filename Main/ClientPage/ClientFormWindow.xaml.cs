@@ -74,10 +74,47 @@ namespace Superete.Main.ClientPage
                 return;
             }
 
+            // Check for duplicates (only when adding new client or when name/phone changed)
+            string newName = NameTextBox.Text.Trim();
+            string newPhone = PhoneTextBox.Text.Trim();
+
+            if (_main.lc != null)
+            {
+                // Check for duplicate name
+                var existingName = _main.lc.FirstOrDefault(c =>
+                    c.Nom.Equals(newName, StringComparison.OrdinalIgnoreCase) &&
+                    c.Etat &&
+                    (!_isEdit || c.ClientID != _editingClient.ClientID));
+
+                if (existingName != null)
+                {
+                    MessageBox.Show($"A client with the name '{newName}' already exists.",
+                        "Duplicate Name", MessageBoxButton.OK, MessageBoxImage.Warning);
+                    return;
+                }
+
+                // Check for duplicate phone number (only if phone is provided)
+                if (!string.IsNullOrWhiteSpace(newPhone))
+                {
+                    var existingPhone = _main.lc.FirstOrDefault(c =>
+                        !string.IsNullOrWhiteSpace(c.Telephone) &&
+                        c.Telephone.Equals(newPhone, StringComparison.OrdinalIgnoreCase) &&
+                        c.Etat &&
+                        (!_isEdit || c.ClientID != _editingClient.ClientID));
+
+                    if (existingPhone != null)
+                    {
+                        MessageBox.Show($"A client with the phone number '{newPhone}' already exists.",
+                            "Duplicate Phone", MessageBoxButton.OK, MessageBoxImage.Warning);
+                        return;
+                    }
+                }
+            }
+
             if (_isEdit)
             {
-                _editingClient.Nom = NameTextBox.Text.Trim();
-                _editingClient.Telephone = PhoneTextBox.Text.Trim();
+                _editingClient.Nom = newName;
+                _editingClient.Telephone = newPhone;
 
                 // Save to database
                 int result = await _editingClient.UpdateClientAsync();
@@ -118,20 +155,21 @@ namespace Superete.Main.ClientPage
                             // ignore insert-credit failure
                         }
                     }
-
-                    MessageBox.Show("Client updated.", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
+                    WCongratulations wCongratulations=new WCongratulations("Modification Succes", "Client Modifier avec succes",1);
+                    wCongratulations.ShowDialog();
                     DialogResult = true;
                     Close();
                 }
                 else
                 {
-                    MessageBox.Show("Update failed.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                    WCongratulations wCongratulations = new WCongratulations("Modification Echoue", "Client n'a pas ete Modifier", 0);
+                    wCongratulations.ShowDialog();
                 }
             }
             else
             {
-                _editingClient.Nom = NameTextBox.Text.Trim();
-                _editingClient.Telephone = PhoneTextBox.Text.Trim();
+                _editingClient.Nom = newName;
+                _editingClient.Telephone = newPhone;
 
                 // Save to database
                 int newId = await _editingClient.InsertClientAsync();
@@ -173,13 +211,19 @@ namespace Superete.Main.ClientPage
                         }
                     }
 
-                    MessageBox.Show("Client added.", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
-                    DialogResult = true;
-                    Close();
+                    //MessageBox.Show("Client added.", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
+                    //DialogResult = true;
+                    //Close();
+
+                    WCongratulations wCongratulations = new WCongratulations("Ajout Succes", "Client Ajouter avec succes", 1);
+                    wCongratulations.ShowDialog();
                 }
                 else
                 {
-                    MessageBox.Show("Insert failed.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                    //MessageBox.Show("Insert failed.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+
+                    WCongratulations wCongratulations = new WCongratulations("Ajout Echoue", "Client n'a pas ete Ajouter", 0);
+                    wCongratulations.ShowDialog();
                 }
             }
         }

@@ -25,6 +25,16 @@
                                 <TextBlock Text="{TemplateBinding Content}" Foreground="{TemplateBinding Foreground}"/>
                             </StackPanel>
                         </Grid>
+
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsEnabled" Value="False">
+                                <Setter Property="Opacity" Value="0.5"/>
+                                <Setter Property="Background" Value="#E5E7EB"/>
+                                <Setter Property="Foreground" Value="#9CA3AF"/>
+                                <Setter Property="Cursor" Value="No"/>
+                            </Trigger>
+
+                        </ControlTemplate.Triggers>
                     </ControlTemplate>
                 </Setter.Value>
             </Setter>
@@ -71,12 +81,12 @@
                         Style="{StaticResource ModernButtonStyle}"
                         BorderBrush="#3B82F6" 
                         Foreground="#3B82F6" Height="35" Click="Logout_Click_1"/>
-                <Button Content="Exit Application" 
+                <Button Content="Exit Application" Name="Exitt"
                         Tag="✕"
                         Style="{StaticResource ModernButtonStyle}"
                         BorderBrush="#10B981" 
                         Foreground="#10B981" Height="35" Click="Button_Click_1"/>
-                <Button Content="Shut Down" 
+                <Button Content="Shut Down" Name="ShutDown"
                         Tag="⏻"
                         Style="{StaticResource ModernButtonStyle}"
                         BorderBrush="#EF4444" 
