@@ -1,4 +1,4 @@
-﻿<Window x:Class="Superete.Main.Settings.WAddUser"
+﻿<Window x:Class="GestionComerce.Main.Settings.WAddUser"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         Title="User Registration" Height="416" Width="500"

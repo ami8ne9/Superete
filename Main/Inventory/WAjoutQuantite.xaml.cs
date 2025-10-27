@@ -14,7 +14,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 
-namespace Superete.Main.Inventory
+namespace GestionComerce.Main.Inventory
 {
     /// <summary>
     /// Interaction logic for WAjoutQuantite.xaml

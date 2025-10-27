@@ -3,7 +3,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
 
-namespace Superete.Main.ClientPage
+namespace GestionComerce.Main.ClientPage
 {
     public partial class ClientFormWindow : Window
     {

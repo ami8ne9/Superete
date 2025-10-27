@@ -12,7 +12,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 
-namespace Superete.Main.Vente
+namespace GestionComerce.Main.Vente
 {
     /// <summary>
     /// Interaction logic for WAddCleint.xaml

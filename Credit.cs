@@ -5,7 +5,7 @@ using System.Data.SqlClient;
 using System.Threading.Tasks;
 using System.Windows;
 
-namespace Superete
+namespace GestionComerce
 {
     public class Credit
     {
@@ -18,7 +18,7 @@ namespace Superete
         public bool Etat { get; set; }
 
         private static readonly string ConnectionString =
-            "Server=localhost\\SQLEXPRESS;Database=SUPERETE;Trusted_Connection=True;";
+            "Server=localhost\\SQLEXPRESS;Database=GESTIONCOMERCE;Trusted_Connection=True;";
 
         // CHANGE THIS if your real table name is different (e.g. "CreditClient")
         private const string TableName = "Credit";

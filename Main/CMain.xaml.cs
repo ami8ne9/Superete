@@ -1,4 +1,4 @@
-﻿using Superete.Properties;
+﻿using GestionComerce.Properties;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,7 +14,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-namespace Superete.Main
+namespace GestionComerce.Main
 {
     /// <summary>
     /// Logique d'interaction pour CMain.xaml
@@ -107,6 +107,11 @@ namespace Superete.Main
         {
             Exit exit=new Exit(this,1);
             exit.ShowDialog();
+        }
+
+        private void FacturationBtn_Click(object sender, RoutedEventArgs e)
+        {
+
         }
     }
 }

@@ -1,4 +1,4 @@
-﻿using Superete.Main.Vente;
+﻿using GestionComerce.Main.Vente;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,7 +14,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 
-namespace Superete.Main.Inventory
+namespace GestionComerce.Main.Inventory
 {
     /// <summary>
     /// Interaction logic for WConfirmTransaction.xaml

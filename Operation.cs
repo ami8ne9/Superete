@@ -5,7 +5,7 @@ using System.Data.SqlClient;
 using System.Threading.Tasks;
 using System.Windows;
 
-namespace Superete
+namespace GestionComerce
 {
     public class Operation
     {
@@ -26,7 +26,7 @@ namespace Superete
         public string OperationType { get; set; } = string.Empty;
         public bool Reversed { get; set; }
 
-        private static readonly string ConnectionString = "Server=localhost\\SQLEXPRESS;Database=SUPERETE;Trusted_Connection=True;";
+        private static readonly string ConnectionString = "Server=localhost\\SQLEXPRESS;Database=GESTIONCOMERCE;Trusted_Connection=True;";
 
         public async Task<List<Operation>> GetOperationsAsync()
         {

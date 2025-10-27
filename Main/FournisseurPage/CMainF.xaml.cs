@@ -1,5 +1,5 @@
-﻿using Superete.Main.ClientPage;
-using Superete.Main.FournisseurPage;
+﻿using GestionComerce.Main.ClientPage;
+using GestionComerce.Main.FournisseurPage;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 
-namespace Superete.Main.FournisseurPage
+namespace GestionComerce.Main.FournisseurPage
 {
     public partial class CMainF : UserControl
     {

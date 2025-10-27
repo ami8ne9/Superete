@@ -1,4 +1,4 @@
-﻿<Window x:Class="Superete.Main.Inventory.WManageFamillies"
+﻿<Window x:Class="GestionComerce.Main.Inventory.WManageFamillies"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         Title="Famille Management" 

@@ -1,4 +1,4 @@
-﻿<UserControl x:Class="Superete.Main.CMain"
+﻿<UserControl x:Class="GestionComerce.Main.CMain"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              Background="#FAFBFC">
@@ -131,7 +131,7 @@
                        HorizontalAlignment="Center"
                        VerticalAlignment="Center"/>
                     </Border>
-                    <TextBlock Text="BusinessHub Pro" 
+                    <TextBlock Text="Gestion Comerce" 
                    Style="{StaticResource HeaderTextStyle}"
                    VerticalAlignment="Center"/>
                 </StackPanel>
@@ -267,31 +267,53 @@
                     </StackPanel>
 
                     <!-- Second Row (Centered) -->
-                    <StackPanel Grid.Row="1" Grid.Column="1" Margin="8">
-                        <Button Style="{StaticResource ModuleButtonStyle}" Name="ProjectManagmentBtn"
-                                Click="Button_Click_5">
-                            <Button.Background>
-                                <ImageBrush ImageSource="images/management.png" Stretch="Uniform"/>
-                            </Button.Background>
-                        </Button>
-                        <TextBlock Text="Gestion de Projets" 
-                                   Style="{StaticResource ModuleLabelStyle}"
-                                   HorizontalAlignment="Center" 
-                                   Margin="0,12,0,0"/>
-                    </StackPanel>
+                    <!-- Second Row (Centered) -->
+                    <Grid Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="4" HorizontalAlignment="Center">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
 
-                    <StackPanel Grid.Row="1" Grid.Column="2" Margin="8">
-                        <Button Style="{StaticResource ModuleButtonStyle}" Name="SettingsBtn"
-                                Click="Button_Click_1">
-                            <Button.Background>
-                                <ImageBrush ImageSource="images/parametres.png" Stretch="Uniform"/>
-                            </Button.Background>
-                        </Button>
-                        <TextBlock Text="Paramètres Système" 
-                                   Style="{StaticResource ModuleLabelStyle}"
-                                   HorizontalAlignment="Center" 
-                                   Margin="0,12,0,0"/>
-                    </StackPanel>
+                        <StackPanel Grid.Column="0" Margin="8">
+                            <Button Style="{StaticResource ModuleButtonStyle}" Name="FacturationBtn"
+                                    Click="FacturationBtn_Click">
+                                <Button.Background>
+                                    <ImageBrush ImageSource="images/invoice.png" Stretch="Uniform"/>
+                                </Button.Background>
+                            </Button>
+                            <TextBlock Text="Facturation" 
+                                       Style="{StaticResource ModuleLabelStyle}"
+                                       HorizontalAlignment="Center" 
+                                       Margin="0,12,0,0"/>
+                        </StackPanel>
+
+                        <StackPanel Grid.Column="1" Margin="8">
+                            <Button Style="{StaticResource ModuleButtonStyle}" Name="ProjectManagmentBtn"
+                                    Click="Button_Click_5">
+                                <Button.Background>
+                                    <ImageBrush ImageSource="images/management.png" Stretch="Uniform"/>
+                                </Button.Background>
+                            </Button>
+                            <TextBlock Text="Gestion de Projets" 
+                                       Style="{StaticResource ModuleLabelStyle}"
+                                       HorizontalAlignment="Center" 
+                                       Margin="0,12,0,0"/>
+                        </StackPanel>
+
+                        <StackPanel Grid.Column="2" Margin="8">
+                            <Button Style="{StaticResource ModuleButtonStyle}" Name="SettingsBtn"
+                                    Click="Button_Click_1">
+                                <Button.Background>
+                                    <ImageBrush ImageSource="images/parametres.png" Stretch="Uniform"/>
+                                </Button.Background>
+                            </Button>
+                            <TextBlock Text="Paramètres Système" 
+                                       Style="{StaticResource ModuleLabelStyle}"
+                                       HorizontalAlignment="Center" 
+                                       Margin="0,12,0,0"/>
+                        </StackPanel>
+                    </Grid>
                 </Grid>
             </Grid>
         </ScrollViewer>

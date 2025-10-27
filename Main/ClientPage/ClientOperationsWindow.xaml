@@ -1,4 +1,4 @@
-﻿<Window x:Class="Superete.Main.ClientPage.ClientOperationsWindow"
+﻿<Window x:Class="GestionComerce.Main.ClientPage.ClientOperationsWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         Title="Opérations Client" Height="700" Width="750"

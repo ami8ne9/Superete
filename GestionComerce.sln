@@ -1,9 +1,9 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
-VisualStudioVersion = 17.14.36414.22 d17.14
+VisualStudioVersion = 17.14.36414.22
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Superete", "Superete.csproj", "{49DA6D4D-F0AF-453B-9724-88EA6E9B1ECD}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GestionComerce", "GestionComerce.csproj", "{49DA6D4D-F0AF-453B-9724-88EA6E9B1ECD}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

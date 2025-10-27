@@ -1,4 +1,4 @@
-﻿<UserControl x:Class="Superete.Main.Vente.CMainV"
+﻿<UserControl x:Class="GestionComerce.Main.Vente.CMainV"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              Background="#F5F5F5" Width="Auto" Height=" Auto" >

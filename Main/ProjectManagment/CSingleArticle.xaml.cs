@@ -13,7 +13,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-namespace Superete.Main.ProjectManagment
+namespace GestionComerce.Main.ProjectManagment
 {
     /// <summary>
     /// Interaction logic for CSingleArticle.xaml

@@ -4,7 +4,7 @@ using System.Data.SqlClient;
 using System.Threading.Tasks;
 using System.Windows;
 
-namespace Superete
+namespace GestionComerce
 {
     public class Client
     {
@@ -13,7 +13,7 @@ namespace Superete
         public string Telephone { get; set; }
         public bool Etat { get; set; } // Added Etat property
         
-        private static readonly string ConnectionString = "Server=localhost\\SQLEXPRESS;Database=SUPERETE;Trusted_Connection=True;";
+        private static readonly string ConnectionString = "Server=localhost\\SQLEXPRESS;Database=GESTIONCOMERCE;Trusted_Connection=True;";
 
         public async Task<List<Client>> GetClientsAsync()
         {

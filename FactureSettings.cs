@@ -3,7 +3,7 @@ using System.Data.SqlClient;
 using System.Threading.Tasks;
 using System.Windows;
 
-namespace Superete
+namespace GestionComerce
 {
     public class FactureSettings
     {
@@ -18,7 +18,7 @@ namespace Superete
         public string TermsAndConditions { get; set; }
         public string FooterText { get; set; }
 
-        private static readonly string ConnectionString = "Server=localhost\\SQLEXPRESS;Database=SUPERETE;Trusted_Connection=True;";
+        private static readonly string ConnectionString = "Server=localhost\\SQLEXPRESS;Database=GESTIONCOMERCE;Trusted_Connection=True;";
 
         // Get the current facture settings (should only be one row)
         public static async Task<FactureSettings> GetFactureSettingsAsync()

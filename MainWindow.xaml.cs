@@ -1,10 +1,10 @@
-﻿using Superete.Main;
-using Superete.Main.ClientPage;
-using Superete.Main.FournisseurPage;
-using Superete.Main.Inventory;
-using Superete.Main.ProjectManagment;
-using Superete.Main.Settings;
-using Superete.Main.Vente;
+﻿using GestionComerce.Main;
+using GestionComerce.Main.ClientPage;
+using GestionComerce.Main.FournisseurPage;
+using GestionComerce.Main.Inventory;
+using GestionComerce.Main.ProjectManagment;
+using GestionComerce.Main.Settings;
+using GestionComerce.Main.Vente;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -21,7 +21,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-namespace Superete
+namespace GestionComerce
 {
     /// <summary>
     /// Logique d'interaction pour MainWindow.xaml

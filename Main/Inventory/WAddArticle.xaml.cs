@@ -13,7 +13,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 
-namespace Superete.Main.Inventory
+namespace GestionComerce.Main.Inventory
 {
     /// <summary>
     /// Logique d'interaction pour WAddArticle.xaml

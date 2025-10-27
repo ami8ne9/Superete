@@ -1,4 +1,4 @@
-﻿using Superete.Main;
+﻿using GestionComerce.Main;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -15,7 +15,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-namespace Superete
+namespace GestionComerce
 {
     /// <summary>
     /// Logique d'interaction pour Login.xaml

@@ -1,4 +1,4 @@
-﻿using Superete;
+﻿using GestionComerce;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,7 +7,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
 
-namespace Superete.Main.ClientPage
+namespace GestionComerce.Main.ClientPage
 {
     public partial class PaidClientWindow : Window
     {

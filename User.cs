@@ -4,7 +4,7 @@ using System.Data.SqlClient;
 using System.Threading.Tasks;
 using System.Windows;
 
-namespace Superete { 
+namespace GestionComerce { 
     public class User
     {
         public int UserID { get; set; }
@@ -13,7 +13,7 @@ namespace Superete {
         public int RoleID { get; set; }
         public int Etat { get; set; }
 
-        private static readonly string ConnectionString = "Server=localhost\\SQLEXPRESS;Database=SUPERETE;Trusted_Connection=True;";
+        private static readonly string ConnectionString = "Server=localhost\\SQLEXPRESS;Database=GESTIONCOMERCE;Trusted_Connection=True;";
 
         public async Task<List<User>> GetUsersAsync()
         {

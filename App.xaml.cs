@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Windows;
 
-namespace Superete
+namespace GestionComerce
 {
     public partial class App : Application
     {

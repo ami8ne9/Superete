@@ -1,4 +1,4 @@
-﻿<Window x:Class="Superete.Main.FournisseurPage.PaidSupplierWindow"
+﻿<Window x:Class="GestionComerce.Main.FournisseurPage.PaidSupplierWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         Title="Payment Management" Height="550" Width="850"

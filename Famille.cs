@@ -6,7 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 
-namespace Superete
+namespace GestionComerce
 {
     public class Famille
     {
@@ -14,7 +14,7 @@ namespace Superete
         public string FamilleName { get; set; }
         public int NbrArticle { get; set; }
 
-        private static readonly string ConnectionString = "Server=localhost\\SQLEXPRESS;Database=SUPERETE;Trusted_Connection=True;";
+        private static readonly string ConnectionString = "Server=localhost\\SQLEXPRESS;Database=GESTIONCOMERCE;Trusted_Connection=True;";
 
         public async Task<List<Famille>> GetFamillesAsync()
         {

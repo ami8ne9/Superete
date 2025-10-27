@@ -15,7 +15,7 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 using System.Xml.Linq;
 
-namespace Superete.Main.ProjectManagment
+namespace GestionComerce.Main.ProjectManagment
 {
     /// <summary>
     /// Interaction logic for CMainP.xaml

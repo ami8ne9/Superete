@@ -1,4 +1,4 @@
-﻿<Window x:Class="Superete.Main.Inventory.WAddMultipleArticles"
+﻿<Window x:Class="GestionComerce.Main.Inventory.WAddMultipleArticles"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         Title="Article Management" Height="558" Width="567"

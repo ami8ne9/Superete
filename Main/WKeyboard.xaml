@@ -1,4 +1,4 @@
-﻿<Window x:Class="Superete.WKeyboard"
+﻿<Window x:Class="GestionComerce.WKeyboard"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         Title="Floating Keyboard" 

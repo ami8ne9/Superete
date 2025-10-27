@@ -16,7 +16,7 @@ using System.Runtime.InteropServices;
 using System.Windows.Interop;
 using System.Windows.Threading;
 
-namespace Superete
+namespace GestionComerce
 {
     /// <summary>
     /// Interaction logic for GlobalButtonWindow.xaml

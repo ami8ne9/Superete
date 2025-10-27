@@ -15,7 +15,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-namespace Superete.Main.Vente
+namespace GestionComerce.Main.Vente
 {
     /// <summary>
     /// Logique d'interaction pour CMainV.xaml

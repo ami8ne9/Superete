@@ -13,7 +13,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-namespace Superete.Main.Settings
+namespace GestionComerce.Main.Settings
 {
     /// <summary>
     /// Logique d'interaction pour SettingsPage.xaml
@@ -56,7 +56,7 @@ namespace Superete.Main.Settings
                         ResetButtonStyles();
                         DatabaseSettingsBtn.Style = (Style)FindResource("ActiveNavigationItemStyle");
                         ContentGrid.Children.Clear();
-                        Superete.Settings.PaymentMethodSettings PaimentSettings = new Superete.Settings.PaymentMethodSettings(this);
+                        GestionComerce.Settings.PaymentMethodSettings PaimentSettings = new GestionComerce.Settings.PaymentMethodSettings(this);
                         PaimentSettings.HorizontalAlignment = HorizontalAlignment.Stretch;
                         PaimentSettings.VerticalAlignment = VerticalAlignment.Stretch;
                         PaimentSettings.Margin = new Thickness(32, 24, 32, 24);
@@ -127,7 +127,7 @@ namespace Superete.Main.Settings
 
             // Load Payment Method Settings
             ContentGrid.Children.Clear();
-            Superete.Settings.PaymentMethodSettings PaimentSettings = new Superete.Settings.PaymentMethodSettings(this);
+            GestionComerce.Settings.PaymentMethodSettings PaimentSettings = new GestionComerce.Settings.PaymentMethodSettings(this);
             PaimentSettings.HorizontalAlignment = HorizontalAlignment.Stretch;
             PaimentSettings.VerticalAlignment = VerticalAlignment.Stretch;
             PaimentSettings.Margin = new Thickness(32, 24, 32, 24);
@@ -159,7 +159,7 @@ namespace Superete.Main.Settings
         private void LoadFactureSettings()
         {
             ContentGrid.Children.Clear();
-            Superete.Settings.CFactureSettings factureSettings = new Superete.Settings.CFactureSettings(this);
+            GestionComerce.Settings.CFactureSettings factureSettings = new GestionComerce.Settings.CFactureSettings(this);
             factureSettings.HorizontalAlignment = HorizontalAlignment.Stretch;
             factureSettings.VerticalAlignment = VerticalAlignment.Stretch;
             factureSettings.Margin = new Thickness(32, 24, 32, 24);

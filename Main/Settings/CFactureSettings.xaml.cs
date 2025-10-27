@@ -1,12 +1,12 @@
 ﻿using Microsoft.Win32;
-using Superete.Main;
-using Superete.Main.Settings;
-using Superete.Vente;
+using GestionComerce.Main;
+using GestionComerce.Main.Settings;
+using GestionComerce.Vente;
 using System;
 using System.Windows;
 using System.Windows.Controls;
 
-namespace Superete.Settings
+namespace GestionComerce.Settings
 {
     public partial class CFactureSettings: UserControl
     {

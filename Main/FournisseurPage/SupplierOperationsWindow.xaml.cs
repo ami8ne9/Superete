@@ -1,4 +1,4 @@
-﻿using Superete;
+﻿using GestionComerce;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -6,7 +6,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media.Animation;
 
-namespace Superete.Main.FournisseurPage
+namespace GestionComerce.Main.FournisseurPage
 {
     public partial class SupplierOperationsWindow : Window
     {

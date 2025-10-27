@@ -1,4 +1,4 @@
-﻿<Window x:Class="Superete.GlobalButtonWindow"
+﻿<Window x:Class="GestionComerce.GlobalButtonWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         Title="GlobalButtonWindow"

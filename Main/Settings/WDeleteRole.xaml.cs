@@ -12,7 +12,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 
-namespace Superete.Main.Settings
+namespace GestionComerce.Main.Settings
 {
     /// <summary>
     /// Logique d'interaction pour WDeleteRole.xaml

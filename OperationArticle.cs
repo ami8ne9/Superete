@@ -4,7 +4,7 @@ using System.Data.SqlClient;
 using System.Threading.Tasks;
 using System.Windows;
 
-namespace Superete
+namespace GestionComerce
 {
     public class OperationArticle
     {
@@ -16,7 +16,7 @@ namespace Superete
         public bool Etat { get; set; }
         public bool Reversed { get; set; } // ✅ new property
 
-        private static readonly string ConnectionString = "Server=localhost\\SQLEXPRESS;Database=SUPERETE;Trusted_Connection=True;";
+        private static readonly string ConnectionString = "Server=localhost\\SQLEXPRESS;Database=GESTIONCOMERCE;Trusted_Connection=True;";
 
         // ================== GET ==================
         public async Task<List<OperationArticle>> GetOperationArticlesAsync()

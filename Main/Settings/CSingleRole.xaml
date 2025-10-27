@@ -1,4 +1,4 @@
-﻿<UserControl x:Class="Superete.Main.Settings.CSingleRole"
+﻿<UserControl x:Class="GestionComerce.Main.Settings.CSingleRole"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
 
@@ -69,6 +69,7 @@
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*"/>
                 <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="Auto"/>
             </Grid.ColumnDefinitions>
 
             <!-- Role Name Input -->
@@ -78,6 +79,11 @@
 
             <!-- Delete Button on the Right -->
             <Button Grid.Column="1" 
+        x:Name="EditButton" 
+        Content="Edit" Background="Blue"
+        Style="{StaticResource DeleteButtonStyle}"
+        Margin="10" Width="50" Click="EditButton_Click"/>
+            <Button Grid.Column="2" 
                     x:Name="DeleteButton" 
                     Content="Delete" 
                     Style="{StaticResource DeleteButtonStyle}"

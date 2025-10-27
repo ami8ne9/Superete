@@ -2,7 +2,7 @@
 using System.Threading.Tasks;
 using System.Windows;
 
-namespace Superete.Main.FournisseurPage
+namespace GestionComerce.Main.FournisseurPage
 {
     public partial class DeleteSupplierWindow : Window
     {

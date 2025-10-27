@@ -1,6 +1,6 @@
 ﻿using Microsoft.Win32;
-using Superete.Main;
-using Superete.Main.Settings;
+using GestionComerce.Main;
+using GestionComerce.Main.Settings;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,7 +11,7 @@ using System.Windows.Input;
 using System.Windows.Media.Effects;
 using System.Windows.Media.Imaging;
 
-namespace Superete.Settings
+namespace GestionComerce.Settings
 {
     public partial class PaymentMethodSettings : UserControl
     {

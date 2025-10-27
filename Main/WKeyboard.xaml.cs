@@ -8,7 +8,7 @@ using System.Windows.Interop;
 using System.Security.Cryptography.X509Certificates;
 using System.Windows.Threading;
 
-namespace Superete
+namespace GestionComerce
 {
     public partial class WKeyboard : Window
     {

@@ -13,7 +13,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-namespace Superete.Main.Inventory
+namespace GestionComerce.Main.Inventory
 {
     /// <summary>
     /// Interaction logic for CSingleRowFamilly.xaml

@@ -12,7 +12,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 
-namespace Superete.Main
+namespace GestionComerce.Main
 {
     /// <summary>
     /// Interaction logic for WCongratulations.xaml

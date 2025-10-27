@@ -12,9 +12,9 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using System.Text.RegularExpressions;
-using Superete.Main.Inventory;
+using GestionComerce.Main.Inventory;
 
-namespace Superete.Main.Vente
+namespace GestionComerce.Main.Vente
 {
     /// <summary>
     /// Interaction logic for WSelectCient.xaml

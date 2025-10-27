@@ -1,7 +1,7 @@
-﻿<UserControl x:Class="Superete.Main.FournisseurPage.CMainF"
+﻿<UserControl x:Class="GestionComerce.Main.FournisseurPage.CMainF"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        xmlns:local="clr-namespace:Superete.Main.FournisseurPage"
+        xmlns:local="clr-namespace:GestionComerce.Main.FournisseurPage"
         Background="#FAFBFC"
       >
 

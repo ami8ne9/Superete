@@ -3,7 +3,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
 
-namespace Superete.Main.ClientPage
+namespace GestionComerce.Main.ClientPage
 {
     public partial class SingleRowClient : UserControl
     {

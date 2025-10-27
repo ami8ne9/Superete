@@ -89,6 +89,12 @@
     <Compile Include="Main\Exit.xaml.cs">
       <DependentUpon>Exit.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Main\Facturation\CMainFa.xaml.cs">
+      <DependentUpon>CMainFa.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Main\Facturation\CRealFacture.xaml.cs">
+      <DependentUpon>CRealFacture.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Main\FournisseurPage\CMainF.xaml.cs">
       <DependentUpon>CMainF.xaml</DependentUpon>
     </Compile>
@@ -308,6 +314,14 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Main\Exit.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Main\Facturation\CMainFa.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Main\Facturation\CRealFacture.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -564,6 +578,9 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Main\images\4866608.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Main\images\invoice.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

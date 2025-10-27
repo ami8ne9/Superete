@@ -13,7 +13,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-namespace Superete.Main.ProjectManagment
+namespace GestionComerce.Main.ProjectManagment
 {
     /// <summary>
     /// Interaction logic for CSingleMouvment.xaml
@@ -57,7 +57,7 @@ namespace Superete.Main.ProjectManagment
                         }
                         IndicatorBorder.Background = (SolidColorBrush)(new BrushConverter().ConvertFrom("#ff7614"));
                         IndicatorIcon.Text = "🛒";
-                        Quantity.Text = "- " + opa.QteArticle.ToString();
+                        Quantity.Text = "+ " + opa.QteArticle.ToString();
                     }
                     else if (o.OperationType.StartsWith("V"))
                     {
@@ -78,7 +78,7 @@ namespace Superete.Main.ProjectManagment
                         }
                         IndicatorBorder.Background = (SolidColorBrush)(new BrushConverter().ConvertFrom("#10B981"));
                         IndicatorIcon.Text = "🏷️";
-                        Quantity.Text = "+ " + opa.QteArticle.ToString();
+                        Quantity.Text = "- " + opa.QteArticle.ToString();
                     }else if (o.OperationType.StartsWith("M"))
                     {
                         foreach (User u in main.main.lu)

@@ -4,7 +4,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
 
-namespace Superete.Main.FournisseurPage
+namespace GestionComerce.Main.FournisseurPage
 {
     public partial class SingleRowSupplier : UserControl
     {

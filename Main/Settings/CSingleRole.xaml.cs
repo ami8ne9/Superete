@@ -13,7 +13,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-namespace Superete.Main.Settings
+namespace GestionComerce.Main.Settings
 {
     /// <summary>
     /// Logique d'interaction pour CSingleRole.xaml
@@ -45,6 +45,13 @@ namespace Superete.Main.Settings
         {
             WDeleteRole deleteRoleWindow = new WDeleteRole(r, Roles, lr, lu);
             deleteRoleWindow.ShowDialog();
+        }
+
+        private void EditButton_Click(object sender, RoutedEventArgs e)
+        {
+
+            WAddRole addRoleWindow = new WAddRole(Roles, lr,r, 1);
+            addRoleWindow.ShowDialog();
         }
     }
 }

@@ -4,7 +4,7 @@ using System.Data.SqlClient;
 using System.Threading.Tasks;
 using System.Windows;
 
-namespace Superete
+namespace GestionComerce
 {
     public class Role
     {
@@ -89,7 +89,7 @@ namespace Superete
         public bool ViewCreditFournisseur { get; set; }
 
         private static readonly string ConnectionString =
-            "Server=localhost\\SQLEXPRESS;Database=SUPERETE;Trusted_Connection=True;";
+			"Server=localhost\\SQLEXPRESS;Database=GESTIONCOMERCE;Trusted_Connection=True;";
 
         // ✅ Get All Roles
         public async Task<List<Role>> GetRolesAsync()

@@ -12,7 +12,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 
-namespace Superete.Main.Settings
+namespace GestionComerce.Main.Settings
 {
     /// <summary>
     /// Logique d'interaction pour WRoles.xaml
@@ -56,7 +56,7 @@ namespace Superete.Main.Settings
         }
         private void AddRoleButton_Click(object sender, RoutedEventArgs e)
         {
-            WAddRole addRoleWindow = new WAddRole(this, lr);
+            WAddRole addRoleWindow = new WAddRole(this, lr,null,0);
             addRoleWindow.ShowDialog();
         }
 
