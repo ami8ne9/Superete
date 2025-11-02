@@ -5,6 +5,7 @@ using GestionComerce.Main.Inventory;
 using GestionComerce.Main.ProjectManagment;
 using GestionComerce.Main.Settings;
 using GestionComerce.Main.Vente;
+using GestionComerce.Main.Facturation;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -168,6 +169,15 @@ namespace GestionComerce
         {
             MainGrid.Children.Clear();
             Login loginPage = new Login(this);
+            loginPage.HorizontalAlignment = HorizontalAlignment.Stretch;
+            loginPage.VerticalAlignment = VerticalAlignment.Stretch;
+            loginPage.Margin = new Thickness(0);
+            MainGrid.Children.Add(loginPage);
+        }
+        public void load_facturation(User u)
+        {
+            MainGrid.Children.Clear();
+            CMainFa loginPage = new CMainFa(u, this);
             loginPage.HorizontalAlignment = HorizontalAlignment.Stretch;
             loginPage.VerticalAlignment = VerticalAlignment.Stretch;
             loginPage.Margin = new Thickness(0);

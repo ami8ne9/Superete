@@ -111,7 +111,7 @@ namespace GestionComerce.Main
 
         private void FacturationBtn_Click(object sender, RoutedEventArgs e)
         {
-
+            main.load_facturation(u);
         }
     }
 }

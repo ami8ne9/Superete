@@ -59,6 +59,7 @@
     <Compile Include="Article.cs" />
     <Compile Include="Client.cs" />
     <Compile Include="Credit.cs" />
+    <Compile Include="Facture.cs" />
     <Compile Include="FactureSettings.cs" />
     <Compile Include="Famille.cs" />
     <Compile Include="Fournisseur.cs" />
@@ -92,8 +93,26 @@
     <Compile Include="Main\Facturation\CMainFa.xaml.cs">
       <DependentUpon>CMainFa.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Main\Facturation\CRealFacture.xaml.cs">
-      <DependentUpon>CRealFacture.xaml</DependentUpon>
+    <Compile Include="Main\Facturation\CSingleMouvment.xaml.cs">
+      <DependentUpon>CSingleMouvment.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Main\Facturation\CSingleOperation.xaml.cs">
+      <DependentUpon>CSingleOperation.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Main\Facturation\CSingleRowClient.xaml.cs">
+      <DependentUpon>CSingleRowClient.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Main\Facturation\WFacturePage.xaml.cs">
+      <DependentUpon>WFacturePage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Main\Facturation\WMouvments.xaml.cs">
+      <DependentUpon>WMouvments.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Main\Facturation\WSelectClient.xaml.cs">
+      <DependentUpon>WSelectClient.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Main\Facturation\WSelectOperation.xaml.cs">
+      <DependentUpon>WSelectOperation.xaml</DependentUpon>
     </Compile>
     <Compile Include="Main\FournisseurPage\CMainF.xaml.cs">
       <DependentUpon>CMainF.xaml</DependentUpon>
@@ -321,7 +340,31 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Main\Facturation\CRealFacture.xaml">
+    <Page Include="Main\Facturation\CSingleMouvment.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Main\Facturation\CSingleOperation.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Main\Facturation\CSingleRowClient.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Main\Facturation\WFacturePage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Main\Facturation\WMouvments.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Main\Facturation\WSelectClient.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Main\Facturation\WSelectOperation.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -581,6 +624,15 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Main\images\invoice.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Main\images\A4-Facture.jpg" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Main\images\1.jpg" />
+    <Resource Include="Main\images\2.jpg" />
+    <Resource Include="Main\images\3.jpg" />
+    <Resource Include="Main\images\4.jpg" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
