@@ -161,14 +161,11 @@
     <Compile Include="Main\Inventory\WAjoutQuantite.xaml.cs">
       <DependentUpon>WAjoutQuantite.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Main\Inventory\WArticleDetails.xaml.cs">
+      <DependentUpon>WArticleDetails.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Main\Inventory\WConfirmTransaction.xaml.cs">
       <DependentUpon>WConfirmTransaction.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Main\Settings\CAproposDeNous.xaml.cs">
-      <DependentUpon>CAproposDeNous.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Main\WCongratulations.xaml.cs">
-      <DependentUpon>WCongratulations.xaml</DependentUpon>
     </Compile>
     <Compile Include="Main\Inventory\WDeleteConfirmation.xaml.cs">
       <DependentUpon>WDeleteConfirmation.xaml</DependentUpon>
@@ -184,6 +181,12 @@
     </Compile>
     <Compile Include="Main\Inventory\WNouveauStock.xaml.cs">
       <DependentUpon>WNouveauStock.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Main\Settings\CAproposDeNous.xaml.cs">
+      <DependentUpon>CAproposDeNous.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Main\WCongratulations.xaml.cs">
+      <DependentUpon>WCongratulations.xaml</DependentUpon>
     </Compile>
     <Compile Include="Main\ProjectManagment\CMainP.xaml.cs">
       <DependentUpon>CMainP.xaml</DependentUpon>
@@ -395,70 +398,74 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Include="Main\Inventory\CMainI.xaml">
-      <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
     </Page>
     <Page Include="Main\Inventory\CSingleArticleI.xaml">
-      <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
     </Page>
     <Page Include="Main\Inventory\CSingleRowArticle.xaml">
-      <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
     </Page>
     <Page Include="Main\Inventory\CSingleRowFamilly.xaml">
-      <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
     </Page>
     <Page Include="Main\Inventory\WAddArticle.xaml">
-      <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
     </Page>
     <Page Include="Main\Inventory\WAddFamille.xaml">
-      <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
     </Page>
     <Page Include="Main\Inventory\WAddFournisseur.xaml">
-      <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
     </Page>
     <Page Include="Main\Inventory\WAddMultipleArticles.xaml">
-      <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
     </Page>
     <Page Include="Main\Inventory\WAjoutQuantite.xaml">
-      <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Main\Inventory\WArticleDetails.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
     </Page>
     <Page Include="Main\Inventory\WConfirmTransaction.xaml">
-      <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Main\Inventory\WDeleteConfirmation.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Main\Inventory\WDeleteFamillyConfirmation.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Main\Inventory\WExistingArticles.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Main\Inventory\WManageFamillies.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Main\Inventory\WNouveauStock.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
     </Page>
     <Page Include="Main\Settings\CAproposDeNous.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Main\WCongratulations.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Main\Inventory\WDeleteConfirmation.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Main\Inventory\WDeleteFamillyConfirmation.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Main\Inventory\WExistingArticles.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Main\Inventory\WManageFamillies.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Main\Inventory\WNouveauStock.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

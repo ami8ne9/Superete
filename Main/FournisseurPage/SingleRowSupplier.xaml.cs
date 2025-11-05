@@ -11,14 +11,14 @@ namespace GestionComerce.Main.FournisseurPage
         private readonly MainWindow _main;
         private readonly User _currentUser;
 
-     
-
         public SingleRowSupplier(MainWindow main, User currentUser)
         {
             InitializeComponent();
             _main = main;
             _currentUser = currentUser;
             DataContextChanged += SingleRowSupplier_DataContextChanged;
+
+            // Apply role-based permissions
             foreach (Role r in _main.lr)
             {
                 if (_currentUser.RoleID == r.RoleID)
@@ -43,8 +43,6 @@ namespace GestionComerce.Main.FournisseurPage
             }
         }
 
-
-
         private void SingleRowSupplier_DataContextChanged(object sender, DependencyPropertyChangedEventArgs e)
         {
             if (e.NewValue is Fournisseur fournisseur)
@@ -53,10 +51,25 @@ namespace GestionComerce.Main.FournisseurPage
 
         private void PopulateRow(Fournisseur fournisseur)
         {
+            // ID
             IdText.Text = fournisseur.FournisseurID.ToString();
-            NameText.Text = fournisseur.Nom ?? "N/A";
-            PhoneText.Text = string.IsNullOrEmpty(fournisseur.Telephone) ? "-" : fournisseur.Telephone;
 
+            // Name
+            NameText.Text = fournisseur.Nom ?? "N/A";
+
+            // Code
+            CodeText.Text = string.IsNullOrWhiteSpace(fournisseur.Code) ? "-" : fournisseur.Code;
+
+            // Phone
+            PhoneText.Text = string.IsNullOrWhiteSpace(fournisseur.Telephone) ? "-" : fournisseur.Telephone;
+
+            // ICE
+            ICEText.Text = string.IsNullOrWhiteSpace(fournisseur.ICE) ? "-" : fournisseur.ICE;
+
+            // État Juridique
+            EtatJuridicText.Text = string.IsNullOrWhiteSpace(fournisseur.EtatJuridic) ? "-" : fournisseur.EtatJuridic;
+
+            // Balance calculation
             var supplierCredits = _main.credits
                 .Where(c => c.FournisseurID == fournisseur.FournisseurID && c.Etat)
                 .ToList();
@@ -74,18 +87,12 @@ namespace GestionComerce.Main.FournisseurPage
             if (wnd.ShowDialog() == true)
             {
                 // Refresh after payment
-                var parent = this.Parent;
-                while (parent != null && !(parent is CMainF))
-                    parent = LogicalTreeHelper.GetParent(parent);
-
-                if (parent is CMainF supplierPage)
-                    supplierPage.LoadAllData();
+                var parent = FindParentCMainF();
+                parent?.LoadAllData();
             }
         }
-    
 
-// Buttons: open the corresponding windows
-    private void Update_Click(object sender, RoutedEventArgs e)
+        private void Update_Click(object sender, RoutedEventArgs e)
         {
             if (!(DataContext is Fournisseur f)) return;
             if (_main == null) return;
@@ -96,7 +103,7 @@ namespace GestionComerce.Main.FournisseurPage
             {
                 // Refresh the parent CMainF
                 var parent = FindParentCMainF();
-                parent?.ReloadSuppliers();
+                parent?.LoadAllData();
             }
         }
 
@@ -107,10 +114,16 @@ namespace GestionComerce.Main.FournisseurPage
 
             var wnd = new DeleteSupplierWindow(_main, f);
             bool? res = wnd.ShowDialog();
+
             if (res == true)
             {
+                // DeleteSupplierWindow already:
+                // 1. Called DeleteFournisseurAsync() 
+                // 2. Updated MainWindow.lfo
+                // We just need to refresh the UI
+
                 var parent = FindParentCMainF();
-                parent?.ReloadSuppliers();
+                parent?.LoadAllData();
             }
         }
 
@@ -119,7 +132,7 @@ namespace GestionComerce.Main.FournisseurPage
             if (!(DataContext is Fournisseur f)) return;
             if (_main == null) return;
 
-            var window = new SupplierOperationsWindow(_main, f,_currentUser);
+            var window = new SupplierOperationsWindow(_main, f, _currentUser);
             window.ShowDialog();
         }
 

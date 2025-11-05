@@ -4,7 +4,7 @@
              xmlns:local="clr-namespace:GestionComerce.Main.FournisseurPage"
              Height="60" Margin="0,0,0,1">
 
-      <UserControl.Resources>
+    <UserControl.Resources>
         <!-- Button Styles -->
         <Style x:Key="ActionButtonStyle" TargetType="Button">
             <Setter Property="Height" Value="30"/>
@@ -64,41 +64,68 @@
             <Setter Property="Foreground" Value="#343A40"/>
             <Setter Property="VerticalAlignment" Value="Center"/>
             <Setter Property="HorizontalAlignment" Value="Left"/>
+            <Setter Property="TextTrimming" Value="CharacterEllipsis"/>
         </Style>
     </UserControl.Resources>
 
     <Border Background="White" BorderBrush="#E9ECEF" BorderThickness="0,0,0,1">
         <Border x:Name="HoverBorder" Background="White">
-            <Grid Margin="20,0">
+            <Grid Margin="15,0">
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="60"/>
+                    <ColumnDefinition Width="50"/>
                     <!-- ID -->
-                    <ColumnDefinition Width="200"/>
+                    <ColumnDefinition Width="150"/>
                     <!-- SUPPLIER NAME -->
+                    <ColumnDefinition Width="120"/>
+                    <!-- PHONE -->
+                    <ColumnDefinition Width="100"/>
+                    <!-- CODE -->
+                    <ColumnDefinition Width="130"/>
+                    <!-- LEGAL STATUS -->
+                    <ColumnDefinition Width="120"/>
+                    <!-- ICE -->
                     <ColumnDefinition Width="150"/>
-                    <!-- PHONE NUMBER -->
+                    <!-- HEADQUARTERS -->
                     <ColumnDefinition Width="150"/>
+                    <!-- ADDRESS -->
+                    <ColumnDefinition Width="120"/>
                     <!-- BALANCE -->
-                   
-                    <!-- STATUS -->
                     <ColumnDefinition Width="*"/>
                     <!-- ACTIONS -->
                 </Grid.ColumnDefinitions>
 
                 <!-- Supplier ID -->
-                <TextBlock x:Name="IdText" Grid.Column="0" Style="{StaticResource DataTextStyle}" />
+                <TextBlock x:Name="IdText" Grid.Column="0" Style="{StaticResource DataTextStyle}" 
+                          FontWeight="SemiBold" Foreground="#6C757D"/>
 
                 <!-- Supplier Name -->
-                <TextBlock x:Name="NameText" Grid.Column="1" Style="{StaticResource DataTextStyle}" />
+                <TextBlock x:Name="NameText" Grid.Column="1" Style="{StaticResource DataTextStyle}" 
+                          FontWeight="SemiBold"/>
 
                 <!-- Phone Number -->
-                <TextBlock x:Name="PhoneText" Grid.Column="2" Style="{StaticResource DataTextStyle}" />
+                <TextBlock x:Name="PhoneText" Grid.Column="2" Style="{StaticResource DataTextStyle}"/>
+
+                <!-- Code -->
+                <TextBlock x:Name="CodeText" Grid.Column="3" Style="{StaticResource DataTextStyle}"/>
+
+                <!-- Legal Status (État Juridique) -->
+                <TextBlock x:Name="EtatJuridicText" Grid.Column="4" Style="{StaticResource DataTextStyle}"/>
+
+                <!-- ICE -->
+                <TextBlock x:Name="ICEText" Grid.Column="5" Style="{StaticResource DataTextStyle}"/>
+
+                <!-- Headquarters (Siège Entreprise) -->
+                <TextBlock x:Name="HeadquartersText" Grid.Column="6" Style="{StaticResource DataTextStyle}"/>
+
+                <!-- Address -->
+                <TextBlock x:Name="AddressText" Grid.Column="7" Style="{StaticResource DataTextStyle}"/>
 
                 <!-- Balance -->
-                <TextBlock x:Name="BalanceText" Grid.Column="3" Style="{StaticResource DataTextStyle}" Foreground="{Binding BalanceColor}" />
+                <TextBlock x:Name="BalanceText" Grid.Column="8" Style="{StaticResource DataTextStyle}" 
+                          FontWeight="SemiBold"/>
 
                 <!-- Action Buttons -->
-                <StackPanel Grid.Column="5" Orientation="Horizontal" HorizontalAlignment="Right">
+                <StackPanel Grid.Column="9" Orientation="Horizontal" HorizontalAlignment="Right">
                     <Button Style="{StaticResource UpdateButtonStyle}" Content="Update" Click="Update_Click" Name="Update"/>
                     <Button Style="{StaticResource DeleteButtonStyle}" Content="Delete" Click="Delete_Click" Name="Delete"/>
                     <Button Style="{StaticResource PaidButtonStyle}" Content="Pay" Click="Paid_Click" Name="Paid"/>
@@ -106,5 +133,5 @@
                 </StackPanel>
             </Grid>
         </Border>
-    </Border> 
+    </Border>
 </UserControl>

@@ -11,8 +11,14 @@ namespace GestionComerce
         public int ClientID { get; set; }
         public string Nom { get; set; }
         public string Telephone { get; set; }
-        public bool Etat { get; set; } // Added Etat property
-        
+        public string Adresse { get; set; }
+        public bool IsCompany { get; set; }
+        public string EtatJuridique { get; set; }
+        public string ICE { get; set; }
+        public string SiegeEntreprise { get; set; }
+        public string Code { get; set; }
+        public bool Etat { get; set; }
+
         private static readonly string ConnectionString = "Server=localhost\\SQLEXPRESS;Database=GESTIONCOMERCE;Trusted_Connection=True;";
 
         public async Task<List<Client>> GetClientsAsync()
@@ -33,6 +39,12 @@ namespace GestionComerce
                             ClientID = Convert.ToInt32(reader["ClientID"]),
                             Nom = reader["Nom"].ToString(),
                             Telephone = reader["Telephone"] == DBNull.Value ? string.Empty : reader["Telephone"].ToString(),
+                            Adresse = reader["Adresse"] == DBNull.Value ? string.Empty : reader["Adresse"].ToString(),
+                            IsCompany = reader["IsCompany"] == DBNull.Value ? false : Convert.ToBoolean(reader["IsCompany"]),
+                            EtatJuridique = reader["EtatJuridique"] == DBNull.Value ? string.Empty : reader["EtatJuridique"].ToString(),
+                            ICE = reader["ICE"] == DBNull.Value ? string.Empty : reader["ICE"].ToString(),
+                            SiegeEntreprise = reader["SiegeEntreprise"] == DBNull.Value ? string.Empty : reader["SiegeEntreprise"].ToString(),
+                            Code = reader["Code"] == DBNull.Value ? string.Empty : reader["Code"].ToString(),
                             Etat = reader["Etat"] == DBNull.Value ? true : Convert.ToBoolean(reader["Etat"])
                         };
                         clients.Add(client);
@@ -44,7 +56,9 @@ namespace GestionComerce
 
         public async Task<int> InsertClientAsync()
         {
-            string query = "INSERT INTO Client (Nom, Telephone) VALUES (@Nom, @Telephone); SELECT SCOPE_IDENTITY();";
+            string query = @"INSERT INTO Client (Nom, Telephone, Adresse, IsCompany, EtatJuridique, ICE, SiegeEntreprise, Code) 
+                           VALUES (@Nom, @Telephone, @Adresse, @IsCompany, @EtatJuridique, @ICE, @SiegeEntreprise, @Code); 
+                           SELECT SCOPE_IDENTITY();";
 
             using (SqlConnection connection = new SqlConnection(ConnectionString))
             {
@@ -55,6 +69,12 @@ namespace GestionComerce
                     {
                         cmd.Parameters.AddWithValue("@Nom", this.Nom);
                         cmd.Parameters.AddWithValue("@Telephone", (object)this.Telephone ?? DBNull.Value);
+                        cmd.Parameters.AddWithValue("@Adresse", (object)this.Adresse ?? DBNull.Value);
+                        cmd.Parameters.AddWithValue("@IsCompany", this.IsCompany);
+                        cmd.Parameters.AddWithValue("@EtatJuridique", (object)this.EtatJuridique ?? DBNull.Value);
+                        cmd.Parameters.AddWithValue("@ICE", (object)this.ICE ?? DBNull.Value);
+                        cmd.Parameters.AddWithValue("@SiegeEntreprise", (object)this.SiegeEntreprise ?? DBNull.Value);
+                        cmd.Parameters.AddWithValue("@Code", (object)this.Code ?? DBNull.Value);
 
                         object result = await cmd.ExecuteScalarAsync();
                         int id = Convert.ToInt32(result);
@@ -71,7 +91,11 @@ namespace GestionComerce
 
         public async Task<int> UpdateClientAsync()
         {
-            string query = "UPDATE Client SET Nom=@Nom, Telephone=@Telephone WHERE ClientID=@ClientID";
+            string query = @"UPDATE Client 
+                           SET Nom=@Nom, Telephone=@Telephone, Adresse=@Adresse, 
+                               IsCompany=@IsCompany, EtatJuridique=@EtatJuridique, 
+                               ICE=@ICE, SiegeEntreprise=@SiegeEntreprise, Code=@Code 
+                           WHERE ClientID=@ClientID";
 
             using (SqlConnection connection = new SqlConnection(ConnectionString))
             {
@@ -82,6 +106,12 @@ namespace GestionComerce
                     {
                         cmd.Parameters.AddWithValue("@Nom", this.Nom);
                         cmd.Parameters.AddWithValue("@Telephone", (object)this.Telephone ?? DBNull.Value);
+                        cmd.Parameters.AddWithValue("@Adresse", (object)this.Adresse ?? DBNull.Value);
+                        cmd.Parameters.AddWithValue("@IsCompany", this.IsCompany);
+                        cmd.Parameters.AddWithValue("@EtatJuridique", (object)this.EtatJuridique ?? DBNull.Value);
+                        cmd.Parameters.AddWithValue("@ICE", (object)this.ICE ?? DBNull.Value);
+                        cmd.Parameters.AddWithValue("@SiegeEntreprise", (object)this.SiegeEntreprise ?? DBNull.Value);
+                        cmd.Parameters.AddWithValue("@Code", (object)this.Code ?? DBNull.Value);
                         cmd.Parameters.AddWithValue("@ClientID", this.ClientID);
                         await cmd.ExecuteNonQueryAsync();
                         return 1;

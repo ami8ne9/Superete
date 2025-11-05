@@ -36,13 +36,10 @@
         <Style x:Key="ModernCardStyle" TargetType="Border">
             <Setter Property="Background" Value="{StaticResource CardBrush}"/>
             <Setter Property="CornerRadius" Value="20"/>
-            <!-- Increased from 12 to 20 -->
             <Setter Property="Margin" Value="8"/>
             <Setter Property="Padding" Value="20"/>
             <Setter Property="MinHeight" Value="120"/>
-            <!-- Ensures minimum height -->
             <Setter Property="Height" Value="120"/>
-            <!-- Explicit height for all cards -->
             <Setter Property="Effect" Value="{StaticResource CardShadow}"/>
         </Style>
 
@@ -99,7 +96,6 @@
                                 <Setter Property="Foreground" Value="#9CA3AF"/>
                                 <Setter Property="Cursor" Value="No"/>
                             </Trigger>
-
                         </ControlTemplate.Triggers>
                     </ControlTemplate>
                 </Setter.Value>
@@ -136,70 +132,144 @@
         <!-- Modern ComboBox Style -->
         <Style x:Key="ModernComboBoxStyle" TargetType="ComboBox">
             <Setter Property="Background" Value="White"/>
-            <Setter Property="BorderBrush" Value="{StaticResource BorderBrush}"/>
-            <Setter Property="BorderThickness" Value="2"/>
-            <Setter Property="Padding" Value="12,10"/>
+            <Setter Property="Foreground" Value="{StaticResource TextPrimaryBrush}"/>
+            <Setter Property="BorderBrush" Value="Transparent"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Padding" Value="12,0"/>
             <Setter Property="FontSize" Value="14"/>
             <Setter Property="FontFamily" Value="Segoe UI"/>
+            <Setter Property="HorizontalContentAlignment" Value="Left"/>
+            <Setter Property="VerticalContentAlignment" Value="Center"/>
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="ComboBox">
-                        <Border Background="{TemplateBinding Background}"
-                                BorderBrush="{TemplateBinding BorderBrush}"
-                                BorderThickness="{TemplateBinding BorderThickness}"
-                                CornerRadius="8">
-                            <Grid>
-                                <ContentPresenter x:Name="ContentPresenter"
-                                                Margin="{TemplateBinding Padding}"
-                                                VerticalAlignment="Center"/>
-                                <Path x:Name="DropDownGlyph"
-                                      Data="M7 10L12 15L17 10"
-                                      Stroke="{StaticResource TextSecondaryBrush}"
-                                      StrokeThickness="2"
-                                      HorizontalAlignment="Right"
-                                      VerticalAlignment="Center"
-                                      Margin="0,0,10,0"/>
-                            </Grid>
-                        </Border>
-                        <ControlTemplate.Triggers>
-                            <Trigger Property="IsFocused" Value="True">
-                                <Setter Property="BorderBrush" Value="{StaticResource PrimaryBrush}"/>
-                            </Trigger>
-                        </ControlTemplate.Triggers>
+                        <Grid>
+                            <ToggleButton x:Name="ToggleButton"
+                                        Grid.Column="2"
+                                        Focusable="false"
+                                        IsChecked="{Binding Path=IsDropDownOpen, Mode=TwoWay, RelativeSource={RelativeSource TemplatedParent}}"
+                                        ClickMode="Press"
+                                        Background="{TemplateBinding Background}"
+                                        BorderThickness="0">
+                                <ToggleButton.Template>
+                                    <ControlTemplate TargetType="ToggleButton">
+                                        <Border Background="{TemplateBinding Background}"
+                                              BorderThickness="0"
+                                              CornerRadius="8">
+                                            <Grid>
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition/>
+                                                    <ColumnDefinition Width="30"/>
+                                                </Grid.ColumnDefinitions>
+                                                <ContentPresenter Grid.Column="0"
+                                                                Margin="12,0,0,0"
+                                                                HorizontalAlignment="Left"
+                                                                VerticalAlignment="Center"/>
+                                                <Path Grid.Column="1"
+                                                    x:Name="Arrow"
+                                                    Data="M0,0 L4,4 L8,0"
+                                                    Fill="{StaticResource TextSecondaryBrush}"
+                                                    HorizontalAlignment="Center"
+                                                    VerticalAlignment="Center"
+                                                    RenderTransformOrigin="0.5,0.5">
+                                                    <Path.RenderTransform>
+                                                        <RotateTransform Angle="0"/>
+                                                    </Path.RenderTransform>
+                                                </Path>
+                                            </Grid>
+                                        </Border>
+                                        <ControlTemplate.Triggers>
+                                            <Trigger Property="IsChecked" Value="True">
+                                                <Trigger.EnterActions>
+                                                    <BeginStoryboard>
+                                                        <Storyboard>
+                                                            <DoubleAnimation Storyboard.TargetName="Arrow"
+                                                                           Storyboard.TargetProperty="(Path.RenderTransform).(RotateTransform.Angle)"
+                                                                           To="180"
+                                                                           Duration="0:0:0.2"/>
+                                                        </Storyboard>
+                                                    </BeginStoryboard>
+                                                </Trigger.EnterActions>
+                                                <Trigger.ExitActions>
+                                                    <BeginStoryboard>
+                                                        <Storyboard>
+                                                            <DoubleAnimation Storyboard.TargetName="Arrow"
+                                                                           Storyboard.TargetProperty="(Path.RenderTransform).(RotateTransform.Angle)"
+                                                                           To="0"
+                                                                           Duration="0:0:0.2"/>
+                                                        </Storyboard>
+                                                    </BeginStoryboard>
+                                                </Trigger.ExitActions>
+                                            </Trigger>
+                                        </ControlTemplate.Triggers>
+                                    </ControlTemplate>
+                                </ToggleButton.Template>
+                            </ToggleButton>
+                            <ContentPresenter x:Name="ContentSite"
+                                            IsHitTestVisible="False"
+                                            Content="{TemplateBinding SelectionBoxItem}"
+                                            ContentTemplate="{TemplateBinding SelectionBoxItemTemplate}"
+                                            ContentTemplateSelector="{TemplateBinding ItemTemplateSelector}"
+                                            Margin="12,0,30,0"
+                                            VerticalAlignment="Center"
+                                            HorizontalAlignment="Left"/>
+                            <Popup x:Name="Popup"
+                                 Placement="Bottom"
+                                 IsOpen="{TemplateBinding IsDropDownOpen}"
+                                 AllowsTransparency="True"
+                                 Focusable="False"
+                                 PopupAnimation="Slide">
+                                <Grid x:Name="DropDown"
+                                    SnapsToDevicePixels="True"
+                                    MinWidth="{TemplateBinding ActualWidth}"
+                                    MaxHeight="{TemplateBinding MaxDropDownHeight}">
+                                    <Border x:Name="DropDownBorder"
+                                          Background="White"
+                                          BorderBrush="{StaticResource BorderBrush}"
+                                          BorderThickness="1"
+                                          CornerRadius="8"
+                                          Margin="0,4,0,0">
+                                        <Border.Effect>
+                                            <DropShadowEffect BlurRadius="15" ShadowDepth="2" Color="#000000" Opacity="0.15"/>
+                                        </Border.Effect>
+                                        <ScrollViewer Margin="4,6"
+                                                    SnapsToDevicePixels="True">
+                                            <StackPanel IsItemsHost="True"
+                                                      KeyboardNavigation.DirectionalNavigation="Contained"/>
+                                        </ScrollViewer>
+                                    </Border>
+                                </Grid>
+                            </Popup>
+                        </Grid>
                     </ControlTemplate>
                 </Setter.Value>
             </Setter>
         </Style>
 
-        <!-- Modern CheckBox Style -->
-        <Style x:Key="ModernCheckBoxStyle" TargetType="CheckBox">
-            <Setter Property="Foreground" Value="White"/>
+        <!-- Modern ComboBoxItem Style -->
+        <Style TargetType="ComboBoxItem">
+            <Setter Property="Padding" Value="12,10"/>
             <Setter Property="FontFamily" Value="Segoe UI"/>
-            <Setter Property="FontWeight" Value="Medium"/>
+            <Setter Property="FontSize" Value="14"/>
+            <Setter Property="Foreground" Value="{StaticResource TextPrimaryBrush}"/>
             <Setter Property="Template">
                 <Setter.Value>
-                    <ControlTemplate TargetType="CheckBox">
-                        <StackPanel Orientation="Horizontal">
-                            <Border x:Name="CheckBoxBorder"
-                                    Width="18" Height="18"
-                                    Background="Transparent"
-                                    BorderBrush="White"
-                                    BorderThickness="2"
-                                    CornerRadius="4"
-                                    Margin="0,0,8,0">
-                                <Path x:Name="CheckMark"
-                                      Data="M3 8L7 12L15 4"
-                                      Stroke="White"
-                                      StrokeThickness="2"
-                                      Visibility="Collapsed"/>
-                            </Border>
-                            <ContentPresenter VerticalAlignment="Center"/>
-                        </StackPanel>
+                    <ControlTemplate TargetType="ComboBoxItem">
+                        <Border x:Name="Border"
+                              Background="Transparent"
+                              Padding="{TemplateBinding Padding}"
+                              CornerRadius="6"
+                              Margin="2">
+                            <ContentPresenter/>
+                        </Border>
                         <ControlTemplate.Triggers>
-                            <Trigger Property="IsChecked" Value="True">
-                                <Setter TargetName="CheckMark" Property="Visibility" Value="Visible"/>
-                                <Setter TargetName="CheckBoxBorder" Property="Background" Value="White"/>
-                                <Setter TargetName="CheckMark" Property="Stroke" Value="{StaticResource PrimaryBrush}"/>
+                            <Trigger Property="IsHighlighted" Value="True">
+                                <Setter TargetName="Border" Property="Background" Value="#F1F5F9"/>
+                            </Trigger>
+                            <Trigger Property="IsSelected" Value="True">
+                                <Setter TargetName="Border" Property="Background" Value="#E0E7FF"/>
+                                <Setter Property="Foreground" Value="{StaticResource PrimaryBrush}"/>
+                                <Setter Property="FontWeight" Value="Medium"/>
                             </Trigger>
                         </ControlTemplate.Triggers>
                     </ControlTemplate>
@@ -250,29 +320,48 @@
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="Auto"/>
                     <ColumnDefinition Width="*"/>
-                    <ColumnDefinition Width="Auto"/>
-                    <ColumnDefinition Width="Auto"/>
-                    <ColumnDefinition Width="Auto"/>
                 </Grid.ColumnDefinitions>
 
                 <StackPanel Grid.Column="0" Orientation="Horizontal" VerticalAlignment="Center">
                     <!-- Back Button -->
-                    <!-- Back Button -->
                     <Button x:Name="BackButton"
                             Width="40" Height="40"
                             Style="{StaticResource IconButtonStyle}"
-                            Click="BackButton_Click" >
+                            Click="BackButton_Click">
                         <Path Data="M15 19L8 12L15 5" Stroke="White" StrokeThickness="2" Fill="Transparent" Width="18" Height="18"/>
                     </Button>
                     <Ellipse Width="8" Height="8" Fill="#10B981" Margin="0,0,12,0"/>
                     <TextBlock Text="INVENTORY MANAGEMENT" Style="{StaticResource HeaderTextStyle}"/>
                 </StackPanel>
 
+                <!-- Search Section -->
                 <StackPanel Grid.Column="1" Orientation="Horizontal"
                            VerticalAlignment="Center"
                            HorizontalAlignment="Center"
                            Margin="40,0">
 
+                    <!-- Search Criteria ComboBox -->
+                    <Border Background="White" CornerRadius="8" Margin="0,0,12,0">
+                        <Border.Effect>
+                            <DropShadowEffect BlurRadius="10" ShadowDepth="1" Color="#000000" Opacity="0.08"/>
+                        </Border.Effect>
+                        <ComboBox x:Name="SearchCriteriaComboBox" 
+                                  Width="150" Height="44"
+                                  Style="{StaticResource ModernComboBoxStyle}"
+                                  SelectionChanged="SearchCriteriaComboBox_SelectionChanged">
+                            <ComboBoxItem Content="Code" IsSelected="True"/>
+                            <ComboBoxItem Content="Article"/>
+                            <ComboBoxItem Content="Fournisseur"/>
+                            <ComboBoxItem Content="Famille"/>
+                            <ComboBoxItem Content="Numero de Lot"/>
+                            <ComboBoxItem Content="Bon de Livraison"/>
+                            <ComboBoxItem Content="Marque"/>
+
+
+                        </ComboBox>
+                    </Border>
+
+                    <!-- Search TextBox -->
                     <Border Background="White" CornerRadius="8" Margin="0,0,12,0">
                         <Border.Effect>
                             <DropShadowEffect BlurRadius="10" ShadowDepth="1" Color="#000000" Opacity="0.08"/>
@@ -284,10 +373,11 @@
                                  Padding="16,12"
                                  FontSize="14"
                                  FontFamily="Segoe UI"
-                                 Tag="Rechercher un article..."
+                                 Tag="Rechercher..."
                                  TextChanged="SearchTextBox_TextChanged"/>
                     </Border>
 
+                    <!-- Search Button -->
                     <Button Style="{StaticResource IconButtonStyle}"
                             Background="#FFFFFF20"
                             Click="SearchButton_Click">
@@ -297,15 +387,23 @@
                               Fill="{x:Null}"
                               Width="20" Height="20"/>
                     </Button>
-                    <CheckBox Content="Avec Code" Name="WithCodeCheckBox"
-         Style="{StaticResource ModernCheckBoxStyle}"
-         Margin="20,0,20,0"/>
+
+                    <!-- Clear Button -->
+                    <Button Style="{StaticResource IconButtonStyle}"
+                            Background="#FFFFFF20"
+                            Click="ClearButton_Click"
+                            Margin="8,0,0,0">
+                        <Path Data="M6 18L18 6M6 6L18 18"
+                              Stroke="White"
+                              StrokeThickness="2"
+                              Width="18" Height="18"/>
+                    </Button>
                 </StackPanel>
             </Grid>
         </Border>
 
         <!-- Data Grid Section -->
-        <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Disabled"  Grid.Row="1">
+        <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Disabled" Grid.Row="1">
             <Grid Margin="20,20,20,0">
                 <Border Background="White" CornerRadius="16" Effect="{StaticResource CardShadow}">
                     <Grid Margin="0">
@@ -316,77 +414,93 @@
 
                         <!-- Modern Column Header -->
                         <Border Grid.Row="0"
-        Background="#F8FAFC"
-        CornerRadius="16,16,0,0"
-        BorderBrush="{StaticResource BorderBrush}"
-        BorderThickness="0,0,0,1">
-                            <Grid Margin="24,0">
+                                Background="#F8FAFC"
+                                CornerRadius="16,16,0,0"
+                                BorderBrush="{StaticResource BorderBrush}"
+                                BorderThickness="0,0,0,1">
+                            <!-- Add this header Grid in your CMainI.xaml where you display the article list -->
+                            <!-- Replace the existing header with this one -->
+
+                            <Grid Height="45" Background="#F9FAFB" Margin="0,0,0,5">
                                 <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="80"/>
-                                    <!-- ID -->
-                                    <ColumnDefinition Width="120"/>
-                                    <!-- CODE -->
                                     <ColumnDefinition Width="*"/>
-                                    <!-- ARTICLE -->
+                                    <!-- Article Name -->
                                     <ColumnDefinition Width="140"/>
-                                    <!-- FOURNISSEUR -->
+                                    <!-- Fournisseur -->
                                     <ColumnDefinition Width="120"/>
-                                    <!-- FAMILLE -->
+                                    <!-- Famille -->
                                     <ColumnDefinition Width="120"/>
-                                    <!-- PRIX ACHAT -->
+                                    <!-- Prix Achat -->
                                     <ColumnDefinition Width="120"/>
-                                    <!-- PRIX VENTE -->
+                                    <!-- Prix Vente -->
                                     <ColumnDefinition Width="100"/>
-                                    <!-- PRIX MO -->
-                                    <ColumnDefinition Width="80"/>
-                                    <!-- STOCK -->
-                                    <ColumnDefinition Width="140"/>
-                                    <!-- ACTIONS -->
+                                    <!-- Stock -->
+                                    <ColumnDefinition Width="120"/>
+                                    <!-- Date Expiration -->
+                                    <ColumnDefinition Width="220"/>
+                                    <!-- Actions -->
                                 </Grid.ColumnDefinitions>
-                                <TextBlock Grid.Column="0" Text="ID" VerticalAlignment="Center"
-                  FontWeight="SemiBold" FontSize="13"
-                  Foreground="{StaticResource TextPrimaryBrush}" FontFamily="Segoe UI"/>
-                                <TextBlock Grid.Column="1" Text="CODE" VerticalAlignment="Center"
-                  FontWeight="SemiBold" FontSize="13"
-                  Foreground="{StaticResource TextPrimaryBrush}" FontFamily="Segoe UI"/>
-                                <TextBlock Grid.Column="2" Text="ARTICLE" VerticalAlignment="Center"
-                  FontWeight="SemiBold" FontSize="13"
-                  Foreground="{StaticResource TextPrimaryBrush}" FontFamily="Segoe UI"/>
-                                <TextBlock Grid.Column="3" Text="FOURNISSEUR" VerticalAlignment="Center"
-                  FontWeight="SemiBold" FontSize="13"
-                  Foreground="{StaticResource TextPrimaryBrush}" FontFamily="Segoe UI"/>
-                                <TextBlock Grid.Column="4" Text="FAMILLE" VerticalAlignment="Center"
-                  FontWeight="SemiBold" FontSize="13"
-                  Foreground="{StaticResource TextPrimaryBrush}" FontFamily="Segoe UI"/>
-                                <TextBlock Grid.Column="5" Text="PRIX ACHAT" VerticalAlignment="Center"
-                  FontWeight="SemiBold" FontSize="13"
-                  Foreground="{StaticResource TextPrimaryBrush}" FontFamily="Segoe UI"/>
-                                <TextBlock Grid.Column="6" Text="PRIX VENTE" VerticalAlignment="Center"
-                  FontWeight="SemiBold" FontSize="13"
-                  Foreground="{StaticResource TextPrimaryBrush}" FontFamily="Segoe UI"/>
-                                <TextBlock Grid.Column="7" Text="PRIX MO" VerticalAlignment="Center"
-                  FontWeight="SemiBold" FontSize="13"
-                  Foreground="{StaticResource TextPrimaryBrush}" FontFamily="Segoe UI"/>
-                                <TextBlock Grid.Column="8" Text="STOCK" VerticalAlignment="Center"
-                  FontWeight="SemiBold" FontSize="13"
-                  Foreground="{StaticResource TextPrimaryBrush}" FontFamily="Segoe UI"/>
-                                <TextBlock Grid.Column="9" Text="ACTIONS" VerticalAlignment="Center"
-                  FontWeight="SemiBold" FontSize="13"
-                  Foreground="{StaticResource TextPrimaryBrush}" FontFamily="Segoe UI"/>
+
+                                <TextBlock Grid.Column="0" Text="Nom de l'Article"
+               VerticalAlignment="Center"
+               FontSize="13" FontWeight="Bold"
+               Foreground="#374151"
+               Margin="24,0,0,0"/>
+
+                                <TextBlock Grid.Column="1" Text="Fournisseur"
+               VerticalAlignment="Center"
+               FontSize="13" FontWeight="Bold"
+               Foreground="#374151"
+               HorizontalAlignment="Left"/>
+
+                                <TextBlock Grid.Column="2" Text="Famille"
+               VerticalAlignment="Center"
+               FontSize="13" FontWeight="Bold"
+               Foreground="#374151"
+               HorizontalAlignment="Left"/>
+
+                                <TextBlock Grid.Column="3" Text="Prix Achat"
+               VerticalAlignment="Center"
+               FontSize="13" FontWeight="Bold"
+               Foreground="#374151"
+               HorizontalAlignment="Center"/>
+
+                                <TextBlock Grid.Column="4" Text="Prix Vente"
+               VerticalAlignment="Center"
+               FontSize="13" FontWeight="Bold"
+               Foreground="#374151"
+               HorizontalAlignment="Center"/>
+
+                                <TextBlock Grid.Column="5" Text="Stock"
+               VerticalAlignment="Center"
+               FontSize="13" FontWeight="Bold"
+               Foreground="#374151"
+               HorizontalAlignment="Center"/>
+
+                                <TextBlock Grid.Column="6" Text="Date Expiration"
+               VerticalAlignment="Center"
+               FontSize="13" FontWeight="Bold"
+               Foreground="#374151"
+               HorizontalAlignment="Center"/>
+
+                                <TextBlock Grid.Column="7" Text="Actions"
+               VerticalAlignment="Center"
+               FontSize="13" FontWeight="Bold"
+               Foreground="#374151"
+               HorizontalAlignment="Center"/>
                             </Grid>
                         </Border>
 
                         <!-- Data Grid Content -->
                         <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto"
-                                  Style="{DynamicResource {x:Static GridView.GridViewScrollViewerStyleKey}}" Margin="0,0,0,10">
-                            <StackPanel x:Name="ArticlesContainer" >
-
-                            </StackPanel>
+                                      Style="{DynamicResource {x:Static GridView.GridViewScrollViewerStyleKey}}" Margin="0,0,0,10">
+                            <StackPanel x:Name="ArticlesContainer"/>
                         </ScrollViewer>
                     </Grid>
                 </Border>
             </Grid>
         </ScrollViewer>
+
         <!-- Modern Statistics Panel -->
         <Grid Grid.Row="2" Margin="20,0,20,0">
             <Grid.ColumnDefinitions>
@@ -421,8 +535,6 @@
                     </Grid>
                 </StackPanel>
             </Border>
-
-            <!-- Promotions Card -->
 
             <!-- Stock Value (Prix A) Card -->
             <Border Grid.Column="1" Style="{StaticResource ModernCardStyle}" Margin="6,32,10,32">
@@ -484,21 +596,21 @@
                     </StackPanel>
                 </Button>
                 <Button x:Name="AddMultipleArticlesButton"
-        Width="173" Height="44" Margin="0,0,0,10"
-        Background="#8B5CF6"
-        BorderThickness="0"
-        Cursor="Hand"
-        Click="AddMultipleArticlesButton_Click">
+                        Width="173" Height="44" Margin="0,0,0,10"
+                        Background="#8B5CF6"
+                        BorderThickness="0"
+                        Cursor="Hand"
+                        Click="AddMultipleArticlesButton_Click">
                     <Button.Style>
                         <Style TargetType="{x:Type Button}">
                             <Setter Property="Template">
                                 <Setter.Value>
                                     <ControlTemplate TargetType="{x:Type Button}">
                                         <Border Background="{TemplateBinding Background}" 
-                                CornerRadius="8"
-                                Padding="16,0">
+                                                CornerRadius="8"
+                                                Padding="16,0">
                                             <ContentPresenter HorizontalAlignment="Center" 
-                                            VerticalAlignment="Center"/>
+                                                            VerticalAlignment="Center"/>
                                         </Border>
                                         <ControlTemplate.Triggers>
                                             <Trigger Property="IsMouseOver" Value="True">
@@ -522,14 +634,14 @@
                     <StackPanel Orientation="Horizontal">
                         <Grid Width="20" Height="20" Margin="0,0,10,0">
                             <Path Data="M16 6v12M12 9v6M8 11v2" 
-                  Stroke="White" 
-                  StrokeThickness="2"
-                  Opacity="0.8"/>
+                                  Stroke="White" 
+                                  StrokeThickness="2"
+                                  Opacity="0.8"/>
                         </Grid>
                         <TextBlock Text="Nouveau Stoks" 
-                   FontWeight="SemiBold" 
-                   FontSize="14"
-                   Foreground="White"/>
+                                   FontWeight="SemiBold" 
+                                   FontSize="14"
+                                   Foreground="White"/>
                     </StackPanel>
                 </Button>
                 <Button Width="173" Height="44" Name="FournisseurManage"

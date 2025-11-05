@@ -57,6 +57,14 @@
             <Setter Property="VerticalAlignment" Value="Center"/>
             <Setter Property="HorizontalAlignment" Value="Left"/>
         </Style>
+
+        <!-- Badge Style for Company -->
+        <Style x:Key="CompanyBadgeStyle" TargetType="Border">
+            <Setter Property="Background" Value="#6366F1"/>
+            <Setter Property="CornerRadius" Value="4"/>
+            <Setter Property="Padding" Value="6,2"/>
+            <Setter Property="Margin" Value="5,0,0,0"/>
+        </Style>
     </UserControl.Resources>
 
     <Border Background="White" BorderBrush="#E9ECEF" BorderThickness="0,0,0,1" 
@@ -64,10 +72,10 @@
         <Grid>
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="60"/>
-                <ColumnDefinition Width="200"/>
+                <ColumnDefinition Width="250"/>
                 <ColumnDefinition Width="150"/>
                 <ColumnDefinition Width="150"/>
-               
+                <ColumnDefinition Width="150"/>
                 <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
 
@@ -75,23 +83,34 @@
             <TextBlock Grid.Column="0" x:Name="IdText" 
                       Style="{StaticResource DataTextStyle}"/>
 
-            <!-- Client Name -->
-            <TextBlock Grid.Column="1" x:Name="NameText" 
-                      Style="{StaticResource DataTextStyle}"/>
+            <!-- Client Name with Company Badge -->
+            <StackPanel Grid.Column="1" Orientation="Horizontal">
+                <TextBlock x:Name="NameText" 
+                          Style="{StaticResource DataTextStyle}"/>
+                <Border x:Name="CompanyBadge" 
+                        Style="{StaticResource CompanyBadgeStyle}"
+                        Visibility="Collapsed">
+                    <TextBlock Text="Company" FontSize="10" FontWeight="Bold" 
+                              Foreground="White"/>
+                </Border>
+            </StackPanel>
 
-            <!-- Phone Number -->
+            <!-- Phone Number / ICE -->
             <TextBlock Grid.Column="2" x:Name="PhoneText" 
                       Style="{StaticResource DataTextStyle}"/>
 
+            <!-- Address / Headquarters -->
+            <TextBlock Grid.Column="3" x:Name="AddressText" 
+                      Style="{StaticResource DataTextStyle}"
+                      TextTrimming="CharacterEllipsis"/>
+
             <!-- Balance -->
-            <TextBlock Grid.Column="3" x:Name="BalanceText" 
+            <TextBlock Grid.Column="4" x:Name="BalanceText" 
                       Style="{StaticResource DataTextStyle}"/>
 
-          
-
             <!-- Action Buttons -->
-            <StackPanel Grid.Column="4" Orientation="Horizontal" HorizontalAlignment="Right"
-                       Width="286" Margin="374,0,0,0">
+            <StackPanel Grid.Column="5" Orientation="Horizontal" HorizontalAlignment="Right"
+                       Margin="0,0,20,0">
                 <Button Content="Edit" Style="{StaticResource EditButtonStyle}" Name="Update"
                        Click="Update_Click"/>
                 <Button Content="Delete" Style="{StaticResource DeleteButtonStyle}" Name="Delete"

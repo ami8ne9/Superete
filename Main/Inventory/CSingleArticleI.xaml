@@ -4,7 +4,7 @@
              Height="40">
     <UserControl.Resources>
         <Style x:Key="ActionButtonStyle" TargetType="Button">
-            <Setter Property="Width" Value="60"/>
+            <Setter Property="Width" Value="70"/>
             <Setter Property="Height" Value="25"/>
             <Setter Property="Margin" Value="2,0"/>
             <Setter Property="Foreground" Value="White"/>
@@ -36,10 +36,6 @@
     <Border Background="White" Margin="0,0,0,0" CornerRadius="4">
         <Grid Margin="24,0">
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="80"/>
-                <!-- Article ID -->
-                <ColumnDefinition Width="120"/>
-                <!-- Code -->
                 <ColumnDefinition Width="*"/>
                 <!-- Article Name -->
                 <ColumnDefinition Width="140"/>
@@ -51,57 +47,50 @@
                 <ColumnDefinition Width="120"/>
                 <!-- Prix Vente -->
                 <ColumnDefinition Width="100"/>
-                <!-- Prix MP -->
-                <ColumnDefinition Width="80"/>
                 <!-- Stock -->
-                <ColumnDefinition Width="140"/>
+                <ColumnDefinition Width="120"/>
+                <!-- Date Expiration -->
+                <ColumnDefinition Width="220"/>
                 <!-- Actions -->
             </Grid.ColumnDefinitions>
 
-            <TextBlock Grid.Column="0" x:Name="ArticleID"
-                       VerticalAlignment="Center" Height="15"
-                       FontSize="12" Foreground="#374151"/>
-
-            <TextBlock Grid.Column="1" x:Name="Code"
-                       VerticalAlignment="Center" Height="15"
-                       FontSize="12" Foreground="#374151" 
-                       FontFamily="Consolas, Monaco, monospace"/>
-
-            <TextBlock Grid.Column="2" x:Name="ArticleName" 
+            <TextBlock Grid.Column="0" x:Name="ArticleName" 
                        VerticalAlignment="Center" Height="15"
                        FontSize="12" Foreground="#1F2937" FontWeight="Medium"
                        TextTrimming="CharacterEllipsis"/>
 
-            <TextBlock Grid.Column="3" x:Name="Fournisseur"
+            <TextBlock Grid.Column="1" x:Name="Fournisseur"
                        VerticalAlignment="Center" Height="15"
                        FontSize="12" Foreground="#1F2937" FontWeight="Medium"
                        TextTrimming="CharacterEllipsis"/>
 
-            <TextBlock Grid.Column="4" x:Name="Famillee"
+            <TextBlock Grid.Column="2" x:Name="Famillee"
                        VerticalAlignment="Center" Height="15"
                        FontSize="12" Foreground="#374151"/>
 
-            <TextBlock Grid.Column="5" x:Name="PrixAchat" Margin="0,0,50,0"
+            <TextBlock Grid.Column="3" x:Name="PrixAchat" Margin="0,0,50,0"
                        VerticalAlignment="Center" Height="15"
                        FontSize="12" Foreground="#059669" FontWeight="Medium"
                        HorizontalAlignment="Right"/>
 
-            <TextBlock Grid.Column="6" x:Name="PrixVente" Margin="0,0,50,0"
+            <TextBlock Grid.Column="4" x:Name="PrixVente" Margin="0,0,50,0"
                        VerticalAlignment="Center" Height="15"
                        FontSize="12" Foreground="#DC2626" FontWeight="Medium"
                        HorizontalAlignment="Right"/>
 
-            <TextBlock Grid.Column="7" x:Name="PrixMP" Margin="0,0,50,0"
-                       VerticalAlignment="Center" Height="15"
-                       FontSize="12" Foreground="#7C3AED" FontWeight="Medium"
-                       HorizontalAlignment="Right"/>
-
-            <TextBlock Grid.Column="8" x:Name="Quantite" Margin="0,0,50,0"
+            <TextBlock Grid.Column="5" x:Name="Quantite" Margin="0,0,50,0"
                        VerticalAlignment="Center" Height="15"
                        FontSize="12" Foreground="#374151"
                        HorizontalAlignment="Right"/>
 
-            <StackPanel Grid.Column="9" Orientation="Horizontal" HorizontalAlignment="Center" Width="140">
+            <TextBlock Grid.Column="6" x:Name="DateExpiration"
+                       VerticalAlignment="Center" Height="15"
+                       FontSize="12" Foreground="#6B7280"
+                       HorizontalAlignment="Center"/>
+
+            <StackPanel Grid.Column="7" Orientation="Horizontal" HorizontalAlignment="Center" Width="220">
+                <Button Content="Details" Background="#8B5CF6" Style="{StaticResource ActionButtonStyle}" 
+                        Click="DetailsButton_Click" Width="70" x:Name="Detailsbtn"/>
                 <Button Content="Edit" Background="#4A90E2" Style="{StaticResource ActionButtonStyle}" 
                         Click="EditButton_Click" Width="65" x:Name="Editbtn"/>
                 <Button Content="Delete" Background="#E74C3C" Style="{StaticResource ActionButtonStyle}" 

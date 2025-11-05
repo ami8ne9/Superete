@@ -1,6 +1,4 @@
-﻿using GestionComerce.Main.ClientPage;
-using GestionComerce.Main.FournisseurPage;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -28,26 +26,11 @@ namespace GestionComerce.Main.FournisseurPage
 
         private void MainWindow_Loaded(object sender, RoutedEventArgs e)
         {
-            foreach(Role r in _mainWindow.lr)
-            {
-                if (_currentUser.RoleID == r.RoleID)
-                {
-                    if (r.ViewFournisseur==true)
-                    {
-                        LoadAllData();
-                    }
-                }
-            }
-            
-        }
-
-        public void ReloadSuppliers()
-        {
             foreach (Role r in _mainWindow.lr)
             {
                 if (_currentUser.RoleID == r.RoleID)
                 {
-                    if (r.ViewFournisseur==true)
+                    if (r.ViewFournisseur == true)
                     {
                         LoadAllData();
                     }
@@ -55,15 +38,33 @@ namespace GestionComerce.Main.FournisseurPage
             }
         }
 
-        public void LoadAllData()
+        public void ReloadSuppliers()
+        {
+            LoadAllData();
+        }
+
+        public async void LoadAllData()
         {
             try
             {
-                // Load from MainWindow lists (already loaded in memory)
-                _allFournisseurs = _mainWindow.lfo ?? new List<Fournisseur>();
+                // Reload from database to get fresh data (including Etat updates)
+                var fournisseur = new Fournisseur();
+                var freshSuppliers = await fournisseur.GetFournisseursAsync();
+
+                // Update MainWindow list - clear and reload to ensure synchronization
+                _mainWindow.lfo.Clear();
+                foreach (var supplier in freshSuppliers)
+                {
+                    _mainWindow.lfo.Add(supplier);
+                }
+
+                // Use the MainWindow list as source of truth
+                _allFournisseurs = _mainWindow.lfo;
+
+                // Get credits from MainWindow
                 _credits = _mainWindow.credits ?? new List<Credit>();
 
-                System.Diagnostics.Debug.WriteLine($"Suppliers from list: {_allFournisseurs.Count}, Credits from list: {_credits.Count}");
+                System.Diagnostics.Debug.WriteLine($"Loaded suppliers: {_allFournisseurs.Count} (Active: {_allFournisseurs.Count(f => f.Etat)}), Credits: {_credits.Count}");
 
                 RefreshSupplierDisplay();
                 UpdateStatistics();
@@ -87,8 +88,9 @@ namespace GestionComerce.Main.FournisseurPage
                     return;
                 }
 
-                var activeSuppliers = _allFournisseurs.Where(f => f.Etat).ToList();
-                System.Diagnostics.Debug.WriteLine($"Active suppliers: {activeSuppliers.Count}");
+                // Only show active suppliers (Etat = true)
+                var activeSuppliers = _allFournisseurs.Where(f => f.Etat).OrderBy(f => f.Nom).ToList();
+                System.Diagnostics.Debug.WriteLine($"Displaying active suppliers: {activeSuppliers.Count}");
 
                 foreach (var supplier in activeSuppliers)
                 {
@@ -116,8 +118,12 @@ namespace GestionComerce.Main.FournisseurPage
             {
                 var activeSuppliers = _allFournisseurs?.Where(f => f.Etat).ToList() ?? new List<Fournisseur>();
 
-                // Filter only SUPPLIER credits (where FournisseurID is not null)
-                var supplierCredits = _credits?.Where(c => c.Etat && c.FournisseurID.HasValue).ToList() ?? new List<Credit>();
+                // Filter only SUPPLIER credits (where FournisseurID is not null and is active)
+                var activeFournisseurIds = activeSuppliers.Select(f => f.FournisseurID).ToList();
+                var supplierCredits = _credits?.Where(c => c.Etat &&
+                                                          c.FournisseurID.HasValue &&
+                                                          activeFournisseurIds.Contains(c.FournisseurID.Value))
+                                               .ToList() ?? new List<Credit>();
 
                 int totalSuppliers = activeSuppliers.Count;
                 decimal totalCredit = supplierCredits.Sum(c => c.Total);
@@ -135,6 +141,8 @@ namespace GestionComerce.Main.FournisseurPage
 
                 if (PendingText != null)
                     PendingText.Text = $"{pending:N2} DH";
+
+                System.Diagnostics.Debug.WriteLine($"Statistics - Suppliers: {totalSuppliers}, Total: {totalCredit:N2}, Paid: {totalPaid:N2}, Pending: {pending:N2}");
             }
             catch (Exception ex)
             {
@@ -156,15 +164,25 @@ namespace GestionComerce.Main.FournisseurPage
 
                 if (string.IsNullOrEmpty(query))
                 {
-                    filteredSuppliers = _allFournisseurs.Where(f => f.Etat).ToList();
+                    // Show only active suppliers (Etat = true)
+                    filteredSuppliers = _allFournisseurs.Where(f => f.Etat).OrderBy(f => f.Nom).ToList();
                 }
                 else
                 {
+                    // Search in multiple fields and only show active suppliers
                     filteredSuppliers = _allFournisseurs.Where(f => f.Etat &&
                         ((!string.IsNullOrEmpty(f.Nom) && f.Nom.ToLowerInvariant().Contains(query)) ||
-                         (!string.IsNullOrEmpty(f.Telephone) && f.Telephone.ToLowerInvariant().Contains(query)))
-                    ).ToList();
+                         (!string.IsNullOrEmpty(f.Code) && f.Code.ToLowerInvariant().Contains(query)) ||
+                         (!string.IsNullOrEmpty(f.Telephone) && f.Telephone.ToLowerInvariant().Contains(query)) ||
+                         (!string.IsNullOrEmpty(f.ICE) && f.ICE.ToLowerInvariant().Contains(query)) ||
+                         (!string.IsNullOrEmpty(f.EtatJuridic) && f.EtatJuridic.ToLowerInvariant().Contains(query)) ||
+                         (!string.IsNullOrEmpty(f.SiegeEntreprise) && f.SiegeEntreprise.ToLowerInvariant().Contains(query)) ||
+                         (!string.IsNullOrEmpty(f.Adresse) && f.Adresse.ToLowerInvariant().Contains(query)) ||
+                         f.FournisseurID.ToString().Contains(query))
+                    ).OrderBy(f => f.Nom).ToList();
                 }
+
+                System.Diagnostics.Debug.WriteLine($"Search query: '{query}', Found: {filteredSuppliers.Count}");
 
                 foreach (var supplier in filteredSuppliers)
                 {
@@ -178,7 +196,7 @@ namespace GestionComerce.Main.FournisseurPage
             }
         }
 
-        private async void AddNewSupplier_Click(object sender, RoutedEventArgs e)
+        private void AddNewSupplier_Click(object sender, RoutedEventArgs e)
         {
             try
             {

@@ -2,7 +2,7 @@
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         Title="Ajouter un Article"
- Width="755" Height="500"
+        Width="900" Height="650"
         WindowStartupLocation="CenterScreen"
         ResizeMode="NoResize"
         Background="Transparent"
@@ -10,7 +10,6 @@
         AllowsTransparency="True">
 
     <Window.Resources>
-        <!-- Styles comme avant -->
         <Style x:Key="HeaderStyle" TargetType="TextBlock">
             <Setter Property="FontSize" Value="20"/>
             <Setter Property="FontWeight" Value="Bold"/>
@@ -34,7 +33,6 @@
             <Setter Property="Margin" Value="0,0,0,15"/>
         </Style>
 
-        <!-- Required TextBox (حمراء لو فارغة) -->
         <Style x:Key="RequiredTextBoxStyle" TargetType="TextBox" BasedOn="{StaticResource TextBoxStyle}">
             <Style.Triggers>
                 <Trigger Property="Text" Value="">
@@ -42,6 +40,15 @@
                     <Setter Property="ToolTip" Value="Ce champ est requis"/>
                 </Trigger>
             </Style.Triggers>
+        </Style>
+
+        <Style x:Key="DatePickerStyle" TargetType="DatePicker">
+            <Setter Property="Height" Value="35"/>
+            <Setter Property="Padding" Value="10,8"/>
+            <Setter Property="FontSize" Value="12"/>
+            <Setter Property="BorderBrush" Value="#BDC3C7"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="Margin" Value="0,0,0,15"/>
         </Style>
 
         <Style x:Key="ComboBoxStyle" TargetType="ComboBox">
@@ -53,7 +60,6 @@
             <Setter Property="Margin" Value="0,0,0,15"/>
         </Style>
 
-        <!-- Modern Button Styles -->
         <Style x:Key="ModernButtonStyle" TargetType="Button">
             <Setter Property="Background" Value="#FFFFFF"/>
             <Setter Property="BorderBrush" Value="#D1D5DB"/>
@@ -67,11 +73,11 @@
                 <Setter.Value>
                     <ControlTemplate TargetType="Button">
                         <Border Background="{TemplateBinding Background}" 
-                        BorderBrush="{TemplateBinding BorderBrush}" 
-                        BorderThickness="{TemplateBinding BorderThickness}" 
-                        CornerRadius="6">
+                                BorderBrush="{TemplateBinding BorderBrush}" 
+                                BorderThickness="{TemplateBinding BorderThickness}" 
+                                CornerRadius="6">
                             <ContentPresenter HorizontalAlignment="Center" 
-                                    VerticalAlignment="Center"/>
+                                            VerticalAlignment="Center"/>
                         </Border>
                         <ControlTemplate.Triggers>
                             <Trigger Property="IsMouseOver" Value="True">
@@ -103,7 +109,6 @@
             </Style.Triggers>
         </Style>
 
-        <!-- Green Button Style -->
         <Style x:Key="GreenButtonStyle" TargetType="Button" BasedOn="{StaticResource ModernButtonStyle}">
             <Setter Property="Background" Value="#10B981"/>
             <Setter Property="Foreground" Value="White"/>
@@ -118,11 +123,9 @@
                     <Setter Property="Foreground" Value="#9CA3AF"/>
                     <Setter Property="Cursor" Value="No"/>
                 </Trigger>
-
             </Style.Triggers>
         </Style>
 
-        <!-- Red Button Style -->
         <Style x:Key="RedButtonStyle" TargetType="Button" BasedOn="{StaticResource ModernButtonStyle}">
             <Setter Property="Background" Value="#EF4444"/>
             <Setter Property="Foreground" Value="White"/>
@@ -137,11 +140,9 @@
                     <Setter Property="Foreground" Value="#9CA3AF"/>
                     <Setter Property="Cursor" Value="No"/>
                 </Trigger>
-
             </Style.Triggers>
         </Style>
 
-        <!-- Close Button Style -->
         <Style x:Key="CloseButton" TargetType="Button">
             <Setter Property="Background" Value="Transparent"/>
             <Setter Property="Foreground" Value="#718096"/>
@@ -171,7 +172,6 @@
         </Style>
     </Window.Resources>
 
-    <!-- Card principale avec shadow -->
     <Border Padding="30" Margin="20,20,20,-11"
             Background="White" CornerRadius="12">
         <Border.Effect>
@@ -186,7 +186,6 @@
                 <RowDefinition Height="Auto" MinHeight="70"/>
             </Grid.RowDefinitions>
 
-            <!-- Close Button -->
             <Button Name="CloseButton"
                     Style="{StaticResource CloseButton}"
                     Content="×"
@@ -196,12 +195,10 @@
                     Panel.ZIndex="1000"
                     Click="CloseButton_Click"/>
 
-            <!-- Header -->
             <TextBlock Grid.Row="0" x:Name="HeaderText"
                        Text="Ajouter un nouvel article"
                        Style="{StaticResource HeaderStyle}" Margin="0,0,0,20"/>
 
-            <!-- Form -->
             <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto" Margin="0,0,0,55" Grid.RowSpan="2" HorizontalScrollBarVisibility="Disabled">
                 <StackPanel>
                     <Grid>
@@ -209,10 +206,50 @@
                             <ColumnDefinition Width="*"/>
                             <ColumnDefinition Width="20"/>
                             <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="20"/>
+                            <ColumnDefinition Width="*"/>
                         </Grid.ColumnDefinitions>
 
                         <!-- Left Column -->
                         <StackPanel Grid.Column="0">
+                            <!-- Supplier (moved to top) -->
+                            <TextBlock Text="Fournisseur *" Style="{StaticResource LabelStyle}"/>
+                            <StackPanel Orientation="Horizontal">
+                                <ComboBox Name="FournisseurList"
+                                          Style="{StaticResource ComboBoxStyle}"
+                                          Width="180" />
+                                <Button Content="+" Width="35" Height="36"
+                                        BorderBrush="White" FontWeight="Bold"
+                                        Background="#FF28B531" Foreground="White" Name="AjouterFournisseur"
+                                        FontSize="20" Click="AddSupplierButton_Click" VerticalAlignment="Top">
+                                    <Button.Style>
+                                        <Style TargetType="Button">
+                                            <Setter Property="Template">
+                                                <Setter.Value>
+                                                    <ControlTemplate TargetType="Button">
+                                                        <Border Background="{TemplateBinding Background}"
+                                                                BorderBrush="{TemplateBinding BorderBrush}"
+                                                                BorderThickness="{TemplateBinding BorderThickness}"
+                                                                CornerRadius="4">
+                                                            <ContentPresenter HorizontalAlignment="Center" 
+                                                                            VerticalAlignment="Center"/>
+                                                        </Border>
+                                                    </ControlTemplate>
+                                                </Setter.Value>
+                                            </Setter>
+                                            <Style.Triggers>
+                                                <Trigger Property="IsEnabled" Value="False">
+                                                    <Setter Property="Opacity" Value="0.5"/>
+                                                    <Setter Property="Background" Value="#E5E7EB"/>
+                                                    <Setter Property="Foreground" Value="#9CA3AF"/>
+                                                    <Setter Property="Cursor" Value="No"/>
+                                                </Trigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </Button.Style>
+                                </Button>
+                            </StackPanel>
+
                             <!-- Code -->
                             <TextBlock Text="Code Article *" Style="{StaticResource LabelStyle}"/>
                             <TextBox x:Name="Code" MaxLength="18"
@@ -230,23 +267,23 @@
                             <TextBlock Text="Famille *" Style="{StaticResource LabelStyle}"/>
                             <StackPanel Orientation="Horizontal">
                                 <ComboBox Name="FamilliesList"
-              Style="{StaticResource ComboBoxStyle}"
-              Width="180"/>
+                                          Style="{StaticResource ComboBoxStyle}"
+                                          Width="180"/>
                                 <Button Content="+" Width="35" Height="36" Name="AjouterFamille"
-        BorderBrush="White" FontWeight="Bold"
-        Background="#FF28B531" Foreground="White"
-        FontSize="20" Click="AddFamillyButton_Click" VerticalAlignment="Top">
+                                        BorderBrush="White" FontWeight="Bold"
+                                        Background="#FF28B531" Foreground="White"
+                                        FontSize="20" Click="AddFamillyButton_Click" VerticalAlignment="Top">
                                     <Button.Style>
                                         <Style TargetType="Button">
                                             <Setter Property="Template">
                                                 <Setter.Value>
                                                     <ControlTemplate TargetType="Button">
                                                         <Border Background="{TemplateBinding Background}"
-                                BorderBrush="{TemplateBinding BorderBrush}"
-                                BorderThickness="{TemplateBinding BorderThickness}"
-                                CornerRadius="4">
+                                                                BorderBrush="{TemplateBinding BorderBrush}"
+                                                                BorderThickness="{TemplateBinding BorderThickness}"
+                                                                CornerRadius="4">
                                                             <ContentPresenter HorizontalAlignment="Center" 
-                                            VerticalAlignment="Center"/>
+                                                                            VerticalAlignment="Center"/>
                                                         </Border>
                                                     </ControlTemplate>
                                                 </Setter.Value>
@@ -264,66 +301,77 @@
                                 </Button>
                             </StackPanel>
 
-                            <!-- Supplier -->
-                            <TextBlock Text="Fournisseur *" Style="{StaticResource LabelStyle}"/>
-                            <StackPanel Orientation="Horizontal">
-                                <ComboBox Name="FournisseurList"
-                                          Style="{StaticResource ComboBoxStyle}"
-                                          Width="180" />
-                                <Button Content="+" Width="35" Height="36"
-        BorderBrush="White" FontWeight="Bold"
-        Background="#FF28B531" Foreground="White" Name="AjouterFournisseur"
-        FontSize="20" Click="AddSupplierButton_Click" VerticalAlignment="Top">
-                                    <Button.Style>
-                                        <Style TargetType="Button">
-                                            <Setter Property="Template">
-                                                <Setter.Value>
-                                                    <ControlTemplate TargetType="Button">
-                                                        <Border Background="{TemplateBinding Background}"
-                                BorderBrush="{TemplateBinding BorderBrush}"
-                                BorderThickness="{TemplateBinding BorderThickness}"
-                                CornerRadius="4">
-                                                            <ContentPresenter HorizontalAlignment="Center" 
-                                            VerticalAlignment="Center"/>
-                                                        </Border>
-                                                    </ControlTemplate>
-                                                </Setter.Value>
-                                            </Setter>
-                                            <Style.Triggers>
-                                                <Trigger Property="IsEnabled" Value="False">
-                                                    <Setter Property="Opacity" Value="0.5"/>
-                                                    <Setter Property="Background" Value="#E5E7EB"/>
-                                                    <Setter Property="Foreground" Value="#9CA3AF"/>
-                                                    <Setter Property="Cursor" Value="No"/>
-                                                </Trigger>
-                                            </Style.Triggers>
-                                        </Style>
-                                    </Button.Style>
-                                </Button>
-                            </StackPanel>
+                            <!-- Marque (Optional) -->
+                            <TextBlock Text="Marque" Style="{StaticResource LabelStyle}"/>
+                            <TextBox x:Name="Marque" 
+                                     Style="{StaticResource TextBoxStyle}"
+                                     MaxLength="100"/>
+
+                            <!-- Date -->
+                            <TextBlock Text="Date" Style="{StaticResource LabelStyle}"/>
+                            <DatePicker x:Name="DateArticle" 
+                                        Style="{StaticResource DatePickerStyle}"/>
                         </StackPanel>
 
-                        <!-- Right Column -->
+                        <!-- Middle Column -->
                         <StackPanel Grid.Column="2">
                             <!-- Purchase Price -->
                             <TextBlock Text="Prix d'achat (DH) *" Style="{StaticResource LabelStyle}"/>
-                            <TextBox Name="PrixA" Style="{StaticResource TextBoxStyle}" Text="0.00" PreviewTextInput="DecimalTextBox_PreviewTextInput" MaxLength="18"
-DataObject.Pasting="DecimalTextBox_Pasting" />
+                            <TextBox Name="PrixA" Style="{StaticResource RequiredTextBoxStyle}" 
+                                     Text="0.00" PreviewTextInput="DecimalTextBox_PreviewTextInput" 
+                                     MaxLength="18" DataObject.Pasting="DecimalTextBox_Pasting" />
 
                             <!-- Sale Price -->
                             <TextBlock Text="Prix de vente (DH) *" Style="{StaticResource LabelStyle}"/>
-                            <TextBox Name="PrixV" Style="{StaticResource RequiredTextBoxStyle}" PreviewTextInput="DecimalTextBox_PreviewTextInput" MaxLength="18" Text="0.00"
-DataObject.Pasting="DecimalTextBox_Pasting" />
+                            <TextBox Name="PrixV" Style="{StaticResource RequiredTextBoxStyle}" 
+                                     PreviewTextInput="DecimalTextBox_PreviewTextInput" 
+                                     MaxLength="18" Text="0.00" DataObject.Pasting="DecimalTextBox_Pasting" />
 
                             <!-- MP Price -->
                             <TextBlock Text="Prix MP (DH) *" Style="{StaticResource LabelStyle}"/>
-                            <TextBox Name="PrixMP" Style="{StaticResource RequiredTextBoxStyle}" Text="0.00" PreviewTextInput="DecimalTextBox_PreviewTextInput" MaxLength="18"
-DataObject.Pasting="DecimalTextBox_Pasting" />
+                            <TextBox Name="PrixMP" Style="{StaticResource RequiredTextBoxStyle}" 
+                                     Text="0.00" PreviewTextInput="DecimalTextBox_PreviewTextInput" 
+                                     MaxLength="18" DataObject.Pasting="DecimalTextBox_Pasting" />
 
                             <!-- Initial Stock -->
                             <TextBlock Text="Quantité initiale *" Style="{StaticResource LabelStyle}"/>
-                            <TextBox Name="Quantite" Style="{StaticResource TextBoxStyle}" Text="0" PreviewTextInput="IntegerTextBox_PreviewTextInput" MaxLength="0"
-DataObject.Pasting="IntegerTextBox_Pasting" />
+                            <TextBox Name="Quantite" Style="{StaticResource RequiredTextBoxStyle}" 
+                                     Text="0" PreviewTextInput="IntegerTextBox_PreviewTextInput" 
+                                     MaxLength="10" DataObject.Pasting="IntegerTextBox_Pasting" />
+
+                            <!-- TVA (Optional) -->
+                            <TextBlock Text="TVA (%)" Style="{StaticResource LabelStyle}"/>
+                            <TextBox x:Name="TVA" 
+                                     Style="{StaticResource TextBoxStyle}"
+                                     Text="0.00"
+                                     PreviewTextInput="DecimalTextBox_PreviewTextInput"
+                                     MaxLength="5"
+                                     DataObject.Pasting="DecimalTextBox_Pasting"/>
+                        </StackPanel>
+
+                        <!-- Right Column -->
+                        <StackPanel Grid.Column="4">
+                            <!-- Numero Lot (Optional) -->
+                            <TextBlock Text="Numéro de Lot" Style="{StaticResource LabelStyle}"/>
+                            <TextBox x:Name="NumeroLot" 
+                                     Style="{StaticResource TextBoxStyle}"
+                                     MaxLength="50"/>
+
+                            <!-- Bon Livraison (Optional) -->
+                            <TextBlock Text="Bon de Livraison" Style="{StaticResource LabelStyle}"/>
+                            <TextBox x:Name="BonLivraison" 
+                                     Style="{StaticResource TextBoxStyle}"
+                                     MaxLength="50"/>
+
+                            <!-- Date Livraison -->
+                            <TextBlock Text="Date de Livraison" Style="{StaticResource LabelStyle}"/>
+                            <DatePicker x:Name="DateLivraison" 
+                                        Style="{StaticResource DatePickerStyle}"/>
+
+                            <!-- Date Expiration -->
+                            <TextBlock Text="Date d'Expiration" Style="{StaticResource LabelStyle}"/>
+                            <DatePicker x:Name="DateExpiration" 
+                                        Style="{StaticResource DatePickerStyle}"/>
                         </StackPanel>
                     </Grid>
                 </StackPanel>
@@ -331,7 +379,6 @@ DataObject.Pasting="IntegerTextBox_Pasting" />
 
             <!-- Payment Buttons -->
             <StackPanel Grid.Row="3" x:Name="ButtonsContainer">
-                <!-- Payment Method ComboBox -->
                 <Grid Margin="0,5,0,10">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="Auto"/>
@@ -339,18 +386,18 @@ DataObject.Pasting="IntegerTextBox_Pasting" />
                     </Grid.ColumnDefinitions>
 
                     <TextBlock Text="Méthode de Paiement:" 
-   Grid.Column="0"
-   VerticalAlignment="Center"
-   FontSize="13"
-   FontWeight="SemiBold"
-   Foreground="#333333"
-   Margin="0,0,10,0"/>
+                               Grid.Column="0"
+                               VerticalAlignment="Center"
+                               FontSize="13"
+                               FontWeight="SemiBold"
+                               Foreground="#333333"
+                               Margin="0,0,10,0"/>
 
                     <ComboBox x:Name="PaymentMethodComboBox"
-  Grid.Column="1"
-  Height="40"
-  FontSize="13"
-  SelectedIndex="0">
+                              Grid.Column="1"
+                              Height="40"
+                              FontSize="13"
+                              SelectedIndex="0">
                         <ComboBox.Style>
                             <Style TargetType="ComboBox">
                                 <Setter Property="Background" Value="White"/>
@@ -362,10 +409,10 @@ DataObject.Pasting="IntegerTextBox_Pasting" />
                                         <ControlTemplate TargetType="ComboBox">
                                             <Grid>
                                                 <Border x:Name="Border"
-                            Background="{TemplateBinding Background}"
-                            BorderBrush="{TemplateBinding BorderBrush}"
-                            BorderThickness="{TemplateBinding BorderThickness}"
-                            CornerRadius="8">
+                                                        Background="{TemplateBinding Background}"
+                                                        BorderBrush="{TemplateBinding BorderBrush}"
+                                                        BorderThickness="{TemplateBinding BorderThickness}"
+                                                        CornerRadius="8">
                                                     <Grid>
                                                         <Grid.ColumnDefinitions>
                                                             <ColumnDefinition Width="*"/>
@@ -373,48 +420,47 @@ DataObject.Pasting="IntegerTextBox_Pasting" />
                                                         </Grid.ColumnDefinitions>
 
                                                         <ContentPresenter x:Name="ContentSite"
-                                            Grid.Column="0"
-                                            IsHitTestVisible="False"
-                                            Content="{TemplateBinding SelectionBoxItem}"
-                                            ContentTemplate="{TemplateBinding SelectionBoxItemTemplate}"
-                                            ContentTemplateSelector="{TemplateBinding ItemTemplateSelector}"
-                                            Margin="{TemplateBinding Padding}"
-                                            VerticalAlignment="Center"
-                                            HorizontalAlignment="Left"/>
+                                                                          Grid.Column="0"
+                                                                          IsHitTestVisible="False"
+                                                                          Content="{TemplateBinding SelectionBoxItem}"
+                                                                          ContentTemplate="{TemplateBinding SelectionBoxItemTemplate}"
+                                                                          ContentTemplateSelector="{TemplateBinding ItemTemplateSelector}"
+                                                                          Margin="{TemplateBinding Padding}"
+                                                                          VerticalAlignment="Center"
+                                                                          HorizontalAlignment="Left"/>
 
                                                         <Path Grid.Column="1"
-                                  Data="M 0 0 L 4 4 L 8 0 Z"
-                                  Fill="#666666"
-                                  Margin="0,0,12,0"
-                                  VerticalAlignment="Center"/>
+                                                              Data="M 0 0 L 4 4 L 8 0 Z"
+                                                              Fill="#666666"
+                                                              Margin="0,0,12,0"
+                                                              VerticalAlignment="Center"/>
 
                                                         <ToggleButton x:Name="ToggleButton"
-                                        Grid.Column="0"
-                                        Grid.ColumnSpan="2"
-                                        Background="Transparent"
-                                        BorderThickness="0"
-                                        Focusable="False"
-                                        IsChecked="{Binding Path=IsDropDownOpen, Mode=TwoWay, RelativeSource={RelativeSource TemplatedParent}}"
-                                        ClickMode="Press"/>
+                                                                      Grid.Column="0"
+                                                                      Grid.ColumnSpan="2"
+                                                                      Background="Transparent"
+                                                                      BorderThickness="0"
+                                                                      Focusable="False"
+                                                                      IsChecked="{Binding Path=IsDropDownOpen, Mode=TwoWay, RelativeSource={RelativeSource TemplatedParent}}"
+                                                                      ClickMode="Press"/>
                                                     </Grid>
                                                 </Border>
 
                                                 <Popup x:Name="Popup"
-                           Placement="Bottom"
-                           IsOpen="{TemplateBinding IsDropDownOpen}"
-                           AllowsTransparency="True"
-                           Focusable="False"
-                           PopupAnimation="Slide">
+                                                       Placement="Bottom"
+                                                       IsOpen="{TemplateBinding IsDropDownOpen}"
+                                                       AllowsTransparency="True"
+                                                       Focusable="False"
+                                                       PopupAnimation="Slide">
                                                     <Border Background="White"
-                                BorderBrush="#E0E0E0"
-                                BorderThickness="1"
-                                CornerRadius="8"
-                                Margin="0,4,0,0"
-                                >
+                                                            BorderBrush="#E0E0E0"
+                                                            BorderThickness="1"
+                                                            CornerRadius="8"
+                                                            Margin="0,4,0,0">
                                                         <ScrollViewer MaxHeight="200" 
-                                        VerticalScrollBarVisibility="Auto">
+                                                                      VerticalScrollBarVisibility="Auto">
                                                             <StackPanel IsItemsHost="True"
-                                          KeyboardNavigation.DirectionalNavigation="Contained"/>
+                                                                        KeyboardNavigation.DirectionalNavigation="Contained"/>
                                                         </ScrollViewer>
                                                     </Border>
                                                 </Popup>
@@ -442,8 +488,8 @@ DataObject.Pasting="IntegerTextBox_Pasting" />
                                     <Setter.Value>
                                         <ControlTemplate TargetType="ComboBoxItem">
                                             <Border x:Name="Border"
-                        Background="Transparent"
-                        Padding="{TemplateBinding Padding}">
+                                                    Background="Transparent"
+                                                    Padding="{TemplateBinding Padding}">
                                                 <ContentPresenter/>
                                             </Border>
                                             <ControlTemplate.Triggers>
@@ -459,13 +505,10 @@ DataObject.Pasting="IntegerTextBox_Pasting" />
                                 </Setter>
                             </Style>
                         </ComboBox.ItemContainerStyle>
-
-
                     </ComboBox>
                 </Grid>
 
-                <!-- Original Payment Buttons Grid -->
-                <Grid  Margin="0,5,0,0">
+                <Grid Margin="0,5,0,0">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="*"/>
                         <ColumnDefinition Width="5"/>
@@ -474,64 +517,61 @@ DataObject.Pasting="IntegerTextBox_Pasting" />
                         <ColumnDefinition Width="*"/>
                     </Grid.ColumnDefinitions>
 
-                    <!-- Cash Button -->
                     <Button x:Name="CashButton" 
-Grid.Column="0" 
-Style="{StaticResource BlueButtonStyle}" 
-Height="45" 
-Click="CashButton_Click">
+                            Grid.Column="0" 
+                            Style="{StaticResource BlueButtonStyle}" 
+                            Height="45" 
+                            Click="CashButton_Click">
                         <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
                             <Path Data="M3 6h18v12H3V6zm2 2v8h14V8H5z" 
-      Fill="White" 
-      Stretch="Uniform" 
-      Width="16" Height="16" 
-      Margin="0,0,6,0"/>
+                                  Fill="White" 
+                                  Stretch="Uniform" 
+                                  Width="16" Height="16" 
+                                  Margin="0,0,6,0"/>
                             <TextBlock Text="CASH" 
-           FontSize="11" 
-           VerticalAlignment="Center"/>
+                                       FontSize="11" 
+                                       VerticalAlignment="Center"/>
                         </StackPanel>
                     </Button>
 
-                    <!-- Half Cash / Half Credit Button -->
                     <Button x:Name="HalfButton" 
-Grid.Column="2" 
-Style="{StaticResource RedButtonStyle}" 
-Height="45" 
-Click="HalfButton_Click">
+                            Grid.Column="2" 
+                            Style="{StaticResource RedButtonStyle}" 
+                            Height="45" 
+                            Click="HalfButton_Click">
                         <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
                             <Path Data="M4 4h16v16H4V4zm8 0v16" 
-      Fill="White" 
-      Stroke="White"
-      StrokeThickness="2"
-      Stretch="Uniform" 
-      Width="16" Height="16" 
-      Margin="0,0,6,0"/>
+                                  Fill="White" 
+                                  Stroke="White"
+                                  StrokeThickness="2"
+                                  Stretch="Uniform" 
+                                  Width="16" Height="16" 
+                                  Margin="0,0,6,0"/>
                             <TextBlock Text="50/50" 
-           FontSize="11" 
-           VerticalAlignment="Center"/>
+                                       FontSize="11" 
+                                       VerticalAlignment="Center"/>
                         </StackPanel>
                     </Button>
 
-                    <!-- Credit Button -->
                     <Button x:Name="CreditButton" 
-Grid.Column="4" 
-Style="{StaticResource GreenButtonStyle}" 
-Height="45" 
-Click="CreditButton_Click">
+                            Grid.Column="4" 
+                            Style="{StaticResource GreenButtonStyle}" 
+                            Height="45" 
+                            Click="CreditButton_Click">
                         <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
                             <Path Data="M2 6c0-1.1.9-2 2-2h16a2 2 0 0 1 2 2v2H2V6zm0 4h20v8c0 1.1-.9 2-2 2H4a2 2 0 0 1-2-2v-8z" 
-      Fill="White" 
-      Stretch="Uniform" 
-      Width="16" Height="16" 
-      Margin="0,0,6,0"/>
+                                  Fill="White" 
+                                  Stretch="Uniform" 
+                                  Width="16" Height="16" 
+                                  Margin="0,0,6,0"/>
                             <TextBlock Text="CREDIT" 
-           FontSize="11" 
-           VerticalAlignment="Center"/>
+                                       FontSize="11" 
+                                       VerticalAlignment="Center"/>
                         </StackPanel>
                     </Button>
                 </Grid>
             </StackPanel>
-            <!-- Modern Enregistrer Button Style -->
+
             <Button x:Name="EnregistrerButton" Content="Enregistrer" Click="EnregistrerButton_Click" Grid.Row="2" Visibility="Collapsed">
                 <Button.Style>
                     <Style TargetType="Button">
@@ -551,60 +591,30 @@ Click="CreditButton_Click">
                             <Setter.Value>
                                 <ControlTemplate TargetType="Button">
                                     <Border x:Name="border" 
-                                Background="{TemplateBinding Background}" 
-                                CornerRadius="8"
-                                Padding="{TemplateBinding Padding}">
+                                            Background="{TemplateBinding Background}" 
+                                            CornerRadius="8"
+                                            Padding="{TemplateBinding Padding}">
                                         <Border.Effect>
                                             <DropShadowEffect Color="#3B82F6" 
-                                                Opacity="0.25" 
-                                                ShadowDepth="2" 
-                                                BlurRadius="8"
-                                                Direction="270"/>
+                                                              Opacity="0.25" 
+                                                              ShadowDepth="2" 
+                                                              BlurRadius="8"
+                                                              Direction="270"/>
                                         </Border.Effect>
                                         <ContentPresenter x:Name="contentPresenter"
-                                            HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
-                                            VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
-                                            RecognizesAccessKey="True"/>
+                                                          HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                                          VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
+                                                          RecognizesAccessKey="True"/>
                                     </Border>
                                     <ControlTemplate.Triggers>
                                         <Trigger Property="IsMouseOver" Value="True">
                                             <Setter TargetName="border" Property="Background" Value="#2563EB"/>
-                                            <Setter TargetName="border" Property="RenderTransform">
-                                                <Setter.Value>
-                                                    <ScaleTransform ScaleX="1.02" ScaleY="1.02"/>
-                                                </Setter.Value>
-                                            </Setter>
-                                            <Setter TargetName="border" Property="Effect">
-                                                <Setter.Value>
-                                                    <DropShadowEffect Color="#2563EB" 
-                                                        Opacity="0.4" 
-                                                        ShadowDepth="3" 
-                                                        BlurRadius="12"
-                                                        Direction="270"/>
-                                                </Setter.Value>
-                                            </Setter>
                                         </Trigger>
                                         <Trigger Property="IsPressed" Value="True">
                                             <Setter TargetName="border" Property="Background" Value="#1D4ED8"/>
-                                            <Setter TargetName="border" Property="RenderTransform">
-                                                <Setter.Value>
-                                                    <ScaleTransform ScaleX="0.98" ScaleY="0.98"/>
-                                                </Setter.Value>
-                                            </Setter>
-                                            <Setter TargetName="border" Property="Effect">
-                                                <Setter.Value>
-                                                    <DropShadowEffect Color="#1D4ED8" 
-                                                        Opacity="0.3" 
-                                                        ShadowDepth="1" 
-                                                        BlurRadius="6"
-                                                        Direction="270"/>
-                                                </Setter.Value>
-                                            </Setter>
                                         </Trigger>
                                         <Trigger Property="IsEnabled" Value="False">
                                             <Setter TargetName="border" Property="Background" Value="#9CA3AF"/>
-                                            <Setter TargetName="border" Property="Effect" Value="{x:Null}"/>
-                                            <Setter TargetName="contentPresenter" Property="Opacity" Value="0.6"/>
                                         </Trigger>
                                     </ControlTemplate.Triggers>
                                 </ControlTemplate>
@@ -613,6 +623,7 @@ Click="CreditButton_Click">
                     </Style>
                 </Button.Style>
             </Button>
+
             <Button x:Name="AjouterButton" Content="Ajouter" Click="AjouterButton_Click" Grid.Row="2" Visibility="Collapsed">
                 <Button.Style>
                     <Style TargetType="Button">
@@ -626,66 +637,22 @@ Click="CreditButton_Click">
                         <Setter Property="Height" Value="44"/>
                         <Setter Property="BorderThickness" Value="0"/>
                         <Setter Property="Cursor" Value="Hand"/>
-                        <Setter Property="HorizontalContentAlignment" Value="Center"/>
-                        <Setter Property="VerticalContentAlignment" Value="Center"/>
                         <Setter Property="Template">
                             <Setter.Value>
                                 <ControlTemplate TargetType="Button">
                                     <Border x:Name="border" 
-                    Background="{TemplateBinding Background}" 
-                    CornerRadius="8"
-                    Padding="{TemplateBinding Padding}">
-                                        <Border.Effect>
-                                            <DropShadowEffect Color="#3B82F6" 
-                                    Opacity="0.25" 
-                                    ShadowDepth="2" 
-                                    BlurRadius="8"
-                                    Direction="270"/>
-                                        </Border.Effect>
-                                        <ContentPresenter x:Name="contentPresenter"
-                                HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
-                                VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
-                                RecognizesAccessKey="True"/>
+                                            Background="{TemplateBinding Background}" 
+                                            CornerRadius="8"
+                                            Padding="{TemplateBinding Padding}">
+                                        <ContentPresenter HorizontalAlignment="Center"
+                                                          VerticalAlignment="Center"/>
                                     </Border>
                                     <ControlTemplate.Triggers>
                                         <Trigger Property="IsMouseOver" Value="True">
-                                            <Setter TargetName="border" Property="Background" Value="#2563EB"/>
-                                            <Setter TargetName="border" Property="RenderTransform">
-                                                <Setter.Value>
-                                                    <ScaleTransform ScaleX="1.02" ScaleY="1.02"/>
-                                                </Setter.Value>
-                                            </Setter>
-                                            <Setter TargetName="border" Property="Effect">
-                                                <Setter.Value>
-                                                    <DropShadowEffect Color="#2563EB" 
-                                            Opacity="0.4" 
-                                            ShadowDepth="3" 
-                                            BlurRadius="12"
-                                            Direction="270"/>
-                                                </Setter.Value>
-                                            </Setter>
+                                            <Setter TargetName="border" Property="Background" Value="#1FA02A"/>
                                         </Trigger>
                                         <Trigger Property="IsPressed" Value="True">
-                                            <Setter TargetName="border" Property="Background" Value="#1D4ED8"/>
-                                            <Setter TargetName="border" Property="RenderTransform">
-                                                <Setter.Value>
-                                                    <ScaleTransform ScaleX="0.98" ScaleY="0.98"/>
-                                                </Setter.Value>
-                                            </Setter>
-                                            <Setter TargetName="border" Property="Effect">
-                                                <Setter.Value>
-                                                    <DropShadowEffect Color="#1D4ED8" 
-                                            Opacity="0.3" 
-                                            ShadowDepth="1" 
-                                            BlurRadius="6"
-                                            Direction="270"/>
-                                                </Setter.Value>
-                                            </Setter>
-                                        </Trigger>
-                                        <Trigger Property="IsEnabled" Value="False">
-                                            <Setter TargetName="border" Property="Background" Value="#9CA3AF"/>
-                                            <Setter TargetName="border" Property="Effect" Value="{x:Null}"/>
-                                            <Setter TargetName="contentPresenter" Property="Opacity" Value="0.6"/>
+                                            <Setter TargetName="border" Property="Background" Value="#178F23"/>
                                         </Trigger>
                                     </ControlTemplate.Triggers>
                                 </ControlTemplate>

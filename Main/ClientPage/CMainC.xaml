@@ -202,7 +202,7 @@
                 <ColumnDefinition Width="Auto"/>
             </Grid.ColumnDefinitions>
 
-            <!-- Total Suppliers Card -->
+            <!-- Total Clients Card -->
             <Border Grid.Column="0" Style="{StaticResource StatCardStyle}">
                 <Border.Background>
                     <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
@@ -271,7 +271,7 @@
                 </StackPanel>
             </Border>
 
-            <!-- Add New Supplier Button -->
+            <!-- Add New Client Button -->
             <Button Grid.Column="4" Width="150" Height="80" Margin="20,20,10,20" Name="AddBtn"
         BorderThickness="0" Click="AddNewClient_Click" Cursor="Hand" FontSize="22">
                 <Button.Background>
@@ -324,18 +324,19 @@
                     <Grid Margin="20,0">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="60"/>
-                            <ColumnDefinition Width="200"/>
+                            <ColumnDefinition Width="250"/>
                             <ColumnDefinition Width="150"/>
                             <ColumnDefinition Width="150"/>
-
+                            <ColumnDefinition Width="150"/>
                             <ColumnDefinition Width="*"/>
                         </Grid.ColumnDefinitions>
 
                         <TextBlock Grid.Column="0" Text="ID" Style="{StaticResource HeaderTextStyle}"/>
-                        <TextBlock Grid.Column="1" Text="Client NAME" Style="{StaticResource HeaderTextStyle}"/>
-                        <TextBlock Grid.Column="2" Text="PHONE NUMBER" Style="{StaticResource HeaderTextStyle}"/>
-                        <TextBlock Grid.Column="3" Text="BALANCE" Style="{StaticResource HeaderTextStyle}"/>
-                        <TextBlock Grid.Column="4" Text="ACTIONS" Style="{StaticResource HeaderTextStyle}"  HorizontalAlignment="Right" Margin="0,0,20,0"/>
+                        <TextBlock Grid.Column="1" Text="CLIENT NAME" Style="{StaticResource HeaderTextStyle}"/>
+                        <TextBlock Grid.Column="2" Text="PHONE / ICE" Style="{StaticResource HeaderTextStyle}"/>
+                        <TextBlock Grid.Column="3" Text="ADDRESS" Style="{StaticResource HeaderTextStyle}"/>
+                        <TextBlock Grid.Column="4" Text="BALANCE" Style="{StaticResource HeaderTextStyle}"/>
+                        <TextBlock Grid.Column="5" Text="ACTIONS" Style="{StaticResource HeaderTextStyle}" HorizontalAlignment="Right" Margin="0,0,20,0"/>
                     </Grid>
                 </Border>
 
@@ -347,8 +348,6 @@
                 </ScrollViewer>
             </Grid>
         </Border>
-
-        <!-- Debug Button (Temporary) -->
 
         <!-- Modal Overlay -->
         <Grid Name="ModalOverlay" Grid.RowSpan="3" Background="#1F293780" Visibility="Collapsed">

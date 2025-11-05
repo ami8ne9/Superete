@@ -20,6 +20,7 @@ namespace GestionComerce.Main.ClientPage
             _main = main;
             _currentUser = currentUser;
             DataContextChanged += SingleRowClient_DataContextChanged;
+
             foreach (Role r in _main.lr)
             {
                 if (_currentUser.RoleID == r.RoleID)
@@ -32,7 +33,7 @@ namespace GestionComerce.Main.ClientPage
                     {
                         Delete.IsEnabled = false;
                     }
-                    if(!r.PayeClient && !r.ViewCreditClient)
+                    if (!r.PayeClient && !r.ViewCreditClient)
                     {
                         Paye.IsEnabled = false;
                     }
@@ -58,7 +59,31 @@ namespace GestionComerce.Main.ClientPage
         {
             IdText.Text = client.ClientID.ToString();
             NameText.Text = client.Nom ?? "N/A";
-            PhoneText.Text = string.IsNullOrEmpty(client.Telephone) ? "-" : client.Telephone;
+
+            // Show company badge if it's a company
+            if (client.IsCompany)
+            {
+                CompanyBadge.Visibility = Visibility.Visible;
+
+                // Display ICE instead of phone for companies
+                if (!string.IsNullOrWhiteSpace(client.ICE))
+                {
+                    PhoneText.Text = $"ICE: {client.ICE}";
+                }
+                else
+                {
+                    PhoneText.Text = string.IsNullOrEmpty(client.Telephone) ? "-" : client.Telephone;
+                }
+
+                // Display headquarters instead of address for companies
+                AddressText.Text = string.IsNullOrEmpty(client.SiegeEntreprise) ? "-" : client.SiegeEntreprise;
+            }
+            else
+            {
+                CompanyBadge.Visibility = Visibility.Collapsed;
+                PhoneText.Text = string.IsNullOrEmpty(client.Telephone) ? "-" : client.Telephone;
+                AddressText.Text = string.IsNullOrEmpty(client.Adresse) ? "-" : client.Adresse;
+            }
 
             // Load balance from MainWindow list
             var clientCredits = _main.credits
@@ -80,19 +105,18 @@ namespace GestionComerce.Main.ClientPage
             if (!(DataContext is Client client)) return;
 
             var wnd = new ClientFormWindow(_main, client);
-            if (wnd.ShowDialog() == true)
-            {
-                // Refresh the parent container
-                var parent = this.Parent;
-                while (parent != null && !(parent is CMainC))
-                {
-                    parent = LogicalTreeHelper.GetParent(parent);
-                }
+            wnd.ShowDialog();
 
-                if (parent is CMainC clientPage)
-                {
-                    clientPage.LoadAllData();
-                }
+            // Refresh the parent container
+            var parent = this.Parent;
+            while (parent != null && !(parent is CMainC))
+            {
+                parent = LogicalTreeHelper.GetParent(parent);
+            }
+
+            if (parent is CMainC clientPage)
+            {
+                clientPage.LoadAllData();
             }
         }
 
@@ -101,19 +125,18 @@ namespace GestionComerce.Main.ClientPage
             if (!(DataContext is Client client)) return;
 
             var wnd = new DeleteClientWindow(_main, client);
-            if (wnd.ShowDialog() == true)
-            {
-                // Refresh the parent container
-                var parent = this.Parent;
-                while (parent != null && !(parent is CMainC))
-                {
-                    parent = LogicalTreeHelper.GetParent(parent);
-                }
+            wnd.ShowDialog();
 
-                if (parent is CMainC clientPage)
-                {
-                    clientPage.LoadAllData();
-                }
+            // Refresh the parent container
+            var parent = this.Parent;
+            while (parent != null && !(parent is CMainC))
+            {
+                parent = LogicalTreeHelper.GetParent(parent);
+            }
+
+            if (parent is CMainC clientPage)
+            {
+                clientPage.LoadAllData();
             }
         }
 
@@ -122,19 +145,18 @@ namespace GestionComerce.Main.ClientPage
             if (!(DataContext is Client client)) return;
 
             var wnd = new PaidClientWindow(_currentUser, _main, client);
-            if (wnd.ShowDialog() == true)
-            {
-                // Refresh the parent container
-                var parent = this.Parent;
-                while (parent != null && !(parent is CMainC))
-                {
-                    parent = LogicalTreeHelper.GetParent(parent);
-                }
+            wnd.ShowDialog();
 
-                if (parent is CMainC clientPage)
-                {
-                    clientPage.LoadAllData();
-                }
+            // Refresh the parent container
+            var parent = this.Parent;
+            while (parent != null && !(parent is CMainC))
+            {
+                parent = LogicalTreeHelper.GetParent(parent);
+            }
+
+            if (parent is CMainC clientPage)
+            {
+                clientPage.LoadAllData();
             }
         }
 

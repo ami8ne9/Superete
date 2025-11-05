@@ -1,42 +1,43 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
 
 namespace GestionComerce.Main.Inventory
 {
-    /// <summary>
-    /// Logique d'interaction pour WAddArticle.xaml
-    /// </summary>
     public partial class WAddArticle : Window
     {
-        public WAddArticle(Article a, List<Article> la, List<Famille> lf, List<Fournisseur> lfo,CMainI main, int s, WExistingArticles ea, WNouveauStock ns)
+        public Article a;
+        public List<Article> la;
+        List<Famille> lf;
+        List<Fournisseur> lfo;
+        int s;
+        public CMainI main;
+        public WExistingArticles ea;
+        WNouveauStock ns;
+
+        public WAddArticle(Article a, List<Article> la, List<Famille> lf, List<Fournisseur> lfo, CMainI main, int s, WExistingArticles ea, WNouveauStock ns)
         {
-           
             InitializeComponent();
             this.a = a;
-            this.la = la;   
+            this.la = la;
             this.lf = lf;
             this.lfo = lfo;
             this.s = s;
             this.main = main;
             this.ea = ea;
             this.ns = ns;
-            LoadFamillies(lf,0);
 
-            LoadFournisseurs(lfo,0);
-
+            LoadFamillies(lf, 0);
+            LoadFournisseurs(lfo, 0);
             LoadPayments(main.main.lp);
+
+            // Set default dates
+            DateArticle.SelectedDate = DateTime.Now;
+            DateLivraison.SelectedDate = DateTime.Now;
+
             foreach (Role r in main.main.lr)
             {
                 if (main.u.RoleID == r.RoleID)
@@ -49,7 +50,7 @@ namespace GestionComerce.Main.Inventory
                     {
                         AjouterFournisseur.IsEnabled = false;
                     }
-                    if(r.SolderFournisseur == false)
+                    if (r.SolderFournisseur == false)
                     {
                         CreditButton.IsEnabled = false;
                         HalfButton.IsEnabled = false;
@@ -61,24 +62,44 @@ namespace GestionComerce.Main.Inventory
                     break;
                 }
             }
+
             FournisseurList.SelectedIndex = 0;
             FamilliesList.SelectedIndex = 0;
             List<Fournisseur> lfoo = new List<Fournisseur>();
-            
-            if (s == 0)
-            {
-                ButtonsContainer.Visibility = Visibility.Collapsed;
-                EnregistrerButton.Visibility = Visibility.Visible;
-                HeaderText.Text = "Modifier Article Existante";
-                Code.Text= a.Code.ToString();
-                ArticleName.Text = a.ArticleName;
-                PrixV.Text = a.PrixVente.ToString("0.00");
-                PrixA.Text = a.PrixAchat.ToString("0.00");
-                PrixMP.Text = a.PrixMP.ToString("0.00");
-                Quantite.Text = a.Quantite.ToString();
+
+           if (s == 0) // Edit mode
+{
+    ButtonsContainer.Visibility = Visibility.Collapsed;
+    EnregistrerButton.Visibility = Visibility.Visible;
+    HeaderText.Text = "Modifier Article Existante";
+
+    Code.Text = a.Code.ToString();
+    ArticleName.Text = a.ArticleName;
+    PrixV.Text = a.PrixVente.ToString("0.00");
+    PrixA.Text = a.PrixAchat.ToString("0.00");
+    PrixMP.Text = a.PrixMP.ToString("0.00");
+    Quantite.Text = a.Quantite.ToString();
+
+    // Load new fields
+    Marque.Text = a.marque ?? string.Empty;
+    TVA.Text = a.tva.ToString("0.00");
+    NumeroLot.Text = a.numeroLot ?? string.Empty;
+    BonLivraison.Text = a.bonlivraison ?? string.Empty;
+
+    // Handle nullable dates
+    if (a.Date.HasValue)
+        DateArticle.SelectedDate = a.Date.Value;
+    
+    if (a.DateLivraison.HasValue)
+        DateLivraison.SelectedDate = a.DateLivraison.Value;
+    
+    if (a.DateExpiration.HasValue)
+        DateExpiration.SelectedDate = a.DateExpiration.Value;
+
+    // ... rest of your code for loading fournisseurs and families
+
                 foreach (Article ar in la)
                 {
-
                     if (ar.ArticleName == a.ArticleName)
                     {
                         foreach (Fournisseur fo in lfo)
@@ -89,10 +110,10 @@ namespace GestionComerce.Main.Inventory
                                 break;
                             }
                         }
-
                     }
                 }
-                LoadFournisseurs(lfo.Except(lfoo).ToList(),0);
+                LoadFournisseurs(lfo.Except(lfoo).ToList(), 0);
+
                 foreach (Famille f in lf)
                     if (f.FamilleID == a.FamillyID)
                     {
@@ -125,54 +146,20 @@ namespace GestionComerce.Main.Inventory
                 FournisseurList.IsEnabled = false;
                 AjouterFournisseur.Visibility = Visibility.Collapsed;
             }
-
-            if (s == 2)
-            {
-                //AjouterFamille.Visibility = Visibility.Collapsed;
-                //Code.IsEnabled = false;
-                //ArticleName.IsEnabled = false;
-                //FamilliesList.IsEnabled = false;
-                //HeaderText.Text = "Ajouter Article avec Different Fournisseur";
-                //Code.Text = a.Code.ToString();
-                //ArticleName.Text = a.ArticleName;
-                //PrixV.Text = a.PrixVente.ToString("0.00");
-                //PrixA.Text = a.PrixAchat.ToString("0.00");
-                //PrixMP.Text = a.PrixMP.ToString("0.00");
-                //foreach (Article ar in la)
-                //{
-                    
-                //    if (ar.ArticleName == a.ArticleName)
-                //    {
-                //        foreach (Fournisseur fo in lfo)
-                //        {
-                //            if (fo.FournisseurID == ar.FournisseurID)
-                //            {
-                //                lfoo.Add(fo);
-                //                break;
-                //            }
-                //        }
-
-                //    }
-                //}
-                //LoadFournisseurs(lfo.Except(lfoo).ToList());
-                //foreach (Famille f in lf)
-                //    if (f.FamilleID == a.FamillyID)
-                //    {
-                //        FamilliesList.SelectedItem = f.FamilleName;
-                //        break;
-                //    }
-                //FournisseurList.SelectedIndex = 0;
-            }
         }
-        public Article a; public List<Article> la; List<Famille> lf; List<Fournisseur> lfo; int s; public CMainI main; public WExistingArticles ea; WNouveauStock ns;
 
         private void AddSupplierButton_Click(object sender, RoutedEventArgs e)
         {
-            WAddFournisseur wAddFournisseur = new WAddFournisseur(lfo, this);
+            WAddFournisseur wAddFournisseur = new WAddFournisseur(main.main, null);
+            wAddFournisseur.SupplierSaved += (s, args) =>
+            {
+                // Refresh the supplier list in this window
+                LoadFournisseurs(main.main.lfo, 1);
+            };
             wAddFournisseur.ShowDialog();
-
         }
-        public void LoadFournisseurs(List<Fournisseur> lfo,int i)
+
+        public void LoadFournisseurs(List<Fournisseur> lfo, int i)
         {
             FournisseurList.Items.Clear();
             foreach (Fournisseur fo in lfo)
@@ -181,21 +168,23 @@ namespace GestionComerce.Main.Inventory
             }
             if (i == 1)
             {
-                FournisseurList.SelectedIndex = FournisseurList.Items.Count-1;
+                FournisseurList.SelectedIndex = FournisseurList.Items.Count - 1;
             }
         }
-        public void LoadFamillies(List<Famille> lf,int i)
+
+        public void LoadFamillies(List<Famille> lf, int i)
         {
             FamilliesList.Items.Clear();
             foreach (Famille f in lf)
             {
                 FamilliesList.Items.Add(f.FamilleName);
             }
-            if(i == 1)
+            if (i == 1)
             {
-                FamilliesList.SelectedIndex = FamilliesList.Items.Count-1;
+                FamilliesList.SelectedIndex = FamilliesList.Items.Count - 1;
             }
         }
+
         public void LoadPayments(List<PaymentMethod> lp)
         {
             PaymentMethodComboBox.Items.Clear();
@@ -210,15 +199,28 @@ namespace GestionComerce.Main.Inventory
             try
             {
                 bool modifier = false;
-                if (ArticleName.Text == "" || Code.Text == "" || PrixV.Text == "" || PrixA.Text == "" || PrixMP.Text == "" || Quantite.Text == "")
+
+                // Validate required fields only
+                if (string.IsNullOrWhiteSpace(ArticleName.Text) ||
+                    string.IsNullOrWhiteSpace(Code.Text) ||
+                    string.IsNullOrWhiteSpace(PrixV.Text) ||
+                    string.IsNullOrWhiteSpace(PrixA.Text) ||
+                    string.IsNullOrWhiteSpace(PrixMP.Text) ||
+                    string.IsNullOrWhiteSpace(Quantite.Text) ||
+                    FournisseurList.SelectedIndex == -1 ||
+                    FamilliesList.SelectedIndex == -1)
                 {
-                    MessageBox.Show("Veuillez remplir tous les champs.");
+                    MessageBox.Show("Veuillez remplir tous les champs obligatoires (*).");
                     return;
                 }
-                if (ArticleName.Text != a.ArticleName || Code.Text != a.Code.ToString() || PrixV.Text != a.PrixVente.ToString() || PrixA.Text != a.PrixAchat.ToString() || PrixMP.Text != a.PrixMP.ToString() || Quantite.Text != a.Quantite.ToString())
+
+                if (ArticleName.Text != a.ArticleName || Code.Text != a.Code.ToString() ||
+                    PrixV.Text != a.PrixVente.ToString() || PrixA.Text != a.PrixAchat.ToString() ||
+                    PrixMP.Text != a.PrixMP.ToString() || Quantite.Text != a.Quantite.ToString())
                 {
                     modifier = true;
                 }
+
                 if (Convert.ToDecimal(PrixV.Text) < Convert.ToDecimal(PrixA.Text))
                 {
                     MessageBox.Show("Le prix de vente doit être Superieure ou égal au prix d'achat.");
@@ -236,9 +238,10 @@ namespace GestionComerce.Main.Inventory
                 }
                 if (Convert.ToInt32(Quantite.Text) == 0)
                 {
-                    MessageBox.Show("Donner une quntite.");
+                    MessageBox.Show("Donner une quantite.");
                     return;
                 }
+
                 if (ArticleName.Text != a.ArticleName && Code.Text == a.Code.ToString())
                 {
                     MessageBoxResult result = MessageBox.Show(
@@ -255,7 +258,7 @@ namespace GestionComerce.Main.Inventory
                             if (ar.Code == a.Code)
                             {
                                 ar.ArticleName = ArticleName.Text;
-                                ar.UpdateArticleAsync();
+                                await ar.UpdateArticleAsync();
                             }
                         }
                     }
@@ -263,8 +266,8 @@ namespace GestionComerce.Main.Inventory
                     {
                         return;
                     }
-
                 }
+
                 if (Code.Text != a.Code.ToString() && ArticleName.Text == a.ArticleName)
                 {
                     MessageBoxResult result = MessageBox.Show(
@@ -280,8 +283,8 @@ namespace GestionComerce.Main.Inventory
                         {
                             if (ar.ArticleName == a.ArticleName)
                             {
-                                ar.Code = Convert.ToInt32(Code.Text);
-                                ar.UpdateArticleAsync();
+                                ar.Code = Convert.ToInt64(Code.Text);
+                                await ar.UpdateArticleAsync();
                             }
                         }
                     }
@@ -289,20 +292,28 @@ namespace GestionComerce.Main.Inventory
                     {
                         return;
                     }
-
                 }
-                a.Code = Convert.ToInt32(Code.Text);
+
+                a.Code = Convert.ToInt64(Code.Text);
                 a.ArticleName = ArticleName.Text;
                 a.PrixVente = Convert.ToDecimal(PrixV.Text);
                 a.PrixAchat = Convert.ToDecimal(PrixA.Text);
                 a.PrixMP = Convert.ToDecimal(PrixMP.Text);
+
+                // Update new fields - CORRECTED
+                a.marque = string.IsNullOrWhiteSpace(Marque.Text) ? null : Marque.Text;
+                a.tva = string.IsNullOrWhiteSpace(TVA.Text) ? 0 : Convert.ToDecimal(TVA.Text);
+                a.numeroLot = string.IsNullOrWhiteSpace(NumeroLot.Text) ? null : NumeroLot.Text;
+                a.bonlivraison = string.IsNullOrWhiteSpace(BonLivraison.Text) ? null : BonLivraison.Text;
+                a.Date = DateArticle.SelectedDate ?? DateTime.Now;
+                a.DateLivraison = DateLivraison.SelectedDate;  // FIXED: Get FROM DatePicker
+                a.DateExpiration = DateExpiration.SelectedDate;  // Get FROM DatePicker
 
                 if (a.Quantite != Convert.ToInt32(Quantite.Text))
                 {
                     Operation Operation = new Operation();
                     Operation.OperationType = "ModificationQu";
                     Operation.PrixOperation = (a.Quantite - Convert.ToInt32(Quantite.Text)) * a.PrixAchat;
-
                     Operation.UserID = main.u.UserID;
 
                     int idd = await Operation.InsertOperationAsync();
@@ -312,9 +323,7 @@ namespace GestionComerce.Main.Inventory
                     ofa.QteArticle = Convert.ToInt32(a.Quantite);
                     await ofa.InsertOperationArticleAsync();
                     a.Quantite = Convert.ToInt32(Quantite.Text);
-
                 }
-
 
                 foreach (Famille f in lf)
                     if (f.FamilleName == FamilliesList.SelectedItem)
@@ -324,12 +333,11 @@ namespace GestionComerce.Main.Inventory
                             modifier = true;
                             a.FamillyID = f.FamilleID;
                         }
-
                         break;
                     }
+
                 foreach (Fournisseur fo in lfo)
                 {
-
                     if (fo.Nom == FournisseurList.SelectedItem)
                     {
                         if (a.FournisseurID != fo.FournisseurID)
@@ -337,13 +345,11 @@ namespace GestionComerce.Main.Inventory
                             modifier = true;
                             a.FournisseurID = fo.FournisseurID;
                         }
-
-
                         break;
                     }
                 }
 
-                a.UpdateArticleAsync();
+                await a.UpdateArticleAsync();
                 for (int i = 0; i < la.Count; i++)
                 {
                     if (la[i].ArticleID == a.ArticleID)
@@ -352,23 +358,19 @@ namespace GestionComerce.Main.Inventory
                         break;
                     }
                 }
-                if (modifier == true)
-                {
-                    main.LoadArticles(la);
-                    WCongratulations wCongratulations = new WCongratulations("Modification avec succes","La modification a ete effectue avec succes",1);
-                    wCongratulations.ShowDialog();
-                }
+
+                main.LoadArticles(la);
+                WCongratulations wCongratulations = new WCongratulations("Modification avec succes", "La modification a ete effectue avec succes", 1);
+                wCongratulations.ShowDialog();
+                this.Close(); // Close the window after successful update
             }
             catch (Exception ex)
             {
+                MessageBox.Show($"Erreur: {ex.Message}");
                 WCongratulations wCongratulations = new WCongratulations("Modification a échoué", "La modification n'a pas ete effectue", 0);
                 wCongratulations.ShowDialog();
-
             }
-                
-
         }
-
         private void CancelButton_Click(object sender, RoutedEventArgs e)
         {
             this.Close();
@@ -376,23 +378,20 @@ namespace GestionComerce.Main.Inventory
 
         private void AddFamillyButton_Click(object sender, RoutedEventArgs e)
         {
-            WAddFamille wAddFamille= new WAddFamille(lf,this,new Famille(),null,0);
+            WAddFamille wAddFamille = new WAddFamille(lf, this, new Famille(), null, 0);
             wAddFamille.ShowDialog();
         }
 
         private void IntegerTextBox_PreviewTextInput(object sender, TextCompositionEventArgs e)
         {
-            // Autorise uniquement les chiffres
             e.Handled = !e.Text.All(char.IsDigit);
         }
 
         private void DecimalTextBox_PreviewTextInput(object sender, TextCompositionEventArgs e)
         {
             var textBox = sender as TextBox;
-            // Autorise les chiffres et un seul point
             if (e.Text == ".")
             {
-                // Refuse si déjà un point
                 e.Handled = textBox.Text.Contains(".");
             }
             else
@@ -401,7 +400,6 @@ namespace GestionComerce.Main.Inventory
             }
         }
 
-        // Pour empêcher le collage de texte invalide
         private void IntegerTextBox_Pasting(object sender, DataObjectPastingEventArgs e)
         {
             if (e.DataObject.GetDataPresent(typeof(string)))
@@ -421,7 +419,6 @@ namespace GestionComerce.Main.Inventory
             if (e.DataObject.GetDataPresent(typeof(string)))
             {
                 string text = (string)e.DataObject.GetData(typeof(string));
-                // Autorise un seul point et le reste chiffres
                 int dotCount = text.Count(c => c == '.');
                 if (dotCount > 1 || text.Any(c => !char.IsDigit(c) && c != '.'))
                     e.CancelCommand();
@@ -432,40 +429,67 @@ namespace GestionComerce.Main.Inventory
             }
         }
 
-        private void CashButton_Click(object sender, RoutedEventArgs e)
+        private bool ValidateRequiredFields()
         {
-            if (ArticleName.Text == "" || Code.Text == "" || PrixV.Text == "" || PrixA.Text == "" || PrixMP.Text == "" || Quantite.Text == "")
+            if (string.IsNullOrWhiteSpace(ArticleName.Text) ||
+                string.IsNullOrWhiteSpace(Code.Text) ||
+                string.IsNullOrWhiteSpace(PrixV.Text) ||
+                string.IsNullOrWhiteSpace(PrixA.Text) ||
+                string.IsNullOrWhiteSpace(PrixMP.Text) ||
+                string.IsNullOrWhiteSpace(Quantite.Text) ||
+                FournisseurList.SelectedIndex == -1 ||
+                FamilliesList.SelectedIndex == -1)
             {
-                MessageBox.Show("Veuillez remplir tous les champs.");
-                return;
+                MessageBox.Show("Veuillez remplir tous les champs obligatoires (*).");
+                return false;
             }
-            
+            return true;
+        }
+
+        private bool ValidatePrices()
+        {
+            if (Convert.ToDecimal(PrixV.Text) < Convert.ToDecimal(PrixA.Text))
+            {
+                MessageBox.Show("Le prix de vente doit être Superieure ou égal au prix d'achat.");
+                return false;
+            }
+            if (Convert.ToDecimal(PrixV.Text) < Convert.ToDecimal(PrixMP.Text))
+            {
+                MessageBox.Show("Le prix de vente doit être Superieure ou égal au prix mp.");
+                return false;
+            }
+            if (Convert.ToDecimal(PrixA.Text) > Convert.ToDecimal(PrixMP.Text))
+            {
+                MessageBox.Show("Le prix mp doit être Superieure ou égal au prix d'achat.");
+                return false;
+            }
+            if (Convert.ToInt32(Quantite.Text) == 0)
+            {
+                MessageBox.Show("Donner une quantite.");
+                return false;
+            }
+            return true;
+        }
+
+        private void PopulateArticleFromForm()
+        {
             a.Code = Convert.ToInt64(Code.Text);
             a.ArticleName = ArticleName.Text;
             a.PrixVente = Convert.ToDecimal(PrixV.Text);
             a.PrixAchat = Convert.ToDecimal(PrixA.Text);
             a.PrixMP = Convert.ToDecimal(PrixMP.Text);
             a.Quantite = Convert.ToInt32(Quantite.Text);
-            if (a.PrixVente < a.PrixAchat)
-            {
-                MessageBox.Show("Le prix de vente doit être Superieure ou égal au prix d'achat.");
-                return;
-            }
-            if (a.PrixVente < a.PrixMP)
-            {
-                MessageBox.Show("Le prix de vente doit être Superieure ou égal au prix mp.");
-                return;
-            }
-            if (a.PrixAchat > a.PrixMP)
-            {
-                MessageBox.Show("Le prix mp doit être Superieure ou égal au prix d'achat.");
-                return;
-            }
-            if (a.Quantite == 0)
-            {
-                MessageBox.Show("Donner une quntite.");
-                return;
-            }
+
+            // New fields
+            a.marque = string.IsNullOrWhiteSpace(Marque.Text) ? null : Marque.Text;
+            a.tva = string.IsNullOrWhiteSpace(TVA.Text) ? 0 : Convert.ToDecimal(TVA.Text);
+            a.numeroLot = string.IsNullOrWhiteSpace(NumeroLot.Text) ? null : NumeroLot.Text;
+            a.bonlivraison = string.IsNullOrWhiteSpace(BonLivraison.Text) ? null : BonLivraison.Text;
+
+            // Dates - can be null
+            a.Date = DateArticle.SelectedDate;
+            a.DateLivraison = DateLivraison.SelectedDate;
+            a.DateExpiration = DateExpiration.SelectedDate;
 
             foreach (Famille f in lf)
                 if (f.FamilleName == FamilliesList.SelectedItem)
@@ -473,121 +497,25 @@ namespace GestionComerce.Main.Inventory
                     a.FamillyID = f.FamilleID;
                     break;
                 }
+
             foreach (Fournisseur fo in lfo)
             {
-
                 if (fo.Nom == FournisseurList.SelectedItem)
                 {
                     a.FournisseurID = fo.FournisseurID;
-
                     break;
                 }
             }
-            foreach (Article aa in la)
-            {
-                if (aa.ArticleName.ToLower() == a.ArticleName.ToLower() && aa.Code != a.Code)
-                {
-                    MessageBoxResult result = MessageBox.Show(
-                        "Le Nom de ce Article exist avec un different Code Vous voulez pozer le code de cette Article?",     
-                        "Confirmation",                       
-                        MessageBoxButton.YesNo,          
-                        MessageBoxImage.Question);
-
-                    if (result == MessageBoxResult.Yes)
-                    {
-                        Code.Text=aa.Code.ToString();
-                        a.Code = aa.Code;
-                    }
-                    return;
-                }
-                if (aa.ArticleName.ToLower() != a.ArticleName.ToLower() && aa.Code == a.Code)
-                {
-                    MessageBoxResult result = MessageBox.Show(
-                        "Le Code de ce Article exist avec un different Nom Vous voulez pozer le Nom de cette Article?",
-                        "Confirmation",
-                        MessageBoxButton.YesNo,
-                        MessageBoxImage.Question);
-
-                    if (result == MessageBoxResult.Yes)
-                    {
-                        ArticleName.Text = aa.ArticleName.ToString();
-                        a.ArticleName = aa.ArticleName;
-                    }
-                    return;
-                }
-
-                if (aa.ArticleName.ToLower() == a.ArticleName.ToLower() && aa.Code == a.Code)
-                {
-                    if(aa.FournisseurID == a.FournisseurID)
-                    {
-                        MessageBox.Show("Ce Article deja exist sous ce fournisseur.");
-                        return;
-                    }
-                }
-            }
-            int MethodID = 0;
-            foreach (PaymentMethod p in main.main.lp)
-            {
-                if (p.PaymentMethodName == PaymentMethodComboBox.SelectedValue)
-                {
-                    MethodID = p.PaymentMethodID;
-                }
-            }
-
-            WConfirmTransaction w = new WConfirmTransaction(this,null, null, a,0, MethodID);
-            w.ShowDialog();
         }
 
-        private void HalfButton_Click(object sender, RoutedEventArgs e)
+        private void CashButton_Click(object sender, RoutedEventArgs e)
         {
-            if (ArticleName.Text == "" || Code.Text == "" || PrixV.Text == "" || PrixA.Text == "" || PrixMP.Text == "" || Quantite.Text == "")
-            {
-                MessageBox.Show("Veuillez remplir tous les champs.");
-                return;
-            }
-            a.Code = Convert.ToInt32(Code.Text);
-            a.ArticleName = ArticleName.Text;
-            a.PrixVente = Convert.ToDecimal(PrixV.Text);
-            a.PrixAchat = Convert.ToDecimal(PrixA.Text);
-            a.PrixMP = Convert.ToDecimal(PrixMP.Text);
-            a.Quantite = Convert.ToInt32(Quantite.Text);
-            if (a.PrixVente < a.PrixAchat)
-            {
-                MessageBox.Show("Le prix de vente doit être Superieure ou égal au prix d'achat.");
-                return;
-            }
-            if (a.PrixVente < a.PrixMP)
-            {
-                MessageBox.Show("Le prix de vente doit être Superieure ou égal au prix mp.");
-                return;
-            }
-            if (a.PrixAchat > a.PrixMP)
-            {
-                MessageBox.Show("Le prix mp doit être Superieure ou égal au prix d'achat.");
-                return;
-            }
-            if (a.Quantite == 0)
-            {
-                MessageBox.Show("Donner une quntite.");
-                return;
-            }
+            if (!ValidateRequiredFields()) return;
 
-            foreach (Famille f in lf)
-                if (f.FamilleName == FamilliesList.SelectedItem)
-                {
-                    a.FamillyID = f.FamilleID;
-                    break;
-                }
-            foreach (Fournisseur fo in lfo)
-            {
+            PopulateArticleFromForm();
 
-                if (fo.Nom == FournisseurList.SelectedItem)
-                {
-                    a.FournisseurID = fo.FournisseurID;
+            if (!ValidatePrices()) return;
 
-                    break;
-                }
-            }
             foreach (Article aa in la)
             {
                 if (aa.ArticleName.ToLower() == a.ArticleName.ToLower() && aa.Code != a.Code)
@@ -630,68 +558,92 @@ namespace GestionComerce.Main.Inventory
                     }
                 }
             }
+
             int MethodID = 0;
-            foreach (PaymentMethod p in ns.main.main.lp)
+            foreach (PaymentMethod p in main.main.lp)
             {
                 if (p.PaymentMethodName == PaymentMethodComboBox.SelectedValue)
                 {
                     MethodID = p.PaymentMethodID;
                 }
             }
+
+            WConfirmTransaction w = new WConfirmTransaction(this, null, null, a, 0, MethodID);
+            w.ShowDialog();
+        }
+
+        private void HalfButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (!ValidateRequiredFields()) return;
+
+            PopulateArticleFromForm();
+
+            if (!ValidatePrices()) return;
+
+            foreach (Article aa in la)
+            {
+                if (aa.ArticleName.ToLower() == a.ArticleName.ToLower() && aa.Code != a.Code)
+                {
+                    MessageBoxResult result = MessageBox.Show(
+                        "Le Nom de ce Article exist avec un different Code Vous voulez pozer le code de cette Article?",
+                        "Confirmation",
+                        MessageBoxButton.YesNo,
+                        MessageBoxImage.Question);
+
+                    if (result == MessageBoxResult.Yes)
+                    {
+                        Code.Text = aa.Code.ToString();
+                        a.Code = aa.Code;
+                    }
+                    return;
+                }
+                if (aa.ArticleName.ToLower() != a.ArticleName.ToLower() && aa.Code == a.Code)
+                {
+                    MessageBoxResult result = MessageBox.Show(
+                        "Le Code de ce Article exist avec un different Nom Vous voulez pozer le Nom de cette Article?",
+                        "Confirmation",
+                        MessageBoxButton.YesNo,
+                        MessageBoxImage.Question);
+
+                    if (result == MessageBoxResult.Yes)
+                    {
+                        ArticleName.Text = aa.ArticleName.ToString();
+                        a.ArticleName = aa.ArticleName;
+                    }
+                    return;
+                }
+
+                if (aa.ArticleName.ToLower() == a.ArticleName.ToLower() && aa.Code == a.Code)
+                {
+                    if (aa.FournisseurID == a.FournisseurID)
+                    {
+                        MessageBox.Show("Ce Article deja exist sous ce fournisseur.");
+                        return;
+                    }
+                }
+            }
+
+            int MethodID = 0;
+            foreach (PaymentMethod p in main.main.lp)
+            {
+                if (p.PaymentMethodName == PaymentMethodComboBox.SelectedValue)
+                {
+                    MethodID = p.PaymentMethodID;
+                }
+            }
+
             WConfirmTransaction w = new WConfirmTransaction(this, null, null, a, 1, MethodID);
             w.ShowDialog();
         }
 
         private void CreditButton_Click(object sender, RoutedEventArgs e)
         {
-            if (ArticleName.Text == "" || Code.Text == "" || PrixV.Text == "" || PrixA.Text == "" || PrixMP.Text == "" || Quantite.Text == "")
-            {
-                MessageBox.Show("Veuillez remplir tous les champs.");
-                return;
-            }
-            a.Code = Convert.ToInt32(Code.Text);
-            a.ArticleName = ArticleName.Text;
-            a.PrixVente = Convert.ToDecimal(PrixV.Text);
-            a.PrixAchat = Convert.ToDecimal(PrixA.Text);
-            a.PrixMP = Convert.ToDecimal(PrixMP.Text);
-            a.Quantite = Convert.ToInt32(Quantite.Text);
-            if (a.PrixVente < a.PrixAchat)
-            {
-                MessageBox.Show("Le prix de vente doit être Superieure ou égal au prix d'achat.");
-                return;
-            }
-            if (a.PrixVente < a.PrixMP)
-            {
-                MessageBox.Show("Le prix de vente doit être Superieure ou égal au prix mp.");
-                return;
-            }
-            if (a.PrixAchat > a.PrixMP)
-            {
-                MessageBox.Show("Le prix mp doit être Superieure ou égal au prix d'achat.");
-                return;
-            }
-            if (a.Quantite == 0)
-            {
-                MessageBox.Show("Donner une quntite.");
-                return;
-            }
+            if (!ValidateRequiredFields()) return;
 
-            foreach (Famille f in lf)
-                if (f.FamilleName == FamilliesList.SelectedItem)
-                {
-                    a.FamillyID = f.FamilleID;
-                    break;
-                }
-            foreach (Fournisseur fo in lfo)
-            {
+            PopulateArticleFromForm();
 
-                if (fo.Nom == FournisseurList.SelectedItem)
-                {
-                    a.FournisseurID = fo.FournisseurID;
+            if (!ValidatePrices()) return;
 
-                    break;
-                }
-            }
             foreach (Article aa in la)
             {
                 if (aa.ArticleName.ToLower() == a.ArticleName.ToLower() && aa.Code != a.Code)
@@ -734,6 +686,7 @@ namespace GestionComerce.Main.Inventory
                     }
                 }
             }
+
             int MethodID = 0;
             foreach (PaymentMethod p in main.main.lp)
             {
@@ -742,60 +695,19 @@ namespace GestionComerce.Main.Inventory
                     MethodID = p.PaymentMethodID;
                 }
             }
+
             WConfirmTransaction w = new WConfirmTransaction(this, null, null, a, 2, MethodID);
             w.ShowDialog();
         }
+
         private void AjouterButton_Click(object sender, RoutedEventArgs e)
         {
-            if (ArticleName.Text == "" || Code.Text == "" || PrixV.Text == "" || PrixA.Text == "" || PrixMP.Text == "" || Quantite.Text == "")
-            {
-                MessageBox.Show("Veuillez remplir tous les champs.");
-                return;
-            }
+            if (!ValidateRequiredFields()) return;
 
-            a.Code = Convert.ToInt32(Code.Text);
-            a.ArticleName = ArticleName.Text;
-            a.PrixVente = Convert.ToDecimal(PrixV.Text);
-            a.PrixAchat = Convert.ToDecimal(PrixA.Text);
-            a.PrixMP = Convert.ToDecimal(PrixMP.Text);
-            a.Quantite = Convert.ToInt32(Quantite.Text);
-            if (a.PrixVente < a.PrixAchat)
-            {
-                MessageBox.Show("Le prix de vente doit être Superieure ou égal au prix d'achat.");
-                return;
-            }
-            if (a.PrixVente < a.PrixMP)
-            {
-                MessageBox.Show("Le prix de vente doit être Superieure ou égal au prix mp.");
-                return;
-            }
-            if (a.PrixAchat > a.PrixMP)
-            {
-                MessageBox.Show("Le prix mp doit être Superieure ou égal au prix d'achat.");
-                return;
-            }
-            if (a.Quantite == 0)
-            {
-                MessageBox.Show("Donner une quntite.");
-                return;
-            }
+            PopulateArticleFromForm();
 
-            foreach (Famille f in lf)
-                if (f.FamilleName == FamilliesList.SelectedItem)
-                {
-                    a.FamillyID = f.FamilleID;
-                    break;
-                }
-            foreach (Fournisseur fo in lfo)
-            {
+            if (!ValidatePrices()) return;
 
-                if (fo.Nom == FournisseurList.SelectedItem)
-                {
-                    a.FournisseurID = fo.FournisseurID;
-
-                    break;
-                }
-            }
             foreach (Article aa in la)
             {
                 if (aa.ArticleName.ToLower() == a.ArticleName.ToLower() && aa.Code != a.Code)
@@ -838,6 +750,7 @@ namespace GestionComerce.Main.Inventory
                     }
                 }
             }
+
             foreach (CSingleRowArticle csar in ns.AMA.ArticlesContainer.Children)
             {
                 if (csar.a.ArticleName == a.ArticleName)
@@ -850,18 +763,17 @@ namespace GestionComerce.Main.Inventory
                     MessageBox.Show("Vous avez deja ajouter un article avec ce code");
                     return;
                 }
-             }
-            CSingleRowArticle cSingleRowArticle = new CSingleRowArticle(a, main.la, null, main, 7, ea, ns,0);
+            }
+
+            CSingleRowArticle cSingleRowArticle = new CSingleRowArticle(a, main.la, null, main, 7, ea, ns, 0);
             ns.AMA.ArticlesContainer.Children.Add(cSingleRowArticle);
             ns.Close();
             this.Close();
-
         }
 
         private void CloseButton_Click(object sender, RoutedEventArgs e)
         {
             this.Close();
         }
-
     }
 }

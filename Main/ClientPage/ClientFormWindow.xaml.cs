@@ -36,6 +36,19 @@ namespace GestionComerce.Main.ClientPage
                 // populate fields
                 NameTextBox.Text = _editingClient.Nom;
                 PhoneTextBox.Text = _editingClient.Telephone;
+                AdresseTextBox.Text = _editingClient.Adresse;
+                IsCompanyCheckBox.IsChecked = _editingClient.IsCompany;
+
+                // Populate company fields if it's a company
+                if (_editingClient.IsCompany)
+                {
+                    EtatJuridiqueTextBox.Text = _editingClient.EtatJuridique;
+                    ICETextBox.Text = _editingClient.ICE;
+                    SiegeEntrepriseTextBox.Text = _editingClient.SiegeEntreprise;
+                    CodeTextBox.Text = _editingClient.Code;
+                    CompanyFieldsPanel.Visibility = Visibility.Visible;
+                    NameLabel.Text = "Company Name";
+                }
 
                 // read balance from MainWindow in-memory credits
                 try
@@ -52,9 +65,24 @@ namespace GestionComerce.Main.ClientPage
             }
         }
 
+        private void IsCompanyCheckBox_Changed(object sender, RoutedEventArgs e)
+        {
+            bool isCompany = IsCompanyCheckBox.IsChecked == true;
+            CompanyFieldsPanel.Visibility = isCompany ? Visibility.Visible : Visibility.Collapsed;
+            NameLabel.Text = isCompany ? "Company Name" : "Client Name";
+
+            // Clear company fields if unchecked
+            if (!isCompany)
+            {
+                EtatJuridiqueTextBox.Text = string.Empty;
+                ICETextBox.Text = string.Empty;
+                SiegeEntrepriseTextBox.Text = string.Empty;
+                CodeTextBox.Text = string.Empty;
+            }
+        }
+
         private void CancelButton_Click(object sender, RoutedEventArgs e)
         {
-            DialogResult = false;
             Close();
         }
 
@@ -64,6 +92,18 @@ namespace GestionComerce.Main.ClientPage
             {
                 MessageBox.Show("Please enter a name.", "Validation", MessageBoxButton.OK, MessageBoxImage.Warning);
                 return;
+            }
+
+            bool isCompany = IsCompanyCheckBox.IsChecked == true;
+
+            // Validate company-specific fields if company is selected
+            if (isCompany)
+            {
+                if (string.IsNullOrWhiteSpace(ICETextBox.Text))
+                {
+                    MessageBox.Show("Please enter ICE for the company.", "Validation", MessageBoxButton.OK, MessageBoxImage.Warning);
+                    return;
+                }
             }
 
             decimal parsedBalance = 0m;
@@ -109,13 +149,50 @@ namespace GestionComerce.Main.ClientPage
                         return;
                     }
                 }
+
+                // Check for duplicate ICE (only if company and ICE is provided)
+                if (isCompany && !string.IsNullOrWhiteSpace(ICETextBox.Text))
+                {
+                    string newICE = ICETextBox.Text.Trim();
+                    var existingICE = _main.lc.FirstOrDefault(c =>
+                        c.IsCompany &&
+                        !string.IsNullOrWhiteSpace(c.ICE) &&
+                        c.ICE.Equals(newICE, StringComparison.OrdinalIgnoreCase) &&
+                        c.Etat &&
+                        (!_isEdit || c.ClientID != _editingClient.ClientID));
+
+                    if (existingICE != null)
+                    {
+                        MessageBox.Show($"A company with the ICE '{newICE}' already exists.",
+                            "Duplicate ICE", MessageBoxButton.OK, MessageBoxImage.Warning);
+                        return;
+                    }
+                }
+            }
+
+            // Populate client object
+            _editingClient.Nom = newName;
+            _editingClient.Telephone = newPhone;
+            _editingClient.Adresse = AdresseTextBox.Text.Trim();
+            _editingClient.IsCompany = isCompany;
+
+            if (isCompany)
+            {
+                _editingClient.EtatJuridique = EtatJuridiqueTextBox.Text.Trim();
+                _editingClient.ICE = ICETextBox.Text.Trim();
+                _editingClient.SiegeEntreprise = SiegeEntrepriseTextBox.Text.Trim();
+                _editingClient.Code = CodeTextBox.Text.Trim();
+            }
+            else
+            {
+                _editingClient.EtatJuridique = null;
+                _editingClient.ICE = null;
+                _editingClient.SiegeEntreprise = null;
+                _editingClient.Code = null;
             }
 
             if (_isEdit)
             {
-                _editingClient.Nom = newName;
-                _editingClient.Telephone = newPhone;
-
                 // Save to database
                 int result = await _editingClient.UpdateClientAsync();
 
@@ -127,6 +204,12 @@ namespace GestionComerce.Main.ClientPage
                     {
                         existing.Nom = _editingClient.Nom;
                         existing.Telephone = _editingClient.Telephone;
+                        existing.Adresse = _editingClient.Adresse;
+                        existing.IsCompany = _editingClient.IsCompany;
+                        existing.EtatJuridique = _editingClient.EtatJuridique;
+                        existing.ICE = _editingClient.ICE;
+                        existing.SiegeEntreprise = _editingClient.SiegeEntreprise;
+                        existing.Code = _editingClient.Code;
                     }
 
                     if (parsedBalance > 0)
@@ -155,9 +238,8 @@ namespace GestionComerce.Main.ClientPage
                             // ignore insert-credit failure
                         }
                     }
-                    WCongratulations wCongratulations=new WCongratulations("Modification Succes", "Client Modifier avec succes",1);
+                    WCongratulations wCongratulations = new WCongratulations("Modification Succes", "Client Modifier avec succes", 1);
                     wCongratulations.ShowDialog();
-                    DialogResult = true;
                     Close();
                 }
                 else
@@ -168,9 +250,6 @@ namespace GestionComerce.Main.ClientPage
             }
             else
             {
-                _editingClient.Nom = newName;
-                _editingClient.Telephone = newPhone;
-
                 // Save to database
                 int newId = await _editingClient.InsertClientAsync();
                 if (newId > 0)
@@ -211,17 +290,12 @@ namespace GestionComerce.Main.ClientPage
                         }
                     }
 
-                    //MessageBox.Show("Client added.", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
-                    //DialogResult = true;
-                    //Close();
-
                     WCongratulations wCongratulations = new WCongratulations("Ajout Succes", "Client Ajouter avec succes", 1);
                     wCongratulations.ShowDialog();
+                    Close();
                 }
                 else
                 {
-                    //MessageBox.Show("Insert failed.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
-
                     WCongratulations wCongratulations = new WCongratulations("Ajout Echoue", "Client n'a pas ete Ajouter", 0);
                     wCongratulations.ShowDialog();
                 }
@@ -237,6 +311,5 @@ namespace GestionComerce.Main.ClientPage
             // No longer needed - kept for compatibility
             await Task.CompletedTask;
         }
-
     }
 }

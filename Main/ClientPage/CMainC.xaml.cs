@@ -16,11 +16,11 @@ namespace GestionComerce.Main.ClientPage
         private MainWindow _main;
         private User _currentUser;
 
-        public CMainC(User u,MainWindow main)
+        public CMainC(User u, MainWindow main)
         {
             InitializeComponent();
             _main = main;
-            _currentUser = u; // Store the user
+            _currentUser = u;
             Loaded += ClientWindow_Loaded;
         }
 
@@ -36,7 +36,7 @@ namespace GestionComerce.Main.ClientPage
                     }
                     if (!r.CreateClient)
                     {
-                        AddBtn.IsEnabled = true;
+                        AddBtn.IsEnabled = false;
                     }
                 }
             }
@@ -97,7 +97,6 @@ namespace GestionComerce.Main.ClientPage
                     }
                 }
             }
-           
         }
 
         private UserControl CreateClientRow(Client client)
@@ -159,7 +158,10 @@ namespace GestionComerce.Main.ClientPage
                 {
                     filteredClients = _allClients.Where(c => c.Etat &&
                         ((!string.IsNullOrEmpty(c.Nom) && c.Nom.ToLowerInvariant().Contains(query)) ||
-                         (!string.IsNullOrEmpty(c.Telephone) && c.Telephone.ToLowerInvariant().Contains(query)))
+                         (!string.IsNullOrEmpty(c.Telephone) && c.Telephone.ToLowerInvariant().Contains(query)) ||
+                         (!string.IsNullOrEmpty(c.ICE) && c.ICE.ToLowerInvariant().Contains(query)) ||
+                         (!string.IsNullOrEmpty(c.Adresse) && c.Adresse.ToLowerInvariant().Contains(query)) ||
+                         (!string.IsNullOrEmpty(c.SiegeEntreprise) && c.SiegeEntreprise.ToLowerInvariant().Contains(query)))
                     ).ToList();
                 }
 
@@ -185,14 +187,10 @@ namespace GestionComerce.Main.ClientPage
             try
             {
                 var wnd = new ClientFormWindow(_main, null);
-                bool? result = wnd.ShowDialog();
+                wnd.ShowDialog();
 
-                if (result == true)
-                {
-                    // Sync the lists after saving
-                    await wnd.SaveClientToDatabaseAndList();
-                    LoadAllData();
-                }
+                // Reload data after the window closes
+                LoadAllData();
             }
             catch (Exception ex)
             {
@@ -200,12 +198,10 @@ namespace GestionComerce.Main.ClientPage
             }
         }
 
-      
-             private void BackButton_Click(object sender, RoutedEventArgs e)
+        private void BackButton_Click(object sender, RoutedEventArgs e)
         {
             // Example: call a method on MainWindow to go back
             _main.load_main(_currentUser);
-        
-    }
+        }
     }
 }
