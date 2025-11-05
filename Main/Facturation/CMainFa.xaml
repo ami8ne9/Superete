@@ -7,6 +7,77 @@
              Background="#F5F7FA" >
 
     <UserControl.Resources>
+        <SolidColorBrush x:Key="PrimaryBrush" Color="#2563EB"/>
+        <SolidColorBrush x:Key="SuccessBrush" Color="#10B981"/>
+        <SolidColorBrush x:Key="CancelBrush" Color="#6B7280"/>
+        <SolidColorBrush x:Key="SurfaceBrush" Color="#FFFFFF"/>
+        <SolidColorBrush x:Key="BorderBrush" Color="#E5E7EB"/>
+        <SolidColorBrush x:Key="TextPrimaryBrush" Color="#1F2937"/>
+        <SolidColorBrush x:Key="TextSecondaryBrush" Color="#6B7280"/>
+        <SolidColorBrush x:Key="InputBrush" Color="#F9FAFB"/>
+
+        <!-- Modern Button Style -->
+        <Style x:Key="ModernButtonStyle" TargetType="Button">
+            <Setter Property="FontFamily" Value="Segoe UI"/>
+            <Setter Property="FontSize" Value="14"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="Padding" Value="24,12"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border x:Name="border" Background="{TemplateBinding Background}" 
+                        CornerRadius="6" Padding="{TemplateBinding Padding}">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="border" Property="Opacity" Value="0.9"/>
+                            </Trigger>
+                            <Trigger Property="IsPressed" Value="True">
+                                <Setter TargetName="border" Property="Opacity" Value="0.8"/>
+                            </Trigger>
+                            <Trigger Property="IsEnabled" Value="False">
+                                <Setter Property="Opacity" Value="0.5"/>
+                                <Setter Property="Background" Value="#E5E7EB"/>
+                                <Setter Property="Foreground" Value="#9CA3AF"/>
+                                <Setter Property="Cursor" Value="No"/>
+                            </Trigger>
+
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!-- Modern TextBox Style -->
+        <Style x:Key="ModernTextBoxStyle" TargetType="TextBox">
+            <Setter Property="FontFamily" Value="Segoe UI"/>
+            <Setter Property="FontSize" Value="14"/>
+            <Setter Property="Padding" Value="12"/>
+            <Setter Property="Background" Value="{StaticResource InputBrush}"/>
+            <Setter Property="BorderBrush" Value="{StaticResource BorderBrush}"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="TextBox">
+                        <Border x:Name="border" Background="{TemplateBinding Background}" 
+                        BorderBrush="{TemplateBinding BorderBrush}" 
+                        BorderThickness="{TemplateBinding BorderThickness}" 
+                        CornerRadius="6">
+                            <ScrollViewer x:Name="PART_ContentHost" Margin="{TemplateBinding Padding}"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsFocused" Value="True">
+                                <Setter TargetName="border" Property="BorderBrush" Value="{StaticResource PrimaryBrush}"/>
+                                <Setter TargetName="border" Property="Background" Value="White"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
         <!-- Modern TextBox Style -->
         <Style x:Key="ModernTextBox" TargetType="TextBox">
             <Setter Property="Padding" Value="12,10"/>
@@ -163,7 +234,7 @@
                                 </Grid.ColumnDefinitions>
                                 <StackPanel Grid.Column="0" Margin="0,0,8,0">
                                     <TextBlock Text="Numéro de Facture" Style="{StaticResource FieldLabel}"/>
-                                    <TextBox x:Name="txtInvoiceNumber" Style="{StaticResource ModernTextBox}"/>
+                                    <TextBox x:Name="txtInvoiceNumber" Style="{StaticResource ModernTextBox}" MaxLength="20"/>
                                 </StackPanel>
                                 <StackPanel Grid.Column="1" Margin="8,0,0,0">
                                     <TextBlock Text="Date" Style="{StaticResource FieldLabel}"/>
@@ -199,7 +270,7 @@
 
                     <StackPanel Margin="0,0,0,16">
                         <TextBlock Text="Nom" Style="{StaticResource FieldLabel}"/>
-                        <TextBox x:Name="txtUserName" Style="{StaticResource ModernTextBox}" MaxLength="99"/>
+                        <TextBox x:Name="txtUserName" Style="{StaticResource ModernTextBox}" MaxLength="50"/>
                     </StackPanel>
 
                     <Grid Margin="0,0,0,16">
@@ -210,18 +281,18 @@
 
                         <StackPanel Grid.Column="0" Margin="0,0,8,0">
                             <TextBlock Text="Numéro ICE" Style="{StaticResource FieldLabel}"/>
-                            <TextBox x:Name="txtUserICE" Style="{StaticResource ModernTextBox}" MaxLength="19"/>
+                            <TextBox x:Name="txtUserICE" Style="{StaticResource ModernTextBox}" MaxLength="15"/>
                         </StackPanel>
 
                         <StackPanel Grid.Column="1" Margin="8,0,0,0">
                             <TextBlock Text="Numéro VAT" Style="{StaticResource FieldLabel}" />
-                            <TextBox x:Name="txtUserVAT" Style="{StaticResource ModernTextBox}" MaxLength="19"/>
+                            <TextBox x:Name="txtUserVAT" Style="{StaticResource ModernTextBox}" MaxLength="15"/>
                         </StackPanel>
                     </Grid>
 
                     <StackPanel Margin="0,0,0,16">
                         <TextBlock Text="Téléphone" Style="{StaticResource FieldLabel}"/>
-                        <TextBox x:Name="txtUserPhone" Style="{StaticResource ModernTextBox}" MaxLength="19"/>
+                        <TextBox x:Name="txtUserPhone" Style="{StaticResource ModernTextBox}" MaxLength="15"/>
                     </StackPanel>
 
                     <Grid Margin="0,0,0,16">
@@ -232,12 +303,12 @@
 
                         <StackPanel Grid.Column="0" Margin="0,0,8,0">
                             <TextBlock Text="État Juridique" Style="{StaticResource FieldLabel}"/>
-                            <TextBox x:Name="txtUserEtatJuridique" Style="{StaticResource ModernTextBox}" MaxLength="100"/>
+                            <TextBox x:Name="txtUserEtatJuridique" Style="{StaticResource ModernTextBox}" MaxLength="30"/>
                         </StackPanel>
 
                         <StackPanel Grid.Column="1" Margin="8,0,0,0">
                             <TextBlock Text="ID de Société" Style="{StaticResource FieldLabel}"/>
-                            <TextBox x:Name="txtUserIdSociete" Style="{StaticResource ModernTextBox}" MaxLength="50"/>
+                            <TextBox x:Name="txtUserIdSociete" Style="{StaticResource ModernTextBox}" MaxLength="25"/>
                         </StackPanel>
                     </Grid>
 
@@ -253,13 +324,38 @@
 
                     <StackPanel>
                         <TextBlock Text="Adresse" Style="{StaticResource FieldLabel}"/>
-                        <TextBox x:Name="txtUserAddress" MaxLength="199"
+                        <TextBox x:Name="txtUserAddress" MaxLength="100"
                                 Style="{StaticResource ModernTextBox}"
                                 Height="80"
                                 TextWrapping="Wrap"
                                 AcceptsReturn="True"
                                 VerticalContentAlignment="Top"/>
                     </StackPanel>
+                    <TextBlock Text="Logo de l'Entreprise:" 
+           FontFamily="Segoe UI"
+           FontSize="13"
+           FontWeight="Medium"
+           Foreground="{StaticResource TextSecondaryBrush}" 
+           Margin="0,16,0,6"/>
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+
+                        <TextBox x:Name="txtLogoPath" 
+             Grid.Column="0"
+             Style="{StaticResource ModernTextBoxStyle}"
+             IsReadOnly="True"/>
+                        <Button Grid.Column="1" 
+            x:Name="btnBrowseLogo" 
+            Content="Parcourir..." 
+            Style="{StaticResource ModernButtonStyle}"
+            Background="{StaticResource PrimaryBrush}" 
+            Foreground="White"
+            Margin="12,0,0,0"
+            Click="BtnBrowseLogo_Click"/>
+                    </Grid>
                     <StackPanel HorizontalAlignment="Right">
                         <Button Content="Save"  Margin="0,10,0,0"
                               Style="{StaticResource ModernButton}"
@@ -294,7 +390,7 @@
 
                     <StackPanel Margin="0,0,0,16">
                         <TextBlock Text="Nom" Style="{StaticResource FieldLabel}"/>
-                        <TextBox x:Name="txtClientName" Style="{StaticResource ModernTextBox}" MaxLength="100"/>
+                        <TextBox x:Name="txtClientName" Style="{StaticResource ModernTextBox}" MaxLength="50"/>
                     </StackPanel>
 
                     <Grid Margin="0,0,0,16">
@@ -305,18 +401,18 @@
 
                         <StackPanel Grid.Column="0" Margin="0,0,8,0">
                             <TextBlock Text="Numéro ICE" Style="{StaticResource FieldLabel}"/>
-                            <TextBox x:Name="txtClientICE" Style="{StaticResource ModernTextBox}" MaxLength="19"/>
+                            <TextBox x:Name="txtClientICE" Style="{StaticResource ModernTextBox}" MaxLength="15"/>
                         </StackPanel>
 
                         <StackPanel Grid.Column="1" Margin="8,0,0,0">
                             <TextBlock Text="Numéro VAT" Style="{StaticResource FieldLabel}"/>
-                            <TextBox x:Name="txtClientVAT" Style="{StaticResource ModernTextBox}" MaxLength="19"/>
+                            <TextBox x:Name="txtClientVAT" Style="{StaticResource ModernTextBox}" MaxLength="15"/>
                         </StackPanel>
                     </Grid>
 
                     <StackPanel Margin="0,0,0,16">
                         <TextBlock Text="Téléphone" Style="{StaticResource FieldLabel}"/>
-                        <TextBox x:Name="txtClientPhone" Style="{StaticResource ModernTextBox}" MaxLength="19"/>
+                        <TextBox x:Name="txtClientPhone" Style="{StaticResource ModernTextBox}" MaxLength="15"/>
                     </StackPanel>
 
                     <Grid Margin="0,0,0,16">
@@ -327,12 +423,12 @@
 
                         <StackPanel Grid.Column="0" Margin="0,0,8,0">
                             <TextBlock Text="État Juridique" Style="{StaticResource FieldLabel}"/>
-                            <TextBox x:Name="txtClientEtatJuridique" Style="{StaticResource ModernTextBox}" MaxLength="100"/>
+                            <TextBox x:Name="txtClientEtatJuridique" Style="{StaticResource ModernTextBox}" MaxLength="30"/>
                         </StackPanel>
 
                         <StackPanel Grid.Column="1" Margin="8,0,0,0">
                             <TextBlock Text="ID de Société" Style="{StaticResource FieldLabel}"/>
-                            <TextBox x:Name="txtClientIdSociete" Style="{StaticResource ModernTextBox}" MaxLength="50"/>
+                            <TextBox x:Name="txtClientIdSociete" Style="{StaticResource ModernTextBox}" MaxLength="25"/>
                         </StackPanel>
                     </Grid>
 
@@ -400,26 +496,30 @@
                             </StackPanel>
                             <StackPanel Margin="0,0,0,16">
                                 <TextBlock Text="Devise" Style="{StaticResource FieldLabel}"/>
-                                <TextBox x:Name="txtCurrency" MaxLength="20"
+                                <TextBox x:Name="txtCurrency" MaxLength="10"
                            Style="{StaticResource ModernTextBox}"
                            Text="MAD"/>
                             </StackPanel>
                             <StackPanel>
                                 <TextBlock Text="Taux TVA (%)" Style="{StaticResource FieldLabel}"/>
-                                <TextBox x:Name="txtTVARate" PreviewTextInput="DecimalTextBox_PreviewTextInput" MaxLength="18"
+                                <TextBox x:Name="txtTVARate" PreviewTextInput="DecimalTextBox_PreviewTextInput" MaxLength="6"
 DataObject.Pasting="DecimalTextBox_Pasting" Style="{StaticResource ModernTextBox}" Text="20" TextChanged="txtTVARate_TextChanged"/>
                             </StackPanel>
                             <StackPanel Margin="0,0,0,16">
+                                <TextBlock Text="Remise" Style="{StaticResource FieldLabel}"/>
+                                <TextBox IsEnabled="False" x:Name="Remise" Style="{StaticResource ModernTextBox}" MaxLength="20"/>
+                            </StackPanel>
+                            <StackPanel Margin="0,0,0,16">
                                 <TextBlock Text="Montant Total" Style="{StaticResource FieldLabel}"/>
-                                <TextBox IsEnabled="False" x:Name="txtTotalAmount" Style="{StaticResource ModernTextBox}" TextChanged="txtTotalAmount_TextChanged"/>
+                                <TextBox IsEnabled="False" x:Name="txtTotalAmount" Style="{StaticResource ModernTextBox}" TextChanged="txtTotalAmount_TextChanged" MaxLength="20"/>
                             </StackPanel>
                             <StackPanel Margin="0,0,0,16">
                                 <TextBlock Text="Montant TVA" Style="{StaticResource FieldLabel}"/>
-                                <TextBox IsEnabled="False" x:Name="txtTVAAmount" Style="{StaticResource ModernTextBox}"/>
+                                <TextBox IsEnabled="False" x:Name="txtTVAAmount" Style="{StaticResource ModernTextBox}" MaxLength="20"/>
                             </StackPanel>
                             <StackPanel Margin="0,0,0,16">
                                 <TextBlock Text="Montant Apres TVA" Style="{StaticResource FieldLabel}"/>
-                                <TextBox IsEnabled="False" x:Name="txtApresTVAAmount" Style="{StaticResource ModernTextBox}"/>
+                                <TextBox IsEnabled="False" x:Name="txtApresTVAAmount" Style="{StaticResource ModernTextBox}" MaxLength="20"/>
                             </StackPanel>
 
                             <StackPanel Margin="0,0,0,16">
@@ -431,21 +531,13 @@ DataObject.Pasting="DecimalTextBox_Pasting" Style="{StaticResource ModernTextBox
                                     <ComboBoxItem Content="1"/>
                                 </ComboBox>
                             </StackPanel>
-                            <StackPanel Margin="0,0,0,16">
-                                <TextBlock Text="Type de Facture (cas multiple page)" Style="{StaticResource FieldLabel}"/>
-                                <ComboBox x:Name="TypeFacture" 
-Style="{StaticResource ModernComboBox}"
-SelectedIndex="0">
-                                    <ComboBoxItem Content="Avec tete"/>
-                                    <ComboBoxItem Content="Sans Tete"/>
-                                </ComboBox>
-                            </StackPanel>
                         </StackPanel>
                         <StackPanel Grid.Column="1" Margin="12,0,0,0">
                             <TextBlock Text="Description" Style="{StaticResource FieldLabel}"/>
                             <TextBox x:Name="txtDescription" 
                        Style="{StaticResource ModernTextBox}"
                        Height="240"
+                       MaxLength="500"
                        TextWrapping="Wrap"
                        AcceptsReturn="True"
                        VerticalContentAlignment="Top"

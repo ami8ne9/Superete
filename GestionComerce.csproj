@@ -36,8 +36,10 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="ReachFramework" />
     <Reference Include="System" />
     <Reference Include="System.Data" />
+    <Reference Include="System.Printing" />
     <Reference Include="System.Xml" />
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Core" />
@@ -629,10 +631,12 @@
     <Resource Include="Main\images\A4-Facture.jpg" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="Main\images\1.jpg" />
-    <Resource Include="Main\images\2.jpg" />
-    <Resource Include="Main\images\3.jpg" />
-    <Resource Include="Main\images\4.jpg" />
+    <Resource Include="Main\images\1.png" />
+    <Resource Include="Main\images\2.png" />
+    <Resource Include="Main\images\3.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Main\images\4.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

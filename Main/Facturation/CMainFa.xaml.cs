@@ -1,4 +1,5 @@
-﻿using Superete;
+﻿using Microsoft.Win32;
+using Superete;
 using Superete.Main.Facturation;
 using System;
 using System.Collections.Generic;
@@ -42,6 +43,7 @@ namespace GestionComerce.Main.Facturation
             txtClientIdSociete.Text = facturee.CompanyId;
             txtClientEtatJuridique.Text = facturee.EtatJuridic;
             cmbClientSiegeEntreprise.Text = facturee.SiegeEntreprise;
+            txtLogoPath.Text=facturee.LogoPath; 
         }
         private void btnSelectClient_Click(object sender, RoutedEventArgs e)
         {
@@ -146,13 +148,14 @@ namespace GestionComerce.Main.Facturation
                 facture.CompanyId = txtClientIdSociete.Text;
                 facture.EtatJuridic = txtClientEtatJuridique.Text;
                 facture.SiegeEntreprise = cmbClientSiegeEntreprise.Text;
+                facture.LogoPath= txtLogoPath.Text;
                 facture.InsertOrUpdateFactureAsync();
-                WCongratulations wCongratulations = new WCongratulations("Facture saved successfully!", "", 1);
+                WCongratulations wCongratulations = new WCongratulations("Informations saved successfully!", "", 1);
                 wCongratulations.ShowDialog();
             }
             catch (Exception ex)
             {
-                WCongratulations wCongratulations = new WCongratulations("Facture not saved!", "", 0);
+                WCongratulations wCongratulations = new WCongratulations("\r\nInformations non enregistrées !", "", 0);
                 wCongratulations.ShowDialog();
             }
         }
@@ -161,7 +164,19 @@ namespace GestionComerce.Main.Facturation
         {
             main.load_main(u);
         }
+        private void BtnBrowseLogo_Click(object sender, RoutedEventArgs e)
+        {
+            OpenFileDialog openFileDialog = new OpenFileDialog
+            {
+                Filter = "Image Files|*.jpg;*.jpeg;*.png;*.bmp;*.gif",
+                Title = "Sélectionner le logo de l'entreprise"
+            };
 
+            if (openFileDialog.ShowDialog() == true)
+            {
+                txtLogoPath.Text = openFileDialog.FileName;
+            }
+        }
         private void btnPreview_Click(object sender, RoutedEventArgs e)
         {
             if (OperationContainer.Children.Count == 0)
@@ -169,7 +184,40 @@ namespace GestionComerce.Main.Facturation
                 MessageBox.Show("There is no operation selected");
                 return;
             }
-            WFacturePage wFacturePage = new WFacturePage(this);
+            Dictionary<string, string> FactureInfo = new Dictionary<string, string>()
+            {
+                { "NFacture", txtInvoiceNumber.Text},
+                { "Date", Convert.ToString(dpInvoiceDate)},
+                { "Type", cmbInvoiceType.Text},
+                { "NomU", txtUserName.Text },
+                { "ICEU", txtUserICE.Text},
+                { "VATU", txtUserVAT.Text} ,
+                { "TelephoneU", txtUserPhone.Text},
+                { "EtatJuridiqueU", txtUserEtatJuridique.Text},
+                { "IdSocieteU", txtUserIdSociete.Text},
+                { "SiegeEntrepriseU", cmbUserSiegeEntreprise.Text},
+                { "AdressU", txtUserAddress.Text},
+                { "NomC", txtClientName.Text},
+                { "ICEC", txtClientICE.Text},
+                { "VATC", txtClientVAT.Text},
+                { "TelephoneC",txtClientPhone.Text},
+                { "EtatJuridiqueC",txtClientEtatJuridique.Text},
+                { "IdSocieteC",txtClientIdSociete.Text},
+                { "SiegeEntrepriseC",cmbClientSiegeEntreprise.Text},
+                { "AdressC", txtClientAddress.Text},
+                { "EtatFature", EtatFacture.Text},
+                { "Device",txtCurrency.Text},
+                { "TVA",txtTVARate.Text},
+                { "MontantTotal",txtTotalAmount.Text},
+                { "MontantTVA",txtTVAAmount.Text},
+                { "MontantApresTVA",txtApresTVAAmount.Text},
+                { "IndexDeFacture",IndexFacture.Text},
+                { "Description", txtDescription.Text},
+                { "Logo", txtLogoPath.Text},
+                {"Reversed", EtatFacture.Text },
+                {"Remise", Remise.Text  }
+            };
+            WFacturePage wFacturePage = new WFacturePage(this, FactureInfo);
             wFacturePage.ShowDialog();
         }
     }

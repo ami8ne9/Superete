@@ -79,7 +79,7 @@ namespace Superete.Main.Facturation
             sc.OperationsContainer.Children.Clear();
             sc.main.OperationContainer.Children.Add(this);
             sc.main.txtTotalAmount.Text = op.PrixOperation.ToString("0.00") + " DH";
-
+            sc.main.Remise.Text = op.Remise.ToString("0.00") + " DH";
             sc.Close();
         }
     }

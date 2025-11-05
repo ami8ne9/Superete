@@ -121,7 +121,7 @@ TextAlignment="Center"/>
 
                     <!-- Print Button -->
                     <Button x:Name="btnPrint"
-            Content="Imprimer"
+            Content="Imprimer ou Enregister PDF"
             Background="#38B2AC"
             Foreground="White"
             BorderThickness="0"
@@ -129,7 +129,7 @@ TextAlignment="Center"/>
             FontWeight="SemiBold"
             Cursor="Hand"
             Padding="16,10"
-            Margin="0,0,8,0">
+            Margin="0,0,8,0" Click="btnPrint_Click">
                         <Button.Style>
                             <Style TargetType="Button">
                                 <Setter Property="Template">
@@ -157,41 +157,6 @@ TextAlignment="Center"/>
                     </Button>
 
                     <!-- Save as PDF Button -->
-                    <Button x:Name="btnSaveAsPDF"
-            Content="Enregistrer comme PDF"
-            Background="#805AD5"
-            Foreground="White"
-            BorderThickness="0"
-            FontSize="14"
-            FontWeight="SemiBold"
-            Cursor="Hand"
-            Padding="16,10"
-            Margin="0,0,8,0">
-                        <Button.Style>
-                            <Style TargetType="Button">
-                                <Setter Property="Template">
-                                    <Setter.Value>
-                                        <ControlTemplate TargetType="Button">
-                                            <Border Background="{TemplateBinding Background}"
-                                    CornerRadius="6"
-                                    Padding="{TemplateBinding Padding}">
-                                                <ContentPresenter HorizontalAlignment="Center" 
-                                                VerticalAlignment="Center"/>
-                                            </Border>
-                                        </ControlTemplate>
-                                    </Setter.Value>
-                                </Setter>
-                                <Style.Triggers>
-                                    <Trigger Property="IsMouseOver" Value="True">
-                                        <Setter Property="Background" Value="#6B46C1"/>
-                                    </Trigger>
-                                    <Trigger Property="IsPressed" Value="True">
-                                        <Setter Property="Background" Value="#553C9A"/>
-                                    </Trigger>
-                                </Style.Triggers>
-                            </Style>
-                        </Button.Style>
-                    </Button>
 
                     <!-- Close Button -->
                     <Button Content="✕" 
@@ -234,12 +199,121 @@ TextAlignment="Center"/>
                 </StackPanel>
                 <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto">
                     <StackPanel x:Name="FacturesContainer">
-                        <!--<Canvas Height="1200" Width="720">
-                            <Image Source="/Main/images/1.jpg" Stretch="Fill" Height="1200" Width="720"/>
+                        <Canvas Height="1200" Width="720">
+                            <Image Source="/Main/images/1.png" Stretch="Fill" Height="1200" Width="720"/>
 
-                            <StackPanel Orientation="Vertical" Canvas.Left="82" Canvas.Top="634" Background="AliceBlue" Width="562" Height="196" HorizontalAlignment="Center" VerticalAlignment="Top" x:Name="ArticlesContainer">
+                            <Grid Canvas.Left="91" Canvas.Top="210" Background="White" Width="544" Height="170" HorizontalAlignment="Left" VerticalAlignment="Center" x:Name="ArticlesContainer">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="1.88*"/>
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
+                                <StackPanel Grid.Column="0" Margin="0,0,0,0">
+                                    <StackPanel Orientation="Horizontal" Margin="0">
+                                        <TextBlock Text="Nom : " FontSize="14" FontWeight="Bold" Foreground="#2D3748" Width="44" VerticalAlignment="Center" Margin="0"/>
+                                        <TextBlock x:Name="txtDisplayNom" Text="" FontSize="14" Foreground="#2D3748" VerticalAlignment="Center" Margin="0"/>
+                                    </StackPanel>
+
+                                    <StackPanel Orientation="Horizontal" Margin="0">
+                                        <TextBlock Text="ICE : " FontSize="14" FontWeight="Bold" Foreground="#2D3748" Width="33" VerticalAlignment="Center" Margin="0"/>
+                                        <TextBlock x:Name="txtDisplayICE" Text="" FontSize="14" Foreground="#2D3748" VerticalAlignment="Center" Margin="0"/>
+                                    </StackPanel>
+
+                                    <StackPanel Orientation="Horizontal" Margin="0">
+                                        <TextBlock Text="VAT : " FontSize="14" FontWeight="Bold" Foreground="#2D3748" Width="41" VerticalAlignment="Center" Margin="0"/>
+                                        <TextBlock x:Name="txtDisplayVAT" Text="" FontSize="14" Foreground="#2D3748" VerticalAlignment="Center" Margin="0"/>
+                                    </StackPanel>
+
+                                    <StackPanel Orientation="Horizontal" Margin="0">
+                                        <TextBlock Text="Téléphone : " FontSize="14" FontWeight="Bold" Foreground="#2D3748" Width="85" VerticalAlignment="Center" Margin="0"/>
+                                        <TextBlock x:Name="txtDisplayTelephone" Text="" FontSize="14" Foreground="#2D3748" VerticalAlignment="Center" Margin="0"/>
+                                    </StackPanel>
+
+                                    <StackPanel Orientation="Horizontal" Margin="0">
+                                        <TextBlock Text="État Juridique : " FontSize="14" FontWeight="Bold" Foreground="#2D3748" Width="107" VerticalAlignment="Center" Margin="0"/>
+                                        <TextBlock x:Name="txtDisplayEtatJuridique" Text="" FontSize="14" Foreground="#2D3748" VerticalAlignment="Center" Margin="0"/>
+                                    </StackPanel>
+
+                                    <StackPanel Orientation="Horizontal" Margin="0">
+                                        <TextBlock Text="ID de Société : " FontSize="14" FontWeight="Bold" Foreground="#2D3748" Width="99" VerticalAlignment="Center" Margin="0"/>
+                                        <TextBlock x:Name="txtDisplayIdSociete" Text="" FontSize="14" Foreground="#2D3748" VerticalAlignment="Center" Margin="0"/>
+                                    </StackPanel>
+
+                                    <StackPanel Orientation="Horizontal" Margin="0">
+                                        <TextBlock Text="Siège de Société : " FontSize="14" FontWeight="Bold" Foreground="#2D3748" Width="122" VerticalAlignment="Center" Margin="0"/>
+                                        <TextBlock x:Name="txtDisplaySiegeSociete" Text="" FontSize="14" Foreground="#2D3748" VerticalAlignment="Center" Margin="0"/>
+                                    </StackPanel>
+
+                                    <StackPanel Orientation="Horizontal" Margin="0" VerticalAlignment="Top">
+                                        <TextBlock Text="Adresse : " FontSize="14" FontWeight="Bold" Foreground="#2D3748" Width="65" VerticalAlignment="Top" Margin="0"/>
+                                        <TextBlock x:Name="txtDisplayAdresse" Text="" FontSize="14" Foreground="#2D3748" VerticalAlignment="Top" TextWrapping="Wrap" Margin="0" Width="290"/>
+                                    </StackPanel>
+                                </StackPanel>
+                                <StackPanel Grid.Column="1" Margin="0,0,0,0">
+                                    <StackPanel Orientation="Horizontal" Margin="0">
+                                        <TextBlock Text="Date : " FontSize="14" FontWeight="Bold" Foreground="#2D3748" Width="150" VerticalAlignment="Center" Margin="0"/>
+                                        <TextBlock x:Name="txtDisplayDate" Text="" FontSize="14" Foreground="#2D3748" VerticalAlignment="Center" TextWrapping="Wrap" Margin="0"/>
+                                    </StackPanel>
+                                </StackPanel>
+                            </Grid>
+                            <StackPanel Canvas.Left="570" Canvas.Top="805" Background="White" Width="141" Height="118" HorizontalAlignment="Left" VerticalAlignment="Center">
+
+                                <TextBlock Text="" FontSize="14" Foreground="#2D3748" Width="150" VerticalAlignment="Center" Margin="0,0,0,13"/>
+
+                                <TextBlock Text="" FontSize="14"  Foreground="#2D3748" Width="150" VerticalAlignment="Center" Margin="0,0,0,9"/>
+
+                                <TextBlock Text="" FontSize="14" Foreground="#2D3748" Width="150" VerticalAlignment="Center" Margin="0,0,0,7"/>
+
+                                <TextBlock Text="" FontSize="14" Foreground="#2D3748" Width="150" VerticalAlignment="Center" Margin="0,0,0,13"/>
                             </StackPanel>
-                        </Canvas>-->
+
+                            <StackPanel Canvas.Left="49" Canvas.Top="1123" Background="White" Width="642" Height="59" HorizontalAlignment="Center" VerticalAlignment="Center" >
+                                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+
+                                    <StackPanel Orientation="Horizontal" Margin="0,0,0,0">
+                                        <TextBlock Text="Nom : " FontSize="10" Foreground="#2D3748" Width="30" VerticalAlignment="Center" />
+                                        <TextBlock x:Name="txtDisplayNomU" FontSize="10" Foreground="#2D3748" VerticalAlignment="Center" />
+                                    </StackPanel>
+
+                                    <StackPanel Orientation="Horizontal" Margin="0,0,0,0">
+                                        <TextBlock Text="| ICE : " FontSize="10" Foreground="#2D3748" Width="25" VerticalAlignment="Center"/>
+                                        <TextBlock x:Name="txtDisplayICEU" FontSize="10" Foreground="#2D3748" VerticalAlignment="Center" />
+                                    </StackPanel>
+
+                                    <StackPanel Orientation="Horizontal" Margin="0,0,0,0">
+                                        <TextBlock Text="| VAT : " FontSize="10" Foreground="#2D3748" Width="23" VerticalAlignment="Center" />
+                                        <TextBlock x:Name="txtDisplayVATU" FontSize="10" Foreground="#2D3748" VerticalAlignment="Center" />
+                                    </StackPanel>
+
+                                    <StackPanel Orientation="Horizontal" Margin="0,0,0,0">
+                                        <TextBlock Text="| Telephone : " FontSize="10" Foreground="#2D3748" Width="55" VerticalAlignment="Center" />
+                                        <TextBlock x:Name="txtDisplayTelephoneU" FontSize="10" Foreground="#2D3748" VerticalAlignment="Center" />
+                                    </StackPanel>
+                                </StackPanel>
+
+                                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+
+                                    <StackPanel Orientation="Horizontal" Margin="0,0,0,0">
+                                        <TextBlock Text="Etat Juridique : " FontSize="10" Foreground="#2D3748" Width="69" VerticalAlignment="Center" />
+                                        <TextBlock x:Name="txtDisplayEtatJuridiqueU" FontSize="10" Foreground="#2D3748" VerticalAlignment="Center" />
+                                    </StackPanel>
+
+                                    <StackPanel Orientation="Horizontal" Margin="0,0,0,0">
+                                        <TextBlock Text="| Id Societe : " FontSize="10" Foreground="#2D3748" Width="57" VerticalAlignment="Center"/>
+                                        <TextBlock x:Name="txtDisplayIdSocieteU" FontSize="10" Foreground="#2D3748" VerticalAlignment="Center" />
+                                    </StackPanel>
+
+                                    <StackPanel Orientation="Horizontal" Margin="0,0,0,0">
+                                        <TextBlock Text="| Seige D'entreprise : " FontSize="10" Foreground="#2D3748" Width="100" VerticalAlignment="Center" />
+                                        <TextBlock x:Name="txtDisplaySeigeU" FontSize="10" Foreground="#2D3748" VerticalAlignment="Center" />
+                                    </StackPanel>
+                                </StackPanel>
+
+                                <StackPanel Orientation="Horizontal" Margin="0" VerticalAlignment="Top" HorizontalAlignment="Center">
+                                    <TextBlock Text="Adresse : " FontSize="10" Foreground="#2D3748" Width="42" VerticalAlignment="Top" Margin="0"/>
+                                    <TextBlock x:Name="txtDisplayAdresseU" Text="" FontSize="10" Foreground="#2D3748" VerticalAlignment="Top" TextWrapping="Wrap" Margin="0" MaxWidth="600" />
+                                </StackPanel>
+                            </StackPanel>
+                        </Canvas>
                     </StackPanel>
                 </ScrollViewer>
             </Grid>

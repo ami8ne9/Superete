@@ -20,6 +20,9 @@ namespace Superete
         public string EtatJuridic { get; set; } = "";
         public string SiegeEntreprise { get; set; } = "";
 
+        // 🆕 Image path instead of binary data
+        public string LogoPath { get; set; } = "";
+
         private static readonly string ConnectionString =
             "Server=localhost\\SQLEXPRESS;Database=GESTIONCOMERCE;Trusted_Connection=True;";
 
@@ -38,17 +41,20 @@ namespace Superete
                     {
                         Facture f = new Facture();
                         f.FactureID = Convert.ToInt32(reader["FactureID"]);
-                        f.Name = reader["Name"]?.ToString() ?? "";
-                        f.ICE = reader["ICE"]?.ToString() ?? "";
-                        f.VAT = reader["VAT"]?.ToString() ?? "";
-                        f.Telephone = reader["Telephone"]?.ToString() ?? "";
-                        f.Adresse = reader["Adresse"]?.ToString() ?? "";
+                        f.Name = reader["Name"] != DBNull.Value ? reader["Name"].ToString() : "";
+                        f.ICE = reader["ICE"] != DBNull.Value ? reader["ICE"].ToString() : "";
+                        f.VAT = reader["VAT"] != DBNull.Value ? reader["VAT"].ToString() : "";
+                        f.Telephone = reader["Telephone"] != DBNull.Value ? reader["Telephone"].ToString() : "";
+                        f.Adresse = reader["Adresse"] != DBNull.Value ? reader["Adresse"].ToString() : "";
                         f.Etat = reader["Etat"] != DBNull.Value && Convert.ToBoolean(reader["Etat"]);
 
-                        // 🆕 Load new fields
-                        f.CompanyId = reader["CompanyId"]?.ToString() ?? "";
-                        f.EtatJuridic = reader["EtatJuridic"]?.ToString() ?? "";
-                        f.SiegeEntreprise = reader["SiegeEntreprise"]?.ToString() ?? "";
+                        // Load new fields
+                        f.CompanyId = reader["CompanyId"] != DBNull.Value ? reader["CompanyId"].ToString() : "";
+                        f.EtatJuridic = reader["EtatJuridic"] != DBNull.Value ? reader["EtatJuridic"].ToString() : "";
+                        f.SiegeEntreprise = reader["SiegeEntreprise"] != DBNull.Value ? reader["SiegeEntreprise"].ToString() : "";
+
+                        // 🆕 Load logo path
+                        f.LogoPath = reader["LogoPath"] != DBNull.Value ? reader["LogoPath"].ToString() : "";
 
                         return f;
                     }
@@ -66,8 +72,8 @@ namespace Superete
             if (existing == null)
             {
                 string insertQuery = @"
-                    INSERT INTO Facture (Name, ICE, VAT, Telephone, Adresse, CompanyId, EtatJuridic, SiegeEntreprise, Etat)
-                    VALUES (@Name, @ICE, @VAT, @Telephone, @Adresse, @CompanyId, @EtatJuridic, @SiegeEntreprise, 1)";
+                    INSERT INTO Facture (Name, ICE, VAT, Telephone, Adresse, CompanyId, EtatJuridic, SiegeEntreprise, LogoPath, Etat)
+                    VALUES (@Name, @ICE, @VAT, @Telephone, @Adresse, @CompanyId, @EtatJuridic, @SiegeEntreprise, @LogoPath, 1)";
 
                 using (SqlConnection connection = new SqlConnection(ConnectionString))
                 {
@@ -76,14 +82,15 @@ namespace Superete
                     {
                         using (SqlCommand cmd = new SqlCommand(insertQuery, connection))
                         {
-                            cmd.Parameters.AddWithValue("@Name", Name ?? "");
-                            cmd.Parameters.AddWithValue("@ICE", ICE ?? "");
-                            cmd.Parameters.AddWithValue("@VAT", VAT ?? "");
-                            cmd.Parameters.AddWithValue("@Telephone", Telephone ?? "");
-                            cmd.Parameters.AddWithValue("@Adresse", Adresse ?? "");
-                            cmd.Parameters.AddWithValue("@CompanyId", CompanyId ?? "");
-                            cmd.Parameters.AddWithValue("@EtatJuridic", EtatJuridic ?? "");
-                            cmd.Parameters.AddWithValue("@SiegeEntreprise", SiegeEntreprise ?? "");
+                            cmd.Parameters.AddWithValue("@Name", (object)Name ?? DBNull.Value);
+                            cmd.Parameters.AddWithValue("@ICE", (object)ICE ?? DBNull.Value);
+                            cmd.Parameters.AddWithValue("@VAT", (object)VAT ?? DBNull.Value);
+                            cmd.Parameters.AddWithValue("@Telephone", (object)Telephone ?? DBNull.Value);
+                            cmd.Parameters.AddWithValue("@Adresse", (object)Adresse ?? DBNull.Value);
+                            cmd.Parameters.AddWithValue("@CompanyId", (object)CompanyId ?? DBNull.Value);
+                            cmd.Parameters.AddWithValue("@EtatJuridic", (object)EtatJuridic ?? DBNull.Value);
+                            cmd.Parameters.AddWithValue("@SiegeEntreprise", (object)SiegeEntreprise ?? DBNull.Value);
+                            cmd.Parameters.AddWithValue("@LogoPath", (object)LogoPath ?? DBNull.Value);
 
                             await cmd.ExecuteNonQueryAsync();
                             return 1;
@@ -101,7 +108,7 @@ namespace Superete
                 string updateQuery = @"
                     UPDATE Facture
                     SET Name=@Name, ICE=@ICE, VAT=@VAT, Telephone=@Telephone, Adresse=@Adresse,
-                        CompanyId=@CompanyId, EtatJuridic=@EtatJuridic, SiegeEntreprise=@SiegeEntreprise
+                        CompanyId=@CompanyId, EtatJuridic=@EtatJuridic, SiegeEntreprise=@SiegeEntreprise, LogoPath=@LogoPath
                     WHERE FactureID=@FactureID";
 
                 using (SqlConnection connection = new SqlConnection(ConnectionString))
@@ -112,14 +119,15 @@ namespace Superete
                         using (SqlCommand cmd = new SqlCommand(updateQuery, connection))
                         {
                             cmd.Parameters.AddWithValue("@FactureID", existing.FactureID);
-                            cmd.Parameters.AddWithValue("@Name", Name ?? "");
-                            cmd.Parameters.AddWithValue("@ICE", ICE ?? "");
-                            cmd.Parameters.AddWithValue("@VAT", VAT ?? "");
-                            cmd.Parameters.AddWithValue("@Telephone", Telephone ?? "");
-                            cmd.Parameters.AddWithValue("@Adresse", Adresse ?? "");
-                            cmd.Parameters.AddWithValue("@CompanyId", CompanyId ?? "");
-                            cmd.Parameters.AddWithValue("@EtatJuridic", EtatJuridic ?? "");
-                            cmd.Parameters.AddWithValue("@SiegeEntreprise", SiegeEntreprise ?? "");
+                            cmd.Parameters.AddWithValue("@Name", (object)Name ?? DBNull.Value);
+                            cmd.Parameters.AddWithValue("@ICE", (object)ICE ?? DBNull.Value);
+                            cmd.Parameters.AddWithValue("@VAT", (object)VAT ?? DBNull.Value);
+                            cmd.Parameters.AddWithValue("@Telephone", (object)Telephone ?? DBNull.Value);
+                            cmd.Parameters.AddWithValue("@Adresse", (object)Adresse ?? DBNull.Value);
+                            cmd.Parameters.AddWithValue("@CompanyId", (object)CompanyId ?? DBNull.Value);
+                            cmd.Parameters.AddWithValue("@EtatJuridic", (object)EtatJuridic ?? DBNull.Value);
+                            cmd.Parameters.AddWithValue("@SiegeEntreprise", (object)SiegeEntreprise ?? DBNull.Value);
+                            cmd.Parameters.AddWithValue("@LogoPath", (object)LogoPath ?? DBNull.Value);
 
                             await cmd.ExecuteNonQueryAsync();
                             return 2;
