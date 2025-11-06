@@ -54,7 +54,15 @@ namespace GestionComerce
                             FamillyID = Convert.ToInt32(reader["FamillyID"]),
                             FournisseurID = Convert.ToInt32(reader["FournisseurID"]),
                             Code = reader["Code"] == DBNull.Value ? 0 : Convert.ToInt64(reader["Code"]),
-                            ArticleName = reader["ArticleName"] == DBNull.Value ? string.Empty : reader["ArticleName"].ToString()
+                            ArticleName = reader["ArticleName"] == DBNull.Value ? string.Empty : reader["ArticleName"].ToString(),
+                            Date = reader["Date"] == DBNull.Value ? (DateTime?)null : Convert.ToDateTime(reader["Date"]),
+                            DateExpiration = reader["DateExpiration"] == DBNull.Value ? (DateTime?)null : Convert.ToDateTime(reader["DateExpiration"]),
+                            marque = reader["marque"] == DBNull.Value ? string.Empty : reader["marque"].ToString(),
+                            tva = reader["tva"] == DBNull.Value ? 0 : Convert.ToDecimal(reader["tva"]),
+                            numeroLot = reader["numeroLot"] == DBNull.Value ? string.Empty : reader["numeroLot"].ToString(),
+                            bonlivraison = reader["bonlivraison"] == DBNull.Value ? string.Empty : reader["bonlivraison"].ToString(),
+                            DateLivraison = reader["DateLivraison"] == DBNull.Value ? (DateTime?)null : Convert.ToDateTime(reader["DateLivraison"]),
+                            Etat = Convert.ToBoolean(reader["Etat"])
                         };
                         articles.Add(article);
                     }
@@ -92,7 +100,8 @@ namespace GestionComerce
                             tva = reader["tva"] == DBNull.Value ? 0 : Convert.ToDecimal(reader["tva"]),
                             numeroLot = reader["numeroLot"] == DBNull.Value ? string.Empty : reader["numeroLot"].ToString(),
                             bonlivraison = reader["bonlivraison"] == DBNull.Value ? string.Empty : reader["bonlivraison"].ToString(),
-                            DateLivraison = reader["DateLivraison"] == DBNull.Value ? (DateTime?)null : Convert.ToDateTime(reader["DateLivraison"])
+                            DateLivraison = reader["DateLivraison"] == DBNull.Value ? (DateTime?)null : Convert.ToDateTime(reader["DateLivraison"]),
+                            Etat = Convert.ToBoolean(reader["Etat"])
                         };
                         articles.Add(article);
                     }

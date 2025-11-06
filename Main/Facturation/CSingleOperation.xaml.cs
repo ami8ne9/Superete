@@ -24,7 +24,7 @@ namespace Superete.Main.Facturation
     public partial class CSingleOperation : UserControl
     {
         public WSelectOperation sc; public Operation op;
-        public CSingleOperation(WSelectOperation sc, Operation op)
+        public CSingleOperation(CMainFa mainfa, WSelectOperation sc, Operation op)
         {
             InitializeComponent();
             this.sc = sc;
@@ -32,18 +32,31 @@ namespace Superete.Main.Facturation
             OperationPrice.Text = op.PrixOperation.ToString("0.00") + " DH";
             OperationDate.Text = op.DateOperation.ToString();
             OperationType.Text = "Vente #" + op.OperationID.ToString();
-            if(op.Reversed == true)
+            if (op.Reversed == true)
             {
                 OperationType.Text += " (Reversed)";
                 SideColor.Background = (SolidColorBrush)(new BrushConverter().ConvertFrom("#828181"));
 
             }
-            foreach (Client c in sc.main.main.lc)
+            if (sc == null)
             {
-                if (op.ClientID == c.ClientID)
+                foreach (Client c in mainfa.main.lc)
                 {
-                    OperationName.Text = "Client : " + c.Nom;
-                    break;
+                    if (op.ClientID == c.ClientID)
+                    {
+                        OperationName.Text = "Client : " + c.Nom;
+                        break;
+                    }
+                }
+            }
+            else { 
+                foreach (Client c in sc.main.main.lc)
+                {
+                    if (op.ClientID == c.ClientID)
+                    {
+                        OperationName.Text = "Client : " + c.Nom;
+                        break;
+                    }
                 }
             }
         }
@@ -56,7 +69,11 @@ namespace Superete.Main.Facturation
 
         private void MyBorder_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
-            if(op.Reversed == true)
+            if(sc == null)
+            {
+                return;
+            }
+            if (op.Reversed == true)
             {
                 sc.main.EtatFacture.SelectedIndex = 1;
                 sc.main.EtatFacture.IsEnabled = false;

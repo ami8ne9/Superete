@@ -37,20 +37,37 @@ namespace Superete.Main.Facturation
                 {
                     if (oa.OperationID == sop.op.OperationID)
                     {
+                        if(main.EtatFacture.IsEnabled == true )
+                        {
+                            if(main.EtatFacture.Text == "Normal")
+                            {
+                                if(oa.Reversed == true)
+                                {
+                                    continue;
+                                }
+                            }
+                            else
+                            {
+                                if (oa.Reversed == false)
+                                {
+                                    continue;
+                                }
+                            }
+                        }
                         ListArts.Add(oa);
                         if (ListArts.Count == 8 && skip == false)
-                    {
-                        ListListArts.Add(ListArts);
-                        ListArts = new List<OperationArticle>();
-                        skip = true;
-                    } 
+                        {
+                            ListListArts.Add(ListArts);
+                            ListArts = new List<OperationArticle>();
+                            skip = true;
+                        } 
                     
-                    if (ListArts.Count == 19)
-                    {
-                        ListListArts.Add(ListArts);
-                        ListArts = new List<OperationArticle>();
+                        if (ListArts.Count == 19)
+                        {
+                            ListListArts.Add(ListArts);
+                            ListArts = new List<OperationArticle>();
 
-                    }
+                        }
                     }
                     
                 }

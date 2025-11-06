@@ -177,7 +177,7 @@ namespace GestionComerce
         public void load_facturation(User u)
         {
             MainGrid.Children.Clear();
-            CMainFa loginPage = new CMainFa(u, this);
+            CMainFa loginPage = new CMainFa(u, this,null);
             loginPage.HorizontalAlignment = HorizontalAlignment.Stretch;
             loginPage.VerticalAlignment = VerticalAlignment.Stretch;
             loginPage.Margin = new Thickness(0);

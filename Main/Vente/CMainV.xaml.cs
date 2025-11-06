@@ -295,6 +295,11 @@ namespace GestionComerce.Main.Vente
             }
             else
             {
+                if (PaymentMethodComboBox.Text == "")
+                {
+                    MessageBox.Show("Veuillez selectionner un mode de paiement, si il y aacun method de payment ajouter la depuis parametres ");
+                    return;
+                }
                 foreach (PaymentMethod p in main.lp)
                 {
                     if (p.PaymentMethodName == PaymentMethodComboBox.SelectedValue)
@@ -319,6 +324,11 @@ namespace GestionComerce.Main.Vente
             }
             else
             {
+                if (PaymentMethodComboBox.Text == "")
+                {
+                    MessageBox.Show("Veuillez selectionner un mode de paiement, si il y aacun method de payment ajouter la depuis parametres ");
+                    return;
+                }
                 foreach (PaymentMethod p in main.lp)
                 {
                     if (p.PaymentMethodName == PaymentMethodComboBox.SelectedValue)
@@ -342,6 +352,11 @@ namespace GestionComerce.Main.Vente
             }
             else
             {
+                if (PaymentMethodComboBox.Text == "")
+                {
+                    MessageBox.Show("Veuillez selectionner un mode de paiement, si il y aacun method de payment ajouter la depuis parametres ");
+                    return;
+                }
                 foreach (PaymentMethod p in main.lp)
                 {
                     if (p.PaymentMethodName == PaymentMethodComboBox.SelectedValue)

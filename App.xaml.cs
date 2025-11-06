@@ -28,14 +28,28 @@ namespace GestionComerce
 
             main.LocationChanged += (s, ev) => PositionBottomRight(main, globalButton);
             main.SizeChanged += (s, ev) => PositionBottomRight(main, globalButton);
+
+            // ✅ Handle minimize / restore safely
             main.StateChanged += (s, ev) =>
             {
+                if (!globalButton.IsLoaded) return; // prevent access after close
+
                 if (main.WindowState == WindowState.Minimized)
                     globalButton.Hide();
                 else
                     globalButton.Show();
             };
+
+            // ✅ Close the floating window when the main window closes
+            main.Closed += (s, ev) =>
+            {
+                if (globalButton.IsLoaded)
+                {
+                    globalButton.Close();
+                }
+            };
         }
+
 
         private void PositionBottomRight(Window main, Window globalButton)
         {

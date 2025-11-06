@@ -25,11 +25,38 @@ namespace GestionComerce.Main.Facturation
     {
         public MainWindow main;
         User u;
-        public CMainFa(User u, MainWindow main)
+        public CMainFa(User u, MainWindow main,Operation op)
         {
             InitializeComponent();
             this.main = main;
             this.u = u;
+            if(op != null)
+            {
+                if (op.Reversed == true)
+                {
+                    EtatFacture.SelectedIndex = 1;
+                    EtatFacture.IsEnabled = false;
+                }
+                else
+                {
+                    EtatFacture.SelectedIndex = 0;
+                    EtatFacture.IsEnabled = false;
+                    foreach (OperationArticle oa in main.loa)
+                    {
+                        if (oa.OperationID == op.OperationID && oa.Reversed == true)
+                        {
+                            EtatFacture.IsEnabled = true;
+
+                            break;
+                        }
+                    }
+                }
+                OperationContainer.Children.Clear();
+                CSingleOperation cSingleOperation = new CSingleOperation(this,null, op);
+                OperationContainer.Children.Add(cSingleOperation);
+                txtTotalAmount.Text = op.PrixOperation.ToString("0.00") + " DH";
+                Remise.Text = op.Remise.ToString("0.00") + " DH";
+            }
             LoadFacture();
         }
         public async Task LoadFacture()

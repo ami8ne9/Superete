@@ -1,4 +1,6 @@
-﻿using System;
+﻿using GestionComerce.Main.Facturation;
+using Superete.Main.Facturation;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -54,6 +56,7 @@ namespace GestionComerce.Main.ProjectManagment
             }
             if (so.op.OperationType.StartsWith("V"))
             {
+                Imprimer.Visibility = Visibility.Visible;
                 IconColor.Background = (SolidColorBrush)(new BrushConverter().ConvertFrom("#10B981"));
                 Start.Text = "V";
                 OperationType1.Text = "Vente #" + so.op.OperationID.ToString();
@@ -285,6 +288,17 @@ namespace GestionComerce.Main.ProjectManagment
                 wReverseConfirmation.ShowDialog();
             }
                 
+        }
+
+        private void Imprimer_Click(object sender, RoutedEventArgs e)
+        {
+            so.main.main.MainGrid.Children.Clear();
+            CMainFa cMainFa = new CMainFa(so.main.u, so.main.main, so.op);
+            cMainFa.HorizontalAlignment = HorizontalAlignment.Stretch;
+            cMainFa.VerticalAlignment = VerticalAlignment.Stretch;
+            cMainFa.Margin = new Thickness(0);
+            so.main.main.MainGrid.Children.Add(cMainFa);
+            this.Close();
         }
     }
 }

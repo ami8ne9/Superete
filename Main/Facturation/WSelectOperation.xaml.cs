@@ -37,7 +37,7 @@ namespace Superete.Main.Facturation
                 {
                     continue;
                 }
-                CSingleOperation cSingleOperation = new CSingleOperation(this, op);
+                CSingleOperation cSingleOperation = new CSingleOperation(main,this, op);
                 OperationsContainer.Children.Add(cSingleOperation);
             }
         }

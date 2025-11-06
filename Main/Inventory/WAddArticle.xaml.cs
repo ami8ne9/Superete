@@ -515,6 +515,16 @@ namespace GestionComerce.Main.Inventory
             PopulateArticleFromForm();
 
             if (!ValidatePrices()) return;
+            if (FournisseurList.Text == "")
+            {
+                MessageBox.Show("Veuillez selectionner un fournisseur ");
+                return;
+            }
+            if (PaymentMethodComboBox.Text == "")
+            {
+                MessageBox.Show("Veuillez selectionner un mode de paiement, si il y aacun method de payment ajouter la depuis parametres ");
+                return;
+            }
 
             foreach (Article aa in la)
             {
@@ -579,6 +589,16 @@ namespace GestionComerce.Main.Inventory
             PopulateArticleFromForm();
 
             if (!ValidatePrices()) return;
+            if (FournisseurList.Text == "")
+            {
+                MessageBox.Show("Veuillez selectionner un fournisseur ");
+                return;
+            }
+            if (PaymentMethodComboBox.Text == "")
+            {
+                MessageBox.Show("Veuillez selectionner un mode de paiement, si il y aacun method de payment ajouter la depuis parametres ");
+                return;
+            }
 
             foreach (Article aa in la)
             {
@@ -643,6 +663,16 @@ namespace GestionComerce.Main.Inventory
             PopulateArticleFromForm();
 
             if (!ValidatePrices()) return;
+            if (FournisseurList.Text == "")
+            {
+                MessageBox.Show("Veuillez selectionner un fournisseur ");
+                return;
+            }
+            if (PaymentMethodComboBox.Text == "")
+            {
+                MessageBox.Show("Veuillez selectionner un mode de paiement, si il y aacun method de payment ajouter la depuis parametres ");
+                return;
+            }
 
             foreach (Article aa in la)
             {

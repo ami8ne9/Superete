@@ -27,6 +27,8 @@ namespace GestionComerce.Main.Inventory
             {
 
                 SupplierComboBox.Items.Add(f.Nom);
+                fo = main.main.lfo[0];
+                SupplierComboBox.SelectedIndex = 0;
             }
             foreach (Role r in main.main.lr)
             {
@@ -43,12 +45,10 @@ namespace GestionComerce.Main.Inventory
                     }
                     break;
                 }
-                fo = main.main.lfo[0];
-                SupplierComboBox.SelectedIndex = 0;
 
-                LoadPayments(main.main.lp);
 
             }
+            LoadPayments(main.main.lp);
         }
         public CMainI main;public Fournisseur fo;
         public void LoadPayments(List<PaymentMethod> lp)
@@ -61,6 +61,12 @@ namespace GestionComerce.Main.Inventory
         }
         private void AddArticleButton_Click(object sender, RoutedEventArgs e)
         {
+
+            if (SupplierComboBox.Text == "")
+            {
+                MessageBox.Show("Veuillez selectionner un fournisseur ");
+                return;
+            }
             foreach (Fournisseur f in main.main.lfo)
             {
                 if(f.Nom== SupplierComboBox.SelectedValue)
@@ -77,6 +83,16 @@ namespace GestionComerce.Main.Inventory
             if (ArticlesContainer.Children.Count == 0)
             {
                 MessageBox.Show("There is no Aticles");
+                return;
+            }
+            if(SupplierComboBox.Text=="")
+            {
+                MessageBox.Show("Veuillez selectionner un fournisseur ");
+                return;
+            }
+            if(PaymentMethodComboBox.Text=="")
+            {
+                MessageBox.Show("Veuillez selectionner un mode de paiement, si il y aacun method de payment ajouter la depuis parametres ");
                 return;
             }
             int MethodID = 0;
@@ -98,6 +114,16 @@ namespace GestionComerce.Main.Inventory
                 MessageBox.Show("There is no Aticles");
                 return;
             }
+            if (SupplierComboBox.Text == "")
+            {
+                MessageBox.Show("Veuillez selectionner un fournisseur ");
+                return;
+            }
+            if (PaymentMethodComboBox.Text == "")
+            {
+                MessageBox.Show("Veuillez selectionner un mode de paiement, si il y aacun method de payment ajouter la depuis parametres ");
+                return;
+            }
             int MethodID = 0;
             foreach (PaymentMethod p in main.main.lp)
             {
@@ -115,6 +141,16 @@ namespace GestionComerce.Main.Inventory
             if (ArticlesContainer.Children.Count == 0)
             {
                 MessageBox.Show("There is no Aticles");
+                return;
+            }
+            if (SupplierComboBox.Text == "")
+            {
+                MessageBox.Show("Veuillez selectionner un fournisseur ");
+                return;
+            }
+            if (PaymentMethodComboBox.Text == "")
+            {
+                MessageBox.Show("Veuillez selectionner un mode de paiement, si il y aacun method de payment ajouter la depuis parametres ");
                 return;
             }
             int MethodID = 0;
