@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
@@ -21,7 +20,7 @@ namespace GestionComerce.Main.Vente
     /// </summary>
     public partial class CSingleArticle1 : UserControl
     {
-        public CSingleArticle1(Article a, CMainV mainv,List<Famille> lf, List<Fournisseur> lfo,int s)
+        public CSingleArticle1(Article a, CMainV mainv, List<Famille> lf, List<Fournisseur> lfo, int s)
         {
             InitializeComponent();
             ArticleID.Text = a.ArticleID.ToString();
@@ -30,23 +29,31 @@ namespace GestionComerce.Main.Vente
             Quantite.Text = a.Quantite.ToString();
             PrixAchat.Text = a.PrixAchat.ToString("F2");
             PrixMP.Text = a.PrixMP.ToString("F2");
+
             foreach (Famille f in lf)
+            {
                 if (f.FamilleID == a.FamillyID)
                 {
                     Famille.Text = f.FamilleName;
                     break;
                 }
+            }
+
             foreach (Fournisseur fo in lfo)
+            {
                 if (a.FournisseurID == fo.FournisseurID)
                 {
                     FournisseurName.Text = fo.Nom;
                     break;
                 }
+            }
+
             Code.Text = a.Code.ToString();
             this.mainv = mainv;
             this.a = a;
             this.lf = lf;
             this.lfo = lfo;
+
             if (s == 1)
             {
                 ArticleID.Visibility = Visibility.Collapsed;
@@ -66,7 +73,7 @@ namespace GestionComerce.Main.Vente
                 PrixMPC.MinWidth = 0;
                 FamilleC.MinWidth = 0;
 
-                ArticleNameC.MinWidth =30;
+                ArticleNameC.MinWidth = 30;
                 QuantiteC.MinWidth = 30;
                 FournisseurNameC.MinWidth = 30;
                 CodeC.MinWidth = 30;
@@ -76,39 +83,47 @@ namespace GestionComerce.Main.Vente
                 FournisseurNameC.Width = new GridLength(1, GridUnitType.Star);
                 CodeC.Width = new GridLength(1, GridUnitType.Star);
             }
-
         }
+
         CMainV mainv;
         public Article a;
         List<Famille> lf;
         List<Fournisseur> lfo;
+
         private void ArticleClicked(object sender, RoutedEventArgs e)
         {
-            foreach (CSingleArticle2 item in mainv.SelectedArticles.Children)
+            // Check if article already exists in cart
+            foreach (UIElement element in mainv.SelectedArticles.Children)
             {
-                if (item.a.ArticleID ==a.ArticleID)
+                if (element is CSingleArticle2 item)
                 {
-                    if(a.Quantite<= Convert.ToInt32(item.Quantite.Text))
+                    if (item.a.ArticleID == a.ArticleID)
                     {
-                        MessageBox.Show("La quantite dans le panier est le meme wue vous aver en stock");
+                        if (a.Quantite <= Convert.ToInt32(item.Quantite.Text))
+                        {
+                            MessageBox.Show("La quantité dans le panier est la même que celle que vous avez en stock");
+                            return;
+                        }
+                        item.Quantite.Text = (Convert.ToInt32(item.Quantite.Text) + 1).ToString();
+                        item.qte++;
+                        mainv.TotalNett += a.PrixVente;
+                        mainv.TotalNet.Text = mainv.TotalNett.ToString("F2") + " DH";
+                        mainv.NbrA += 1;
+                        mainv.ArticleCount.Text = mainv.NbrA.ToString();
                         return;
                     }
-                    item.Quantite.Text =(Convert.ToInt32(item.Quantite.Text)+1).ToString();
-                    item.qte++;
-                    mainv.TotalNett += a.PrixVente;
-                    mainv.TotalNet.Text = mainv.TotalNett.ToString("F2") + " DH";
-                    mainv.NbrA += 1;
-                    mainv.ArticleCount.Text = mainv.NbrA.ToString();
-                    return;
                 }
             }
-            mainv.TotalNett += a.PrixVente ;
+
+            // Add new article to cart
+            mainv.TotalNett += a.PrixVente;
             mainv.TotalNet.Text = mainv.TotalNett.ToString("F2") + " DH";
             mainv.NbrA += 1;
             mainv.ArticleCount.Text = mainv.NbrA.ToString();
             CSingleArticle2 sa = new CSingleArticle2(a, 1, mainv);
             mainv.SelectedArticles.Children.Add(sa);
-            mainv.SelectedArticle.Child=new CSingleArticle1(a,mainv, lf,lfo,1);
+            mainv.UpdateCartEmptyState();
+            mainv.SelectedArticle.Child = new CSingleArticle1(a, mainv, lf, lfo, 1);
         }
     }
 }

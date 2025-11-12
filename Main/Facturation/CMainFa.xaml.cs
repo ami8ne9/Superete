@@ -247,5 +247,29 @@ namespace GestionComerce.Main.Facturation
             WFacturePage wFacturePage = new WFacturePage(this, FactureInfo);
             wFacturePage.ShowDialog();
         }
+
+        private void txtInvoiceNumber_TextChanged(object sender, TextChangedEventArgs e)
+        {
+
+        }
+
+        private void btnGenerateInvoiceNumber_Click(object sender, RoutedEventArgs e)
+        {
+            // Generate a random invoice number with format: FAC-YYYYMMDD-XXXXX
+            // Example: FAC-20241109-12345
+
+            string year = DateTime.Now.Year.ToString();
+            string month = DateTime.Now.Month.ToString("D2");
+            string day = DateTime.Now.Day.ToString("D2");
+
+            // Generate a random 5-digit number
+            Random random = new Random();
+            int randomNumber = random.Next(10000, 99999);
+
+            // Combine to create invoice number
+            string invoiceNumber = $"FAC-{year}{month}{day}-{randomNumber}";
+
+            txtInvoiceNumber.Text = invoiceNumber;
+        }
     }
 }

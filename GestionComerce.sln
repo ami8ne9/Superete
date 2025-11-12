@@ -5,6 +5,8 @@ VisualStudioVersion = 17.14.36414.22
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GestionComerce", "GestionComerce.csproj", "{49DA6D4D-F0AF-453B-9724-88EA6E9B1ECD}"
 EndProject
+Project("{54435603-DBB4-11D2-8724-00A0C9A8B90C}") = "GestionComerceSetup", "..\GestionComerceSetup\GestionComerceSetup.vdproj", "{39986EC1-00A2-8877-8BB3-0087CADD2DAB}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,6 +17,8 @@ Global
 		{49DA6D4D-F0AF-453B-9724-88EA6E9B1ECD}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{49DA6D4D-F0AF-453B-9724-88EA6E9B1ECD}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{49DA6D4D-F0AF-453B-9724-88EA6E9B1ECD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{39986EC1-00A2-8877-8BB3-0087CADD2DAB}.Debug|Any CPU.ActiveCfg = Debug
+		{39986EC1-00A2-8877-8BB3-0087CADD2DAB}.Release|Any CPU.ActiveCfg = Release
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

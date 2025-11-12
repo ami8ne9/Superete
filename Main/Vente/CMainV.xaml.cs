@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Net.Sockets;
-using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
@@ -71,9 +69,39 @@ namespace GestionComerce.Main.Vente
                     break;
                 }
             }
+
+            // Initialize empty cart state
+            UpdateCartEmptyState();
         }
 
-        public User u; List<Famille> lf; public List<Article> la; public MainWindow main; public decimal TotalNett = 0; public int NbrA = 0; public List<Fournisseur> lfo;
+        public User u;
+        List<Famille> lf;
+        public List<Article> la;
+        public MainWindow main;
+        public decimal TotalNett = 0;
+        public int NbrA = 0;
+        public List<Fournisseur> lfo;
+
+        // Method to update the empty cart state visibility
+        public void UpdateCartEmptyState()
+        {
+            if (EmptyStateCart != null)
+            {
+                // Count actual article items (not the empty state itself)
+                int itemCount = 0;
+                foreach (UIElement element in SelectedArticles.Children)
+                {
+                    if (element is CSingleArticle2)
+                    {
+                        itemCount++;
+                    }
+                }
+
+                // Show empty state only when cart is empty
+                EmptyStateCart.Visibility = itemCount == 0 ? Visibility.Visible : Visibility.Collapsed;
+            }
+        }
+
         private void MainWindow_PreviewKeyDown(object sender, KeyEventArgs e)
         {
             TimeSpan elapsed = DateTime.Now - lastKeystroke;
@@ -117,25 +145,35 @@ namespace GestionComerce.Main.Vente
                     return;
                 }
 
+                // Display the article in the SelectedArticle container (top preview)
+                CSingleArticle1 previewArticle = new CSingleArticle1(foundArticle, this, lf, lfo, 0);
+                SelectedArticle.Child = previewArticle;
+
+                // Set the quantity to 1 for the scanned article
+                ArticleQuantity.Text = "1";
+
                 // Check if article already exists in cart
-                foreach (CSingleArticle2 item in SelectedArticles.Children)
+                foreach (UIElement element in SelectedArticles.Children)
                 {
-                    if (item.a.ArticleID == foundArticle.ArticleID)
+                    if (element is CSingleArticle2 item)
                     {
-                        if (item.qte + 1 > foundArticle.Quantite)
+                        if (item.a.ArticleID == foundArticle.ArticleID)
                         {
-                            MessageBox.Show("La quantité en stock est insuffisante.");
+                            if (item.qte + 1 > foundArticle.Quantite)
+                            {
+                                MessageBox.Show("La quantité en stock est insuffisante.");
+                            }
+                            else
+                            {
+                                item.Quantite.Text = (item.qte + 1).ToString();
+                                item.qte += 1;
+                                TotalNett += foundArticle.PrixVente;
+                                TotalNet.Text = TotalNett.ToString("F2") + " DH";
+                                NbrA += 1;
+                                ArticleCount.Text = NbrA.ToString();
+                            }
+                            return;
                         }
-                        else
-                        {
-                            item.Quantite.Text = (item.qte + 1).ToString();
-                            item.qte += 1;
-                            TotalNett += foundArticle.PrixVente;
-                            TotalNet.Text = TotalNett.ToString("F2") + " DH";
-                            NbrA += 1;
-                            ArticleCount.Text = NbrA.ToString();
-                        }
-                        return;
                     }
                 }
 
@@ -146,12 +184,14 @@ namespace GestionComerce.Main.Vente
                 ArticleCount.Text = NbrA.ToString();
                 CSingleArticle2 sa = new CSingleArticle2(foundArticle, 1, this);
                 SelectedArticles.Children.Add(sa);
+                UpdateCartEmptyState();
             }
             else
             {
                 MessageBox.Show($"Aucun article trouvé avec le code: {barcode}");
             }
         }
+
         public void LoadArticles(List<Article> la)
         {
             ArticlesContainer.Children.Clear();
@@ -161,6 +201,7 @@ namespace GestionComerce.Main.Vente
                 ArticlesContainer.Children.Add(ar);
             }
         }
+
         public void LoadPayments(List<PaymentMethod> lp)
         {
             PaymentMethodComboBox.Items.Clear();
@@ -169,10 +210,12 @@ namespace GestionComerce.Main.Vente
                 PaymentMethodComboBox.Items.Add(a.PaymentMethodName);
             }
         }
+
         private void CloseButton_Click(object sender, RoutedEventArgs e)
         {
             main.load_main(u);
         }
+
         private void MyBorder_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
             WKeyPad wKeyPad = new WKeyPad(this);
@@ -181,45 +224,45 @@ namespace GestionComerce.Main.Vente
 
         private void KeyboardButton_Click(object sender, RoutedEventArgs e)
         {
-
             if (SelectedArticle.Child is CSingleArticle1 sa1)
             {
-
                 if (ArticleQuantity.Text == "")
                 {
-                    MessageBox.Show("inserer une quantite");
+                    MessageBox.Show("Veuillez insérer une quantité");
                     return;
                 }
                 else if (Convert.ToInt32(ArticleQuantity.Text) == 0)
                 {
-                    MessageBox.Show("inserer une quantite");
+                    MessageBox.Show("Veuillez insérer une quantité");
                     return;
                 }
                 else if (Convert.ToInt32(ArticleQuantity.Text) > sa1.a.Quantite)
                 {
-                    MessageBox.Show("la quantite inserer est plus grande que la quantite en stock");
+                    MessageBox.Show("La quantité insérée est plus grande que la quantité en stock");
                 }
                 else
                 {
-                    MessageBox.Show(TotalNett.ToString());
-                    foreach (CSingleArticle2 item in SelectedArticles.Children)
+                    foreach (UIElement element in SelectedArticles.Children)
                     {
-                        if (item.a.ArticleID == sa1.a.ArticleID)
+                        if (element is CSingleArticle2 item)
                         {
-                            if (Convert.ToInt32(ArticleQuantity.Text) + Convert.ToInt32(item.Quantite.Text) > sa1.a.Quantite)
+                            if (item.a.ArticleID == sa1.a.ArticleID)
                             {
-                                MessageBox.Show("La quantite dans le panier plus la quantite vous voulez ajouter est plus grande que la quantite en stock");
+                                if (Convert.ToInt32(ArticleQuantity.Text) + Convert.ToInt32(item.Quantite.Text) > sa1.a.Quantite)
+                                {
+                                    MessageBox.Show("La quantité dans le panier plus la quantité que vous voulez ajouter est plus grande que la quantité en stock");
+                                }
+                                else
+                                {
+                                    item.Quantite.Text = (Convert.ToInt32(ArticleQuantity.Text) + item.qte).ToString();
+                                    item.qte += Convert.ToInt32(ArticleQuantity.Text);
+                                    TotalNett += sa1.a.PrixVente * Convert.ToInt32(ArticleQuantity.Text);
+                                    TotalNet.Text = TotalNett.ToString("F2") + " DH";
+                                    NbrA += Convert.ToInt32(ArticleQuantity.Text);
+                                    ArticleCount.Text = NbrA.ToString();
+                                }
+                                return;
                             }
-                            else
-                            {
-                                item.Quantite.Text = (Convert.ToInt32(ArticleQuantity.Text) + item.qte).ToString();
-                                item.qte += Convert.ToInt32(ArticleQuantity.Text);
-                                TotalNett += sa1.a.PrixVente * Convert.ToInt32(ArticleQuantity.Text);
-                                TotalNet.Text = TotalNett.ToString("F2") + " DH";
-                                NbrA += Convert.ToInt32(ArticleQuantity.Text);
-                                ArticleCount.Text = NbrA.ToString();
-                            }
-                            return;
                         }
                     }
 
@@ -229,24 +272,22 @@ namespace GestionComerce.Main.Vente
                     ArticleCount.Text = NbrA.ToString();
                     CSingleArticle2 sa = new CSingleArticle2(sa1.a, Convert.ToInt32(ArticleQuantity.Text), this);
                     SelectedArticles.Children.Add(sa);
+                    UpdateCartEmptyState();
                     SelectedArticle.Child = new TextBlock
                     {
                         Name = "DesignationText",
-                        Text = "Aucun article sélectionné",
+                        Text = "Aucun produit sélectionné",
                         FontFamily = new FontFamily("Segoe UI"),
                         FontSize = 13,
-                        Foreground = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#92400E")),
+                        Foreground = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#78350F")),
                         TextWrapping = TextWrapping.Wrap
                     };
                 }
-
             }
             else
             {
                 MessageBox.Show("Veuillez sélectionner un article.");
             }
-
-
         }
 
         private void DeleteButton_Click(object sender, RoutedEventArgs e)
@@ -254,8 +295,9 @@ namespace GestionComerce.Main.Vente
             SelectedArticles.Children.Clear();
             TotalNett = 0;
             NbrA = 0;
-            TotalNet.Text = " 0.00 DH";
-            ArticleCount.Text = " 0";
+            TotalNet.Text = "0.00 DH";
+            ArticleCount.Text = "0";
+            UpdateCartEmptyState();
         }
 
         private void Button_Click(object sender, RoutedEventArgs e)
@@ -279,30 +321,27 @@ namespace GestionComerce.Main.Vente
                     CSingleArticle1 ar = new CSingleArticle1(a, this, lf, lfo, 0);
                     ArticlesContainer.Children.Add(ar);
                 }
-
             }
         }
 
-
         private async void CashButton_Click(object sender, RoutedEventArgs e)
-
         {
             int MethodID = 0;
-            if (SelectedArticles.Children.Count == 0)
+            if (SelectedArticles.Children.Count == 0 || NbrA == 0)
             {
-                MessageBox.Show("Aucun article sélectionné .");
+                MessageBox.Show("Aucun article sélectionné.");
                 return;
             }
             else
             {
                 if (PaymentMethodComboBox.Text == "")
                 {
-                    MessageBox.Show("Veuillez selectionner un mode de paiement, si il y aacun method de payment ajouter la depuis parametres ");
+                    MessageBox.Show("Veuillez sélectionner un mode de paiement, si il n'y a aucune méthode de paiement, ajoutez-la depuis les paramètres");
                     return;
                 }
                 foreach (PaymentMethod p in main.lp)
                 {
-                    if (p.PaymentMethodName == PaymentMethodComboBox.SelectedValue)
+                    if (p.PaymentMethodName == PaymentMethodComboBox.SelectedValue.ToString())
                     {
                         MethodID = p.PaymentMethodID;
                     }
@@ -317,21 +356,21 @@ namespace GestionComerce.Main.Vente
         private async void HalfButton_Click(object sender, RoutedEventArgs e)
         {
             int MethodID = 0;
-            if (SelectedArticles.Children.Count == 0)
+            if (SelectedArticles.Children.Count == 0 || NbrA == 0)
             {
-                MessageBox.Show("Aucun article sélectionné .");
+                MessageBox.Show("Aucun article sélectionné.");
                 return;
             }
             else
             {
                 if (PaymentMethodComboBox.Text == "")
                 {
-                    MessageBox.Show("Veuillez selectionner un mode de paiement, si il y aacun method de payment ajouter la depuis parametres ");
+                    MessageBox.Show("Veuillez sélectionner un mode de paiement, si il n'y a aucune méthode de paiement, ajoutez-la depuis les paramètres");
                     return;
                 }
                 foreach (PaymentMethod p in main.lp)
                 {
-                    if (p.PaymentMethodName == PaymentMethodComboBox.SelectedValue)
+                    if (p.PaymentMethodName == PaymentMethodComboBox.SelectedValue.ToString())
                     {
                         MethodID = p.PaymentMethodID;
                     }
@@ -345,21 +384,21 @@ namespace GestionComerce.Main.Vente
         private async void CreditButton_Click(object sender, RoutedEventArgs e)
         {
             int MethodID = 0;
-            if (SelectedArticles.Children.Count == 0)
+            if (SelectedArticles.Children.Count == 0 || NbrA == 0)
             {
-                MessageBox.Show("Aucun article sélectionné .");
+                MessageBox.Show("Aucun article sélectionné.");
                 return;
             }
             else
             {
                 if (PaymentMethodComboBox.Text == "")
                 {
-                    MessageBox.Show("Veuillez selectionner un mode de paiement, si il y aacun method de payment ajouter la depuis parametres ");
+                    MessageBox.Show("Veuillez sélectionner un mode de paiement, si il n'y a aucune méthode de paiement, ajoutez-la depuis les paramètres");
                     return;
                 }
                 foreach (PaymentMethod p in main.lp)
                 {
-                    if (p.PaymentMethodName == PaymentMethodComboBox.SelectedValue)
+                    if (p.PaymentMethodName == PaymentMethodComboBox.SelectedValue.ToString())
                     {
                         MethodID = p.PaymentMethodID;
                     }

@@ -39,7 +39,9 @@
     <Reference Include="ReachFramework" />
     <Reference Include="System" />
     <Reference Include="System.Data" />
+    <Reference Include="System.Management" />
     <Reference Include="System.Printing" />
+    <Reference Include="System.Security" />
     <Reference Include="System.Xml" />
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Core" />
@@ -61,6 +63,7 @@
     <Compile Include="Article.cs" />
     <Compile Include="Client.cs" />
     <Compile Include="Credit.cs" />
+    <Compile Include="DatabaseSetup.cs" />
     <Compile Include="Facture.cs" />
     <Compile Include="FactureSettings.cs" />
     <Compile Include="Famille.cs" />
@@ -68,6 +71,7 @@
     <Compile Include="GlobalButtonWindow.xaml.cs">
       <DependentUpon>GlobalButtonWindow.xaml</DependentUpon>
     </Compile>
+    <Compile Include="MachineLock.cs" />
     <Compile Include="Main\ClientPage\ClientFormWindow.xaml.cs">
       <DependentUpon>ClientFormWindow.xaml</DependentUpon>
     </Compile>

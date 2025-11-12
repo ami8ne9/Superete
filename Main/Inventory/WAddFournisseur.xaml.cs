@@ -271,15 +271,13 @@ namespace GestionComerce.Main.Inventory
                     }
 
                     SupplierSaved?.Invoke(this, EventArgs.Empty);
-                    WCongratulations wCongratulations = new WCongratulations("Ajout Succès", "Fournisseur ajouté avec succès", 1);
-                    wCongratulations.ShowDialog();
-
+                    MessageBox.Show("Fournisseur ajouté avec succès.", "Succès", MessageBoxButton.OK, MessageBoxImage.Information);
                     Close();
                 }
                 else
                 {
-                    WCongratulations wCongratulations = new WCongratulations("Ajout Échoué", "Le fournisseur n'a pas été ajouté", 0);
-                    wCongratulations.ShowDialog();
+
+                    MessageBox.Show("Fournisseur n'est pas ajouter.", "Échoué", MessageBoxButton.OK, MessageBoxImage.Information);
                 }
             }
         }

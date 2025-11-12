@@ -5,11 +5,11 @@
              Height="60" Margin="0,0,0,1">
 
     <UserControl.Resources>
-        <!-- Button Styles -->
+        <!-- Modern Button Styles -->
         <Style x:Key="ActionButtonStyle" TargetType="Button">
-            <Setter Property="Height" Value="30"/>
-            <Setter Property="Margin" Value="2"/>
-            <Setter Property="FontSize" Value="12"/>
+            <Setter Property="Height" Value="34"/>
+            <Setter Property="Margin" Value="3"/>
+            <Setter Property="FontSize" Value="11"/>
             <Setter Property="FontWeight" Value="SemiBold"/>
             <Setter Property="Cursor" Value="Hand"/>
             <Setter Property="BorderThickness" Value="0"/>
@@ -17,17 +17,25 @@
                 <Setter.Value>
                     <ControlTemplate TargetType="Button">
                         <Border Background="{TemplateBinding Background}" 
-                                CornerRadius="4"
+                                CornerRadius="8"
                                 BorderThickness="0">
+                            <Border.Effect>
+                                <DropShadowEffect Color="#000000" 
+                                                Direction="270" 
+                                                ShadowDepth="2" 
+                                                BlurRadius="8" 
+                                                Opacity="0.15"/>
+                            </Border.Effect>
                             <ContentPresenter HorizontalAlignment="Center" 
-                                            VerticalAlignment="Center"/>
+                                            VerticalAlignment="Center"
+                                            Margin="{TemplateBinding Padding}"/>
                         </Border>
                         <ControlTemplate.Triggers>
                             <Trigger Property="IsMouseOver" Value="True">
-                                <Setter Property="Opacity" Value="0.8"/>
+                                <Setter Property="Opacity" Value="0.9"/>
                             </Trigger>
                             <Trigger Property="IsPressed" Value="True">
-                                <Setter Property="Opacity" Value="0.6"/>
+                                <Setter Property="Opacity" Value="0.8"/>
                             </Trigger>
                         </ControlTemplate.Triggers>
                     </ControlTemplate>
@@ -36,102 +44,195 @@
         </Style>
 
         <Style x:Key="UpdateButtonStyle" TargetType="Button" BasedOn="{StaticResource ActionButtonStyle}">
-            <Setter Property="Background" Value="#4285F4"/>
+            <Setter Property="Background">
+                <Setter.Value>
+                    <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                        <GradientStop Color="#6366F1" Offset="0"/>
+                        <GradientStop Color="#8B5CF6" Offset="1"/>
+                    </LinearGradientBrush>
+                </Setter.Value>
+            </Setter>
             <Setter Property="Foreground" Value="White"/>
-            <Setter Property="Width" Value="60"/>
+            <Setter Property="Width" Value="80"/>
+            <Setter Property="Padding" Value="10,0"/>
         </Style>
 
         <Style x:Key="DeleteButtonStyle" TargetType="Button" BasedOn="{StaticResource ActionButtonStyle}">
-            <Setter Property="Background" Value="#DC3545"/>
+            <Setter Property="Background">
+                <Setter.Value>
+                    <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                        <GradientStop Color="#EF4444" Offset="0"/>
+                        <GradientStop Color="#DC2626" Offset="1"/>
+                    </LinearGradientBrush>
+                </Setter.Value>
+            </Setter>
             <Setter Property="Foreground" Value="White"/>
-            <Setter Property="Width" Value="60"/>
+            <Setter Property="Width" Value="90"/>
+            <Setter Property="Padding" Value="10,0"/>
         </Style>
 
         <Style x:Key="PaidButtonStyle" TargetType="Button" BasedOn="{StaticResource ActionButtonStyle}">
-            <Setter Property="Background" Value="#28A745"/>
+            <Setter Property="Background">
+                <Setter.Value>
+                    <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                        <GradientStop Color="#10B981" Offset="0"/>
+                        <GradientStop Color="#059669" Offset="1"/>
+                    </LinearGradientBrush>
+                </Setter.Value>
+            </Setter>
             <Setter Property="Foreground" Value="White"/>
-            <Setter Property="Width" Value="60"/>
+            <Setter Property="Width" Value="75"/>
+            <Setter Property="Padding" Value="10,0"/>
         </Style>
 
         <Style x:Key="OperationButtonStyle" TargetType="Button" BasedOn="{StaticResource ActionButtonStyle}">
-            <Setter Property="Background" Value="#FFC107"/>
-            <Setter Property="Foreground" Value="Black"/>
-            <Setter Property="Width" Value="80"/>
+            <Setter Property="Background">
+                <Setter.Value>
+                    <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                        <GradientStop Color="#F59E0B" Offset="0"/>
+                        <GradientStop Color="#D97706" Offset="1"/>
+                    </LinearGradientBrush>
+                </Setter.Value>
+            </Setter>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="Width" Value="100"/>
+            <Setter Property="Padding" Value="10,0"/>
         </Style>
 
+        <!-- Data Text Style -->
         <Style x:Key="DataTextStyle" TargetType="TextBlock">
             <Setter Property="FontSize" Value="13"/>
-            <Setter Property="Foreground" Value="#343A40"/>
+            <Setter Property="FontFamily" Value="Segoe UI"/>
+            <Setter Property="Foreground" Value="#374151"/>
             <Setter Property="VerticalAlignment" Value="Center"/>
             <Setter Property="HorizontalAlignment" Value="Left"/>
             <Setter Property="TextTrimming" Value="CharacterEllipsis"/>
         </Style>
+
+        <!-- Name Text Style -->
+        <Style x:Key="NameTextStyle" TargetType="TextBlock" BasedOn="{StaticResource DataTextStyle}">
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="FontSize" Value="14"/>
+            <Setter Property="Foreground" Value="#1F2937"/>
+        </Style>
     </UserControl.Resources>
 
-    <Border Background="White" BorderBrush="#E9ECEF" BorderThickness="0,0,0,1">
-        <Border x:Name="HoverBorder" Background="White">
-            <Grid Margin="15,0">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="50"/>
-                    <!-- ID -->
-                    <ColumnDefinition Width="150"/>
-                    <!-- SUPPLIER NAME -->
-                    <ColumnDefinition Width="120"/>
-                    <!-- PHONE -->
-                    <ColumnDefinition Width="100"/>
-                    <!-- CODE -->
-                    <ColumnDefinition Width="130"/>
-                    <!-- LEGAL STATUS -->
-                    <ColumnDefinition Width="120"/>
-                    <!-- ICE -->
-                    <ColumnDefinition Width="150"/>
-                    <!-- HEADQUARTERS -->
-                    <ColumnDefinition Width="150"/>
-                    <!-- ADDRESS -->
-                    <ColumnDefinition Width="120"/>
-                    <!-- BALANCE -->
-                    <ColumnDefinition Width="*"/>
-                    <!-- ACTIONS -->
-                </Grid.ColumnDefinitions>
+    <Border Background="White" 
+            BorderBrush="#E5E7EB" 
+            BorderThickness="0,0,0,1">
+        <Border.Style>
+            <Style TargetType="Border">
+                <Style.Triggers>
+                    <Trigger Property="IsMouseOver" Value="True">
+                        <Setter Property="Background" Value="#F9FAFB"/>
+                    </Trigger>
+                </Style.Triggers>
+            </Style>
+        </Border.Style>
 
-                <!-- Supplier ID -->
-                <TextBlock x:Name="IdText" Grid.Column="0" Style="{StaticResource DataTextStyle}" 
-                          FontWeight="SemiBold" Foreground="#6C757D"/>
-
-                <!-- Supplier Name -->
-                <TextBlock x:Name="NameText" Grid.Column="1" Style="{StaticResource DataTextStyle}" 
-                          FontWeight="SemiBold"/>
-
-                <!-- Phone Number -->
-                <TextBlock x:Name="PhoneText" Grid.Column="2" Style="{StaticResource DataTextStyle}"/>
-
-                <!-- Code -->
-                <TextBlock x:Name="CodeText" Grid.Column="3" Style="{StaticResource DataTextStyle}"/>
-
-                <!-- Legal Status (État Juridique) -->
-                <TextBlock x:Name="EtatJuridicText" Grid.Column="4" Style="{StaticResource DataTextStyle}"/>
-
+        <Grid Margin="15,0">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="200"/>
+                <!-- SUPPLIER NAME -->
+                <ColumnDefinition Width="110"/>
+                <!-- CODE -->
+                <ColumnDefinition Width="130"/>
+                <!-- PHONE -->
+                <ColumnDefinition Width="130"/>
                 <!-- ICE -->
-                <TextBlock x:Name="ICEText" Grid.Column="5" Style="{StaticResource DataTextStyle}"/>
+                <ColumnDefinition Width="140"/>
+                <!-- LEGAL STATUS -->
+                <ColumnDefinition Width="130"/>
+                <!-- BALANCE -->
+                <ColumnDefinition Width="*"/>
+                <!-- ACTIONS -->
+            </Grid.ColumnDefinitions>
 
-                <!-- Headquarters (Siège Entreprise) -->
-                <TextBlock x:Name="HeadquartersText" Grid.Column="6" Style="{StaticResource DataTextStyle}"/>
+            <!-- SUPPLIER NAME -->
+            <TextBlock x:Name="NameText" 
+                      Grid.Column="0" 
+                      Style="{StaticResource NameTextStyle}"/>
 
-                <!-- Address -->
-                <TextBlock x:Name="AddressText" Grid.Column="7" Style="{StaticResource DataTextStyle}"/>
+            <!-- CODE with Icon -->
+            <StackPanel Grid.Column="1" 
+                       Orientation="Horizontal" 
+                       VerticalAlignment="Center">
+                <TextBlock x:Name="CodeText" 
+                          Style="{StaticResource DataTextStyle}"/>
+            </StackPanel>
 
-                <!-- Balance -->
-                <TextBlock x:Name="BalanceText" Grid.Column="8" Style="{StaticResource DataTextStyle}" 
-                          FontWeight="SemiBold"/>
+            <!-- PHONE with Icon -->
+            <StackPanel Grid.Column="2" 
+                       Orientation="Horizontal" 
+                       VerticalAlignment="Center">
+                <TextBlock x:Name="PhoneText" 
+                          Style="{StaticResource DataTextStyle}"/>
+            </StackPanel>
 
-                <!-- Action Buttons -->
-                <StackPanel Grid.Column="9" Orientation="Horizontal" HorizontalAlignment="Right">
-                    <Button Style="{StaticResource UpdateButtonStyle}" Content="Update" Click="Update_Click" Name="Update"/>
-                    <Button Style="{StaticResource DeleteButtonStyle}" Content="Delete" Click="Delete_Click" Name="Delete"/>
-                    <Button Style="{StaticResource PaidButtonStyle}" Content="Pay" Click="Paid_Click" Name="Paid"/>
-                    <Button Style="{StaticResource OperationButtonStyle}" Content="Operations" Click="Operations_Click" Name="Operation"/>
-                </StackPanel>
-            </Grid>
-        </Border>
+            <!-- ICE -->
+            <StackPanel Grid.Column="3" 
+                       Orientation="Horizontal" 
+                       VerticalAlignment="Center">
+                <TextBlock x:Name="ICEText" 
+                          Style="{StaticResource DataTextStyle}"/>
+            </StackPanel>
+
+            <!-- LEGAL STATUS (État Juridique) -->
+            <StackPanel Grid.Column="4" 
+                       Orientation="Horizontal" 
+                       VerticalAlignment="Center">
+                <TextBlock x:Name="EtatJuridicText" 
+                          Style="{StaticResource DataTextStyle}"/>
+            </StackPanel>
+
+            <!-- BALANCE with Enhanced Styling -->
+            <Border Grid.Column="5" 
+                    x:Name="BalanceBorder"
+                    CornerRadius="6" 
+                    Padding="10,6"
+                    HorizontalAlignment="Left">
+                <Border.Style>
+                    <Style TargetType="Border">
+                        <Setter Property="Background" Value="#FEE2E2"/>
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding ElementName=BalanceText, Path=Foreground}" Value="Green">
+                                <Setter Property="Background" Value="#D1FAE5"/>
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </Border.Style>
+                <TextBlock x:Name="BalanceText" 
+                          Style="{StaticResource DataTextStyle}"
+                          FontWeight="Bold"
+                          FontSize="13"/>
+            </Border>
+
+            <!-- ACTION BUTTONS -->
+            <StackPanel Grid.Column="6" 
+                       Orientation="Horizontal" 
+                       HorizontalAlignment="Right"
+                       VerticalAlignment="Center">
+                <Button Style="{StaticResource UpdateButtonStyle}" 
+                       Content="Modifier" 
+                       Click="Update_Click" 
+                       Name="Update"
+                       ToolTip="Modifier le fournisseur"/>
+                <Button Style="{StaticResource DeleteButtonStyle}" 
+                       Content="Supprimer" 
+                       Click="Delete_Click" 
+                       Name="Delete"
+                       ToolTip="Supprimer le fournisseur"/>
+                <Button Style="{StaticResource PaidButtonStyle}" 
+                       Content="Payer" 
+                       Click="Paid_Click" 
+                       Name="Paid"
+                       ToolTip="Effectuer un paiement"/>
+                <Button Style="{StaticResource OperationButtonStyle}" 
+                       Content="Opérations" 
+                       Click="Operations_Click" 
+                       Name="Operation"
+                       ToolTip="Voir les opérations"/>
+            </StackPanel>
+        </Grid>
     </Border>
 </UserControl>

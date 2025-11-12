@@ -5,70 +5,92 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:GestionComerce.Main.Vente"
              mc:Ignorable="d">
-    <Grid Height="20" MouseLeftButtonDown="SelectedArticleClicked">
+
+    <Grid Background="White" 
+          Cursor="Hand"
+          MouseLeftButtonDown="SelectedArticleClicked"
+          Margin="0,0,0,8">
         <Grid.Style>
             <Style TargetType="Grid">
-                <Setter Property="Background" Value="Transparent"/>
+                <Setter Property="Background" Value="White"/>
                 <Style.Triggers>
                     <Trigger Property="IsMouseOver" Value="True">
-                        <Setter Property="Background" Value="#F8FAFC"/>
+                        <Setter Property="Background" Value="#FEF2F2"/>
                     </Trigger>
                 </Style.Triggers>
             </Style>
         </Grid.Style>
-        
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="0.8*"/>
-            <!-- Article Name -->
-            <ColumnDefinition Width="1*"/>
-            <!-- Fournisseur -->
-            <ColumnDefinition Width="40"/>
-            <!-- Prix -->
-            <ColumnDefinition Width="40"/>
-            <!-- Quantite -->
-            <ColumnDefinition Width="60"/>
-            <!-- Total -->
-        </Grid.ColumnDefinitions>
-        
-        <TextBlock x:Name="ArticleName" 
-                   Grid.Column="0" 
-                   FontSize="12" 
-                   Foreground="#1F2937" 
-                   VerticalAlignment="Center"
-                   TextTrimming="CharacterEllipsis"
-                   Padding="2,0"/>
-                   
-        <TextBlock x:Name="Fournisseur" 
-                   Grid.Column="1" 
-                   FontSize="11" 
-                   Foreground="#6B7280" 
-                   VerticalAlignment="Center"
-                   TextTrimming="CharacterEllipsis"
-                   Padding="2,0"/>
-                   
-        <TextBlock x:Name="Prix" 
-                   Grid.Column="2" 
-                   FontSize="11" 
-                   Foreground="#059669" 
-                   VerticalAlignment="Center"
-                   HorizontalAlignment="Right"
-                   Padding="2,0"/>
-                   
-        <TextBlock x:Name="Quantite" 
-                   Grid.Column="3" 
-                   FontSize="11" 
-                   Foreground="#374151" 
-                   VerticalAlignment="Center"
-                   HorizontalAlignment="Center"
-                   Padding="2,0" />
-                   
-        <TextBlock x:Name="Total" 
-                   Grid.Column="4" 
-                   FontSize="11" 
-                   Foreground="#DC2626" 
-                   FontWeight="Medium"
-                   VerticalAlignment="Center"
-                   HorizontalAlignment="Right" Width="50"
-                   Padding="2,0" Margin="0,0,0,0"/>
+
+        <Border BorderBrush="#E5E7EB" 
+                BorderThickness="0,0,0,1" 
+                Padding="0,12"
+                Background="Transparent">
+
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+
+                <!-- Left side: Product info -->
+                <StackPanel Grid.Column="0">
+                    <TextBlock x:Name="ArticleName" 
+                           FontFamily="Segoe UI"
+                           FontSize="13" 
+                           FontWeight="SemiBold"
+                           Foreground="#1F2937" 
+                           TextTrimming="CharacterEllipsis"
+                           Margin="0,0,0,4"/>
+
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock x:Name="Fournisseur" 
+                               FontFamily="Segoe UI"
+                               FontSize="11" 
+                               Foreground="#6B7280" 
+                               TextTrimming="CharacterEllipsis"
+                               Margin="0,0,8,0"/>
+
+                        <TextBlock Text="•" 
+                               FontSize="11" 
+                               Foreground="#D1D5DB" 
+                               Margin="0,0,8,0"/>
+
+                        <TextBlock FontFamily="Segoe UI"
+                               FontSize="11" 
+                               Foreground="#059669"
+                               FontWeight="Medium">
+                        <Run Text="DH "/>
+                        <Run x:Name="Prix" Text=""/>
+                        </TextBlock>
+
+                        <TextBlock Text=" × " 
+                               FontSize="11" 
+                               Foreground="#9CA3AF" 
+                               Margin="4,0"/>
+
+                        <TextBlock x:Name="Quantite" 
+                               FontFamily="Segoe UI"
+                               FontSize="11" 
+                               Foreground="#374151"
+                               FontWeight="Medium"/>
+                    </StackPanel>
+                </StackPanel>
+
+                <!-- Right side: Total price -->
+                <Border Grid.Column="1" 
+                    Background="#FEE2E2" 
+                    CornerRadius="6" 
+                    Padding="8,4"
+                    Margin="8,0,0,0">
+                    <TextBlock FontFamily="Segoe UI"
+                           FontSize="13" 
+                           FontWeight="Bold"
+                           Foreground="#DC2626">
+                    <Run Text="DH "/>
+                    <Run x:Name="Total" Text=""/>
+                    </TextBlock>
+                </Border>
+            </Grid>
+        </Border>
     </Grid>
 </UserControl>

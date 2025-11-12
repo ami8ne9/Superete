@@ -84,13 +84,13 @@ namespace GestionComerce.Main.Inventory
             }
             else
             {
-                f.FamilleName = FamillyName.Text;
-                f.UpdateFamilleAsync();
                 foreach(Famille fa in lf)
                 {
                     if(fa.FamilleID==f.FamilleID)
                     {
-                        fa.FamilleName = f.FamilleName;
+                        fa.FamilleName = FamillyName.Text;
+                        fa.UpdateFamilleAsync();
+                        mf.main.LoadArticles(mf.main.la);
                         break;
                     }
                 }

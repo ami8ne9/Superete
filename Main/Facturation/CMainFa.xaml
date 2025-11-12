@@ -4,17 +4,22 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              mc:Ignorable="d" d:DesignWidth="800"
-             Background="#F5F7FA" >
+             Background="#F8FAFC">
 
     <UserControl.Resources>
-        <SolidColorBrush x:Key="PrimaryBrush" Color="#2563EB"/>
+        <!-- Color Palette -->
+        <SolidColorBrush x:Key="PrimaryBrush" Color="#3B82F6"/>
+        <SolidColorBrush x:Key="PrimaryHoverBrush" Color="#2563EB"/>
         <SolidColorBrush x:Key="SuccessBrush" Color="#10B981"/>
-        <SolidColorBrush x:Key="CancelBrush" Color="#6B7280"/>
+        <SolidColorBrush x:Key="SuccessHoverBrush" Color="#059669"/>
+        <SolidColorBrush x:Key="AccentBrush" Color="#8B5CF6"/>
+        <SolidColorBrush x:Key="AccentHoverBrush" Color="#7C3AED"/>
         <SolidColorBrush x:Key="SurfaceBrush" Color="#FFFFFF"/>
-        <SolidColorBrush x:Key="BorderBrush" Color="#E5E7EB"/>
-        <SolidColorBrush x:Key="TextPrimaryBrush" Color="#1F2937"/>
-        <SolidColorBrush x:Key="TextSecondaryBrush" Color="#6B7280"/>
-        <SolidColorBrush x:Key="InputBrush" Color="#F9FAFB"/>
+        <SolidColorBrush x:Key="BorderBrush" Color="#E2E8F0"/>
+        <SolidColorBrush x:Key="TextPrimaryBrush" Color="#0F172A"/>
+        <SolidColorBrush x:Key="TextSecondaryBrush" Color="#64748B"/>
+        <SolidColorBrush x:Key="InputBrush" Color="#F8FAFC"/>
+        <SolidColorBrush x:Key="HoverBrush" Color="#F1F5F9"/>
 
         <!-- Modern Button Style -->
         <Style x:Key="ModernButtonStyle" TargetType="Button">
@@ -27,8 +32,10 @@
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="Button">
-                        <Border x:Name="border" Background="{TemplateBinding Background}" 
-                        CornerRadius="6" Padding="{TemplateBinding Padding}">
+                        <Border x:Name="border" 
+                                Background="{TemplateBinding Background}" 
+                                CornerRadius="8" 
+                                Padding="{TemplateBinding Padding}">
                             <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
                         </Border>
                         <ControlTemplate.Triggers>
@@ -40,11 +47,9 @@
                             </Trigger>
                             <Trigger Property="IsEnabled" Value="False">
                                 <Setter Property="Opacity" Value="0.5"/>
-                                <Setter Property="Background" Value="#E5E7EB"/>
-                                <Setter Property="Foreground" Value="#9CA3AF"/>
+                                <Setter TargetName="border" Property="Background" Value="#E2E8F0"/>
                                 <Setter Property="Cursor" Value="No"/>
                             </Trigger>
-
                         </ControlTemplate.Triggers>
                     </ControlTemplate>
                 </Setter.Value>
@@ -52,203 +57,244 @@
         </Style>
 
         <!-- Modern TextBox Style -->
-        <Style x:Key="ModernTextBoxStyle" TargetType="TextBox">
+        <Style x:Key="ModernTextBox" TargetType="TextBox">
             <Setter Property="FontFamily" Value="Segoe UI"/>
             <Setter Property="FontSize" Value="14"/>
-            <Setter Property="Padding" Value="12"/>
-            <Setter Property="Background" Value="{StaticResource InputBrush}"/>
+            <Setter Property="Padding" Value="14,12"/>
+            <Setter Property="Background" Value="{StaticResource SurfaceBrush}"/>
             <Setter Property="BorderBrush" Value="{StaticResource BorderBrush}"/>
-            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="BorderThickness" Value="1.5"/>
+            <Setter Property="Foreground" Value="{StaticResource TextPrimaryBrush}"/>
+            <Setter Property="VerticalContentAlignment" Value="Center"/>
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="TextBox">
-                        <Border x:Name="border" Background="{TemplateBinding Background}" 
-                        BorderBrush="{TemplateBinding BorderBrush}" 
-                        BorderThickness="{TemplateBinding BorderThickness}" 
-                        CornerRadius="6">
+                        <Border x:Name="border" 
+                                Background="{TemplateBinding Background}" 
+                                BorderBrush="{TemplateBinding BorderBrush}" 
+                                BorderThickness="{TemplateBinding BorderThickness}" 
+                                CornerRadius="8">
                             <ScrollViewer x:Name="PART_ContentHost" Margin="{TemplateBinding Padding}"/>
                         </Border>
                         <ControlTemplate.Triggers>
                             <Trigger Property="IsFocused" Value="True">
                                 <Setter TargetName="border" Property="BorderBrush" Value="{StaticResource PrimaryBrush}"/>
-                                <Setter TargetName="border" Property="Background" Value="White"/>
+                                <Setter TargetName="border" Property="BorderThickness" Value="2"/>
+                            </Trigger>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="border" Property="Background" Value="{StaticResource HoverBrush}"/>
+                            </Trigger>
+                            <Trigger Property="IsEnabled" Value="False">
+                                <Setter Property="Background" Value="#F1F5F9"/>
+                                <Setter Property="Foreground" Value="#94A3B8"/>
                             </Trigger>
                         </ControlTemplate.Triggers>
                     </ControlTemplate>
                 </Setter.Value>
             </Setter>
         </Style>
-        <!-- Modern TextBox Style -->
-        <Style x:Key="ModernTextBox" TargetType="TextBox">
-            <Setter Property="Padding" Value="12,10"/>
-            <Setter Property="FontSize" Value="14"/>
-            <Setter Property="BorderBrush" Value="#DDE2E8"/>
-            <Setter Property="BorderThickness" Value="1"/>
-            <Setter Property="Background" Value="White"/>
-            <Setter Property="Foreground" Value="#2D3748"/>
-            <Setter Property="VerticalContentAlignment" Value="Center"/>
-            <Style.Triggers>
-                <Trigger Property="IsFocused" Value="True">
-                    <Setter Property="BorderBrush" Value="#4299E1"/>
-                    <Setter Property="BorderThickness" Value="2"/>
-                </Trigger>
-            </Style.Triggers>
-        </Style>
+
+        <!-- Modern DatePicker Style -->
         <Style x:Key="ModernDatePicker" TargetType="DatePicker">
-            <Setter Property="Padding" Value="12,10"/>
+            <Setter Property="FontFamily" Value="Segoe UI"/>
             <Setter Property="FontSize" Value="14"/>
-            <Setter Property="BorderBrush" Value="#DDE2E8"/>
-            <Setter Property="BorderThickness" Value="1"/>
-            <Setter Property="Background" Value="White"/>
-            <Setter Property="Foreground" Value="#2D3748"/>
-            <Setter Property="VerticalContentAlignment" Value="Center"/>
-            <Style.Triggers>
-                <Trigger Property="IsFocused" Value="True">
-                    <Setter Property="BorderBrush" Value="#4299E1"/>
-                    <Setter Property="BorderThickness" Value="2"/>
-                </Trigger>
-            </Style.Triggers>
+            <Setter Property="Padding" Value="14,12"/>
+            <Setter Property="BorderBrush" Value="{StaticResource BorderBrush}"/>
+            <Setter Property="BorderThickness" Value="1.5"/>
+            <Setter Property="Background" Value="{StaticResource SurfaceBrush}"/>
+            <Setter Property="Foreground" Value="{StaticResource TextPrimaryBrush}"/>
         </Style>
 
         <!-- Modern ComboBox Style -->
         <Style x:Key="ModernComboBox" TargetType="ComboBox">
-            <Setter Property="Padding" Value="12,10"/>
+            <Setter Property="FontFamily" Value="Segoe UI"/>
             <Setter Property="FontSize" Value="14"/>
-            <Setter Property="BorderBrush" Value="#DDE2E8"/>
-            <Setter Property="BorderThickness" Value="1"/>
-            <Setter Property="Background" Value="White"/>
-            <Setter Property="Foreground" Value="#2D3748"/>
-        </Style>
-
-        <!-- Modern Button Style -->
-        <Style x:Key="ModernButton" TargetType="Button">
-            <Setter Property="Padding" Value="20,10"/>
-            <Setter Property="FontSize" Value="14"/>
-            <Setter Property="FontWeight" Value="SemiBold"/>
-            <Setter Property="BorderThickness" Value="0"/>
-            <Setter Property="Cursor" Value="Hand"/>
-            <Setter Property="Template">
-                <Setter.Value>
-                    <ControlTemplate TargetType="Button">
-                        <Border Background="{TemplateBinding Background}"
-                                CornerRadius="6"
-                                Padding="{TemplateBinding Padding}">
-                            <ContentPresenter HorizontalAlignment="Center" 
-                                            VerticalAlignment="Center"/>
-                        </Border>
-                    </ControlTemplate>
-                </Setter.Value>
-            </Setter>
-            <Style.Triggers>
-                <Trigger Property="IsMouseOver" Value="True">
-                    <Setter Property="Opacity" Value="0.9"/>
-                </Trigger>
-            </Style.Triggers>
+            <Setter Property="Padding" Value="14,12"/>
+            <Setter Property="BorderBrush" Value="{StaticResource BorderBrush}"/>
+            <Setter Property="BorderThickness" Value="1.5"/>
+            <Setter Property="Background" Value="{StaticResource SurfaceBrush}"/>
+            <Setter Property="Foreground" Value="{StaticResource TextPrimaryBrush}"/>
         </Style>
 
         <!-- Section Title Style -->
         <Style x:Key="SectionTitle" TargetType="TextBlock">
-            <Setter Property="FontSize" Value="18"/>
-            <Setter Property="FontWeight" Value="SemiBold"/>
-            <Setter Property="Foreground" Value="#2D3748"/>
-            <Setter Property="Margin" Value="0,0,0,16"/>
+            <Setter Property="FontFamily" Value="Segoe UI"/>
+            <Setter Property="FontSize" Value="20"/>
+            <Setter Property="FontWeight" Value="Bold"/>
+            <Setter Property="Foreground" Value="{StaticResource TextPrimaryBrush}"/>
+            <Setter Property="Margin" Value="0,0,0,20"/>
         </Style>
 
-        <!-- Label Style -->
+        <!-- Field Label Style -->
         <Style x:Key="FieldLabel" TargetType="TextBlock">
+            <Setter Property="FontFamily" Value="Segoe UI"/>
             <Setter Property="FontSize" Value="13"/>
-            <Setter Property="FontWeight" Value="Medium"/>
-            <Setter Property="Foreground" Value="#4A5568"/>
-            <Setter Property="Margin" Value="0,0,0,6"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="Foreground" Value="{StaticResource TextSecondaryBrush}"/>
+            <Setter Property="Margin" Value="0,0,0,8"/>
+        </Style>
+
+        <!-- Card Style -->
+        <Style x:Key="CardStyle" TargetType="Border">
+            <Setter Property="Background" Value="{StaticResource SurfaceBrush}"/>
+            <Setter Property="CornerRadius" Value="16"/>
+            <Setter Property="Padding" Value="32,28"/>
+            <Setter Property="Margin" Value="0,0,0,24"/>
+            <Setter Property="BorderBrush" Value="{StaticResource BorderBrush}"/>
+            <Setter Property="BorderThickness" Value="1"/>
         </Style>
     </UserControl.Resources>
 
-    <ScrollViewer VerticalScrollBarVisibility="Auto" Padding="40,30">
-        <StackPanel MaxWidth="1000">
+    <ScrollViewer VerticalScrollBarVisibility="Auto" Padding="40,32">
+        <StackPanel MaxWidth="1200">
 
-            <!-- Section 1: Header with Facture Title and Invoice Details -->
-            <Border Background="White" 
-        CornerRadius="12" 
-        Padding="30,25"
-        Margin="0,0,0,20">
-                <Border.Effect>
-                    <DropShadowEffect Color="#000000" Opacity="0.08" BlurRadius="20" ShadowDepth="0"/>
-                </Border.Effect>
+            <!-- Header Section with Invoice Details -->
+            <Border Style="{StaticResource CardStyle}">
                 <Grid>
-                    <!-- Back Button - Positioned absolutely in top-left -->
+                    <!-- Back Button -->
                     <Button x:Name="btnBack"
-                Content="←"
-                FontSize="24"
-                FontWeight="Bold"
-                Foreground="#4A5568"
-                Background="Transparent"
-                BorderThickness="0"
-                Cursor="Hand"
-                Padding="8,4"
-                HorizontalAlignment="Left"
-                VerticalAlignment="Top"
-                Margin="-5,-5,0,0" Click="btnBack_Click">
+                            Content="←"
+                            FontSize="26"
+                            FontWeight="Bold"
+                            Foreground="{StaticResource TextSecondaryBrush}"
+                            Background="Transparent"
+                            BorderThickness="0"
+                            Cursor="Hand"
+                            Padding="10,6"
+                            HorizontalAlignment="Left"
+                            VerticalAlignment="Top"
+                            Margin="-8,-6,0,0" 
+                            Click="btnBack_Click">
                         <Button.Style>
                             <Style TargetType="Button">
                                 <Setter Property="Template">
                                     <Setter.Value>
                                         <ControlTemplate TargetType="Button">
-                                            <Border Background="{TemplateBinding Background}"
-                                        CornerRadius="6"
-                                        Padding="{TemplateBinding Padding}">
-                                                <ContentPresenter HorizontalAlignment="Center" 
-                                                    VerticalAlignment="Center"/>
+                                            <Border x:Name="border"
+                                                    Background="{TemplateBinding Background}"
+                                                    CornerRadius="8"
+                                                    Padding="{TemplateBinding Padding}">
+                                                <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
                                             </Border>
+                                            <ControlTemplate.Triggers>
+                                                <Trigger Property="IsMouseOver" Value="True">
+                                                    <Setter TargetName="border" Property="Background" Value="{StaticResource HoverBrush}"/>
+                                                </Trigger>
+                                            </ControlTemplate.Triggers>
                                         </ControlTemplate>
                                     </Setter.Value>
                                 </Setter>
-                                <Style.Triggers>
-                                    <Trigger Property="IsMouseOver" Value="True">
-                                        <Setter Property="Background" Value="#F7FAFC"/>
-                                    </Trigger>
-                                </Style.Triggers>
                             </Style>
                         </Button.Style>
                     </Button>
 
-                    <!-- Main Content Grid -->
-                    <Grid>
+                    <!-- Main Content -->
+                    <Grid Margin="0,8,0,0">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="*"/>
                             <ColumnDefinition Width="Auto"/>
                         </Grid.ColumnDefinitions>
 
-                        <!-- Left: Facture Title -->
-                        <TextBlock Text="Facture" 
-                       FontSize="32" 
-                       FontWeight="Bold" 
-                       Foreground="#1A202C"
-                       VerticalAlignment="Center"/>
+                        <!-- Left: Title with Icon -->
+                        <StackPanel VerticalAlignment="Center">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
+                                <Border Background="#EEF2FF" 
+                                        CornerRadius="12" 
+                                        Padding="12"
+                                        Margin="0,0,16,0"
+                                        VerticalAlignment="Center"
+                                        Grid.Column="0">
+                                    <TextBlock Text="📄" FontSize="28"/>
+                                </Border>
+                                <StackPanel VerticalAlignment="Center" Grid.Column="1">
+                                    <TextBlock Text="Facture" 
+                                               FontFamily="Segoe UI"
+                                               FontSize="36" 
+                                               FontWeight="Bold" 
+                                               Foreground="{StaticResource TextPrimaryBrush}"/>
+                                    <TextBlock Text="Créer et gérer vos factures" 
+                                               FontSize="14"
+                                               Foreground="{StaticResource TextSecondaryBrush}"
+                                               Margin="0,4,0,0"/>
+                                </StackPanel>
+                            </Grid>
+                        </StackPanel>
 
                         <!-- Right: Invoice Details -->
-                        <StackPanel Grid.Column="1" MinWidth="300">
-                            <Grid Margin="0,0,0,12">
+                        <StackPanel Grid.Column="1" MinWidth="320" Margin="32,0,0,0">
+                            <Grid Margin="0,0,0,16">
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition Width="*"/>
                                     <ColumnDefinition Width="*"/>
                                 </Grid.ColumnDefinitions>
-                                <StackPanel Grid.Column="0" Margin="0,0,8,0">
+                                <StackPanel Grid.Column="0" Margin="0,0,10,0">
                                     <TextBlock Text="Numéro de Facture" Style="{StaticResource FieldLabel}"/>
-                                    <TextBox x:Name="txtInvoiceNumber" Style="{StaticResource ModernTextBox}" MaxLength="20"/>
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="*"/>
+                                            <ColumnDefinition Width="Auto"/>
+                                        </Grid.ColumnDefinitions>
+                                        <TextBox x:Name="txtInvoiceNumber" 
+                                                 Grid.Column="0"
+                                                 Style="{StaticResource ModernTextBox}" 
+                                                 MaxLength="20"
+                                                 ToolTip="Numéro unique de la facture"/>
+                                        <Button x:Name="btnGenerateInvoiceNumber"
+                                                Grid.Column="1"
+                                                Content="🔄"
+                                                FontSize="16"
+                                                ToolTip="Générer un numéro aléatoire"
+                                                Background="{StaticResource PrimaryBrush}"
+                                                Foreground="White"
+                                                BorderThickness="0"
+                                                Cursor="Hand"
+                                                Padding="10,8"
+                                                Margin="8,0,0,0"
+                                                Click="btnGenerateInvoiceNumber_Click">
+                                            <Button.Style>
+                                                <Style TargetType="Button">
+                                                    <Setter Property="Template">
+                                                        <Setter.Value>
+                                                            <ControlTemplate TargetType="Button">
+                                                                <Border x:Name="border"
+                                                                        Background="{TemplateBinding Background}"
+                                                                        CornerRadius="8"
+                                                                        Padding="{TemplateBinding Padding}">
+                                                                    <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                                                </Border>
+                                                                <ControlTemplate.Triggers>
+                                                                    <Trigger Property="IsMouseOver" Value="True">
+                                                                        <Setter TargetName="border" Property="Opacity" Value="0.9"/>
+                                                                    </Trigger>
+                                                                    <Trigger Property="IsPressed" Value="True">
+                                                                        <Setter TargetName="border" Property="Opacity" Value="0.8"/>
+                                                                    </Trigger>
+                                                                </ControlTemplate.Triggers>
+                                                            </ControlTemplate>
+                                                        </Setter.Value>
+                                                    </Setter>
+                                                </Style>
+                                            </Button.Style>
+                                        </Button>
+                                    </Grid>
                                 </StackPanel>
-                                <StackPanel Grid.Column="1" Margin="8,0,0,0">
+                                <StackPanel Grid.Column="1" Margin="10,0,0,0">
                                     <TextBlock Text="Date" Style="{StaticResource FieldLabel}"/>
                                     <DatePicker x:Name="dpInvoiceDate" 
-                                  Style="{StaticResource ModernDatePicker}"/>
+                                                Style="{StaticResource ModernDatePicker}"/>
                                 </StackPanel>
                             </Grid>
                             <StackPanel>
-                                <TextBlock Text="Type" Style="{StaticResource FieldLabel}"/>
+                                <TextBlock Text="Type de Document" Style="{StaticResource FieldLabel}"/>
                                 <ComboBox x:Name="cmbInvoiceType" 
-                            Style="{StaticResource ModernComboBox}"
-                            SelectedIndex="0">
+                                          Style="{StaticResource ModernComboBox}"
+                                          SelectedIndex="0">
                                     <ComboBoxItem Content="Facture"/>
-                                    <ComboBoxItem Content="Bele"/>
+                                    <ComboBoxItem Content="Bon de Livraison"/>
                                 </ComboBox>
                             </StackPanel>
                         </StackPanel>
@@ -256,63 +302,89 @@
                 </Grid>
             </Border>
 
-            <!-- Section 2: User Information -->
-            <Border Background="White" 
-                    CornerRadius="12" 
-                    Padding="30,25"
-                    Margin="0,0,0,20">
-                <Border.Effect>
-                    <DropShadowEffect Color="#000000" Opacity="0.08" BlurRadius="20" ShadowDepth="0"/>
-                </Border.Effect>
-
+            <!-- User Information Section -->
+            <Border Style="{StaticResource CardStyle}">
                 <StackPanel>
-                    <TextBlock Text="Informations de l'Utilisateur" Style="{StaticResource SectionTitle}"/>
+                    <Grid Margin="0,0,0,20">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+                            <Border Background="#DBEAFE" 
+                                    CornerRadius="10" 
+                                    Padding="10"
+                                    Margin="0,0,12,0"
+                                    Grid.Column="0">
+                                <TextBlock Text="👤" FontSize="20"/>
+                            </Border>
+                            <TextBlock Text="Informations de l'Utilisateur" 
+                                       Style="{StaticResource SectionTitle}"
+                                       VerticalAlignment="Center"
+                                       Margin="0"
+                                       Grid.Column="1"/>
+                        </Grid>
+                        <Button Content="Sauvegarder"
+                                Style="{StaticResource ModernButtonStyle}"
+                                Background="{StaticResource SuccessBrush}"
+                                Foreground="White"
+                                HorizontalAlignment="Right"
+                                Click="Button_Click"/>
+                    </Grid>
 
-                    <StackPanel Margin="0,0,0,16">
-                        <TextBlock Text="Nom" Style="{StaticResource FieldLabel}"/>
-                        <TextBox x:Name="txtUserName" Style="{StaticResource ModernTextBox}" MaxLength="50"/>
+                    <StackPanel Margin="0,0,0,18">
+                        <TextBlock Text="Nom de l'Entreprise" Style="{StaticResource FieldLabel}"/>
+                        <TextBox x:Name="txtUserName" 
+                                 Style="{StaticResource ModernTextBox}" 
+                                 MaxLength="50"/>
                     </StackPanel>
 
-                    <Grid Margin="0,0,0,16">
+                    <Grid Margin="0,0,0,18">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="*"/>
                             <ColumnDefinition Width="*"/>
                         </Grid.ColumnDefinitions>
-
-                        <StackPanel Grid.Column="0" Margin="0,0,8,0">
+                        <StackPanel Grid.Column="0" Margin="0,0,10,0">
                             <TextBlock Text="Numéro ICE" Style="{StaticResource FieldLabel}"/>
-                            <TextBox x:Name="txtUserICE" Style="{StaticResource ModernTextBox}" MaxLength="15"/>
+                            <TextBox x:Name="txtUserICE" 
+                                     Style="{StaticResource ModernTextBox}" 
+                                     MaxLength="15"/>
                         </StackPanel>
-
-                        <StackPanel Grid.Column="1" Margin="8,0,0,0">
-                            <TextBlock Text="Numéro VAT" Style="{StaticResource FieldLabel}" />
-                            <TextBox x:Name="txtUserVAT" Style="{StaticResource ModernTextBox}" MaxLength="15"/>
+                        <StackPanel Grid.Column="1" Margin="10,0,0,0">
+                            <TextBlock Text="Numéro VAT" Style="{StaticResource FieldLabel}"/>
+                            <TextBox x:Name="txtUserVAT" 
+                                     Style="{StaticResource ModernTextBox}" 
+                                     MaxLength="15"/>
                         </StackPanel>
                     </Grid>
 
-                    <StackPanel Margin="0,0,0,16">
+                    <StackPanel Margin="0,0,0,18">
                         <TextBlock Text="Téléphone" Style="{StaticResource FieldLabel}"/>
-                        <TextBox x:Name="txtUserPhone" Style="{StaticResource ModernTextBox}" MaxLength="15"/>
+                        <TextBox x:Name="txtUserPhone" 
+                                 Style="{StaticResource ModernTextBox}" 
+                                 MaxLength="15"/>
                     </StackPanel>
 
-                    <Grid Margin="0,0,0,16">
+                    <Grid Margin="0,0,0,18">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="*"/>
                             <ColumnDefinition Width="*"/>
                         </Grid.ColumnDefinitions>
-
-                        <StackPanel Grid.Column="0" Margin="0,0,8,0">
+                        <StackPanel Grid.Column="0" Margin="0,0,10,0">
                             <TextBlock Text="État Juridique" Style="{StaticResource FieldLabel}"/>
-                            <TextBox x:Name="txtUserEtatJuridique" Style="{StaticResource ModernTextBox}" MaxLength="30"/>
+                            <TextBox x:Name="txtUserEtatJuridique" 
+                                     Style="{StaticResource ModernTextBox}" 
+                                     MaxLength="30"/>
                         </StackPanel>
-
-                        <StackPanel Grid.Column="1" Margin="8,0,0,0">
+                        <StackPanel Grid.Column="1" Margin="10,0,0,0">
                             <TextBlock Text="ID de Société" Style="{StaticResource FieldLabel}"/>
-                            <TextBox x:Name="txtUserIdSociete" Style="{StaticResource ModernTextBox}" MaxLength="25"/>
+                            <TextBox x:Name="txtUserIdSociete" 
+                                     Style="{StaticResource ModernTextBox}" 
+                                     MaxLength="25"/>
                         </StackPanel>
                     </Grid>
 
-                    <StackPanel Margin="0,0,0,16">
+                    <StackPanel Margin="0,0,0,18">
                         <TextBlock Text="Siège d'Entreprise" Style="{StaticResource FieldLabel}"/>
                         <ComboBox x:Name="cmbUserSiegeEntreprise" 
                                   Style="{StaticResource ModernComboBox}"
@@ -322,117 +394,126 @@
                         </ComboBox>
                     </StackPanel>
 
-                    <StackPanel>
-                        <TextBlock Text="Adresse" Style="{StaticResource FieldLabel}"/>
-                        <TextBox x:Name="txtUserAddress" MaxLength="100"
-                                Style="{StaticResource ModernTextBox}"
-                                Height="80"
-                                TextWrapping="Wrap"
-                                AcceptsReturn="True"
-                                VerticalContentAlignment="Top"/>
+                    <StackPanel Margin="0,0,0,18">
+                        <TextBlock Text="Adresse Complète" Style="{StaticResource FieldLabel}"/>
+                        <TextBox x:Name="txtUserAddress" 
+                                 MaxLength="100"
+                                 Style="{StaticResource ModernTextBox}"
+                                 Height="90"
+                                 TextWrapping="Wrap"
+                                 AcceptsReturn="True"
+                                 VerticalContentAlignment="Top"/>
                     </StackPanel>
-                    <TextBlock Text="Logo de l'Entreprise:" 
-           FontFamily="Segoe UI"
-           FontSize="13"
-           FontWeight="Medium"
-           Foreground="{StaticResource TextSecondaryBrush}" 
-           Margin="0,16,0,6"/>
-                    <Grid>
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="*"/>
-                            <ColumnDefinition Width="Auto"/>
-                        </Grid.ColumnDefinitions>
 
-                        <TextBox x:Name="txtLogoPath" 
-             Grid.Column="0"
-             Style="{StaticResource ModernTextBoxStyle}"
-             IsReadOnly="True"/>
-                        <Button Grid.Column="1" 
-            x:Name="btnBrowseLogo" 
-            Content="Parcourir..." 
-            Style="{StaticResource ModernButtonStyle}"
-            Background="{StaticResource PrimaryBrush}" 
-            Foreground="White"
-            Margin="12,0,0,0"
-            Click="BtnBrowseLogo_Click"/>
-                    </Grid>
-                    <StackPanel HorizontalAlignment="Right">
-                        <Button Content="Save"  Margin="0,10,0,0"
-                              Style="{StaticResource ModernButton}"
-                              Background="#4299E1"
-                              Foreground="White" Click="Button_Click"/>
+                    <StackPanel>
+                        <TextBlock Text="Logo de l'Entreprise" Style="{StaticResource FieldLabel}"/>
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+                            <TextBox x:Name="txtLogoPath" 
+                                     Grid.Column="0"
+                                     Style="{StaticResource ModernTextBox}"
+                                     IsReadOnly="True"
+                                     Background="#F8FAFC"/>
+                            <Button Grid.Column="1" 
+                                    x:Name="btnBrowseLogo" 
+                                    Content="📁 Parcourir" 
+                                    Style="{StaticResource ModernButtonStyle}"
+                                    Background="{StaticResource PrimaryBrush}" 
+                                    Foreground="White"
+                                    Margin="12,0,0,0"
+                                    Click="BtnBrowseLogo_Click"/>
+                        </Grid>
                     </StackPanel>
                 </StackPanel>
             </Border>
 
-            <!-- Section 3: Client Information -->
-            <Border Background="White" 
-                    CornerRadius="12" 
-                    Padding="30,25"
-                    Margin="0,0,0,20">
-                <Border.Effect>
-                    <DropShadowEffect Color="#000000" Opacity="0.08" BlurRadius="20" ShadowDepth="0"/>
-                </Border.Effect>
-
+            <!-- Client Information Section -->
+            <Border Style="{StaticResource CardStyle}">
                 <StackPanel>
-                    <Grid Margin="0,0,0,16">
-                        <TextBlock Text="Informations de Client" 
-                                 Style="{StaticResource SectionTitle}"
-                                 Margin="0"/>
+                    <Grid Margin="0,0,0,20">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+                            <Border Background="#DCFCE7" 
+                                    CornerRadius="10" 
+                                    Padding="10"
+                                    Margin="0,0,12,0"
+                                    Grid.Column="0">
+                                <TextBlock Text="🏢" FontSize="20"/>
+                            </Border>
+                            <TextBlock Text="Informations du Client" 
+                                       Style="{StaticResource SectionTitle}"
+                                       VerticalAlignment="Center"
+                                       Margin="0"
+                                       Grid.Column="1"/>
+                        </Grid>
                         <Button x:Name="btnSelectClient"
-                              Content="Sélectionner Client"
-                              Style="{StaticResource ModernButton}"
-                              Background="#4299E1"
-                              Foreground="White"
-                              HorizontalAlignment="Right"
-                              VerticalAlignment="Top" Click="btnSelectClient_Click"/>
+                                Content="🔍 Sélectionner Client"
+                                Style="{StaticResource ModernButtonStyle}"
+                                Background="{StaticResource PrimaryBrush}"
+                                Foreground="White"
+                                HorizontalAlignment="Right"
+                                Click="btnSelectClient_Click"/>
                     </Grid>
 
-                    <StackPanel Margin="0,0,0,16">
-                        <TextBlock Text="Nom" Style="{StaticResource FieldLabel}"/>
-                        <TextBox x:Name="txtClientName" Style="{StaticResource ModernTextBox}" MaxLength="50"/>
+                    <StackPanel Margin="0,0,0,18">
+                        <TextBlock Text="Nom du Client" Style="{StaticResource FieldLabel}"/>
+                        <TextBox x:Name="txtClientName" 
+                                 Style="{StaticResource ModernTextBox}" 
+                                 MaxLength="50"/>
                     </StackPanel>
 
-                    <Grid Margin="0,0,0,16">
+                    <Grid Margin="0,0,0,18">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="*"/>
                             <ColumnDefinition Width="*"/>
                         </Grid.ColumnDefinitions>
-
-                        <StackPanel Grid.Column="0" Margin="0,0,8,0">
+                        <StackPanel Grid.Column="0" Margin="0,0,10,0">
                             <TextBlock Text="Numéro ICE" Style="{StaticResource FieldLabel}"/>
-                            <TextBox x:Name="txtClientICE" Style="{StaticResource ModernTextBox}" MaxLength="15"/>
+                            <TextBox x:Name="txtClientICE" 
+                                     Style="{StaticResource ModernTextBox}" 
+                                     MaxLength="15"/>
                         </StackPanel>
-
-                        <StackPanel Grid.Column="1" Margin="8,0,0,0">
+                        <StackPanel Grid.Column="1" Margin="10,0,0,0">
                             <TextBlock Text="Numéro VAT" Style="{StaticResource FieldLabel}"/>
-                            <TextBox x:Name="txtClientVAT" Style="{StaticResource ModernTextBox}" MaxLength="15"/>
+                            <TextBox x:Name="txtClientVAT" 
+                                     Style="{StaticResource ModernTextBox}" 
+                                     MaxLength="15"/>
                         </StackPanel>
                     </Grid>
 
-                    <StackPanel Margin="0,0,0,16">
+                    <StackPanel Margin="0,0,0,18">
                         <TextBlock Text="Téléphone" Style="{StaticResource FieldLabel}"/>
-                        <TextBox x:Name="txtClientPhone" Style="{StaticResource ModernTextBox}" MaxLength="15"/>
+                        <TextBox x:Name="txtClientPhone" 
+                                 Style="{StaticResource ModernTextBox}" 
+                                 MaxLength="15"/>
                     </StackPanel>
 
-                    <Grid Margin="0,0,0,16">
+                    <Grid Margin="0,0,0,18">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="*"/>
                             <ColumnDefinition Width="*"/>
                         </Grid.ColumnDefinitions>
-
-                        <StackPanel Grid.Column="0" Margin="0,0,8,0">
+                        <StackPanel Grid.Column="0" Margin="0,0,10,0">
                             <TextBlock Text="État Juridique" Style="{StaticResource FieldLabel}"/>
-                            <TextBox x:Name="txtClientEtatJuridique" Style="{StaticResource ModernTextBox}" MaxLength="30"/>
+                            <TextBox x:Name="txtClientEtatJuridique" 
+                                     Style="{StaticResource ModernTextBox}" 
+                                     MaxLength="30"/>
                         </StackPanel>
-
-                        <StackPanel Grid.Column="1" Margin="8,0,0,0">
+                        <StackPanel Grid.Column="1" Margin="10,0,0,0">
                             <TextBlock Text="ID de Société" Style="{StaticResource FieldLabel}"/>
-                            <TextBox x:Name="txtClientIdSociete" Style="{StaticResource ModernTextBox}" MaxLength="25"/>
+                            <TextBox x:Name="txtClientIdSociete" 
+                                     Style="{StaticResource ModernTextBox}" 
+                                     MaxLength="25"/>
                         </StackPanel>
                     </Grid>
 
-                    <StackPanel Margin="0,0,0,16">
+                    <StackPanel Margin="0,0,0,18">
                         <TextBlock Text="Siège d'Entreprise" Style="{StaticResource FieldLabel}"/>
                         <ComboBox x:Name="cmbClientSiegeEntreprise" 
                                   Style="{StaticResource ModernComboBox}"
@@ -443,127 +524,180 @@
                     </StackPanel>
 
                     <StackPanel>
-                        <TextBlock Text="Adresse" Style="{StaticResource FieldLabel}"/>
-                        <TextBox x:Name="txtClientAddress" MaxLength="100"
-                                Style="{StaticResource ModernTextBox}"
-                                Height="80"
-                                TextWrapping="Wrap"
-                                AcceptsReturn="True"
-                                VerticalContentAlignment="Top"/>
+                        <TextBlock Text="Adresse Complète" Style="{StaticResource FieldLabel}"/>
+                        <TextBox x:Name="txtClientAddress" 
+                                 MaxLength="100"
+                                 Style="{StaticResource ModernTextBox}"
+                                 Height="90"
+                                 TextWrapping="Wrap"
+                                 AcceptsReturn="True"
+                                 VerticalContentAlignment="Top"/>
                     </StackPanel>
                 </StackPanel>
             </Border>
 
-            <!-- Section 4: Invoice Information -->
-            <Border Background="White" 
-        CornerRadius="12" 
-        Padding="30,25"
-        Margin="0,0,0,20">
-                <Border.Effect>
-                    <DropShadowEffect Color="#000000" Opacity="0.08" BlurRadius="20" ShadowDepth="0"/>
-                </Border.Effect>
+            <!-- Invoice Information Section -->
+            <Border Style="{StaticResource CardStyle}">
                 <StackPanel>
-                    <Grid Margin="0,0,0,16">
-                        <TextBlock Text="Informations de Facturation" 
-                     Style="{StaticResource SectionTitle}"
-                     Margin="0"/>
+                    <Grid Margin="0,0,0,20">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+                            <Border Background="#FEF3C7" 
+                                    CornerRadius="10" 
+                                    Padding="10"
+                                    Margin="0,0,12,0"
+                                    Grid.Column="0">
+                                <TextBlock Text="💰" FontSize="20"/>
+                            </Border>
+                            <TextBlock Text="Informations de Facturation" 
+                                       Style="{StaticResource SectionTitle}"
+                                       VerticalAlignment="Center"
+                                       Margin="0"
+                                       Grid.Column="1"/>
+                        </Grid>
                         <Button x:Name="btnSelectOperation"
-                  Content="Sélectionner Opération"
-                  Style="{StaticResource ModernButton}"
-                  Background="#48BB78"
-                  Foreground="White"
-                  HorizontalAlignment="Right"
-                  VerticalAlignment="Top" Click="btnSelectOperation_Click"/>
+                                Content="➕ Ajouter Opération"
+                                Style="{StaticResource ModernButtonStyle}"
+                                Background="{StaticResource SuccessBrush}"
+                                Foreground="White"
+                                HorizontalAlignment="Right"
+                                Click="btnSelectOperation_Click"/>
                     </Grid>
-                    <ScrollViewer VerticalScrollBarVisibility="Auto">
-                        <StackPanel x:Name="OperationContainer" MaxHeight="300">
-                        </StackPanel>
-                    </ScrollViewer>
+
+                    <!-- Operations Container -->
+                    <Border Background="{StaticResource InputBrush}" 
+                            CornerRadius="12" 
+                            Padding="16"
+                            Margin="0,0,0,20"
+                            BorderBrush="{StaticResource BorderBrush}"
+                            BorderThickness="1.5">
+                        <ScrollViewer VerticalScrollBarVisibility="Auto" MaxHeight="320">
+                            <StackPanel x:Name="OperationContainer"/>
+                        </ScrollViewer>
+                    </Border>
+
+                    <!-- Billing Details Grid -->
                     <Grid>
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="*"/>
                             <ColumnDefinition Width="*"/>
                         </Grid.ColumnDefinitions>
+
+                        <!-- Left Column -->
                         <StackPanel Grid.Column="0" Margin="0,0,12,0">
-                            <StackPanel Margin="0,0,0,16">
+                            <StackPanel Margin="0,0,0,18">
                                 <TextBlock Text="État de Facture" Style="{StaticResource FieldLabel}"/>
                                 <ComboBox x:Name="EtatFacture" 
-                            Style="{StaticResource ModernComboBox}"
-                            SelectedIndex="0">
+                                          Style="{StaticResource ModernComboBox}"
+                                          SelectedIndex="0">
                                     <ComboBoxItem Content="Normal"/>
-                                    <ComboBoxItem Content="Reversed"/>
+                                    <ComboBoxItem Content="Annulée"/>
                                 </ComboBox>
                             </StackPanel>
-                            <StackPanel Margin="0,0,0,16">
+
+                            <StackPanel Margin="0,0,0,18">
                                 <TextBlock Text="Devise" Style="{StaticResource FieldLabel}"/>
-                                <TextBox x:Name="txtCurrency" MaxLength="10"
-                           Style="{StaticResource ModernTextBox}"
-                           Text="MAD"/>
-                            </StackPanel>
-                            <StackPanel>
-                                <TextBlock Text="Taux TVA (%)" Style="{StaticResource FieldLabel}"/>
-                                <TextBox x:Name="txtTVARate" PreviewTextInput="DecimalTextBox_PreviewTextInput" MaxLength="6"
-DataObject.Pasting="DecimalTextBox_Pasting" Style="{StaticResource ModernTextBox}" Text="20" TextChanged="txtTVARate_TextChanged"/>
-                            </StackPanel>
-                            <StackPanel Margin="0,0,0,16">
-                                <TextBlock Text="Remise" Style="{StaticResource FieldLabel}"/>
-                                <TextBox IsEnabled="False" x:Name="Remise" Style="{StaticResource ModernTextBox}" MaxLength="20"/>
-                            </StackPanel>
-                            <StackPanel Margin="0,0,0,16">
-                                <TextBlock Text="Montant Total" Style="{StaticResource FieldLabel}"/>
-                                <TextBox IsEnabled="False" x:Name="txtTotalAmount" Style="{StaticResource ModernTextBox}" TextChanged="txtTotalAmount_TextChanged" MaxLength="20"/>
-                            </StackPanel>
-                            <StackPanel Margin="0,0,0,16">
-                                <TextBlock Text="Montant TVA" Style="{StaticResource FieldLabel}"/>
-                                <TextBox IsEnabled="False" x:Name="txtTVAAmount" Style="{StaticResource ModernTextBox}" MaxLength="20"/>
-                            </StackPanel>
-                            <StackPanel Margin="0,0,0,16">
-                                <TextBlock Text="Montant Apres TVA" Style="{StaticResource FieldLabel}"/>
-                                <TextBox IsEnabled="False" x:Name="txtApresTVAAmount" Style="{StaticResource ModernTextBox}" MaxLength="20"/>
+                                <TextBox x:Name="txtCurrency" 
+                                         MaxLength="10"
+                                         Style="{StaticResource ModernTextBox}"
+                                         Text="MAD"/>
                             </StackPanel>
 
-                            <StackPanel Margin="0,0,0,16">
+                            <StackPanel Margin="0,0,0,18">
+                                <TextBlock Text="Taux TVA (%)" Style="{StaticResource FieldLabel}"/>
+                                <TextBox x:Name="txtTVARate" 
+                                         PreviewTextInput="DecimalTextBox_PreviewTextInput" 
+                                         MaxLength="6"
+                                         DataObject.Pasting="DecimalTextBox_Pasting" 
+                                         Style="{StaticResource ModernTextBox}" 
+                                         Text="20" 
+                                         TextChanged="txtTVARate_TextChanged"/>
+                            </StackPanel>
+
+                            <StackPanel Margin="0,0,0,18">
+                                <TextBlock Text="Remise" Style="{StaticResource FieldLabel}"/>
+                                <TextBox x:Name="Remise" 
+                                         Style="{StaticResource ModernTextBox}" 
+                                         IsEnabled="False"
+                                         MaxLength="20"/>
+                            </StackPanel>
+
+                            <StackPanel Margin="0,0,0,18">
+                                <TextBlock Text="Montant Total HT" Style="{StaticResource FieldLabel}"/>
+                                <TextBox x:Name="txtTotalAmount" 
+                                         Style="{StaticResource ModernTextBox}" 
+                                         IsEnabled="False"
+                                         TextChanged="txtTotalAmount_TextChanged" 
+                                         MaxLength="20"
+                                         FontWeight="SemiBold"/>
+                            </StackPanel>
+
+                            <StackPanel Margin="0,0,0,18">
+                                <TextBlock Text="Montant TVA" Style="{StaticResource FieldLabel}"/>
+                                <TextBox x:Name="txtTVAAmount" 
+                                         Style="{StaticResource ModernTextBox}" 
+                                         IsEnabled="False"
+                                         MaxLength="20"/>
+                            </StackPanel>
+
+                            <StackPanel Margin="0,0,0,18">
+                                <TextBlock Text="Montant Total TTC" Style="{StaticResource FieldLabel}"/>
+                                <TextBox x:Name="txtApresTVAAmount" 
+                                         Style="{StaticResource ModernTextBox}" 
+                                         IsEnabled="False"
+                                         MaxLength="20"
+                                         FontWeight="Bold"
+                                         FontSize="16"/>
+                            </StackPanel>
+
+                            <StackPanel>
                                 <TextBlock Text="Index de Facture" Style="{StaticResource FieldLabel}"/>
                                 <ComboBox x:Name="IndexFacture" 
-                            Style="{StaticResource ModernComboBox}"
-                            SelectedIndex="0">
+                                          Style="{StaticResource ModernComboBox}"
+                                          SelectedIndex="0">
                                     <ComboBoxItem Content="0"/>
                                     <ComboBoxItem Content="1"/>
                                 </ComboBox>
                             </StackPanel>
                         </StackPanel>
+
+                        <!-- Right Column -->
                         <StackPanel Grid.Column="1" Margin="12,0,0,0">
-                            <TextBlock Text="Description" Style="{StaticResource FieldLabel}"/>
+                            <TextBlock Text="Description / Notes" Style="{StaticResource FieldLabel}"/>
                             <TextBox x:Name="txtDescription" 
-                       Style="{StaticResource ModernTextBox}"
-                       Height="240"
-                       MaxLength="500"
-                       TextWrapping="Wrap"
-                       AcceptsReturn="True"
-                       VerticalContentAlignment="Top"
-                       VerticalScrollBarVisibility="Auto"/>
+                                     Style="{StaticResource ModernTextBox}"
+                                     Height="480"
+                                     MaxLength="500"
+                                     TextWrapping="Wrap"
+                                     AcceptsReturn="True"
+                                     VerticalContentAlignment="Top"
+                                     VerticalScrollBarVisibility="Auto"
+                                     Padding="16"/>
                         </StackPanel>
                     </Grid>
                 </StackPanel>
             </Border>
 
-            <!-- Section 5: Action Buttons -->
-            <Border Background="Transparent" 
-                    CornerRadius="12" 
-                    Padding="30,25"
-                    Margin="0,0,0,20">
-                <Border.Effect>
-                    <DropShadowEffect Color="#000000" Opacity="0.08" BlurRadius="20" ShadowDepth="0"/>
-                </Border.Effect>
-
-                <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+            <!-- Action Buttons Section -->
+            <Border Background="{StaticResource SurfaceBrush}" 
+                    Padding="24,20"
+                    Margin="0,0,0,40"
+                    CornerRadius="12"
+                    BorderBrush="{StaticResource BorderBrush}"
+                    BorderThickness="1">
+                <StackPanel Orientation="Horizontal" 
+                            HorizontalAlignment="Right">
                     <Button x:Name="btnPreview"
-                          Content="Aperçu"
-                          Style="{StaticResource ModernButton}"
-                          Background="#805AD5"
-                          Foreground="White"
-                          Margin="0,0,12,0"
-                          MinWidth="120" Click="btnPreview_Click"/>
+                            Content="👁️ Aperçu"
+                            Style="{StaticResource ModernButtonStyle}"
+                            Background="{StaticResource AccentBrush}"
+                            Foreground="White"
+                            MinWidth="140"
+                            FontSize="15"
+                            Click="btnPreview_Click"/>
                 </StackPanel>
             </Border>
 

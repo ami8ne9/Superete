@@ -4,7 +4,7 @@
         Title="Opérations Client" Height="700" Width="750"
         MinWidth="550"
         WindowStartupLocation="CenterScreen"
-        Background="#FAFBFC" WindowStyle="None">
+        Background="#FAFBFC" WindowStyle="None" ResizeMode="NoResize">
 
     <Window.Resources>
         <!-- Modern Card Style -->

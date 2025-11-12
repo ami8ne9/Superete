@@ -215,19 +215,62 @@
                              Grid.Row="1" 
                              Margin="0,0,0,15" TextChanged="ArticleInput_TextChanged"/>
 
-                    <Grid Margin="24,0" Grid.Row="2">
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="3*"/>
-                            <ColumnDefinition Width="1*"/>
-                            <ColumnDefinition Width="60"/>
-                        </Grid.ColumnDefinitions>
-                        <TextBlock Grid.Column="0" Text="ARTICLE" VerticalAlignment="Center"
-              FontWeight="SemiBold" FontSize="13" FontFamily="Segoe UI"/>
-                        <TextBlock Grid.Column="1" Text="STOCK" VerticalAlignment="Center"
-              FontWeight="SemiBold" FontSize="13" FontFamily="Segoe UI"/>
-                        <TextBlock Grid.Column="2" Text="ACTIONS" VerticalAlignment="Center"
-              FontWeight="SemiBold" FontSize="13" FontFamily="Segoe UI"/>
-                    </Grid>
+                    <!-- Replace your existing Grid with this modern version -->
+                    <Border Grid.Row="2"
+        Background="#FAFBFC"
+        BorderBrush="#E2E8F0"
+        BorderThickness="0,0,0,1"
+        Padding="10,16,10,16">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="3*"/>
+                                <!-- Article Name -->
+                                <ColumnDefinition Width="2*"/>
+                                <!-- Fournisseur -->
+                                <ColumnDefinition Width="80"/>
+                                <!-- Quantity/Stock -->
+                                <ColumnDefinition Width="80"/>
+                                <!-- Actions -->
+                            </Grid.ColumnDefinitions>
+
+                            <TextBlock Grid.Column="0" 
+                   Text="ARTICLE" 
+                   VerticalAlignment="Center"
+                   FontWeight="SemiBold" 
+                   FontSize="11" 
+                   Foreground="#64748B"
+                   FontFamily="Segoe UI"/>
+
+                            <TextBlock Grid.Column="1" 
+                   Text="FOURNISSEUR" 
+                   VerticalAlignment="Center"
+                   FontWeight="SemiBold" 
+                   FontSize="11" 
+                   Foreground="#64748B"
+                   FontFamily="Segoe UI"
+                   Margin="15,0,0,0"/>
+
+                            <TextBlock Grid.Column="2" 
+                   Text="STOCK" 
+                   VerticalAlignment="Center"
+                   HorizontalAlignment="Center"
+                   FontWeight="SemiBold" 
+                   FontSize="11" 
+                   Foreground="#64748B"
+                   FontFamily="Segoe UI"
+                   Margin="30,0,0,0"/>
+
+                            <TextBlock Grid.Column="3" 
+                   Text="ACTIONS" 
+                   VerticalAlignment="Center"
+                   HorizontalAlignment="Center"
+                   FontWeight="SemiBold" 
+                   FontSize="11" 
+                   Foreground="#64748B"
+                   FontFamily="Segoe UI"
+                   Margin="30,0,0,0"/>
+                        </Grid>
+                    </Border>
 
                     <ScrollViewer Grid.Row="3" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
                         <StackPanel Orientation="Vertical" Margin="0,0,0,15" Name="ArticlesContainer" />

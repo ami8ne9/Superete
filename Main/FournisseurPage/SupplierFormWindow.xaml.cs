@@ -29,11 +29,15 @@ namespace GestionComerce.Main.FournisseurPage
                 _editingSupplier = new Fournisseur();
                 UpdateButton.Content = "Ajouter";
                 this.Title = "Ajouter Fournisseur";
+
+                // Balance field is only for NEW suppliers
+                BalanceTextBox.IsEnabled = true;
             }
             else
             {
                 _isEdit = true;
-                _editingSupplier = supplier;
+                // CRITICAL: Get the actual reference from MainWindow list, not the passed object
+                _editingSupplier = _mainWindow.lfo.FirstOrDefault(f => f.FournisseurID == supplier.FournisseurID) ?? supplier;
                 UpdateButton.Content = "Modifier";
                 this.Title = "Modifier Fournisseur";
 
@@ -46,21 +50,24 @@ namespace GestionComerce.Main.FournisseurPage
                 SiegeEntrepriseTextBox.Text = _editingSupplier.SiegeEntreprise ?? string.Empty;
                 AdresseTextBox.Text = _editingSupplier.Adresse ?? string.Empty;
 
-                // Load balance from MainWindow credit list
+                // Load balance from MainWindow credit list (READ ONLY for edit mode)
                 var myCredits = _mainWindow.credits
                     .Where(c => c.FournisseurID == _editingSupplier.FournisseurID && c.Etat)
                     .ToList();
                 decimal diff = myCredits.Count > 0 ? myCredits.Sum(x => x.Difference) : 0m;
-                BalanceTextBox.Text = diff.ToString("F2");
+                BalanceTextBox.Text = $"[Lecture seule] {diff:F2}"; // Add prefix to show it's read-only
+
+                // DISABLE balance field when editing - use Payment window to add credit
+                BalanceTextBox.IsEnabled = false;
+                BalanceTextBox.IsReadOnly = true;
+                BalanceTextBox.Background = new System.Windows.Media.SolidColorBrush(System.Windows.Media.Color.FromRgb(245, 245, 245));
+                BalanceTextBox.Foreground = new System.Windows.Media.SolidColorBrush(System.Windows.Media.Color.FromRgb(128, 128, 128));
             }
         }
 
         private void CancelButton_Click(object sender, RoutedEventArgs e)
         {
-            if (this.Owner != null)
-            {
-                DialogResult = false;
-            }
+            DialogResult = false;
             Close();
         }
 
@@ -73,13 +80,16 @@ namespace GestionComerce.Main.FournisseurPage
                 return;
             }
 
-            // Validate balance if provided
+            // Validate balance ONLY if we're adding a new supplier (not editing)
             decimal parsedBalance = 0m;
-            if (!string.IsNullOrWhiteSpace(BalanceTextBox.Text) &&
-                !decimal.TryParse(BalanceTextBox.Text, out parsedBalance))
+            if (!_isEdit) // Only validate/use balance for NEW suppliers
             {
-                MessageBox.Show("Le solde doit être un nombre.", "Validation", MessageBoxButton.OK, MessageBoxImage.Warning);
-                return;
+                if (!string.IsNullOrWhiteSpace(BalanceTextBox.Text) &&
+                    !decimal.TryParse(BalanceTextBox.Text, out parsedBalance))
+                {
+                    MessageBox.Show("Le solde doit être un nombre.", "Validation", MessageBoxButton.OK, MessageBoxImage.Warning);
+                    return;
+                }
             }
 
             // Get trimmed values
@@ -208,14 +218,17 @@ namespace GestionComerce.Main.FournisseurPage
                         }
                     }
 
-                    SupplierSaved?.Invoke(this, EventArgs.Empty);
-                    WCongratulations wCongratulations = new WCongratulations("Modification Succès", "Fournisseur modifié avec succès", 1);
-                    wCongratulations.ShowDialog();
+                    // Set DialogResult BEFORE showing success message
                     if (this.Owner != null)
                     {
                         DialogResult = true;
                     }
-                    Close();    
+
+                    SupplierSaved?.Invoke(this, EventArgs.Empty);
+                    WCongratulations wCongratulations = new WCongratulations("Modification Succès", "Fournisseur modifié avec succès", 1);
+                    wCongratulations.ShowDialog();
+
+                    Close();
                 }
                 else
                 {
@@ -264,13 +277,16 @@ namespace GestionComerce.Main.FournisseurPage
                         }
                     }
 
-                    SupplierSaved?.Invoke(this, EventArgs.Empty);
-                    WCongratulations wCongratulations = new WCongratulations("Ajout Succès", "Fournisseur ajouté avec succès", 1);
-                    wCongratulations.ShowDialog();
+                    // Set DialogResult BEFORE showing success message
                     if (this.Owner != null)
                     {
                         DialogResult = true;
                     }
+
+                    SupplierSaved?.Invoke(this, EventArgs.Empty);
+                    WCongratulations wCongratulations = new WCongratulations("Ajout Succès", "Fournisseur ajouté avec succès", 1);
+                    wCongratulations.ShowDialog();
+
                     Close();
                 }
                 else

@@ -76,7 +76,7 @@ namespace GestionComerce.Main.FournisseurPage
             }
         }
 
-        private void RefreshSupplierDisplay()
+        public void RefreshSupplierDisplay()
         {
             try
             {
@@ -97,6 +97,9 @@ namespace GestionComerce.Main.FournisseurPage
                     var supplierRow = CreateSupplierRow(supplier);
                     SuppliersContainer.Children.Add(supplierRow);
                 }
+
+                // Update statistics after refresh
+                UpdateStatistics();
             }
             catch (Exception ex)
             {
@@ -112,7 +115,7 @@ namespace GestionComerce.Main.FournisseurPage
             return supplierRow;
         }
 
-        private void UpdateStatistics()
+        public void UpdateStatistics()
         {
             try
             {

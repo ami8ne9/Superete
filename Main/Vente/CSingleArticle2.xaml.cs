@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
@@ -21,33 +20,40 @@ namespace GestionComerce.Main.Vente
     /// </summary>
     public partial class CSingleArticle2 : UserControl
     {
-        public CSingleArticle2(Article a,int qte,CMainV main)
+        public CSingleArticle2(Article a, int qte, CMainV main)
         {
             InitializeComponent();
             ArticleName.Text = a.ArticleName;
-            Prix.Text = a.PrixVente.ToString();
+            Prix.Text = a.PrixVente.ToString("F2");
             Quantite.Text = qte.ToString();
             Total.Text = (Convert.ToDecimal(a.PrixVente) * Convert.ToInt32(qte)).ToString("F2");
+
             foreach (Fournisseur fo in main.lfo)
-                if (a.FournisseurID== fo.FournisseurID)
+            {
+                if (a.FournisseurID == fo.FournisseurID)
                 {
                     Fournisseur.Text = fo.Nom;
                     break;
                 }
+            }
+
             this.a = a;
             this.main = main;
             this.qte = qte;
         }
+
         public Article a;
-        CMainV main;public int qte;
+        CMainV main;
+        public int qte;
+
         public void SelectedArticleClicked(object sender, RoutedEventArgs e)
         {
-            main.SelectedArticles.Children.Remove(this);
-            main.TotalNett -= a.PrixVente * Convert.ToInt32(qte);
-            main.TotalNet.Text = main.TotalNett.ToString("F2") + " DH";
-            main.NbrA -= Convert.ToInt32(qte);
-            main.ArticleCount.Text = main.NbrA.ToString();
-            this.Background = Brushes.LightGray;
+                main.SelectedArticles.Children.Remove(this);
+                main.TotalNett -= a.PrixVente * Convert.ToInt32(qte);
+                main.TotalNet.Text = main.TotalNett.ToString("F2") + " DH";
+                main.NbrA -= Convert.ToInt32(qte);
+                main.ArticleCount.Text = main.NbrA.ToString();
+                main.UpdateCartEmptyState();
         }
     }
 }

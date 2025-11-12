@@ -10,6 +10,7 @@ namespace GestionComerce.Main.FournisseurPage
     {
         private readonly MainWindow _main;
         private readonly User _currentUser;
+        private Fournisseur _currentSupplier;
 
         public SingleRowSupplier(MainWindow main, User currentUser)
         {
@@ -46,13 +47,16 @@ namespace GestionComerce.Main.FournisseurPage
         private void SingleRowSupplier_DataContextChanged(object sender, DependencyPropertyChangedEventArgs e)
         {
             if (e.NewValue is Fournisseur fournisseur)
+            {
+                _currentSupplier = fournisseur;
                 PopulateRow(fournisseur);
+            }
         }
 
         private void PopulateRow(Fournisseur fournisseur)
         {
             // ID
-            IdText.Text = fournisseur.FournisseurID.ToString();
+          
 
             // Name
             NameText.Text = fournisseur.Nom ?? "N/A";
@@ -79,31 +83,70 @@ namespace GestionComerce.Main.FournisseurPage
             BalanceText.Foreground = balance > 0 ? Brushes.Red : Brushes.Green;
         }
 
+        public void RefreshRow()
+        {
+            if (_currentSupplier != null)
+            {
+                PopulateRow(_currentSupplier);
+            }
+        }
+
         private void Paid_Click(object sender, RoutedEventArgs e)
         {
             if (!(DataContext is Fournisseur fournisseur)) return;
 
             var wnd = new PaidSupplierWindow(_currentUser, _main, fournisseur);
-            if (wnd.ShowDialog() == true)
+            bool? result = wnd.ShowDialog();
+
+            if (result == true)
             {
-                // Refresh after payment
+                // Payment was successful - refresh balance
+                System.Diagnostics.Debug.WriteLine("[PAYMENT] Payment successful, refreshing balance");
+
+                // Refresh this row to show new balance
+                PopulateRow(fournisseur);
+
+                // Refresh parent to update statistics
                 var parent = FindParentCMainF();
-                parent?.LoadAllData();
+                if (parent != null)
+                {
+                    parent.UpdateStatistics();
+                    parent.RefreshSupplierDisplay();
+                }
             }
         }
 
         private void Update_Click(object sender, RoutedEventArgs e)
         {
-            if (!(DataContext is Fournisseur f)) return;
+            if (_currentSupplier == null) return;
             if (_main == null) return;
 
-            var wnd = new SupplierFormWindow(_main, f); // edit mode
+            System.Diagnostics.Debug.WriteLine($"[UPDATE] Before update - Name: {_currentSupplier.Nom}, Code: {_currentSupplier.Code}");
+
+            var wnd = new SupplierFormWindow(_main, _currentSupplier); // edit mode
+            wnd.SupplierSaved += (s, ev) =>
+            {
+                System.Diagnostics.Debug.WriteLine($"[UPDATE] SupplierSaved event fired - Name: {_currentSupplier.Nom}, Code: {_currentSupplier.Code}");
+
+                // Force refresh this row
+                PopulateRow(_currentSupplier);
+            };
+
             bool? res = wnd.ShowDialog();
+
             if (res == true)
             {
+                System.Diagnostics.Debug.WriteLine($"[UPDATE] After update - Name: {_currentSupplier.Nom}, Code: {_currentSupplier.Code}");
+
+                // Force refresh this row again
+                PopulateRow(_currentSupplier);
+
                 // Refresh the parent CMainF
                 var parent = FindParentCMainF();
-                parent?.LoadAllData();
+                if (parent != null)
+                {
+                    parent.RefreshSupplierDisplay();
+                }
             }
         }
 

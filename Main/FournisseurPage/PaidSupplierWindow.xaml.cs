@@ -45,9 +45,7 @@ namespace GestionComerce.Main.FournisseurPage
 
         private int GetCurrentUserId()
         {
-
             return _currentUser.UserID;
-
         }
 
         private void LoadCredits()
@@ -119,7 +117,6 @@ namespace GestionComerce.Main.FournisseurPage
             }
         }
 
-
         private async void ProcessPaymentButton_Click(object sender, RoutedEventArgs e)
         {
             try
@@ -159,7 +156,7 @@ namespace GestionComerce.Main.FournisseurPage
                     // Persist to database
                     await credit.UpdateCreditAsync();
 
-                    // Update the credit in MainWindow list
+                    // Update the credit in MainWindow list - Get actual reference
                     var creditInList = _mainWindow.credits.FirstOrDefault(c => c.CreditID == credit.CreditID);
                     if (creditInList != null)
                     {
@@ -170,18 +167,20 @@ namespace GestionComerce.Main.FournisseurPage
 
                 await CreatePaymentOperationAsync(amount, creditId);
 
-                //MessageBox.Show("Paiement traité avec succès.", "Succès", MessageBoxButton.OK, MessageBoxImage.Information);
-                WCongratulations wCongratulations = new WCongratulations("Paiement avec Succes", $"Paiement de {amount:N2} DH traité avec succès.", 1);
+                // Set DialogResult BEFORE showing success message
+                DialogResult = true;
+
+                WCongratulations wCongratulations = new WCongratulations("Paiement avec Succès", $"Paiement de {amount:N2} DH traité avec succès.", 1);
                 wCongratulations.ShowDialog();
-                //DialogResult = true;
-                //Close();
+
+                // Close this window after showing success
+                Close();
             }
             catch (Exception ex)
             {
-                WCongratulations wCongratulations = new WCongratulations("Payement Echoue", "Payement n'a pas ete effectue", 0);
+                WCongratulations wCongratulations = new WCongratulations("Paiement Échoué", "Le paiement n'a pas été effectué", 0);
                 wCongratulations.ShowDialog();
             }
         }
-
     }
 }

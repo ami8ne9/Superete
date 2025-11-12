@@ -98,7 +98,7 @@
             </Grid.RowDefinitions>
             <!-- Header -->
             <Border Background="#007ACC" CornerRadius="8,8,0,0" Height="50" VerticalAlignment="Top">
-                <TextBlock Text="Ajouter un Fournisseur"
+                <TextBlock Text="Ajouter une Famille"
                           FontSize="16" FontWeight="SemiBold"
                           Foreground="White"
                           HorizontalAlignment="Center"

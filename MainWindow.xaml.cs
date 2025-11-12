@@ -1,11 +1,12 @@
 ﻿using GestionComerce.Main;
 using GestionComerce.Main.ClientPage;
+using GestionComerce.Main.Facturation;
 using GestionComerce.Main.FournisseurPage;
 using GestionComerce.Main.Inventory;
 using GestionComerce.Main.ProjectManagment;
 using GestionComerce.Main.Settings;
 using GestionComerce.Main.Vente;
-using GestionComerce.Main.Facturation;
+using Superete;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -33,6 +34,36 @@ namespace GestionComerce
 
         public MainWindow()
         {
+            // STEP 1: Check if running on authorized machine
+            if (!MachineLock.ValidateInstallation())
+            {
+                System.Windows.MessageBox.Show(
+                    "This application is not properly installed on this computer.\n\n" +
+                    "Please install the application using the official installer.\n\n" +
+                    "Copying the executable to another machine is not allowed.",
+                    "Installation Error",
+                    MessageBoxButton.OK,
+                    MessageBoxImage.Error
+                );
+                System.Windows.Application.Current.Shutdown();
+                return;
+            }
+
+            // STEP 2: Check expiry date
+            DateTime expiryDate = new DateTime(2026, 11, 6, 16, 20, 0);
+            if (DateTime.Now > expiryDate)
+            {
+                System.Windows.MessageBox.Show(
+                    "This version has expired.",
+                    "Expired",
+                    MessageBoxButton.OK,
+                    MessageBoxImage.Warning
+                );
+                System.Windows.Application.Current.Shutdown();
+                return;
+            }
+
+            // STEP 3: Continue normal initialization
             InitializeComponent();
             MainGrid.Children.Clear();
             loginPage = new Login(this);
@@ -42,6 +73,7 @@ namespace GestionComerce
             MainGrid.Children.Add(loginPage);
             this.Closed += MainWindow_Closed;
         }
+
         public List<User> lu;
         public List<Role> lr;
         public List<Famille> lf;
@@ -49,21 +81,22 @@ namespace GestionComerce
         public List<Article> laa;
         public List<Fournisseur> lfo;
         public List<Client> lc;
-        public List<Operation> lo ;
-        public List<OperationArticle> loa ;
-        public List<Credit> credits ;
+        public List<Operation> lo;
+        public List<OperationArticle> loa;
+        public List<Credit> credits;
         public List<PaymentMethod> lp;
+
         private void MainWindow_Closed(object sender, EventArgs e)
         {
             foreach (Window w in Application.Current.Windows)
             {
-                if (w != this) // skip the main window itself
+                if (w != this)
                     w.Close();
             }
         }
+
         public async void load_main(User u)
         {
-
             List<User> lu = await u.GetUsersAsync();
             Role r = new Role();
             List<Role> lr = await r.GetRolesAsync();
@@ -82,11 +115,11 @@ namespace GestionComerce
 
             foreach (OperationArticle oa in loa)
             {
-                foreach(Operation o in lo)
+                foreach (Operation o in lo)
                 {
-                    if(o.OperationID == oa.OperationID)
+                    if (o.OperationID == oa.OperationID)
                     {
-                        oa.Date=o.DateOperation;
+                        oa.Date = o.DateOperation;
                     }
                 }
             }
@@ -105,48 +138,53 @@ namespace GestionComerce
             this.lp = lp;
             this.credits = credits;
             MainGrid.Children.Clear();
-            CMain loginPage = new CMain(this,u);
+            CMain loginPage = new CMain(this, u);
             loginPage.HorizontalAlignment = HorizontalAlignment.Stretch;
             loginPage.VerticalAlignment = VerticalAlignment.Stretch;
             loginPage.Margin = new Thickness(0);
             MainGrid.Children.Add(loginPage);
         }
+
         public void load_settings(User u)
         {
             MainGrid.Children.Clear();
-            SettingsPage loginPage = new SettingsPage(u,lu,lr,lf,this);
+            SettingsPage loginPage = new SettingsPage(u, lu, lr, lf, this);
             loginPage.HorizontalAlignment = HorizontalAlignment.Stretch;
             loginPage.VerticalAlignment = VerticalAlignment.Stretch;
             loginPage.Margin = new Thickness(0);
             MainGrid.Children.Add(loginPage);
         }
-        public void load_vente(User u,List<Article> la)
+
+        public void load_vente(User u, List<Article> la)
         {
             MainGrid.Children.Clear();
-            CMainV loginPage = new CMainV(u,lf, lu, lr, this, la,lfo);
+            CMainV loginPage = new CMainV(u, lf, lu, lr, this, la, lfo);
             loginPage.HorizontalAlignment = HorizontalAlignment.Stretch;
             loginPage.VerticalAlignment = VerticalAlignment.Stretch;
             loginPage.Margin = new Thickness(0);
             MainGrid.Children.Add(loginPage);
         }
+
         public void load_inventory(User u)
         {
             MainGrid.Children.Clear();
-            CMainI loginPage = new CMainI(u,la,lf,lfo,this);
+            CMainI loginPage = new CMainI(u, la, lf, lfo, this);
             loginPage.HorizontalAlignment = HorizontalAlignment.Stretch;
             loginPage.VerticalAlignment = VerticalAlignment.Stretch;
             loginPage.Margin = new Thickness(0);
             MainGrid.Children.Add(loginPage);
         }
+
         public void load_fournisseur(User u)
         {
             MainGrid.Children.Clear();
-            CMainF loginPage = new CMainF(u,this);
+            CMainF loginPage = new CMainF(u, this);
             loginPage.HorizontalAlignment = HorizontalAlignment.Stretch;
             loginPage.VerticalAlignment = VerticalAlignment.Stretch;
             loginPage.Margin = new Thickness(0);
             MainGrid.Children.Add(loginPage);
         }
+
         public void load_client(User u)
         {
             MainGrid.Children.Clear();
@@ -156,6 +194,7 @@ namespace GestionComerce
             loginPage.Margin = new Thickness(0);
             MainGrid.Children.Add(loginPage);
         }
+
         public void load_ProjectManagement(User u)
         {
             MainGrid.Children.Clear();
@@ -165,6 +204,7 @@ namespace GestionComerce
             loginPage.Margin = new Thickness(0);
             MainGrid.Children.Add(loginPage);
         }
+
         public void load_Login()
         {
             MainGrid.Children.Clear();
@@ -174,10 +214,11 @@ namespace GestionComerce
             loginPage.Margin = new Thickness(0);
             MainGrid.Children.Add(loginPage);
         }
+
         public void load_facturation(User u)
         {
             MainGrid.Children.Clear();
-            CMainFa loginPage = new CMainFa(u, this,null);
+            CMainFa loginPage = new CMainFa(u, this, null);
             loginPage.HorizontalAlignment = HorizontalAlignment.Stretch;
             loginPage.VerticalAlignment = VerticalAlignment.Stretch;
             loginPage.Margin = new Thickness(0);

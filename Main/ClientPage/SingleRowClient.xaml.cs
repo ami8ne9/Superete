@@ -57,7 +57,7 @@ namespace GestionComerce.Main.ClientPage
 
         private void PopulateRow(Client client)
         {
-            IdText.Text = client.ClientID.ToString();
+           
             NameText.Text = client.Nom ?? "N/A";
 
             // Show company badge if it's a company

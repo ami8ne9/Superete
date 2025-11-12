@@ -1,18 +1,90 @@
 ﻿<Window x:Class="GestionComerce.Main.Settings.WRoles"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        Title="Role Management" Height="500" Width="400"
+        Title="Role Management" Height="550" Width="450"
         WindowStartupLocation="CenterScreen"
-        Background="#f8f9fa" WindowStyle="None" BorderThickness="2,2,0,0" ResizeMode="NoResize">
+        Background="White" WindowStyle="None" ResizeMode="NoResize">
 
     <Window.Resources>
-        <!-- Button Style -->
+        <!-- Modern Button Style -->
         <Style x:Key="ModernButtonStyle" TargetType="Button">
-            <Setter Property="Background" Value="#007bff"/>
+            <Setter Property="Background" Value="#3B82F6"/>
             <Setter Property="Foreground" Value="White"/>
             <Setter Property="BorderThickness" Value="0"/>
-            <Setter Property="Padding" Value="15,8"/>
+            <Setter Property="Padding" Value="20,12"/>
             <Setter Property="FontSize" Value="14"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border Background="{TemplateBinding Background}" 
+                                CornerRadius="8"
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="{TemplateBinding BorderThickness}">
+                            <ContentPresenter HorizontalAlignment="Center" 
+                                            VerticalAlignment="Center"
+                                            Margin="{TemplateBinding Padding}"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter Property="Opacity" Value="0.9"/>
+                            </Trigger>
+                            <Trigger Property="IsPressed" Value="True">
+                                <Setter Property="Opacity" Value="0.8"/>
+                            </Trigger>
+                            <Trigger Property="IsEnabled" Value="False">
+                                <Setter Property="Opacity" Value="0.5"/>
+                                <Setter Property="Background" Value="#E5E7EB"/>
+                                <Setter Property="Foreground" Value="#9CA3AF"/>
+                                <Setter Property="Cursor" Value="No"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!-- Secondary Button Style (Cancel/Close) -->
+        <Style x:Key="SecondaryButtonStyle" TargetType="Button">
+            <Setter Property="Background" Value="#F3F4F6"/>
+            <Setter Property="Foreground" Value="#374151"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Padding" Value="20,12"/>
+            <Setter Property="FontSize" Value="14"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border Background="{TemplateBinding Background}" 
+                                CornerRadius="8"
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="{TemplateBinding BorderThickness}">
+                            <ContentPresenter HorizontalAlignment="Center" 
+                                            VerticalAlignment="Center"
+                                            Margin="{TemplateBinding Padding}"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter Property="Background" Value="#E5E7EB"/>
+                            </Trigger>
+                            <Trigger Property="IsPressed" Value="True">
+                                <Setter Property="Background" Value="#D1D5DB"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!-- Delete Button Style -->
+        <Style x:Key="DeleteButtonStyle" TargetType="Button">
+            <Setter Property="Background" Value="#EF4444"/>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Padding" Value="12,8"/>
+            <Setter Property="FontSize" Value="13"/>
             <Setter Property="FontWeight" Value="SemiBold"/>
             <Setter Property="Cursor" Value="Hand"/>
             <Setter Property="Template">
@@ -23,80 +95,15 @@
                                 BorderBrush="{TemplateBinding BorderBrush}"
                                 BorderThickness="{TemplateBinding BorderThickness}">
                             <ContentPresenter HorizontalAlignment="Center" 
-                                            VerticalAlignment="Center"/>
+                                            VerticalAlignment="Center"
+                                            Margin="{TemplateBinding Padding}"/>
                         </Border>
                         <ControlTemplate.Triggers>
                             <Trigger Property="IsMouseOver" Value="True">
-                                <Setter Property="Background" Value="#0056b3"/>
+                                <Setter Property="Background" Value="#DC2626"/>
                             </Trigger>
                             <Trigger Property="IsPressed" Value="True">
-                                <Setter Property="Background" Value="#004085"/>
-                            </Trigger>
-                            <Trigger Property="IsEnabled" Value="False">
-                                <Setter Property="Opacity" Value="0.5"/>
-                                <Setter Property="Background" Value="#E5E7EB"/>
-                                <Setter Property="Foreground" Value="#9CA3AF"/>
-                                <Setter Property="Cursor" Value="No"/>
-                            </Trigger>
-
-                        </ControlTemplate.Triggers>
-                    </ControlTemplate>
-                </Setter.Value>
-            </Setter>
-        </Style>
-
-        <!-- Delete Button Style -->
-        <Style x:Key="DeleteButtonStyle" TargetType="Button">
-            <Setter Property="Background" Value="#dc3545"/>
-            <Setter Property="Foreground" Value="White"/>
-            <Setter Property="BorderThickness" Value="0"/>
-            <Setter Property="Padding" Value="10,6"/>
-            <Setter Property="FontSize" Value="12"/>
-            <Setter Property="FontWeight" Value="SemiBold"/>
-            <Setter Property="Cursor" Value="Hand"/>
-            <Setter Property="Template">
-                <Setter.Value>
-                    <ControlTemplate TargetType="Button">
-                        <Border Background="{TemplateBinding Background}" 
-                                CornerRadius="4"
-                                BorderBrush="{TemplateBinding BorderBrush}"
-                                BorderThickness="{TemplateBinding BorderThickness}">
-                            <ContentPresenter HorizontalAlignment="Center" 
-                                            VerticalAlignment="Center"/>
-                        </Border>
-                        <ControlTemplate.Triggers>
-                            <Trigger Property="IsMouseOver" Value="True">
-                                <Setter Property="Background" Value="#c82333"/>
-                            </Trigger>
-                            <Trigger Property="IsPressed" Value="True">
-                                <Setter Property="Background" Value="#bd2130"/>
-                            </Trigger>
-                        </ControlTemplate.Triggers>
-                    </ControlTemplate>
-                </Setter.Value>
-            </Setter>
-        </Style>
-
-        <!-- TextBox Style -->
-        <Style x:Key="ModernTextBoxStyle" TargetType="TextBox">
-            <Setter Property="BorderThickness" Value="1"/>
-            <Setter Property="BorderBrush" Value="#ced4da"/>
-            <Setter Property="Padding" Value="10,8"/>
-            <Setter Property="FontSize" Value="14"/>
-            <Setter Property="Background" Value="White"/>
-            <Setter Property="Template">
-                <Setter.Value>
-                    <ControlTemplate TargetType="TextBox">
-                        <Border Background="{TemplateBinding Background}"
-                                BorderBrush="{TemplateBinding BorderBrush}"
-                                BorderThickness="{TemplateBinding BorderThickness}"
-                                CornerRadius="4">
-                            <ScrollViewer x:Name="PART_ContentHost"/>
-                        </Border>
-                        <ControlTemplate.Triggers>
-                            <Trigger Property="IsFocused" Value="True">
-                                <Setter Property="BorderBrush" Value="#007bff"/>
-                                <Setter Property="BorderThickness" Value="2"/>
+                                <Setter Property="Background" Value="#B91C1C"/>
                             </Trigger>
                         </ControlTemplate.Triggers>
                     </ControlTemplate>
@@ -104,55 +111,63 @@
             </Setter>
         </Style>
     </Window.Resources>
+
     <Window.Effect>
-        <DropShadowEffect/>
+        <DropShadowEffect ShadowDepth="0" BlurRadius="20" Opacity="0.3"/>
     </Window.Effect>
 
-    <Grid Margin="20">
-        <Grid.RowDefinitions>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="20"/>
-            <RowDefinition/>
-            <RowDefinition Height="9"/>
-            <RowDefinition Height="Auto" MinHeight="29.62"/>
-        </Grid.RowDefinitions>
+    <Border Background="White" CornerRadius="12" BorderBrush="#E5E7EB" BorderThickness="1">
+        <Grid Margin="30">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="30"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="25"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
 
-        <!-- Title "Roles" -->
-        <TextBlock Grid.Row="0" Text="Roles" 
-                   FontSize="24" FontWeight="Bold" 
-                   HorizontalAlignment="Left"
-                   Foreground="#343a40"
-                   Margin="0,0,0,10" Width="60"/>
+            <!-- Title Section -->
+            <StackPanel Grid.Row="0">
+                <TextBlock Text="Role Management" 
+                           FontSize="24" 
+                           FontWeight="Bold" 
+                           Foreground="#111827"
+                           Margin="0,0,0,6"/>
+                <TextBlock Text="Manage user roles and permissions" 
+                           FontSize="14" 
+                           Foreground="#6B7280"/>
+            </StackPanel>
 
-        <!-- Roles Container with Border -->
-        <Border Grid.Row="2" 
-                BorderBrush="#dee2e6" 
-                BorderThickness="1" 
-                CornerRadius="8"
-                Background="White">
-            <ScrollViewer VerticalScrollBarVisibility="Auto" 
-                         HorizontalScrollBarVisibility="Disabled"
-                         Padding="0">
-                <StackPanel Name="RolesList" Margin="0">
-                    <!-- Role UserControls will be added here -->
-                </StackPanel>
-            </ScrollViewer>
-        </Border>
+            <!-- Roles Container with Border -->
+            <Border Grid.Row="2" 
+                    BorderBrush="#E5E7EB" 
+                    BorderThickness="1" 
+                    CornerRadius="10"
+                    Background="#F9FAFB">
+                <ScrollViewer VerticalScrollBarVisibility="Auto" 
+                             HorizontalScrollBarVisibility="Disabled"
+                             Padding="0">
+                    <StackPanel Name="RolesList" Margin="15">
+                        <!-- Role UserControls will be added here -->
+                    </StackPanel>
+                </ScrollViewer>
+            </Border>
 
-        <!-- Add Role Button at Bottom -->
-        <StackPanel Grid.Row="4" Orientation="Horizontal" HorizontalAlignment="Right">
-            <Button Content="Close" 
-                    Style="{StaticResource ModernButtonStyle}" 
-                    Width="100" Height="35" Margin="0,0,5,0"
-                     Background="red" Click="Button_Click"/>
-            <Button Content="Add Role" 
-                    Style="{StaticResource ModernButtonStyle}" 
-                    Width="100" Height="35" x:Name="AddRoles"
-                    Click="AddRoleButton_Click"/>
-            
-
-        </StackPanel>
-        
-    </Grid>
+            <!-- Action Buttons at Bottom -->
+            <StackPanel Grid.Row="4" Orientation="Horizontal" HorizontalAlignment="Right">
+                <Button Content="Close" 
+                        Style="{StaticResource SecondaryButtonStyle}" 
+                        Width="110" 
+                        Height="42" 
+                        Margin="0,0,10,0"
+                        Click="Button_Click"/>
+                <Button Content="+ Add Role" 
+                        Style="{StaticResource ModernButtonStyle}" 
+                        Width="130" 
+                        Height="42" 
+                        x:Name="AddRoles"
+                        Click="AddRoleButton_Click"/>
+            </StackPanel>
+        </Grid>
+    </Border>
 </Window>
-

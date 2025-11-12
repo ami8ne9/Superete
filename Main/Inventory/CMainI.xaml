@@ -5,96 +5,144 @@
 >
 
     <UserControl.Resources>
-        <!-- Modern Color Palette -->
-        <SolidColorBrush x:Key="PrimaryBrush" Color="#6366F1"/>
-        <SolidColorBrush x:Key="SecondaryBrush" Color="#8B5CF6"/>
-        <SolidColorBrush x:Key="AccentBrush" Color="#06B6D4"/>
-        <SolidColorBrush x:Key="SurfaceBrush" Color="#FFFFFF"/>
-        <SolidColorBrush x:Key="BackgroundBrush" Color="#F8FAFC"/>
-        <SolidColorBrush x:Key="CardBrush" Color="#FFFFFF"/>
-        <SolidColorBrush x:Key="BorderBrush" Color="#E2E8F0"/>
-        <SolidColorBrush x:Key="TextPrimaryBrush" Color="#1E293B"/>
-        <SolidColorBrush x:Key="TextSecondaryBrush" Color="#64748B"/>
-        <SolidColorBrush x:Key="SuccessBrush" Color="#10B981"/>
-        <SolidColorBrush x:Key="WarningBrush" Color="#F59E0B"/>
-        <SolidColorBrush x:Key="DangerBrush" Color="#EF4444"/>
-        <SolidColorBrush x:Key="InfoBrush" Color="#3B82F6"/>
+        <!-- Elite Color Palette -->
+        <SolidColorBrush x:Key="PrimaryDark" Color="#1E293B"/>
+        <SolidColorBrush x:Key="PrimaryBlue" Color="#3B82F6"/>
+        <SolidColorBrush x:Key="AccentCyan" Color="#06B6D4"/>
+        <SolidColorBrush x:Key="AccentPurple" Color="#8B5CF6"/>
+        <SolidColorBrush x:Key="SuccessGreen" Color="#10B981"/>
+        <SolidColorBrush x:Key="WarningOrange" Color="#F59E0B"/>
+        <SolidColorBrush x:Key="DangerRed" Color="#EF4444"/>
+        <SolidColorBrush x:Key="BackgroundLight" Color="#F8FAFC"/>
+        <SolidColorBrush x:Key="SurfaceWhite" Color="#FFFFFF"/>
+        <SolidColorBrush x:Key="BorderLight" Color="#E2E8F0"/>
+        <SolidColorBrush x:Key="TextPrimary" Color="#0F172A"/>
+        <SolidColorBrush x:Key="TextSecondary" Color="#64748B"/>
+        <SolidColorBrush x:Key="TextTertiary" Color="#94A3B8"/>
 
-        <!-- Modern Drop Shadow Effect -->
-        <DropShadowEffect x:Key="CardShadow" BlurRadius="20" ShadowDepth="2" Color="#000000" Opacity="0.08"/>
-        <DropShadowEffect x:Key="ButtonShadow" BlurRadius="8" ShadowDepth="1" Color="#000000" Opacity="0.12"/>
+        <!-- Premium Shadows -->
+        <DropShadowEffect x:Key="ShadowSm" BlurRadius="8" ShadowDepth="0" Color="#000000" Opacity="0.04"/>
+        <DropShadowEffect x:Key="ShadowMd" BlurRadius="20" ShadowDepth="0" Color="#000000" Opacity="0.06"/>
+        <DropShadowEffect x:Key="ShadowLg" BlurRadius="32" ShadowDepth="0" Color="#000000" Opacity="0.08"/>
+        <DropShadowEffect x:Key="ShadowXl" BlurRadius="48" ShadowDepth="0" Color="#000000" Opacity="0.1"/>
 
-        <!-- Header Text Style -->
-        <Style x:Key="HeaderTextStyle" TargetType="TextBlock">
+        <!-- Header Title Style -->
+        <Style x:Key="HeaderTitleStyle" TargetType="TextBlock">
+            <Setter Property="FontFamily" Value="Segoe UI"/>
+            <Setter Property="FontSize" Value="24"/>
             <Setter Property="FontWeight" Value="SemiBold"/>
-            <Setter Property="FontSize" Value="18"/>
-            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="Foreground" Value="{StaticResource TextPrimary}"/>
+        </Style>
+
+        <!-- Section Title Style -->
+        <Style x:Key="SectionTitleStyle" TargetType="TextBlock">
             <Setter Property="FontFamily" Value="Segoe UI"/>
+            <Setter Property="FontSize" Value="14"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="Foreground" Value="{StaticResource TextSecondary}"/>
         </Style>
 
-        <!-- Modern Card Style -->
-        <Style x:Key="ModernCardStyle" TargetType="Border">
-            <Setter Property="Background" Value="{StaticResource CardBrush}"/>
-            <Setter Property="CornerRadius" Value="20"/>
-            <Setter Property="Margin" Value="8"/>
-            <Setter Property="Padding" Value="20"/>
-            <Setter Property="MinHeight" Value="120"/>
-            <Setter Property="Height" Value="120"/>
-            <Setter Property="Effect" Value="{StaticResource CardShadow}"/>
+        <!-- Stat Card Style -->
+        <Style x:Key="StatCardStyle" TargetType="Border">
+            <Setter Property="Background" Value="{StaticResource SurfaceWhite}"/>
+            <Setter Property="CornerRadius" Value="16"/>
+            <Setter Property="Padding" Value="24"/>
+            <Setter Property="Effect" Value="{StaticResource ShadowMd}"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="BorderBrush" Value="{StaticResource BorderLight}"/>
         </Style>
 
-        <!-- Stat Value Style -->
-        <Style x:Key="StatValueStyle" TargetType="TextBlock">
-            <Setter Property="FontSize" Value="28"/>
-            <Setter Property="FontWeight" Value="Bold"/>
-            <Setter Property="Foreground" Value="White"/>
-            <Setter Property="FontFamily" Value="Segoe UI"/>
-        </Style>
-
-        <!-- Stat Label Style -->
-        <Style x:Key="StatLabelStyle" TargetType="TextBlock">
-            <Setter Property="FontSize" Value="11"/>
-            <Setter Property="Foreground" Value="White"/>
-            <Setter Property="Opacity" Value="0.95"/>
-            <Setter Property="FontFamily" Value="Segoe UI"/>
-            <Setter Property="FontWeight" Value="Medium"/>
-        </Style>
-
-        <!-- Modern Button Style -->
-        <Style x:Key="ModernButtonStyle" TargetType="Button">
-            <Setter Property="Background" Value="{StaticResource PrimaryBrush}"/>
+        <!-- Premium Button Style -->
+        <Style x:Key="PrimaryButtonStyle" TargetType="Button">
+            <Setter Property="Background" Value="{StaticResource PrimaryBlue}"/>
             <Setter Property="Foreground" Value="White"/>
             <Setter Property="BorderThickness" Value="0"/>
-            <Setter Property="Padding" Value="16,12"/>
-            <Setter Property="FontWeight" Value="Medium"/>
+            <Setter Property="Padding" Value="24,14"/>
+            <Setter Property="FontSize" Value="14"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
             <Setter Property="FontFamily" Value="Segoe UI"/>
             <Setter Property="Cursor" Value="Hand"/>
-            <Setter Property="Effect" Value="{StaticResource ButtonShadow}"/>
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="Button">
-                        <Border Background="{TemplateBinding Background}"
-                                CornerRadius="8"
+                        <Border x:Name="border" 
+                                Background="{TemplateBinding Background}"
+                                CornerRadius="10"
+                                Padding="{TemplateBinding Padding}">
+                            <Border.RenderTransform>
+                                <ScaleTransform ScaleX="1" ScaleY="1"/>
+                            </Border.RenderTransform>
+                            <Border.RenderTransformOrigin>
+                                <Point X="0.5" Y="0.5"/>
+                            </Border.RenderTransformOrigin>
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter Property="Background" Value="#2563EB"/>
+                                <Trigger.EnterActions>
+                                    <BeginStoryboard>
+                                        <Storyboard>
+                                            <DoubleAnimation Storyboard.TargetName="border"
+                                                           Storyboard.TargetProperty="(Border.RenderTransform).(ScaleTransform.ScaleX)"
+                                                           To="1.02" Duration="0:0:0.12"/>
+                                            <DoubleAnimation Storyboard.TargetName="border"
+                                                           Storyboard.TargetProperty="(Border.RenderTransform).(ScaleTransform.ScaleY)"
+                                                           To="1.02" Duration="0:0:0.12"/>
+                                        </Storyboard>
+                                    </BeginStoryboard>
+                                </Trigger.EnterActions>
+                                <Trigger.ExitActions>
+                                    <BeginStoryboard>
+                                        <Storyboard>
+                                            <DoubleAnimation Storyboard.TargetName="border"
+                                                           Storyboard.TargetProperty="(Border.RenderTransform).(ScaleTransform.ScaleX)"
+                                                           To="1" Duration="0:0:0.12"/>
+                                            <DoubleAnimation Storyboard.TargetName="border"
+                                                           Storyboard.TargetProperty="(Border.RenderTransform).(ScaleTransform.ScaleY)"
+                                                           To="1" Duration="0:0:0.12"/>
+                                        </Storyboard>
+                                    </BeginStoryboard>
+                                </Trigger.ExitActions>
+                            </Trigger>
+                            <Trigger Property="IsPressed" Value="True">
+                                <Setter Property="Background" Value="#1E40AF"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!-- Secondary Button Style -->
+        <Style x:Key="SecondaryButtonStyle" TargetType="Button">
+            <Setter Property="Background" Value="{StaticResource SurfaceWhite}"/>
+            <Setter Property="Foreground" Value="{StaticResource TextPrimary}"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="BorderBrush" Value="{StaticResource BorderLight}"/>
+            <Setter Property="Padding" Value="24,14"/>
+            <Setter Property="FontSize" Value="14"/>
+            <Setter Property="FontWeight" Value="Medium"/>
+            <Setter Property="FontFamily" Value="Segoe UI"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border x:Name="border" 
+                                Background="{TemplateBinding Background}"
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="{TemplateBinding BorderThickness}"
+                                CornerRadius="10"
                                 Padding="{TemplateBinding Padding}">
                             <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
                         </Border>
                         <ControlTemplate.Triggers>
                             <Trigger Property="IsMouseOver" Value="True">
-                                <Setter Property="Background" Value="#5048E5"/>
-                                <Setter Property="Effect">
-                                    <Setter.Value>
-                                        <DropShadowEffect BlurRadius="12" ShadowDepth="2" Color="#000000" Opacity="0.2"/>
-                                    </Setter.Value>
-                                </Setter>
+                                <Setter Property="Background" Value="#F8FAFC"/>
+                                <Setter Property="BorderBrush" Value="#CBD5E1"/>
                             </Trigger>
                             <Trigger Property="IsPressed" Value="True">
-                                <Setter Property="Background" Value="#4338CA"/>
-                            </Trigger>
-                            <Trigger Property="IsEnabled" Value="False">
-                                <Setter Property="Opacity" Value="0.5"/>
-                                <Setter Property="Background" Value="#E5E7EB"/>
-                                <Setter Property="Foreground" Value="#9CA3AF"/>
-                                <Setter Property="Cursor" Value="No"/>
+                                <Setter Property="Background" Value="#F1F5F9"/>
                             </Trigger>
                         </ControlTemplate.Triggers>
                     </ControlTemplate>
@@ -102,26 +150,91 @@
             </Setter>
         </Style>
 
-        <!-- Modern TextBox Style -->
-        <Style x:Key="ModernTextBoxStyle" TargetType="TextBox">
+        <!-- Icon Button Style -->
+        <Style x:Key="IconButtonStyle" TargetType="Button">
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Width" Value="40"/>
+            <Setter Property="Height" Value="40"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border x:Name="border" 
+                                Background="{TemplateBinding Background}" 
+                                CornerRadius="8">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter Property="Background" Value="#F1F5F9"/>
+                            </Trigger>
+                            <Trigger Property="IsPressed" Value="True">
+                                <Setter Property="Background" Value="#E2E8F0"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!-- Modern Search TextBox -->
+        <Style x:Key="SearchBoxStyle" TargetType="TextBox">
             <Setter Property="Background" Value="White"/>
-            <Setter Property="BorderBrush" Value="{StaticResource BorderBrush}"/>
-            <Setter Property="BorderThickness" Value="2"/>
-            <Setter Property="Padding" Value="12,10"/>
+            <Setter Property="Foreground" Value="#0F172A"/>
+            <Setter Property="BorderBrush" Value="#E2E8F0"/>
+            <Setter Property="BorderThickness" Value="1"/>
             <Setter Property="FontSize" Value="14"/>
             <Setter Property="FontFamily" Value="Segoe UI"/>
+            <Setter Property="CaretBrush" Value="#3B82F6"/>
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="TextBox">
-                        <Border Background="{TemplateBinding Background}"
-                                BorderBrush="{TemplateBinding BorderBrush}"
-                                BorderThickness="{TemplateBinding BorderThickness}"
-                                CornerRadius="8">
-                            <ScrollViewer x:Name="PART_ContentHost" Margin="{TemplateBinding Padding}"/>
+                        <Border x:Name="border"
+                        Background="{TemplateBinding Background}"
+                        BorderBrush="{TemplateBinding BorderBrush}"
+                        BorderThickness="{TemplateBinding BorderThickness}"
+                        CornerRadius="10"
+                        SnapsToDevicePixels="True"
+                        MinHeight="44">
+                            <Grid Margin="14,0,14,0">
+                                <!-- Placeholder Text -->
+                                <TextBlock x:Name="PlaceholderText"
+                                   Text="{TemplateBinding Tag}"
+                                   Foreground="#94A3B8"
+                                   FontSize="14"
+                                   VerticalAlignment="Center"
+                                   IsHitTestVisible="False">
+                                    <TextBlock.Style>
+                                        <Style TargetType="TextBlock">
+                                            <Setter Property="Visibility" Value="Collapsed"/>
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding Text, RelativeSource={RelativeSource TemplatedParent}}" Value="">
+                                                    <Setter Property="Visibility" Value="Visible"/>
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </TextBlock.Style>
+                                </TextBlock>
+
+                                <!-- ScrollViewer for text content -->
+                                <ScrollViewer x:Name="PART_ContentHost" 
+                                      Focusable="False"
+                                      HorizontalScrollBarVisibility="Hidden"
+                                      VerticalScrollBarVisibility="Hidden"
+                                      Margin="0,10,0,10"/>
+                            </Grid>
                         </Border>
                         <ControlTemplate.Triggers>
                             <Trigger Property="IsFocused" Value="True">
-                                <Setter Property="BorderBrush" Value="{StaticResource PrimaryBrush}"/>
+                                <Setter TargetName="border" Property="BorderBrush" Value="#3B82F6"/>
+                                <Setter TargetName="border" Property="BorderThickness" Value="2"/>
+                            </Trigger>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="border" Property="BorderBrush" Value="#CBD5E1"/>
+                            </Trigger>
+                            <Trigger Property="IsEnabled" Value="False">
+                                <Setter Property="Opacity" Value="0.6"/>
                             </Trigger>
                         </ControlTemplate.Triggers>
                     </ControlTemplate>
@@ -129,46 +242,47 @@
             </Setter>
         </Style>
 
-        <!-- Modern ComboBox Style -->
+        <!-- Modern ComboBox -->
         <Style x:Key="ModernComboBoxStyle" TargetType="ComboBox">
-            <Setter Property="Background" Value="White"/>
-            <Setter Property="Foreground" Value="{StaticResource TextPrimaryBrush}"/>
-            <Setter Property="BorderBrush" Value="Transparent"/>
-            <Setter Property="BorderThickness" Value="0"/>
-            <Setter Property="Padding" Value="12,0"/>
+            <Setter Property="Background" Value="{StaticResource SurfaceWhite}"/>
+            <Setter Property="Foreground" Value="{StaticResource TextPrimary}"/>
+            <Setter Property="BorderBrush" Value="{StaticResource BorderLight}"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="Padding" Value="14,0"/>
             <Setter Property="FontSize" Value="14"/>
             <Setter Property="FontFamily" Value="Segoe UI"/>
-            <Setter Property="HorizontalContentAlignment" Value="Left"/>
-            <Setter Property="VerticalContentAlignment" Value="Center"/>
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="ComboBox">
                         <Grid>
                             <ToggleButton x:Name="ToggleButton"
-                                        Grid.Column="2"
                                         Focusable="false"
                                         IsChecked="{Binding Path=IsDropDownOpen, Mode=TwoWay, RelativeSource={RelativeSource TemplatedParent}}"
                                         ClickMode="Press"
                                         Background="{TemplateBinding Background}"
-                                        BorderThickness="0">
+                                        BorderBrush="{TemplateBinding BorderBrush}"
+                                        BorderThickness="{TemplateBinding BorderThickness}">
                                 <ToggleButton.Template>
                                     <ControlTemplate TargetType="ToggleButton">
-                                        <Border Background="{TemplateBinding Background}"
-                                              BorderThickness="0"
-                                              CornerRadius="8">
+                                        <Border x:Name="border"
+                                                Background="{TemplateBinding Background}"
+                                                BorderBrush="{TemplateBinding BorderBrush}"
+                                                BorderThickness="{TemplateBinding BorderThickness}"
+                                                CornerRadius="10">
                                             <Grid>
                                                 <Grid.ColumnDefinitions>
                                                     <ColumnDefinition/>
-                                                    <ColumnDefinition Width="30"/>
+                                                    <ColumnDefinition Width="32"/>
                                                 </Grid.ColumnDefinitions>
                                                 <ContentPresenter Grid.Column="0"
-                                                                Margin="12,0,0,0"
+                                                                Margin="14,0,0,0"
                                                                 HorizontalAlignment="Left"
                                                                 VerticalAlignment="Center"/>
                                                 <Path Grid.Column="1"
                                                     x:Name="Arrow"
                                                     Data="M0,0 L4,4 L8,0"
-                                                    Fill="{StaticResource TextSecondaryBrush}"
+                                                    Stroke="{StaticResource TextSecondary}"
+                                                    StrokeThickness="2"
                                                     HorizontalAlignment="Center"
                                                     VerticalAlignment="Center"
                                                     RenderTransformOrigin="0.5,0.5">
@@ -180,6 +294,7 @@
                                         </Border>
                                         <ControlTemplate.Triggers>
                                             <Trigger Property="IsChecked" Value="True">
+                                                <Setter TargetName="border" Property="BorderBrush" Value="{StaticResource PrimaryBlue}"/>
                                                 <Trigger.EnterActions>
                                                     <BeginStoryboard>
                                                         <Storyboard>
@@ -209,8 +324,7 @@
                                             IsHitTestVisible="False"
                                             Content="{TemplateBinding SelectionBoxItem}"
                                             ContentTemplate="{TemplateBinding SelectionBoxItemTemplate}"
-                                            ContentTemplateSelector="{TemplateBinding ItemTemplateSelector}"
-                                            Margin="12,0,30,0"
+                                            Margin="14,0,32,0"
                                             VerticalAlignment="Center"
                                             HorizontalAlignment="Left"/>
                             <Popup x:Name="Popup"
@@ -218,27 +332,18 @@
                                  IsOpen="{TemplateBinding IsDropDownOpen}"
                                  AllowsTransparency="True"
                                  Focusable="False"
-                                 PopupAnimation="Slide">
-                                <Grid x:Name="DropDown"
-                                    SnapsToDevicePixels="True"
-                                    MinWidth="{TemplateBinding ActualWidth}"
-                                    MaxHeight="{TemplateBinding MaxDropDownHeight}">
-                                    <Border x:Name="DropDownBorder"
-                                          Background="White"
-                                          BorderBrush="{StaticResource BorderBrush}"
-                                          BorderThickness="1"
-                                          CornerRadius="8"
-                                          Margin="0,4,0,0">
-                                        <Border.Effect>
-                                            <DropShadowEffect BlurRadius="15" ShadowDepth="2" Color="#000000" Opacity="0.15"/>
-                                        </Border.Effect>
-                                        <ScrollViewer Margin="4,6"
-                                                    SnapsToDevicePixels="True">
-                                            <StackPanel IsItemsHost="True"
-                                                      KeyboardNavigation.DirectionalNavigation="Contained"/>
-                                        </ScrollViewer>
-                                    </Border>
-                                </Grid>
+                                 PopupAnimation="Fade">
+                                <Border Background="{StaticResource SurfaceWhite}"
+                                      BorderBrush="{StaticResource BorderLight}"
+                                      BorderThickness="1"
+                                      CornerRadius="10"
+                                      Margin="0,4,0,0"
+                                      MinWidth="{TemplateBinding ActualWidth}"
+                                      Effect="{StaticResource ShadowLg}">
+                                    <ScrollViewer Margin="4,6" MaxHeight="300">
+                                        <StackPanel IsItemsHost="True"/>
+                                    </ScrollViewer>
+                                </Border>
                             </Popup>
                         </Grid>
                     </ControlTemplate>
@@ -246,12 +351,11 @@
             </Setter>
         </Style>
 
-        <!-- Modern ComboBoxItem Style -->
+        <!-- ComboBoxItem Style -->
         <Style TargetType="ComboBoxItem">
             <Setter Property="Padding" Value="12,10"/>
             <Setter Property="FontFamily" Value="Segoe UI"/>
             <Setter Property="FontSize" Value="14"/>
-            <Setter Property="Foreground" Value="{StaticResource TextPrimaryBrush}"/>
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="ComboBoxItem">
@@ -267,32 +371,9 @@
                                 <Setter TargetName="Border" Property="Background" Value="#F1F5F9"/>
                             </Trigger>
                             <Trigger Property="IsSelected" Value="True">
-                                <Setter TargetName="Border" Property="Background" Value="#E0E7FF"/>
-                                <Setter Property="Foreground" Value="{StaticResource PrimaryBrush}"/>
-                                <Setter Property="FontWeight" Value="Medium"/>
-                            </Trigger>
-                        </ControlTemplate.Triggers>
-                    </ControlTemplate>
-                </Setter.Value>
-            </Setter>
-        </Style>
-
-        <!-- Icon Button Style -->
-        <Style x:Key="IconButtonStyle" TargetType="Button">
-            <Setter Property="Background" Value="Transparent"/>
-            <Setter Property="BorderThickness" Value="0"/>
-            <Setter Property="Width" Value="40"/>
-            <Setter Property="Height" Value="40"/>
-            <Setter Property="Cursor" Value="Hand"/>
-            <Setter Property="Template">
-                <Setter.Value>
-                    <ControlTemplate TargetType="Button">
-                        <Border Background="{TemplateBinding Background}" CornerRadius="8">
-                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                        </Border>
-                        <ControlTemplate.Triggers>
-                            <Trigger Property="IsMouseOver" Value="True">
-                                <Setter Property="Background" Value="#FFFFFF20"/>
+                                <Setter TargetName="Border" Property="Background" Value="#EEF2FF"/>
+                                <Setter Property="Foreground" Value="{StaticResource PrimaryBlue}"/>
+                                <Setter Property="FontWeight" Value="SemiBold"/>
                             </Trigger>
                         </ControlTemplate.Triggers>
                     </ControlTemplate>
@@ -304,372 +385,462 @@
         <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
     </UserControl.Resources>
 
-    <Grid Background="{StaticResource BackgroundBrush}">
+    <Grid Background="{StaticResource BackgroundLight}">
         <Grid.RowDefinitions>
-            <RowDefinition Height="80"/>
-            <RowDefinition/>
-            <RowDefinition Height="224"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
 
-        <!-- Modern Header -->
-        <Border Grid.Row="0" Background="{StaticResource PrimaryBrush}" CornerRadius="0,0,20,20">
-            <Border.Effect>
-                <DropShadowEffect BlurRadius="20" ShadowDepth="2" Color="#000000" Opacity="0.1"/>
-            </Border.Effect>
-            <Grid Margin="30,0">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="Auto"/>
-                    <ColumnDefinition Width="*"/>
-                </Grid.ColumnDefinitions>
+        <!-- Modern Header Section -->
+        <Border Grid.Row="0" 
+                Background="{StaticResource SurfaceWhite}" 
+                BorderThickness="0,0,0,1"
+                BorderBrush="{StaticResource BorderLight}">
+            <Grid Margin="32,24,32,24">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="20"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
 
-                <StackPanel Grid.Column="0" Orientation="Horizontal" VerticalAlignment="Center">
-                    <!-- Back Button -->
-                    <Button x:Name="BackButton"
-                            Width="40" Height="40"
-                            Style="{StaticResource IconButtonStyle}"
-                            Click="BackButton_Click">
-                        <Path Data="M15 19L8 12L15 5" Stroke="White" StrokeThickness="2" Fill="Transparent" Width="18" Height="18"/>
-                    </Button>
-                    <Ellipse Width="8" Height="8" Fill="#10B981" Margin="0,0,12,0"/>
-                    <TextBlock Text="INVENTORY MANAGEMENT" Style="{StaticResource HeaderTextStyle}"/>
-                </StackPanel>
+                <!-- Title Row -->
+                <Grid Grid.Row="0">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
 
-                <!-- Search Section -->
-                <StackPanel Grid.Column="1" Orientation="Horizontal"
-                           VerticalAlignment="Center"
-                           HorizontalAlignment="Center"
-                           Margin="40,0">
+                    <StackPanel Grid.Column="0" Orientation="Horizontal" VerticalAlignment="Center">
+                        <Button x:Name="BackButton"
+                                Style="{StaticResource IconButtonStyle}"
+                                Click="BackButton_Click"
+                                Margin="0,0,16,0">
+                            <Path Data="M15 19L8 12L15 5" 
+                                  Stroke="{StaticResource TextSecondary}" 
+                                  StrokeThickness="2" 
+                                  Width="16" Height="22" Stretch="Fill"/>
+                        </Button>
+                        <Rectangle Width="4" Height="32" 
+                                   Fill="{StaticResource PrimaryBlue}" 
+                                   RadiusX="2" RadiusY="2"
+                                   Margin="0,0,16,0"/>
+                        <TextBlock Text="Gestion des Stocks" 
+                                   Style="{StaticResource HeaderTitleStyle}"/>
+                    </StackPanel>
 
-                    <!-- Search Criteria ComboBox -->
-                    <Border Background="White" CornerRadius="8" Margin="0,0,12,0">
-                        <Border.Effect>
-                            <DropShadowEffect BlurRadius="10" ShadowDepth="1" Color="#000000" Opacity="0.08"/>
-                        </Border.Effect>
-                        <ComboBox x:Name="SearchCriteriaComboBox" 
-                                  Width="150" Height="44"
-                                  Style="{StaticResource ModernComboBoxStyle}"
-                                  SelectionChanged="SearchCriteriaComboBox_SelectionChanged">
-                            <ComboBoxItem Content="Code" IsSelected="True"/>
-                            <ComboBoxItem Content="Article"/>
-                            <ComboBoxItem Content="Fournisseur"/>
-                            <ComboBoxItem Content="Famille"/>
-                            <ComboBoxItem Content="Numero de Lot"/>
-                            <ComboBoxItem Content="Bon de Livraison"/>
-                            <ComboBoxItem Content="Marque"/>
+                    <StackPanel Grid.Column="1" 
+                                Orientation="Horizontal" 
+                                HorizontalAlignment="Right"
+                                VerticalAlignment="Center">
+                        <Border Background="#EFF6FF" 
+                                CornerRadius="8" 
+                                Padding="12,6"
+                                Margin="0,0,12,0">
+                            <StackPanel Orientation="Horizontal">
+                                <Ellipse Width="8" Height="8" 
+                                        Fill="{StaticResource SuccessGreen}"
+                                        Margin="0,0,8,0"/>
+                                <TextBlock Text="Actif" 
+                                          FontSize="12" 
+                                          FontWeight="SemiBold"
+                                          Foreground="{StaticResource PrimaryBlue}"/>
+                            </StackPanel>
+                        </Border>
+                    </StackPanel>
+                </Grid>
 
+                <!-- Search Bar Row -->
+                <Grid Grid.Row="2">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="200"/>
+                        <ColumnDefinition Width="16"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="12"/>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="8"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
 
-                        </ComboBox>
-                    </Border>
+                    <ComboBox x:Name="SearchCriteriaComboBox"
+                              Grid.Column="0"
+                              Height="44"
+                              Style="{StaticResource ModernComboBoxStyle}"
+                              SelectionChanged="SearchCriteriaComboBox_SelectionChanged">
+                        <ComboBoxItem Content="Code" IsSelected="True"/>
+                        <ComboBoxItem Content="Article"/>
+                        <ComboBoxItem Content="Fournisseur"/>
+                        <ComboBoxItem Content="Famille"/>
+                        <ComboBoxItem Content="Numéro de Lot"/>
+                        <ComboBoxItem Content="Bon de Livraison"/>
+                        <ComboBoxItem Content="Marque"/>
+                    </ComboBox>
 
-                    <!-- Search TextBox -->
-                    <Border Background="White" CornerRadius="8" Margin="0,0,12,0">
-                        <Border.Effect>
-                            <DropShadowEffect BlurRadius="10" ShadowDepth="1" Color="#000000" Opacity="0.08"/>
-                        </Border.Effect>
-                        <TextBox x:Name="SearchTextBox" MaxLength="100"
-                                 Width="280" Height="44"
-                                 BorderThickness="0"
-                                 Background="Transparent"
-                                 Padding="16,12"
-                                 FontSize="14"
-                                 FontFamily="Segoe UI"
-                                 Tag="Rechercher..."
-                                 TextChanged="SearchTextBox_TextChanged"/>
-                    </Border>
+                    <TextBox x:Name="SearchTextBox"
+                             Grid.Column="2"
+                             Height="44"
+                             MaxLength="100"
+                             Style="{StaticResource SearchBoxStyle}"
+                             Tag="Rechercher dans l'inventaire..."
+                             TextChanged="SearchTextBox_TextChanged"/>
 
-                    <!-- Search Button -->
-                    <Button Style="{StaticResource IconButtonStyle}"
-                            Background="#FFFFFF20"
+                    <Button Grid.Column="4"
+                            Width="44" Height="44"
+                            Style="{StaticResource PrimaryButtonStyle}"
+                            Padding="0"
                             Click="SearchButton_Click">
-                        <Path Data="M21 21L16.514 16.506M19 10.5C19 15.194 15.194 19 10.5 19S2 15.194 2 10.5S5.806 2 10.5 2S19 5.806 19 10.5Z"
+                        <Path Data="M21 21L16.5 16.5M19 11C19 15.4183 15.4183 19 11 19C6.58172 19 3 15.4183 3 11C3 6.58172 6.58172 3 11 3C15.4183 3 19 6.58172 19 11Z"
                               Stroke="White"
                               StrokeThickness="2"
-                              Fill="{x:Null}"
-                              Width="20" Height="20"/>
+                              Width="27" Height="26" Stretch="Fill"/>
                     </Button>
 
-                    <!-- Clear Button -->
-                    <Button Style="{StaticResource IconButtonStyle}"
-                            Background="#FFFFFF20"
-                            Click="ClearButton_Click"
-                            Margin="8,0,0,0">
+                    <Button Grid.Column="6"
+                            Width="44" Height="44"
+                            Style="{StaticResource IconButtonStyle}"
+                            Click="ClearButton_Click">
                         <Path Data="M6 18L18 6M6 6L18 18"
-                              Stroke="White"
+                              Stroke="{StaticResource TextSecondary}"
                               StrokeThickness="2"
                               Width="18" Height="18"/>
                     </Button>
-                </StackPanel>
+                </Grid>
             </Grid>
         </Border>
 
         <!-- Data Grid Section -->
-        <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Disabled" Grid.Row="1">
-            <Grid Margin="20,20,20,0">
-                <Border Background="White" CornerRadius="16" Effect="{StaticResource CardShadow}">
-                    <Grid Margin="0">
-                        <Grid.RowDefinitions>
-                            <RowDefinition Height="60"/>
-                            <RowDefinition Height="*"/>
-                        </Grid.RowDefinitions>
+        <ScrollViewer Grid.Row="1" 
+                      VerticalScrollBarVisibility="Auto"
+                      HorizontalScrollBarVisibility="Auto"
+                      Padding="32,24">
+            <Border Background="{StaticResource SurfaceWhite}"
+                    CornerRadius="16"
+                    BorderThickness="1"
+                    BorderBrush="{StaticResource BorderLight}"
+                    Effect="{StaticResource ShadowMd}">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="60"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
 
-                        <!-- Modern Column Header -->
-                        <Border Grid.Row="0"
-                                Background="#F8FAFC"
-                                CornerRadius="16,16,0,0"
-                                BorderBrush="{StaticResource BorderBrush}"
-                                BorderThickness="0,0,0,1">
-                            <!-- Add this header Grid in your CMainI.xaml where you display the article list -->
-                            <!-- Replace the existing header with this one -->
+                    <!-- Table Header -->
+                    <Border Grid.Row="0"
+                            Background="#FAFBFC"
+                            CornerRadius="16,16,0,0"
+                            BorderBrush="{StaticResource BorderLight}"
+                            BorderThickness="0,0,0,1">
+                        <Grid Margin="24,0">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="140"/>
+                                <ColumnDefinition Width="120"/>
+                                <ColumnDefinition Width="120"/>
+                                <ColumnDefinition Width="120"/>
+                                <ColumnDefinition Width="100"/>
+                                <ColumnDefinition Width="120"/>
+                                <ColumnDefinition Width="220"/>
+                            </Grid.ColumnDefinitions>
 
-                            <Grid Height="45" Background="#F9FAFB" Margin="0,0,0,5">
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="*"/>
-                                    <!-- Article Name -->
-                                    <ColumnDefinition Width="140"/>
-                                    <!-- Fournisseur -->
-                                    <ColumnDefinition Width="120"/>
-                                    <!-- Famille -->
-                                    <ColumnDefinition Width="120"/>
-                                    <!-- Prix Achat -->
-                                    <ColumnDefinition Width="120"/>
-                                    <!-- Prix Vente -->
-                                    <ColumnDefinition Width="100"/>
-                                    <!-- Stock -->
-                                    <ColumnDefinition Width="120"/>
-                                    <!-- Date Expiration -->
-                                    <ColumnDefinition Width="220"/>
-                                    <!-- Actions -->
-                                </Grid.ColumnDefinitions>
+                            <TextBlock Grid.Column="0" Text="Nom de l'Article"
+                                      Style="{StaticResource SectionTitleStyle}"
+                                      VerticalAlignment="Center"/>
+                            <TextBlock Grid.Column="1" Text="Fournisseur"
+                                      Style="{StaticResource SectionTitleStyle}"
+                                      VerticalAlignment="Center"/>
+                            <TextBlock Grid.Column="2" Text="Famille"
+                                      Style="{StaticResource SectionTitleStyle}"
+                                      VerticalAlignment="Center"/>
+                            <TextBlock Grid.Column="3" Text="Prix d'Achat"
+                                      Style="{StaticResource SectionTitleStyle}"
+                                      VerticalAlignment="Center"
+                                      HorizontalAlignment="Center"/>
+                            <TextBlock Grid.Column="4" Text="Prix de Vente"
+                                      Style="{StaticResource SectionTitleStyle}"
+                                      VerticalAlignment="Center"
+                                      HorizontalAlignment="Center"/>
+                            <TextBlock Grid.Column="5" Text="Stock"
+                                      Style="{StaticResource SectionTitleStyle}"
+                                      VerticalAlignment="Center"
+                                      HorizontalAlignment="Center"/>
+                            <TextBlock Grid.Column="6" Text="Expiration"
+                                      Style="{StaticResource SectionTitleStyle}"
+                                      VerticalAlignment="Center"
+                                      HorizontalAlignment="Center"/>
+                            <TextBlock Grid.Column="7" Text="Actions"
+                                      Style="{StaticResource SectionTitleStyle}"
+                                      VerticalAlignment="Center"
+                                      HorizontalAlignment="Center"/>
+                        </Grid>
+                    </Border>
 
-                                <TextBlock Grid.Column="0" Text="Nom de l'Article"
-               VerticalAlignment="Center"
-               FontSize="13" FontWeight="Bold"
-               Foreground="#374151"
-               Margin="24,0,0,0"/>
-
-                                <TextBlock Grid.Column="1" Text="Fournisseur"
-               VerticalAlignment="Center"
-               FontSize="13" FontWeight="Bold"
-               Foreground="#374151"
-               HorizontalAlignment="Left"/>
-
-                                <TextBlock Grid.Column="2" Text="Famille"
-               VerticalAlignment="Center"
-               FontSize="13" FontWeight="Bold"
-               Foreground="#374151"
-               HorizontalAlignment="Left"/>
-
-                                <TextBlock Grid.Column="3" Text="Prix Achat"
-               VerticalAlignment="Center"
-               FontSize="13" FontWeight="Bold"
-               Foreground="#374151"
-               HorizontalAlignment="Center"/>
-
-                                <TextBlock Grid.Column="4" Text="Prix Vente"
-               VerticalAlignment="Center"
-               FontSize="13" FontWeight="Bold"
-               Foreground="#374151"
-               HorizontalAlignment="Center"/>
-
-                                <TextBlock Grid.Column="5" Text="Stock"
-               VerticalAlignment="Center"
-               FontSize="13" FontWeight="Bold"
-               Foreground="#374151"
-               HorizontalAlignment="Center"/>
-
-                                <TextBlock Grid.Column="6" Text="Date Expiration"
-               VerticalAlignment="Center"
-               FontSize="13" FontWeight="Bold"
-               Foreground="#374151"
-               HorizontalAlignment="Center"/>
-
-                                <TextBlock Grid.Column="7" Text="Actions"
-               VerticalAlignment="Center"
-               FontSize="13" FontWeight="Bold"
-               Foreground="#374151"
-               HorizontalAlignment="Center"/>
-                            </Grid>
-                        </Border>
-
-                        <!-- Data Grid Content -->
-                        <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto"
-                                      Style="{DynamicResource {x:Static GridView.GridViewScrollViewerStyleKey}}" Margin="0,0,0,10">
-                            <StackPanel x:Name="ArticlesContainer"/>
-                        </ScrollViewer>
-                    </Grid>
-                </Border>
-            </Grid>
+                    <!-- Table Content -->
+                    <ScrollViewer Grid.Row="1" 
+                                  VerticalScrollBarVisibility="Auto"
+                                  Margin="0,0,0,12">
+                        <StackPanel x:Name="ArticlesContainer" Margin="12"/>
+                    </ScrollViewer>
+                </Grid>
+            </Border>
         </ScrollViewer>
 
-        <!-- Modern Statistics Panel -->
-        <Grid Grid.Row="2" Margin="20,0,20,0">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="*"/>
-                <ColumnDefinition Width="*"/>
-                <ColumnDefinition Width="*"/>
-                <ColumnDefinition Width="*"/>
-                <ColumnDefinition Width="Auto"/>
-            </Grid.ColumnDefinitions>
+        <!-- Bottom Stats & Actions Panel -->
+        <Border Grid.Row="2" 
+                Background="{StaticResource SurfaceWhite}"
+                BorderThickness="0,1,0,0"
+                BorderBrush="{StaticResource BorderLight}">
+            <Grid Margin="32,24,32,28">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="16"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
 
-            <!-- Articles Count Card -->
-            <Border Grid.Column="0" Style="{StaticResource ModernCardStyle}" Height="NaN" CornerRadius="20" Margin="8,32,8,32">
-                <Border.Background>
-                    <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
-                        <GradientStop Color="#EF4444" Offset="0"/>
-                        <GradientStop Color="#DC2626" Offset="1"/>
-                    </LinearGradientBrush>
-                </Border.Background>
-                <StackPanel Margin="0,-10,0,-17">
-                    <TextBlock Name="ArticlesTotal" Style="{StaticResource StatValueStyle}" Height="38" Width="Auto"/>
-                    <TextBlock Text="ARTICLES" Style="{StaticResource StatLabelStyle}" Margin="0,4,0,12"/>
+                <!-- Articles Stat Card -->
+                <Border Grid.Column="0" Style="{StaticResource StatCardStyle}" Margin="0,0,12,0">
                     <Grid>
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="*"/>
-                        </Grid.ColumnDefinitions>
-                        <StackPanel Grid.Column="0">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="8"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="12"/>
+                            <RowDefinition Height="Auto"/>
+                        </Grid.RowDefinitions>
+
+                        <Border Grid.Row="0" 
+                                Background="#FEF2F2" 
+                                CornerRadius="8" 
+                                Padding="8" 
+                                HorizontalAlignment="Left">
+                            <Path Data="M9 12H15M12 9V15M21 12C21 16.9706 16.9706 21 12 21C7.02944 21 3 16.9706 3 12C3 7.02944 7.02944 3 12 3C16.9706 3 21 7.02944 21 12Z"
+                                  Stroke="{StaticResource DangerRed}"
+                                  StrokeThickness="2"
+                                  Width="20" Height="21" VerticalAlignment="Top" Stretch="Fill"/>
+                        </Border>
+
+                        <TextBlock Grid.Row="2" 
+                                   Name="ArticlesTotal"
+                                   FontSize="32" 
+                                   FontWeight="Bold"
+                                   Foreground="{StaticResource TextPrimary}"/>
+
+                        <StackPanel Grid.Row="4">
+                            <TextBlock Text="Total Articles" 
+                                      FontSize="14"
+                                      FontWeight="SemiBold"
+                                      Foreground="{StaticResource TextSecondary}"/>
                             <TextBlock Name="QuantiteTotal"
-                                      Foreground="White" FontSize="16" FontWeight="Bold"/>
-                            <TextBlock Text="Quantite Total"
-                                      Foreground="White" FontSize="10" Opacity="0.9"/>
+                                      FontSize="12"
+                                      Foreground="{StaticResource TextTertiary}"
+                                      Margin="0,4,0,0"/>
                         </StackPanel>
                     </Grid>
-                </StackPanel>
-            </Border>
+                </Border>
 
-            <!-- Stock Value (Prix A) Card -->
-            <Border Grid.Column="1" Style="{StaticResource ModernCardStyle}" Margin="6,32,10,32">
-                <Border.Background>
-                    <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
-                        <GradientStop Color="#3B82F6" Offset="0"/>
-                        <GradientStop Color="#2563EB" Offset="1"/>
-                    </LinearGradientBrush>
-                </Border.Background>
-                <StackPanel>
-                    <TextBlock Name="PrixATotal" Style="{StaticResource StatValueStyle}"/>
-                    <TextBlock Text="VALEUR STOCK (Prix A)" Style="{StaticResource StatLabelStyle}" Margin="0,4,0,8"/>
-                </StackPanel>
-            </Border>
+                <!-- Purchase Value Stat Card -->
+                <Border Grid.Column="1" Style="{StaticResource StatCardStyle}" Margin="0,0,12,0">
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="8"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="12"/>
+                            <RowDefinition Height="Auto"/>
+                        </Grid.RowDefinitions>
 
-            <!-- Stock Value (Prix MP) Card -->
-            <Border Grid.Column="2" Style="{StaticResource ModernCardStyle}">
-                <Border.Background>
-                    <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
-                        <GradientStop Color="#10B981" Offset="0"/>
-                        <GradientStop Color="#059669" Offset="1"/>
-                    </LinearGradientBrush>
-                </Border.Background>
-                <StackPanel>
-                    <TextBlock Name="PrixMPTotal" Style="{StaticResource StatValueStyle}"/>
-                    <TextBlock Text="VALEUR STOCK (Prix MP)" Style="{StaticResource StatLabelStyle}" Margin="0,4,0,8"/>
-                </StackPanel>
-            </Border>
-
-            <!-- Stock Value (Prix V) Card -->
-            <Border Grid.Column="3" Style="{StaticResource ModernCardStyle}">
-                <Border.Background>
-                    <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
-                        <GradientStop Color="#8B5CF6" Offset="0"/>
-                        <GradientStop Color="#7C3AED" Offset="1"/>
-                    </LinearGradientBrush>
-                </Border.Background>
-                <StackPanel>
-                    <TextBlock Name="PrixVTotal" Style="{StaticResource StatValueStyle}"/>
-                    <TextBlock Text="VALEUR STOCK (Prix V)" Style="{StaticResource StatLabelStyle}" Margin="0,4,0,8"/>
-                </StackPanel>
-            </Border>
-
-            <!-- Action Buttons Panel -->
-            <StackPanel Grid.Column="4" VerticalAlignment="Center" HorizontalAlignment="Center" Width="221" Height="220">
-                <Button Name="NewArticleButton"
-                       Width="173" Height="48"
-                       Style="{StaticResource ModernButtonStyle}"
-                       Background="{StaticResource SuccessBrush}"
-                       Margin="0,0,0,12"
-                       Click="NewArticleButton_Click">
-                    <StackPanel Orientation="Horizontal">
-                        <Path Data="M12 5V19M5 12H19"
-                              Stroke="White"
-                              StrokeThickness="2"
-                              Width="19" Height="16"
-                              Margin="0,0,8,0" Stretch="Fill"/>
-                        <TextBlock Text="Nouveau Stock" FontWeight="Medium" FontSize="14"/>
-                    </StackPanel>
-                </Button>
-                <Button x:Name="AddMultipleArticlesButton"
-                        Width="173" Height="44" Margin="0,0,0,10"
-                        Background="#8B5CF6"
-                        BorderThickness="0"
-                        Cursor="Hand"
-                        Click="AddMultipleArticlesButton_Click">
-                    <Button.Style>
-                        <Style TargetType="{x:Type Button}">
-                            <Setter Property="Template">
-                                <Setter.Value>
-                                    <ControlTemplate TargetType="{x:Type Button}">
-                                        <Border Background="{TemplateBinding Background}" 
-                                                CornerRadius="8"
-                                                Padding="16,0">
-                                            <ContentPresenter HorizontalAlignment="Center" 
-                                                            VerticalAlignment="Center"/>
-                                        </Border>
-                                        <ControlTemplate.Triggers>
-                                            <Trigger Property="IsMouseOver" Value="True">
-                                                <Setter Property="Background" Value="#7C3AED"/>
-                                            </Trigger>
-                                            <Trigger Property="IsPressed" Value="True">
-                                                <Setter Property="Background" Value="#6D28D9"/>
-                                            </Trigger>
-                                            <Trigger Property="IsEnabled" Value="False">
-                                                <Setter Property="Opacity" Value="0.5"/>
-                                                <Setter Property="Background" Value="#E5E7EB"/>
-                                                <Setter Property="Foreground" Value="#9CA3AF"/>
-                                                <Setter Property="Cursor" Value="No"/>
-                                            </Trigger>
-                                        </ControlTemplate.Triggers>
-                                    </ControlTemplate>
-                                </Setter.Value>
-                            </Setter>
-                        </Style>
-                    </Button.Style>
-                    <StackPanel Orientation="Horizontal">
-                        <Grid Width="20" Height="20" Margin="0,0,10,0">
-                            <Path Data="M16 6v12M12 9v6M8 11v2" 
-                                  Stroke="White" 
+                        <Border Grid.Row="0" 
+                                Background="#EFF6FF" 
+                                CornerRadius="8" 
+                                Padding="8" 
+                                HorizontalAlignment="Left">
+                            <Path Data="M12 2V22M17 5H9.5C8.57174 5 7.6815 5.36875 7.02513 6.02513C6.36875 6.6815 6 7.57174 6 8.5C6 9.42826 6.36875 10.3185 7.02513 10.9749C7.6815 11.6313 8.57174 12 9.5 12H14.5C15.4283 12 16.3185 12.3687 16.9749 13.0251C17.6313 13.6815 18 14.5717 18 15.5C18 16.4283 17.6313 17.3185 16.9749 17.9749C16.3185 18.6313 15.4283 19 14.5 19H6"
+                                  Stroke="{StaticResource PrimaryBlue}"
                                   StrokeThickness="2"
-                                  Opacity="0.8"/>
-                        </Grid>
-                        <TextBlock Text="Nouveau Stoks" 
-                                   FontWeight="SemiBold" 
-                                   FontSize="14"
-                                   Foreground="White"/>
-                    </StackPanel>
-                </Button>
-                <Button Width="173" Height="44" Name="FournisseurManage"
-                       Background="{StaticResource TextSecondaryBrush}"
-                       Style="{StaticResource ModernButtonStyle}"
-                       Margin="0,0,0,12"
-                       FontSize="12" Click="Button_Click">
-                    <StackPanel Orientation="Horizontal" Height="18" Width="131">
-                        <Path Data="M3 7V5C3 3.89543 3.89543 3 5 3H9L11 5H19C20.1046 5 21 5.89543 21 7V19C21 20.1046 20.1046 21 19 21H5C3.89543 21 3 20.1046 3 19V7Z"
-                              Fill="White" Width="14" Height="14" Margin="0,0,6,0"/>
-                        <TextBlock Text="FORNISSEURE MANAGEMENT"  Height="22" Width="110" FontSize="10"/>
-                    </StackPanel>
-                </Button>
-                <Button Width="173" Height="44" Name="ManageFamillies"
-                       Background="{StaticResource TextSecondaryBrush}"
-                       Style="{StaticResource ModernButtonStyle}"
-                       FontSize="12" Click="Button_Click_1">
-                    <StackPanel Orientation="Horizontal">
-                        <Path Data="M12 8V4M8 8V4M16 8V4M6 10V20C6 21.1046 6.89543 22 8 22H16C17.1046 22 18 21.1046 18 20V10M6 10H18M6 10L4 8H20L18 10"
-                              Stroke="White"
-                              StrokeThickness="2"
-                              Fill="{x:Null}"
-                              Width="14" Height="14"
-                              Margin="0,0,6,0"/>
-                        <TextBlock Text="Manage Famillies" Height="15"/>
-                    </StackPanel>
-                </Button>
-            </StackPanel>
-        </Grid>
+                                  Width="16" Stretch="Fill" Height="20" VerticalAlignment="Top"/>
+                        </Border>
+
+                        <TextBlock Grid.Row="2" 
+                                   Name="PrixATotal"
+                                   FontSize="32" 
+                                   FontWeight="Bold"
+                                   Foreground="{StaticResource TextPrimary}"/>
+
+                        <StackPanel Grid.Row="4">
+                            <TextBlock Text="Valeur d'Achat" 
+                                      FontSize="14"
+                                      FontWeight="SemiBold"
+                                      Foreground="{StaticResource TextSecondary}"/>
+                            <TextBlock Text="Prix d'Achat"
+                                      FontSize="12"
+                                      Foreground="{StaticResource TextTertiary}"
+                                      Margin="0,4,0,0"/>
+                        </StackPanel>
+                    </Grid>
+                </Border>
+
+                <!-- Market Value Stat Card -->
+                <Border Grid.Column="2" Style="{StaticResource StatCardStyle}" Margin="0,0,12,0">
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="8"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="12"/>
+                            <RowDefinition Height="Auto"/>
+                        </Grid.RowDefinitions>
+
+                        <Border Grid.Row="0" 
+                                Background="#F0FDF4" 
+                                CornerRadius="8" 
+                                Padding="8" 
+                                HorizontalAlignment="Left">
+                            <Path Data="M13 7H21M21 7L17 3M21 7L17 11M11 17H3M3 17L7 21M3 17L7 13"
+                                  Stroke="{StaticResource SuccessGreen}"
+                                  StrokeThickness="2"
+                                  Width="24" Height="20" Stretch="Fill"/>
+                        </Border>
+
+                        <TextBlock Grid.Row="2" 
+                                   Name="PrixMPTotal"
+                                   FontSize="32" 
+                                   FontWeight="Bold"
+                                   Foreground="{StaticResource TextPrimary}"/>
+
+                        <StackPanel Grid.Row="4">
+                            <TextBlock Text="Valeur Marché" 
+                                      FontSize="14"
+                                      FontWeight="SemiBold"
+                                      Foreground="{StaticResource TextSecondary}"/>
+                            <TextBlock Text="Prix du Marché"
+                                      FontSize="12"
+                                      Foreground="{StaticResource TextTertiary}"
+                                      Margin="0,4,0,0"/>
+                        </StackPanel>
+                    </Grid>
+                </Border>
+
+                <!-- Selling Value Stat Card -->
+                <Border Grid.Column="3" Style="{StaticResource StatCardStyle}">
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="8"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="12"/>
+                            <RowDefinition Height="Auto"/>
+                        </Grid.RowDefinitions>
+
+                        <Border Grid.Row="0" 
+                                Background="#F5F3FF" 
+                                CornerRadius="8" 
+                                Padding="8" 
+                                HorizontalAlignment="Left">
+                            <Path Data="M3 10H13C14.1046 10 15 10.8954 15 12V19C15 20.1046 14.1046 21 13 21H5C3.89543 21 3 20.1046 3 19V10ZM3 10V6C3 4.89543 3.89543 4 5 4H13C14.1046 4 15 4.89543 15 6V10M3 10H15M12 7H12.01M21 15V19C21 20.1046 20.1046 21 19 21H17"
+                                  Stroke="{StaticResource AccentPurple}"
+                                  StrokeThickness="2"
+                                  Width="20" Height="22" VerticalAlignment="Top" Stretch="Fill"/>
+                        </Border>
+
+                        <TextBlock Grid.Row="2" 
+                                   Name="PrixVTotal"
+                                   FontSize="32" 
+                                   FontWeight="Bold"
+                                   Foreground="{StaticResource TextPrimary}"/>
+
+                        <StackPanel Grid.Row="4">
+                            <TextBlock Text="Valeur de Vente" 
+                                      FontSize="14"
+                                      FontWeight="SemiBold"
+                                      Foreground="{StaticResource TextSecondary}"/>
+                            <TextBlock Text="Prix de Vente"
+                                      FontSize="12"
+                                      Foreground="{StaticResource TextTertiary}"
+                                      Margin="0,4,0,0"/>
+                        </StackPanel>
+                    </Grid>
+                </Border>
+
+                <!-- Action Buttons Panel -->
+                <StackPanel Grid.Column="4" Grid.ColumnSpan="2" Margin="16,0,0,0" >
+                    <!-- New Stock Button -->
+                    <Button Name="NewArticleButton"
+                            Width="240" Height="48"
+                            Style="{StaticResource PrimaryButtonStyle}"
+                            Click="NewArticleButton_Click"
+                            Margin="0,0,0,12">
+                        <StackPanel Orientation="Horizontal">
+                            <Path Data="M12 5V19M5 12H19"
+                                  Stroke="White"
+                                  StrokeThickness="2.5"
+                                  Width="18" Height="18"
+                                  Margin="0,0,10,0"/>
+                            <TextBlock Text="Nouvelle Entrée" 
+                                      FontWeight="SemiBold" 
+                                      FontSize="14"/>
+                        </StackPanel>
+                    </Button>
+
+                    <!-- Bulk Import Button -->
+                    <Button x:Name="AddMultipleArticlesButton"
+                            Width="240" Height="52"
+                            Style="{StaticResource PrimaryButtonStyle}"
+                            Click="AddMultipleArticlesButton_Click"
+                            Margin="0,0,0,12">
+                        <Button.Background>
+                            <SolidColorBrush Color="#8B5CF6"/>
+                        </Button.Background>
+                        <StackPanel Orientation="Horizontal" Height="26">
+                            <Path Data="M9 12H15M12 9V15M21 12C21 16.9706 16.9706 21 12 21C7.02944 21 3 16.9706 3 12C3 7.02944 7.02944 3 12 3C16.9706 3 21 7.02944 21 12Z"
+                                  Stroke="White"
+                                  StrokeThickness="2.5"
+                                  Width="20" Height="20"
+                                  Margin="0,0,10,0" Stretch="Fill"/>
+                            <TextBlock Text="Import Groupé" 
+                                      FontWeight="SemiBold" 
+                                      FontSize="14" Height="22"/>
+                        </StackPanel>
+                    </Button>
+
+                    <!-- Supplier Management Button -->
+                    <Button Name="FournisseurManage"
+                            Width="240" Height="48"
+                            Style="{StaticResource SecondaryButtonStyle}"
+                            Click="Button_Click"
+                            Margin="0,0,0,12">
+                        <StackPanel Orientation="Horizontal">
+                            <Path Data="M17 20H22V18C22 16.3431 20.6569 15 19 15C18.0444 15 17.1931 15.4468 16.6438 16.1429M17 20H7M17 20V18C17 17.3438 16.8736 16.717 16.6438 16.1429M7 20H2V18C2 16.3431 3.34315 15 5 15C5.95561 15 6.80686 15.4468 7.35625 16.1429M7 20V18C7 17.3438 7.12642 16.717 7.35625 16.1429M7.35625 16.1429C8.0935 14.301 9.89482 13 12 13C14.1052 13 15.9065 14.301 16.6438 16.1429M15 7C15 8.65685 13.6569 10 12 10C10.3431 10 9 8.65685 9 7C9 5.34315 10.3431 4 12 4C13.6569 4 15 5.34315 15 7ZM21 10C21 11.1046 20.1046 12 19 12C17.8954 12 17 11.1046 17 10C17 8.89543 17.8954 8 19 8C20.1046 8 21 8.89543 21 10ZM7 10C7 11.1046 6.10457 12 5 12C3.89543 12 3 11.1046 3 10C3 8.89543 3.89543 8 5 8C6.10457 8 7 8.89543 7 10Z"
+                                  Stroke="{StaticResource TextSecondary}"
+                                  StrokeThickness="1.8"
+                                  Width="22" Height="18"
+                                  Margin="0,0,10,0" Stretch="Fill"/>
+                            <TextBlock Text="Fournisseurs" 
+                                      FontWeight="Medium" 
+                                      FontSize="14"/>
+                        </StackPanel>
+                    </Button>
+
+                    <!-- Category Manager Button -->
+                    <Button Name="ManageFamillies"
+                            Width="240" Height="53"
+                            Style="{StaticResource SecondaryButtonStyle}"
+                            Click="Button_Click_1"
+                            Margin="0,0,0,0">
+                        <StackPanel Orientation="Horizontal">
+                            <Path Data="M3 7V5C3 3.89543 3.89543 3 5 3H9L11 5H19C20.1046 5 21 5.89543 21 7M3 7V19C3 20.1046 3.89543 21 5 21H19C20.1046 21 21 20.1046 21 19V7M3 7H21"
+                                  Stroke="{StaticResource TextSecondary}"
+                                  StrokeThickness="1.8"
+                                  Width="20" Height="18"
+                                  Margin="0,0,10,0" Stretch="Fill"/>
+                            <TextBlock Text="Catégories" 
+                                      FontWeight="Medium" 
+                                      FontSize="14"/>
+                        </StackPanel>
+                    </Button>
+                </StackPanel>
+            </Grid>
+        </Border>
     </Grid>
 </UserControl>

@@ -11,6 +11,6 @@
         MinWidth="1100"
         MinHeight="720"
         Background="#F8F9FA"
-        WindowState="Maximized">
+        WindowState="Maximized" WindowStyle="None">
     <Grid x:Name="MainGrid"/>
 </Window>
