@@ -57,5 +57,6 @@ namespace GestionComerce.Main.FournisseurPage
             DialogResult = false;
             Close();
         }
+
     }
 }

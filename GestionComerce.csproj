@@ -35,6 +35,9 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
+  <PropertyGroup>
+    <ApplicationIcon>BM-Logo.ico</ApplicationIcon>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="ReachFramework" />
     <Reference Include="System" />
@@ -625,12 +628,10 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="Main\images\customer-review.png" />
     <Resource Include="Main\images\diagramme-a-bandes.png" />
     <Resource Include="Main\images\inventaire.png" />
     <Resource Include="Main\images\management.png" />
     <Resource Include="Main\images\parametres.png" />
-    <Resource Include="Main\images\revenu.png" />
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Main\images\4866608.png" />
@@ -648,6 +649,21 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Main\images\4.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="BM-Logo.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Main\images\BM-Logo.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Main\images\customer-review.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Main\images\revenu.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Main\images\A.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

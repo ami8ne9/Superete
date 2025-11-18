@@ -62,6 +62,10 @@ namespace GestionComerce.Main.ClientPage
                 {
                     // keep silent — balance is optional for display
                 }
+
+                // Disable balance field when editing - it's display only
+                BalanceTextBox.IsReadOnly = true;
+                BalanceTextBox.Background = System.Windows.Media.Brushes.LightGray;
             }
         }
 
@@ -107,11 +111,15 @@ namespace GestionComerce.Main.ClientPage
             }
 
             decimal parsedBalance = 0m;
-            if (!string.IsNullOrWhiteSpace(BalanceTextBox.Text) &&
-                !decimal.TryParse(BalanceTextBox.Text, out parsedBalance))
+            // Only validate and use balance when adding new client (not editing)
+            if (!_isEdit)
             {
-                MessageBox.Show("Balance must be a number.", "Validation", MessageBoxButton.OK, MessageBoxImage.Warning);
-                return;
+                if (!string.IsNullOrWhiteSpace(BalanceTextBox.Text) &&
+                    !decimal.TryParse(BalanceTextBox.Text, out parsedBalance))
+                {
+                    MessageBox.Show("Balance must be a number.", "Validation", MessageBoxButton.OK, MessageBoxImage.Warning);
+                    return;
+                }
             }
 
             // Check for duplicates (only when adding new client or when name/phone changed)
@@ -212,32 +220,8 @@ namespace GestionComerce.Main.ClientPage
                         existing.Code = _editingClient.Code;
                     }
 
-                    if (parsedBalance > 0)
-                    {
-                        var credit = new Credit
-                        {
-                            ClientID = _editingClient.ClientID,
-                            Total = parsedBalance,
-                            Paye = 0,
-                            Difference = parsedBalance,
-                            Etat = true
-                        };
+                    // DO NOT create a new credit when updating - balance is display only
 
-                        try
-                        {
-                            var insertRes = await credit.InsertCreditAsync();
-                            _insertedCredit = credit;
-
-                            // Add to MainWindow list
-                            if (_main.credits == null)
-                                _main.credits = new System.Collections.Generic.List<Credit>();
-                            _main.credits.Add(credit);
-                        }
-                        catch
-                        {
-                            // ignore insert-credit failure
-                        }
-                    }
                     WCongratulations wCongratulations = new WCongratulations("Modification Succes", "Client Modifier avec succes", 1);
                     wCongratulations.ShowDialog();
                     Close();
@@ -263,6 +247,7 @@ namespace GestionComerce.Main.ClientPage
                         _main.lc = new System.Collections.Generic.List<Client>();
                     _main.lc.Add(_editingClient);
 
+                    // Only create credit for new clients
                     if (parsedBalance > 0)
                     {
                         var credit = new Credit

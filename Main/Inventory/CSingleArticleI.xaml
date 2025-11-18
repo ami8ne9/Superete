@@ -3,6 +3,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              Height="40">
     <UserControl.Resources>
+        <SolidColorBrush x:Key="BorderLight" Color="#E5E7EB"/>
         <Style x:Key="ActionButtonStyle" TargetType="Button">
             <Setter Property="Width" Value="70"/>
             <Setter Property="Height" Value="25"/>
@@ -32,8 +33,7 @@
             </Style.Triggers>
         </Style>
     </UserControl.Resources>
-
-    <Border Background="White" Margin="0,0,0,0" CornerRadius="4">
+    <Border Background="#FAFBFC" Margin="0,0,0,0" CornerRadius="0" BorderBrush="{StaticResource BorderLight}" BorderThickness="0,0,0,1">
         <Grid Margin="24,0">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*"/>
@@ -53,47 +53,39 @@
                 <ColumnDefinition Width="220"/>
                 <!-- Actions -->
             </Grid.ColumnDefinitions>
-
             <TextBlock Grid.Column="0" x:Name="ArticleName" 
                        VerticalAlignment="Center" Height="15"
                        FontSize="12" Foreground="#1F2937" FontWeight="Medium"
                        TextTrimming="CharacterEllipsis"/>
-
-            <TextBlock Grid.Column="1" x:Name="Fournisseur"
+            <TextBlock Grid.Column="1" x:Name="Fournisseur" Margin="20,0,0,0"
                        VerticalAlignment="Center" Height="15"
                        FontSize="12" Foreground="#1F2937" FontWeight="Medium"
                        TextTrimming="CharacterEllipsis"/>
-
-            <TextBlock Grid.Column="2" x:Name="Famillee"
+            <TextBlock Grid.Column="2" x:Name="Famillee" Margin="20,0,0,0"
                        VerticalAlignment="Center" Height="15"
                        FontSize="12" Foreground="#374151"/>
-
-            <TextBlock Grid.Column="3" x:Name="PrixAchat" Margin="0,0,50,0"
+            <TextBlock Grid.Column="3" x:Name="PrixAchat" Margin="20,0,0,0"
                        VerticalAlignment="Center" Height="15"
                        FontSize="12" Foreground="#059669" FontWeight="Medium"
-                       HorizontalAlignment="Right"/>
-
-            <TextBlock Grid.Column="4" x:Name="PrixVente" Margin="0,0,50,0"
+                       HorizontalAlignment="Center"/>
+            <TextBlock Grid.Column="4" x:Name="PrixVente" Margin="20,0,0,0"
                        VerticalAlignment="Center" Height="15"
                        FontSize="12" Foreground="#DC2626" FontWeight="Medium"
-                       HorizontalAlignment="Right"/>
-
-            <TextBlock Grid.Column="5" x:Name="Quantite" Margin="0,0,50,0"
+                       HorizontalAlignment="Center"/>
+            <TextBlock Grid.Column="5" x:Name="Quantite" Margin="20,0,0,0"
                        VerticalAlignment="Center" Height="15"
                        FontSize="12" Foreground="#374151"
-                       HorizontalAlignment="Right"/>
-
-            <TextBlock Grid.Column="6" x:Name="DateExpiration"
+                       HorizontalAlignment="Center"/>
+            <TextBlock Grid.Column="6" x:Name="DateExpiration" Margin="20,0,0,0"
                        VerticalAlignment="Center" Height="15"
                        FontSize="12" Foreground="#6B7280"
                        HorizontalAlignment="Center"/>
-
             <StackPanel Grid.Column="7" Orientation="Horizontal" HorizontalAlignment="Center" Width="220">
-                <Button Content="Details" Background="#8B5CF6" Style="{StaticResource ActionButtonStyle}" 
+                <Button Content="Details" Background="#8B5CF6" Style="{StaticResource ActionButtonStyle}"
                         Click="DetailsButton_Click" Width="70" x:Name="Detailsbtn"/>
-                <Button Content="Edit" Background="#4A90E2" Style="{StaticResource ActionButtonStyle}" 
+                <Button Content="Edit" Background="#4A90E2" Style="{StaticResource ActionButtonStyle}"
                         Click="EditButton_Click" Width="65" x:Name="Editbtn"/>
-                <Button Content="Delete" Background="#E74C3C" Style="{StaticResource ActionButtonStyle}" 
+                <Button Content="Delete" Background="#E74C3C" Style="{StaticResource ActionButtonStyle}"
                         Click="DeleteButton_Click" Width="65" Name="Deletebtn"/>
             </StackPanel>
         </Grid>

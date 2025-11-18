@@ -8,7 +8,9 @@
         Title="Ajouter un Fournisseur" Height="229" Width="420"
         WindowStartupLocation="CenterScreen"
         ResizeMode="NoResize"
-        Background="#F8F9FA" WindowStyle="None">
+        Background="Transparent" 
+        WindowStyle="None"
+        AllowsTransparency="True">
 
     <Window.Resources>
         <!-- Modern Button Style -->
@@ -80,15 +82,8 @@
             <Setter Property="Foreground" Value="#374151"/>
         </Style>
     </Window.Resources>
-    <Window.Effect>
-        <DropShadowEffect/>
-    </Window.Effect>
 
-    <Border Background="White" CornerRadius="10" Margin="5">
-        <Border.Effect>
-            <DropShadowEffect Color="Black" Direction="315"
-                              ShadowDepth="3" BlurRadius="15" Opacity="0.3"/>
-        </Border.Effect>
+    <Border Background="White" CornerRadius="10" BorderBrush="#E5E7EB" BorderThickness="1">
 
         <Grid>
             <Grid.RowDefinitions>
@@ -137,4 +132,3 @@
         </Grid>
     </Border>
 </Window>
-

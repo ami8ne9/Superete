@@ -287,56 +287,43 @@
                 <Border Grid.Row="1" Style="{StaticResource CardStyle}">
                     <StackPanel>
                         <!-- Payment Method -->
+                        <!-- Payment Method -->
+                        <!-- Payment Method -->
                         <TextBlock Text="Méthode de Paiement" FontFamily="Segoe UI" FontSize="13" FontWeight="SemiBold" Foreground="#111827" Margin="0,0,0,10"/>
-                        <ComboBox x:Name="PaymentMethodComboBox" Height="44" FontSize="14" SelectedIndex="0" Margin="0,0,0,16">
-                            <ComboBox.Style>
-                                <Style TargetType="ComboBox">
-                                    <Setter Property="Background" Value="White"/>
-                                    <Setter Property="BorderBrush" Value="#E5E7EB"/>
-                                    <Setter Property="BorderThickness" Value="1"/>
-                                    <Setter Property="Padding" Value="12,10"/>
-                                    <Setter Property="Template">
-                                        <Setter.Value>
-                                            <ControlTemplate TargetType="ComboBox">
-                                                <Grid>
-                                                    <Border x:Name="Border" Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" 
-                                                            BorderThickness="{TemplateBinding BorderThickness}" CornerRadius="8">
-                                                        <Grid>
-                                                            <Grid.ColumnDefinitions>
-                                                                <ColumnDefinition Width="*"/>
-                                                                <ColumnDefinition Width="Auto"/>
-                                                            </Grid.ColumnDefinitions>
-                                                            <ContentPresenter Grid.Column="0" Margin="{TemplateBinding Padding}" VerticalAlignment="Center"/>
-                                                            <Path Grid.Column="1" Data="M7 10l5 5 5-5z" Fill="#6B7280" Stretch="Uniform" Width="16" Height="16" Margin="0,0,12,0"/>
-                                                            <ToggleButton Grid.ColumnSpan="2" Background="Transparent" BorderThickness="0" 
-                                                                        IsChecked="{Binding IsDropDownOpen, Mode=TwoWay, RelativeSource={RelativeSource TemplatedParent}}"/>
-                                                        </Grid>
-                                                    </Border>
-                                                    <Popup IsOpen="{TemplateBinding IsDropDownOpen}" Placement="Bottom" AllowsTransparency="True">
-                                                        <Border Background="White" BorderBrush="#E5E7EB" BorderThickness="1" CornerRadius="8" Margin="0,4,0,0">
-                                                            <Border.Effect>
-                                                                <DropShadowEffect BlurRadius="20" ShadowDepth="0" Opacity="0.1" Color="#000000"/>
-                                                            </Border.Effect>
-                                                            <ScrollViewer MaxHeight="200">
-                                                                <StackPanel IsItemsHost="True"/>
-                                                            </ScrollViewer>
-                                                        </Border>
-                                                    </Popup>
-                                                </Grid>
-                                                <ControlTemplate.Triggers>
-                                                    <Trigger Property="IsMouseOver" Value="True">
-                                                        <Setter TargetName="Border" Property="BorderBrush" Value="#2563EB"/>
-                                                    </Trigger>
-                                                </ControlTemplate.Triggers>
-                                            </ControlTemplate>
-                                        </Setter.Value>
-                                    </Setter>
-                                </Style>
-                            </ComboBox.Style>
-                        </ComboBox>
+                        <Border Background="White" 
+        BorderBrush="#E5E7EB" 
+        BorderThickness="1" 
+        CornerRadius="8" 
+        Height="44">
+                            <ComboBox x:Name="PaymentMethodComboBox" SelectedIndex="0"
+              FontSize="14" 
+              FontFamily="Segoe UI"
+              Foreground="#1F2937"
+              Margin="0"
+              BorderThickness="0"
+              Background="Transparent"
+              VerticalContentAlignment="Center"
+              Padding="12,0">
+                                <ComboBox.Resources>
+                                    <Style TargetType="ComboBoxItem">
+                                        <Setter Property="Padding" Value="12,10"/>
+                                        <Setter Property="Background" Value="Transparent"/>
+                                        <Style.Triggers>
+                                            <Trigger Property="IsMouseOver" Value="True">
+                                                <Setter Property="Background" Value="#F3F4F6"/>
+                                            </Trigger>
+                                            <Trigger Property="IsSelected" Value="True">
+                                                <Setter Property="Background" Value="#EFF6FF"/>
+                                                <Setter Property="Foreground" Value="#2563EB"/>
+                                            </Trigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </ComboBox.Resources>
+                            </ComboBox>
+                        </Border>
 
                         <!-- Ticket Checkbox -->
-                        <CheckBox x:Name="Ticket" IsChecked="True" Margin="0,0,0,16">
+                        <CheckBox x:Name="Ticket" IsChecked="True" Margin="0,0,0,16" >
                             <CheckBox.Template>
                                 <ControlTemplate TargetType="CheckBox">
                                     <StackPanel Orientation="Horizontal">

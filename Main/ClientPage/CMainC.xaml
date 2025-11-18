@@ -140,10 +140,10 @@
                     </Button>
 
                     <StackPanel VerticalAlignment="Center">
-                        <TextBlock Text="Client Management" 
+                        <TextBlock Text="Gestion des Clients" 
                                   FontSize="24" FontWeight="SemiBold" Foreground="#0F172A"
                                   Margin="0,0,0,4"/>
-                        <TextBlock Text="Manage and track all your client relationships" 
+                        <TextBlock Text="Gérez et suivez toutes vos relations clients" 
                                   FontSize="14" Foreground="#64748B"/>
                     </StackPanel>
                 </StackPanel>
@@ -175,7 +175,7 @@
                     </Border>
 
                     <!-- Add New Client Button -->
-                    <Button Name="AddBtn" Height="40" Padding="20,0" BorderThickness="0" Width="130"
+                    <Button Name="AddBtn" Height="40" Padding="20,0" BorderThickness="0" Width="150"
                             Click="AddNewClient_Click" Cursor="Hand">
                         <Button.Background>
                             <SolidColorBrush Color="#3B82F6"/>
@@ -186,7 +186,7 @@
                                     <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
                                         <TextBlock Text="+" FontSize="18" FontWeight="SemiBold" 
                                                   Foreground="White" Margin="0,0,8,0" VerticalAlignment="Center"/>
-                                        <TextBlock Text="Add Client" FontSize="14" FontWeight="Medium" 
+                                        <TextBlock Text="Ajouter Client" FontSize="14" FontWeight="Medium" 
                                                   Foreground="White" VerticalAlignment="Center"/>
                                     </StackPanel>
                                 </Border>
@@ -239,7 +239,7 @@
                                   Margin="0,0,0,4"/>
                         <TextBlock Text="Total Clients" 
                                   FontSize="14" FontWeight="Medium" Foreground="#64748B"/>
-                        <TextBlock Text="Active clients" 
+                        <TextBlock Text="Clients actifs" 
                                   FontSize="12" Foreground="#94A3B8" Margin="0,2,0,0"/>
                     </StackPanel>
                 </Grid>
@@ -267,9 +267,9 @@
                         <TextBlock x:Name="TotalCreditText" Text="0.00 DH" 
                                   FontSize="32" FontWeight="Bold" Foreground="#0F172A"
                                   Margin="0,0,0,4"/>
-                        <TextBlock Text="Total Credit" 
+                        <TextBlock Text="Crédit Total" 
                                   FontSize="14" FontWeight="Medium" Foreground="#64748B"/>
-                        <TextBlock Text="Outstanding balance" 
+                        <TextBlock Text="Solde impayé" 
                                   FontSize="12" Foreground="#94A3B8" Margin="0,2,0,0"/>
                     </StackPanel>
                 </Grid>
@@ -297,9 +297,9 @@
                         <TextBlock x:Name="PaidThisMonthText" Text="0.00 DH" 
                                   FontSize="32" FontWeight="Bold" Foreground="#0F172A"
                                   Margin="0,0,0,4"/>
-                        <TextBlock Text="Paid This Month" 
+                        <TextBlock Text="Payé ce Mois" 
                                   FontSize="14" FontWeight="Medium" Foreground="#64748B"/>
-                        <TextBlock Text="Total payments" 
+                        <TextBlock Text="Total des paiements" 
                                   FontSize="12" Foreground="#94A3B8" Margin="0,2,0,0"/>
                     </StackPanel>
                 </Grid>
@@ -327,9 +327,9 @@
                         <TextBlock x:Name="PendingText" Text="0.00 DH" 
                                   FontSize="32" FontWeight="Bold" Foreground="#0F172A"
                                   Margin="0,0,0,4"/>
-                        <TextBlock Text="Remaining Credit" 
+                        <TextBlock Text="Crédit Restant" 
                                   FontSize="14" FontWeight="Medium" Foreground="#64748B"/>
-                        <TextBlock Text="Awaiting payment" 
+                        <TextBlock Text="En attente de paiement" 
                                   FontSize="12" Foreground="#94A3B8" Margin="0,2,0,0"/>
                     </StackPanel>
                 </Grid>
@@ -362,13 +362,13 @@
                             <ColumnDefinition Width="*"/>
                         </Grid.ColumnDefinitions>
 
-                        
-                        <TextBlock Grid.Column="1" Text="CLIENT NAME" Style="{StaticResource HeaderTextStyle}"/>
-                        <TextBlock Grid.Column="2" Text="PHONE / ICE" Style="{StaticResource HeaderTextStyle}"/>
-                        <TextBlock Grid.Column="3" Text="ADDRESS" Style="{StaticResource HeaderTextStyle}"/>
-                        <TextBlock Grid.Column="4" Text="BALANCE" Style="{StaticResource HeaderTextStyle}"/>
-                        <TextBlock Grid.Column="5" Text="ACTIONS" Style="{StaticResource HeaderTextStyle}" 
-                                 HorizontalAlignment="Right" Margin="0,0,8,0"/>
+
+                        <TextBlock Grid.Column="1" Text="NOM DU CLIENT" Style="{StaticResource HeaderTextStyle}"/>
+                        <TextBlock Grid.Column="2" Text="TÉLÉPHONE / ICE" Style="{StaticResource HeaderTextStyle}"/>
+                        <TextBlock Grid.Column="3" Text="ADRESSE" Style="{StaticResource HeaderTextStyle}"/>
+                        <TextBlock Grid.Column="4" Text="SOLDE" Style="{StaticResource HeaderTextStyle}"/>
+                        <TextBlock Grid.Column="5" Text="ACTIONS" Style="{StaticResource HeaderTextStyle}" Margin="0,0,150,0"
+                                 HorizontalAlignment="Right" />
                     </Grid>
                 </Border>
 

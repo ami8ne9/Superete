@@ -3,8 +3,10 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         Title="Famille Management" 
         Height="700" Width="500"
-        Background="#F8FAFC"
-        WindowStartupLocation="CenterScreen" WindowStyle="None">
+        Background="Transparent"
+        WindowStartupLocation="CenterScreen" 
+        WindowStyle="None"
+        AllowsTransparency="True">
 
     <Window.Resources>
         <!-- Modern Button -->
@@ -86,7 +88,6 @@
         </Style>
 
         <!-- Modern TextBox Style -->
-        <!-- Modern TextBox Style -->
         <Style x:Key="ModernTextBox" TargetType="TextBox">
             <Setter Property="Background" Value="White"/>
             <Setter Property="BorderThickness" Value="2"/>
@@ -122,163 +123,159 @@
             </Setter>
         </Style>
 
-
         <!-- Panel Style -->
         <Style x:Key="ModernPanel" TargetType="Border">
             <Setter Property="Background" Value="White"/>
             <Setter Property="CornerRadius" Value="12"/>
             <Setter Property="Padding" Value="20"/>
             <Setter Property="Margin" Value="10"/>
-            <Setter Property="Effect">
-                <Setter.Value>
-                    <DropShadowEffect Color="Black" Direction="270" ShadowDepth="2" BlurRadius="10" Opacity="0.08"/>
-                </Setter.Value>
-            </Setter>
         </Style>
     </Window.Resources>
 
-    <Grid>
-        <!-- Close Button -->
-        <Button Name="CloseButton"
-                Style="{StaticResource CloseButton}"
-                Content="×"
-                HorizontalAlignment="Right"
-                VerticalAlignment="Top"
-                Panel.ZIndex="1000"
-                Click="CloseButton_Click" Height="28" Width="31"/>
+    <Border Background="#F8FAFC" CornerRadius="10" BorderBrush="#E5E7EB" BorderThickness="1">
+        <Grid>
+            <!-- Close Button -->
+            <Button Name="CloseButton"
+                    Style="{StaticResource CloseButton}"
+                    Content="×"
+                    HorizontalAlignment="Right"
+                    VerticalAlignment="Top"
+                    Panel.ZIndex="1000"
+                    Click="CloseButton_Click" Height="28" Width="31"/>
 
-        <!-- Main Content -->
-        <Grid Margin="20">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="2*" />
-                <ColumnDefinition Width="0" Name="ArticlesColumn"/>
-            </Grid.ColumnDefinitions>
+            <!-- Main Content -->
+            <Grid Margin="20">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="2*" />
+                    <ColumnDefinition Width="0" Name="ArticlesColumn"/>
+                </Grid.ColumnDefinitions>
 
-            <!-- Familles Section -->
-            <Border Grid.Column="0" Style="{StaticResource ModernPanel}">
-                <Grid>
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="Auto"/>
-                        <RowDefinition Height="Auto"/>
-                        <RowDefinition Height="*"/>
-                    </Grid.RowDefinitions>
+                <!-- Familles Section -->
+                <Border Grid.Column="0" Style="{StaticResource ModernPanel}">
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="*"/>
+                        </Grid.RowDefinitions>
 
-                    <TextBlock Text="Familles" 
-                               FontSize="22" 
-                               FontWeight="Bold" 
-                               Foreground="#1A202C"
-                               Margin="0,0,0,15"/>
+                        <TextBlock Text="Familles" 
+                                   FontSize="22" 
+                                   FontWeight="Bold" 
+                                   Foreground="#1A202C"
+                                   Margin="0,0,0,15"/>
 
-                    <!-- Input and Add Button for Familles -->
-                    <Grid Grid.Row="1" Margin="0,0,0,15">
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="*"/>
-                            <ColumnDefinition Width="80"/>
-                        </Grid.ColumnDefinitions>
-                        <TextBox Name="FamilleInput" 
-                                 Style="{StaticResource ModernTextBox}" 
-                                 Grid.Column="0" 
-                                 Margin="0,0,8,0" TextChanged="FamilleInput_TextChanged"/>
-                        <Button Name="AddFamilleButton" 
-                                Style="{StaticResource ModernButton}" 
-                                Content="Add" 
-                                Grid.Column="1"
-                                Width="72" HorizontalAlignment="Left" Margin="4,4,0,4" Click="AddFamilleButton_Click"/>
-                    </Grid>
-
-                    <ScrollViewer Grid.Row="2" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
-                        <StackPanel Orientation="Vertical" Margin="0,0,0,15" Name="FamilliesContainer"/>
-                    </ScrollViewer>
-
-                </Grid>
-            </Border>
-
-            <!-- Articles Section -->
-            <Border Grid.Column="1" Style="{StaticResource ModernPanel}">
-                <Grid>
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="Auto"/>
-                        <RowDefinition Height="Auto"/>
-                        <RowDefinition Height="Auto"/>
-                        <RowDefinition Height="*"/>
-                    </Grid.RowDefinitions>
-
-                    <TextBlock Text="Articles" Name="ArticlesTitle"
-                               FontSize="22" 
-                               FontWeight="Bold" 
-                               Foreground="#1A202C"
-                               Margin="0,0,0,15" Grid.Row="0"/>
-
-                    <!-- Input for Articles -->
-                    <TextBox Name="ArticleInput" 
-                             Style="{StaticResource ModernTextBox}" 
-                             Grid.Row="1" 
-                             Margin="0,0,0,15" TextChanged="ArticleInput_TextChanged"/>
-
-                    <!-- Replace your existing Grid with this modern version -->
-                    <Border Grid.Row="2"
-        Background="#FAFBFC"
-        BorderBrush="#E2E8F0"
-        BorderThickness="0,0,0,1"
-        Padding="10,16,10,16">
-                        <Grid>
+                        <!-- Input and Add Button for Familles -->
+                        <Grid Grid.Row="1" Margin="0,0,0,15">
                             <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="3*"/>
-                                <!-- Article Name -->
-                                <ColumnDefinition Width="2*"/>
-                                <!-- Fournisseur -->
+                                <ColumnDefinition Width="*"/>
                                 <ColumnDefinition Width="80"/>
-                                <!-- Quantity/Stock -->
-                                <ColumnDefinition Width="80"/>
-                                <!-- Actions -->
                             </Grid.ColumnDefinitions>
-
-                            <TextBlock Grid.Column="0" 
-                   Text="ARTICLE" 
-                   VerticalAlignment="Center"
-                   FontWeight="SemiBold" 
-                   FontSize="11" 
-                   Foreground="#64748B"
-                   FontFamily="Segoe UI"/>
-
-                            <TextBlock Grid.Column="1" 
-                   Text="FOURNISSEUR" 
-                   VerticalAlignment="Center"
-                   FontWeight="SemiBold" 
-                   FontSize="11" 
-                   Foreground="#64748B"
-                   FontFamily="Segoe UI"
-                   Margin="15,0,0,0"/>
-
-                            <TextBlock Grid.Column="2" 
-                   Text="STOCK" 
-                   VerticalAlignment="Center"
-                   HorizontalAlignment="Center"
-                   FontWeight="SemiBold" 
-                   FontSize="11" 
-                   Foreground="#64748B"
-                   FontFamily="Segoe UI"
-                   Margin="30,0,0,0"/>
-
-                            <TextBlock Grid.Column="3" 
-                   Text="ACTIONS" 
-                   VerticalAlignment="Center"
-                   HorizontalAlignment="Center"
-                   FontWeight="SemiBold" 
-                   FontSize="11" 
-                   Foreground="#64748B"
-                   FontFamily="Segoe UI"
-                   Margin="30,0,0,0"/>
+                            <TextBox Name="FamilleInput" 
+                                     Style="{StaticResource ModernTextBox}" 
+                                     Grid.Column="0" 
+                                     Margin="0,0,8,0" TextChanged="FamilleInput_TextChanged"/>
+                            <Button Name="AddFamilleButton" 
+                                    Style="{StaticResource ModernButton}" 
+                                    Content="Add" 
+                                    Grid.Column="1"
+                                    Width="72" HorizontalAlignment="Left" Margin="4,4,0,4" Click="AddFamilleButton_Click"/>
                         </Grid>
-                    </Border>
 
-                    <ScrollViewer Grid.Row="3" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
-                        <StackPanel Orientation="Vertical" Margin="0,0,0,15" Name="ArticlesContainer" />
-                    </ScrollViewer>
+                        <ScrollViewer Grid.Row="2" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
+                            <StackPanel Orientation="Vertical" Margin="0,0,0,15" Name="FamilliesContainer"/>
+                        </ScrollViewer>
 
-                </Grid>
-            </Border>
+                    </Grid>
+                </Border>
 
+                <!-- Articles Section -->
+                <Border Grid.Column="1" Style="{StaticResource ModernPanel}">
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="*"/>
+                        </Grid.RowDefinitions>
+
+                        <TextBlock Text="Articles" Name="ArticlesTitle"
+                                   FontSize="22" 
+                                   FontWeight="Bold" 
+                                   Foreground="#1A202C"
+                                   Margin="0,0,0,15" Grid.Row="0"/>
+
+                        <!-- Input for Articles -->
+                        <TextBox Name="ArticleInput" 
+                                 Style="{StaticResource ModernTextBox}" 
+                                 Grid.Row="1" 
+                                 Margin="0,0,0,15" TextChanged="ArticleInput_TextChanged"/>
+
+                        <!-- Replace your existing Grid with this modern version -->
+                        <Border Grid.Row="2"
+                                Background="#FAFBFC"
+                                BorderBrush="#E2E8F0"
+                                BorderThickness="0,0,0,1"
+                                Padding="10,16,10,16">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="3*"/>
+                                    <!-- Article Name -->
+                                    <ColumnDefinition Width="2*"/>
+                                    <!-- Fournisseur -->
+                                    <ColumnDefinition Width="80"/>
+                                    <!-- Quantity/Stock -->
+                                    <ColumnDefinition Width="80"/>
+                                    <!-- Actions -->
+                                </Grid.ColumnDefinitions>
+
+                                <TextBlock Grid.Column="0" 
+                                           Text="ARTICLE" 
+                                           VerticalAlignment="Center"
+                                           FontWeight="SemiBold" 
+                                           FontSize="11" 
+                                           Foreground="#64748B"
+                                           FontFamily="Segoe UI"/>
+
+                                <TextBlock Grid.Column="1" 
+                                           Text="FOURNISSEUR" 
+                                           VerticalAlignment="Center"
+                                           FontWeight="SemiBold" 
+                                           FontSize="11" 
+                                           Foreground="#64748B"
+                                           FontFamily="Segoe UI"
+                                           Margin="15,0,0,0"/>
+
+                                <TextBlock Grid.Column="2" 
+                                           Text="STOCK" 
+                                           VerticalAlignment="Center"
+                                           HorizontalAlignment="Center"
+                                           FontWeight="SemiBold" 
+                                           FontSize="11" 
+                                           Foreground="#64748B"
+                                           FontFamily="Segoe UI"
+                                           Margin="30,0,0,0"/>
+
+                                <TextBlock Grid.Column="3" 
+                                           Text="ACTIONS" 
+                                           VerticalAlignment="Center"
+                                           HorizontalAlignment="Center"
+                                           FontWeight="SemiBold" 
+                                           FontSize="11" 
+                                           Foreground="#64748B"
+                                           FontFamily="Segoe UI"
+                                           Margin="30,0,0,0"/>
+                            </Grid>
+                        </Border>
+
+                        <ScrollViewer Grid.Row="3" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
+                            <StackPanel Orientation="Vertical" Margin="0,0,0,15" Name="ArticlesContainer" />
+                        </ScrollViewer>
+
+                    </Grid>
+                </Border>
+
+            </Grid>
         </Grid>
-    </Grid>
+    </Border>
 </Window>

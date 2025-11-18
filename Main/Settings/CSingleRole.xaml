@@ -80,14 +80,14 @@
             <!-- Delete Button on the Right -->
             <Button Grid.Column="1" 
         x:Name="EditButton" 
-        Content="Edit" Background="Blue"
+        Content="Modifier" Background="Blue"
         Style="{StaticResource DeleteButtonStyle}"
-        Margin="10" Width="50" Click="EditButton_Click"/>
+        Margin="10" Width="60" Click="EditButton_Click"/>
             <Button Grid.Column="2" 
                     x:Name="DeleteButton" 
-                    Content="Delete" 
+                    Content="Supprimer" 
                     Style="{StaticResource DeleteButtonStyle}"
-                    Margin="10" Width="50" Click="DeleteButton_Click"/>
+                    Margin="10" Width="70" Click="DeleteButton_Click"/>
         </Grid>
     </Border>
 </UserControl>

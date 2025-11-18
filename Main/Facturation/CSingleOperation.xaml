@@ -4,8 +4,8 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:GestionComerce.Main.ProjectManagment"
-             mc:Ignorable="d" d:DesignWidth="800" Height="81">
-    <Border Background="#F8FAFC" CornerRadius="8" Padding="13" Margin="0,0,0,12" MouseLeftButtonDown="MyBorder_MouseLeftButtonDown">
+             mc:Ignorable="d" d:DesignWidth="800" Height="70">
+    <Border Background="#F8FAFC" CornerRadius="8" Padding="13" Margin="0,0,0,0" MouseLeftButtonDown="MyBorder_MouseLeftButtonDown">
         <Grid >
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="Auto"/>

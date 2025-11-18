@@ -26,7 +26,6 @@ namespace GestionComerce.Main.FournisseurPage
                     if (!r.ViewCreditFournisseur)
                     {
                         Credit.Visibility = Visibility.Collapsed;
-                        Remaining.Visibility = Visibility.Collapsed;
                         PayMaxButton.IsEnabled = false;
                     }
                     if (!r.PayeFournisseur)
@@ -62,14 +61,12 @@ namespace GestionComerce.Main.FournisseurPage
             TotalCreditLabel.Text = $"{total:N2} DH";
             TotalPaidLabel.Text = $"{paid:N2} DH";
             DifferenceLabel.Text = $"{diff:N2} DH";
-            RemainingBalanceLabel.Text = $"{diff:N2} DH";
         }
 
         private void PayMaxButton_Click(object sender, RoutedEventArgs e)
         {
             decimal diff = _supplierCredits.Sum(c => c.Difference);
             PaymentAmountTextBox.Text = diff.ToString("F2");
-            RemainingBalanceLabel.Text = "0.00 DH";
         }
 
         private void CloseButton_Click(object sender, RoutedEventArgs e) => Close();

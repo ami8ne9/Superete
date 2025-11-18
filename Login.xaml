@@ -218,20 +218,21 @@
                                     CornerRadius="18">
                                 <Border.Background>
                                     <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
-                                        <GradientStop Color="#3B82F6" Offset="0"/>
-                                        <GradientStop Color="#2563EB" Offset="1"/>
+                                        <GradientStop Color="Transparent" Offset="0"/>
+                                        <GradientStop Color="Transparent" Offset="1"/>
                                     </LinearGradientBrush>
                                 </Border.Background>
                                 <Border.Effect>
                                     <DropShadowEffect Color="#2563EB" Opacity="0.3" BlurRadius="15" ShadowDepth="0"/>
                                 </Border.Effect>
-                                <TextBlock Text="SGE"
+                                <!--<TextBlock Text="SGE"
                                            FontFamily="Segoe UI"
                                            FontSize="22"
                                            FontWeight="Bold"
                                            Foreground="White"
                                            HorizontalAlignment="Center"
-                                           VerticalAlignment="Center"/>
+                                           VerticalAlignment="Center"/>-->
+                                <Image Source="/Main/images/BM-Logo.ico" Margin="0,8,0,6"/>
                             </Border>
                             <StackPanel VerticalAlignment="Center" Margin="20,0,0,0">
                                 <TextBlock Text="Système de Gestion"

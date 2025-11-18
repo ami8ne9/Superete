@@ -4,9 +4,10 @@
         Title="Confirmation de transaction" Height="450" Width="500" 
         WindowStartupLocation="CenterScreen"
         ResizeMode="NoResize"
-        Background="White"
+        Background="Transparent"
         ShowInTaskbar="False"
-        WindowStyle="None">
+        WindowStyle="None"
+        AllowsTransparency="True">
 
     <Window.Resources>
         <!-- Confirm Button Style -->
@@ -95,15 +96,7 @@
         </Style>
     </Window.Resources>
 
-    <Window.Effect>
-        <DropShadowEffect/>
-    </Window.Effect>
-
-    <Border x:Name="border" Background="White" CornerRadius="10" Margin="5">
-        <Border.Effect>
-            <DropShadowEffect Color="Black" Direction="320"
-                          ShadowDepth="6" BlurRadius="20" Opacity="0.5"/>
-        </Border.Effect>
+    <Border x:Name="border" Background="White" CornerRadius="10" BorderBrush="#E5E7EB" BorderThickness="1">
 
         <Grid Margin="0,0,0,-7">
             <Grid.RowDefinitions>
@@ -177,7 +170,8 @@
                             <TextBlock Grid.Row="1" Grid.Column="0" Text="Sous-total:" Style="{StaticResource LabelStyle}"/>
                             <TextBlock Grid.Row="1" Grid.Column="1" x:Name="Subtotal" Text="0.00 DH" Style="{StaticResource ValueStyle}" Margin="0,0,0,8" MaxWidth="150"/>
 
-                            <!-- Tax --><!--
+                            <!-- Tax -->
+                            <!--
                             <TextBlock Grid.Row="2" Grid.Column="0" Text="TVA (20%):" Style="{StaticResource LabelStyle}"/>
                             <TextBlock Grid.Row="2" Grid.Column="1" x:Name="Tax" Text="€0.00" Style="{StaticResource ValueStyle}" Margin="0,0,0,8"/>-->
 

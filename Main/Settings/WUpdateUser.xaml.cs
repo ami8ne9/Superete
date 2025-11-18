@@ -21,22 +21,24 @@ namespace GestionComerce.Main.Settings
     /// </summary>
     public partial class WUpdateUser : Window
     {
-        public WUpdateUser(List<User> lu, List<Role> lr, CUserManagment CUM,User u)
+        public WUpdateUser(List<User> lu, List<Role> lr, CUserManagment CUM, User u)
         {
             InitializeComponent();
             this.lr = lr;
             this.lu = lu;
             this.CUM = CUM;
             this.u = u;
+
             foreach (Role role in lr)
             {
                 Roles.Items.Add(role.RoleName);
-
             }
-            Name.Text=u.UserName;
-            Code.Password=u.Code.ToString();    
+
+            Name.Text = u.UserName;
+            Code.Password = u.Code.ToString();
             Roles.SelectedItem = lr.Where(r => r.RoleID == u.RoleID).FirstOrDefault().RoleName;
         }
+
         List<Role> lr;
         List<User> lu;
         CUserManagment CUM;
@@ -46,6 +48,7 @@ namespace GestionComerce.Main.Settings
         {
             this.Close();
         }
+
         private void PasswordInput_PreviewTextInput(object sender, TextCompositionEventArgs e)
         {
             Regex regex = new Regex("[^0-9]+");
@@ -58,26 +61,46 @@ namespace GestionComerce.Main.Settings
             {
                 e.Handled = true;
             }
-
             //if (Keyboard.Modifiers == ModifierKeys.Control && e.Key == Key.V)
             //{
             //    e.Handled = true;
             //}
         }
 
+        private bool IsPasswordAlreadyUsed(string password)
+        {
+            // Check if any OTHER user (not the current user being updated) has the same password
+            return lu.Any(user => user.UserID != u.UserID && user.Code == password);
+        }
 
         private async void RegisterButton_Click(object sender, RoutedEventArgs e)
         {
             try
             {
                 List<User> newU = lu;
+
+                // Validate empty fields
                 if (Name.Text == "" || Code.Password == "")
                 {
-                    MessageBox.Show("Please fill all the fields");
+                    MessageBox.Show("Please fill all the fields", "Validation Error", MessageBoxButton.OK, MessageBoxImage.Warning);
                     return;
                 }
+
+                // Check if password is already used by another user (excluding current user)
+                if (IsPasswordAlreadyUsed(Code.Password))
+                {
+                    MessageBox.Show("This password is already used by another user. Please choose a different password.",
+                                    "Password Already Exists",
+                                    MessageBoxButton.OK,
+                                    MessageBoxImage.Warning);
+                    Code.Clear();
+                    Code.Focus();
+                    return;
+                }
+
                 u.UserName = Name.Text;
                 u.Code = Code.Password;
+
                 foreach (Role role in lr)
                 {
                     if (role.RoleName == Roles.SelectedItem.ToString())
@@ -86,6 +109,7 @@ namespace GestionComerce.Main.Settings
                         break;
                     }
                 }
+
                 u.Etat = 1;
 
                 foreach (User user in newU)
@@ -95,21 +119,19 @@ namespace GestionComerce.Main.Settings
                         user.UserName = u.UserName;
                         user.Code = u.Code;
                         user.RoleID = u.RoleID;
-
                         break;
                     }
                 }
+
                 await u.UpdateUserAsync();
                 CUM.Load_users();
-                //this.Close();
-
 
                 WCongratulations wCongratulations = new WCongratulations("Modification avec succès", "la Modification a ete effectue avec succes", 1);
                 wCongratulations.ShowDialog();
+                this.Close();
             }
             catch (Exception ex)
             {
-
                 WCongratulations wCongratulations = new WCongratulations("Modification échoué", "la Modification n'a pas ete effectue ", 0);
                 wCongratulations.ShowDialog();
             }
@@ -117,7 +139,6 @@ namespace GestionComerce.Main.Settings
 
         private void addRole_Click(object sender, RoutedEventArgs e)
         {
-
         }
     }
 }

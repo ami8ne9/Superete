@@ -398,7 +398,6 @@ namespace GestionComerce.Main.Settings
                     };
                     foreach (Role r in lr)
                     {
-                        if (r.RoleID == rr.RoleID) { continue; }
                         if (r.RoleName.Equals(RoleName.Text, StringComparison.OrdinalIgnoreCase))
                         {
                             MessageBox.Show("Un rôle avec ce nom existe déjà.", "Erreur", MessageBoxButton.OK, MessageBoxImage.Error);

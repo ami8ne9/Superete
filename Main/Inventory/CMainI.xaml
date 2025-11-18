@@ -542,7 +542,7 @@
                                 <ColumnDefinition Width="220"/>
                             </Grid.ColumnDefinitions>
 
-                            <TextBlock Grid.Column="0" Text="Nom de l'Article"
+                            <TextBlock Grid.Column="0" Text="Nom de l'Article" 
                                       Style="{StaticResource SectionTitleStyle}"
                                       VerticalAlignment="Center"/>
                             <TextBlock Grid.Column="1" Text="Fournisseur"
@@ -575,11 +575,11 @@
                     </Border>
 
                     <!-- Table Content -->
-                    <ScrollViewer Grid.Row="1" 
+                    <!--<ScrollViewer Grid.Row="1" 
                                   VerticalScrollBarVisibility="Auto"
-                                  Margin="0,0,0,12">
-                        <StackPanel x:Name="ArticlesContainer" Margin="12"/>
-                    </ScrollViewer>
+                                  Margin="0,0,0,12">-->
+                    <StackPanel x:Name="ArticlesContainer" Margin="12" Grid.Row="1" />
+                    <!--</ScrollViewer>-->
                 </Grid>
             </Border>
         </ScrollViewer>
@@ -776,7 +776,7 @@
                                   Stroke="White"
                                   StrokeThickness="2.5"
                                   Width="18" Height="18"
-                                  Margin="0,0,10,0"/>
+                                  Margin="0,0,10,0" Stretch="Fill"/>
                             <TextBlock Text="Nouvelle Entrée" 
                                       FontWeight="SemiBold" 
                                       FontSize="14"/>

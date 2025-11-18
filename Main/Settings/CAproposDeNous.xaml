@@ -108,13 +108,14 @@
                         </Grid.ColumnDefinitions>
 
                         <!-- Logo Icon -->
-                        <Border Background="{StaticResource PrimaryBrush}" 
-                                CornerRadius="16" 
-                                Padding="20"
+                        <Border Background="White" Padding="8"
+                                CornerRadius="8" 
+                                Height="70"
                                 Margin="0,0,24,0"
                                 Grid.Column="0"
                                 VerticalAlignment="Center">
-                            <TextBlock Text="💼" FontSize="48"/>
+
+                            <Image Source="/Main/images/A.png" Stretch="Uniform"/>
                         </Border>
 
                         <!-- Company Name and Tagline -->

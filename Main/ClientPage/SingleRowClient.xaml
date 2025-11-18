@@ -173,7 +173,7 @@
             </Grid.ColumnDefinitions>
 
             <!-- Client ID Badge -->
-      
+
 
             <!-- Client Name with Company Badge -->
             <StackPanel Grid.Column="1" 
@@ -189,7 +189,7 @@
                                   FontSize="10" 
                                   Margin="0,0,4,0"
                                   VerticalAlignment="Center"/>
-                        <TextBlock Text="Company" 
+                        <TextBlock Text="Entreprise" 
                                   FontSize="11" 
                                   FontWeight="Bold" 
                                   Foreground="White"
@@ -253,26 +253,26 @@
                        HorizontalAlignment="Right"
                        VerticalAlignment="Center"
                        Margin="0,0,10,0">
-                <Button Content="✏️ Edit" 
+                <Button Content="✏️ Modifier" 
                        Style="{StaticResource EditButtonStyle}" 
                        Name="Update"
                        Click="Update_Click"
-                       ToolTip="Edit client information"/>
-                <Button Content="🗑️ Delete" 
+                       ToolTip="Modifier les informations du client" Width="85"/>
+                <Button Content="🗑️ Supprimer" 
                        Style="{StaticResource DeleteButtonStyle}" 
                        Name="Delete"
                        Click="Delete_Click"
-                       ToolTip="Delete client"/>
-                <Button Content="💰 Pay" 
+                       ToolTip="Supprimer le client" Width="95"/>
+                <Button Content="💰 Payer" 
                        Style="{StaticResource PaidButtonStyle}" 
                        Name="Paye"
                        Click="Paid_Click"
-                       ToolTip="Process payment"/>
-                <Button Content="📋 Operations" 
+                       ToolTip="Traiter le paiement" Width="75"/>
+                <Button Content="📋 Opérations" 
                        Style="{StaticResource OperationButtonStyle}" 
                        Name="Operation"
                        Click="Operations_Click"
-                       ToolTip="View operations"/>
+                       ToolTip="Voir les opérations" Width="105"/>
             </StackPanel>
         </Grid>
     </Border>

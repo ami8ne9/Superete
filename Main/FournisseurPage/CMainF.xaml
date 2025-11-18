@@ -108,10 +108,10 @@
                     </Button>
 
                     <StackPanel VerticalAlignment="Center">
-                        <TextBlock Text="Supplier Management" 
+                        <TextBlock Text="Gestion des fournisseurs" 
                                   FontSize="24" FontWeight="SemiBold" Foreground="#0F172A"
                                   Margin="0,0,0,4"/>
-                        <TextBlock Text="Manage and track all your supplier relationships" 
+                        <TextBlock Text="Gérez et suivez toutes vos relations avec les fournisseurs" 
                                   FontSize="14" Foreground="#64748B"/>
                     </StackPanel>
                 </StackPanel>
@@ -143,7 +143,7 @@
                     </Border>
 
                     <!-- Add New Supplier Button -->
-                    <Button Height="40" Padding="20,0" BorderThickness="0" Width="130"
+                    <Button Height="40" Padding="20,0" BorderThickness="0" Width="160"
                             Click="AddNewSupplier_Click" Cursor="Hand">
                         <Button.Background>
                             <SolidColorBrush Color="#3B82F6"/>
@@ -154,7 +154,7 @@
                                     <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
                                         <TextBlock Text="+" FontSize="18" FontWeight="SemiBold" 
                                                   Foreground="White" Margin="0,0,8,0" VerticalAlignment="Center"/>
-                                        <TextBlock Text="Add Supplier" FontSize="14" FontWeight="Medium" 
+                                        <TextBlock Text="Ajouter fournisseur" FontSize="14" FontWeight="Medium" 
                                                   Foreground="White" VerticalAlignment="Center"/>
                                     </StackPanel>
                                 </Border>
@@ -201,9 +201,9 @@
                         <TextBlock x:Name="TotalSuppliersText" Text="0" 
                                   FontSize="32" FontWeight="Bold" Foreground="#0F172A"
                                   Margin="0,0,0,4"/>
-                        <TextBlock Text="Total Suppliers" 
+                        <TextBlock Text="Total fournisseurs" 
                                   FontSize="14" FontWeight="Medium" Foreground="#64748B"/>
-                        <TextBlock Text="Active suppliers" 
+                        <TextBlock Text="Fournisseurs actifs" 
                                   FontSize="12" Foreground="#94A3B8" Margin="0,2,0,0"/>
                     </StackPanel>
                 </Grid>
@@ -231,9 +231,9 @@
                         <TextBlock x:Name="TotalCreditText" Text="0.00 DH" 
                                   FontSize="32" FontWeight="Bold" Foreground="#0F172A"
                                   Margin="0,0,0,4"/>
-                        <TextBlock Text="Total Credit" 
+                        <TextBlock Text="Crédit total" 
                                   FontSize="14" FontWeight="Medium" Foreground="#64748B"/>
-                        <TextBlock Text="Outstanding balance" 
+                        <TextBlock Text="Solde dû" 
                                   FontSize="12" Foreground="#94A3B8" Margin="0,2,0,0"/>
                     </StackPanel>
                 </Grid>
@@ -261,9 +261,9 @@
                         <TextBlock x:Name="PaidThisMonthText" Text="0.00 DH" 
                                   FontSize="32" FontWeight="Bold" Foreground="#0F172A"
                                   Margin="0,0,0,4"/>
-                        <TextBlock Text="Paid This Month" 
+                        <TextBlock Text="Payé ce mois" 
                                   FontSize="14" FontWeight="Medium" Foreground="#64748B"/>
-                        <TextBlock Text="Total payments" 
+                        <TextBlock Text="Total des paiements" 
                                   FontSize="12" Foreground="#94A3B8" Margin="0,2,0,0"/>
                     </StackPanel>
                 </Grid>
@@ -291,9 +291,9 @@
                         <TextBlock x:Name="PendingText" Text="0.00 DH" 
                                   FontSize="32" FontWeight="Bold" Foreground="#0F172A"
                                   Margin="0,0,0,4"/>
-                        <TextBlock Text="Pending" 
+                        <TextBlock Text="En attente" 
                                   FontSize="14" FontWeight="Medium" Foreground="#64748B"/>
-                        <TextBlock Text="Awaiting payment" 
+                        <TextBlock Text="En attente de paiement" 
                                   FontSize="12" Foreground="#94A3B8" Margin="0,2,0,0"/>
                     </StackPanel>
                 </Grid>
@@ -328,15 +328,15 @@
                             <ColumnDefinition Width="*"/>
                         </Grid.ColumnDefinitions>
 
-                        
-                        <TextBlock Grid.Column="1" Text="SUPPLIER NAME" Style="{StaticResource HeaderTextStyle}"/>
-                        <TextBlock Grid.Column="2" Text="CODE" Style="{StaticResource HeaderTextStyle}"/>
-                        <TextBlock Grid.Column="3" Text="PHONE" Style="{StaticResource HeaderTextStyle}"/>
-                        <TextBlock Grid.Column="4" Text="ICE" Style="{StaticResource HeaderTextStyle}"/>
-                        <TextBlock Grid.Column="5" Text="LEGAL STATUS" Style="{StaticResource HeaderTextStyle}"/>
-                        <TextBlock Grid.Column="6" Text="BALANCE" Style="{StaticResource HeaderTextStyle}"/>
-                        <TextBlock Grid.Column="7" Text="ACTIONS" Style="{StaticResource HeaderTextStyle}" 
-                                 HorizontalAlignment="Right" Margin="0,0,8,0"/>
+
+                        <TextBlock Grid.Column="1" Text="NOM FOURNISSEUR" Style="{StaticResource HeaderTextStyle}" Margin="20,0,0,0"/>
+                        <TextBlock Grid.Column="2" Text="CODE" Style="{StaticResource HeaderTextStyle}" Margin="20,0,0,0"/>
+                        <TextBlock Grid.Column="3" Text="TÉLÉPHONE" Style="{StaticResource HeaderTextStyle}" Margin="20,0,0,0"/>
+                        <TextBlock Grid.Column="4" Text="ICE" Style="{StaticResource HeaderTextStyle}" Margin="20,0,0,0"/>
+                        <TextBlock Grid.Column="5" Text="STATUT JURIDIQUE" Style="{StaticResource HeaderTextStyle}" Margin="20,0,0,0"/>
+                        <TextBlock Grid.Column="6" Text="SOLDE" Style="{StaticResource HeaderTextStyle}" Margin="20,0,0,0"/>
+                        <TextBlock Grid.Column="7" Text="ACTIONS" Style="{StaticResource HeaderTextStyle}" Margin="0,0,150,0"
+                                 HorizontalAlignment="Right" />
                     </Grid>
                 </Border>
 

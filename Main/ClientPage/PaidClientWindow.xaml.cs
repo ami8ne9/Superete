@@ -33,7 +33,7 @@ namespace GestionComerce.Main.ClientPage
                     if (!r.ViewCreditClient)
                     {
                         Credit.Visibility = Visibility.Collapsed;
-                        Remaining.Visibility = Visibility.Collapsed;    
+                        // Removed: Remaining.Visibility = Visibility.Collapsed;    
                         PayMaxButton.IsEnabled = false;
                     }
                     if (!r.PayeClient)
@@ -72,7 +72,7 @@ namespace GestionComerce.Main.ClientPage
                 TotalCreditLabel.Text = $"{total:N2} DH";
                 TotalPaidLabel.Text = $"{paid:N2} DH";
                 DifferenceLabel.Text = $"{diff:N2} DH";
-                RemainingBalanceLabel.Text = $"{diff:N2} DH";
+                // Removed: RemainingBalanceLabel.Text = $"{diff:N2} DH";
             }
             catch (Exception ex)
             {
@@ -82,34 +82,8 @@ namespace GestionComerce.Main.ClientPage
 
         private void PaymentAmountTextBox_TextChanged(object sender, TextChangedEventArgs e)
         {
-            if (_clientCredits == null || _clientCredits.Length == 0)
-                return;
-
-            decimal totalDifference = _clientCredits.Sum(c => c.Difference);
-
-            if (decimal.TryParse(PaymentAmountTextBox.Text, out decimal paymentAmount))
-            {
-                decimal remainingBalance = Math.Max(0, totalDifference - paymentAmount);
-                RemainingBalanceLabel.Text = $"{remainingBalance:N2} DH";
-
-                if (paymentAmount == totalDifference)
-                {
-                    RemainingBalanceLabel.Foreground = new SolidColorBrush(Color.FromRgb(16, 185, 129));
-                }
-                else if (paymentAmount < totalDifference)
-                {
-                    RemainingBalanceLabel.Foreground = new SolidColorBrush(Color.FromRgb(124, 58, 237));
-                }
-                else
-                {
-                    RemainingBalanceLabel.Foreground = new SolidColorBrush(Color.FromRgb(220, 38, 38));
-                }
-            }
-            else
-            {
-                RemainingBalanceLabel.Text = $"{totalDifference:N2} DH";
-                RemainingBalanceLabel.Foreground = new SolidColorBrush(Color.FromRgb(124, 58, 237));
-            }
+            // Removed entire method content since RemainingBalanceLabel no longer exists
+            // This method can be removed or kept empty if needed for future use
         }
 
         private void PaymentAmountTextBox_PreviewTextInput(object sender, System.Windows.Input.TextCompositionEventArgs e)
@@ -131,8 +105,7 @@ namespace GestionComerce.Main.ClientPage
 
             decimal diff = _clientCredits.Sum(c => c.Difference);
             PaymentAmountTextBox.Text = diff.ToString("F2");
-            RemainingBalanceLabel.Text = "0.00 DH";
-            RemainingBalanceLabel.Foreground = new SolidColorBrush(Color.FromRgb(16, 185, 129));
+            // Removed: RemainingBalanceLabel updates
         }
 
         private void CloseButton_Click(object sender, RoutedEventArgs e) => Close();

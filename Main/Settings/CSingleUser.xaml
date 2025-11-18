@@ -3,17 +3,25 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
 
     <UserControl.Resources>
-        <!-- Styles matching your interface -->
+        <!-- Styles matching DataGrid appearance -->
         <Style x:Key="UserRowStyle" TargetType="Border">
             <Setter Property="Background" Value="White"/>
-            <Setter Property="BorderBrush" Value="#E9ECEF"/>
+            <Setter Property="BorderBrush" Value="#E0E0E0"/>
             <Setter Property="BorderThickness" Value="0,0,0,1"/>
-            <Setter Property="Padding" Value="20,12"/>
+            <Setter Property="Padding" Value="0"/>
             <Style.Triggers>
                 <Trigger Property="IsMouseOver" Value="True">
-                    <Setter Property="Background" Value="#F8F9FA"/>
+                    <Setter Property="Background" Value="#F5F5F5"/>
                 </Trigger>
             </Style.Triggers>
+        </Style>
+
+        <Style x:Key="CellTextStyle" TargetType="TextBlock">
+            <Setter Property="FontSize" Value="13"/>
+            <Setter Property="Foreground" Value="#333333"/>
+            <Setter Property="VerticalAlignment" Value="Center"/>
+            <Setter Property="Padding" Value="12,8"/>
+            <Setter Property="TextTrimming" Value="CharacterEllipsis"/>
         </Style>
 
         <Style x:Key="ActionButtonStyle" TargetType="Button">
@@ -70,22 +78,9 @@
                 </Trigger>
             </Style.Triggers>
         </Style>
-
-        <Style x:Key="StatusBadgeStyle" TargetType="Border">
-            <Setter Property="CornerRadius" Value="12"/>
-            <Setter Property="Padding" Value="8,4"/>
-            <Setter Property="HorizontalAlignment" Value="Left"/>
-        </Style>
-
-        <Style x:Key="StatusTextStyle" TargetType="TextBlock">
-            <Setter Property="FontSize" Value="11"/>
-            <Setter Property="FontWeight" Value="Medium"/>
-            <Setter Property="HorizontalAlignment" Value="Center"/>
-            <Setter Property="VerticalAlignment" Value="Center"/>
-        </Style>
     </UserControl.Resources>
 
-    <!-- Main User Row Container -->
+    <!-- Main User Row Container - DataGrid Style -->
     <Border Style="{StaticResource UserRowStyle}">
         <Grid>
             <Grid.ColumnDefinitions>
@@ -94,48 +89,51 @@
                 <ColumnDefinition Width="1*"/>
                 <!-- Username -->
                 <ColumnDefinition Width="1*"/>
-                <!-- Status -->
+                <!-- Code -->
                 <ColumnDefinition Width="1*"/>
                 <!-- Role -->
-                <ColumnDefinition Width="160"/>
+                <ColumnDefinition Width="1*"/>
                 <!-- Actions -->
             </Grid.ColumnDefinitions>
 
-            <!-- User ID -->
+            <!-- User ID Column -->
             <TextBlock Grid.Column="0"
                        Text="{Binding UserId}"
-                       FontFamily="Consolas"
-                       FontSize="13"
-                       Foreground="#495057"
-                       VerticalAlignment="Center"
+                       Style="{StaticResource CellTextStyle}"
                        x:Name="UserID"/>
 
-            <!-- Username -->
-            <TextBlock Text="{Binding Username}" Grid.Column="1"
-                        FontWeight="Medium"
-                        FontSize="14"
-                        Foreground="#212529"
-                        Margin="0,0,0,2"
+            <!-- Username Column -->
+            <TextBlock Grid.Column="1"
+                       Text="{Binding Username}"
+                       Style="{StaticResource CellTextStyle}"
                        x:Name="UserName"/>
 
-            <TextBlock Grid.Column="2" x:Name="Code"/>
-            <TextBlock Grid.Column="3" x:Name="Role"/>
+            <!-- Code Column -->
+            <TextBlock Grid.Column="2"
+                       Style="{StaticResource CellTextStyle}"
+                       x:Name="Code"/>
 
-            <!-- Role -->
+            <!-- Role Column -->
+            <TextBlock Grid.Column="3"
+                       Style="{StaticResource CellTextStyle}"
+                       x:Name="Role"/>
 
-            <!-- Actions -->
+            <!-- Actions Column -->
             <StackPanel Grid.Column="4" 
                         Orientation="Horizontal" 
-                        HorizontalAlignment="Right"
-                        VerticalAlignment="Center">
+                        HorizontalAlignment="Left"
+                        VerticalAlignment="Center"
+                        Margin="12,8">
 
                 <Button Style="{StaticResource ActionButtonStyle}"
-                        Content="✏ Edit"
-                        Click="EditUser_Click" x:Name="EditUsers"/>
+                        Content="✏ Modifier"
+                        Click="EditUser_Click" 
+                        x:Name="EditUsers"/>
 
                 <Button Style="{StaticResource DeleteButtonStyle}"
-                        Content="🗑 Delete"
-                        Click="DeleteUser_Click" x:Name="DeleteBtn"/>
+                        Content="🗑 Supprimer"
+                        Click="DeleteUser_Click" 
+                        x:Name="DeleteBtn"/>
             </StackPanel>
         </Grid>
     </Border>

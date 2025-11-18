@@ -3,12 +3,13 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         Title="Annulation d'Articles" Height="470" Width="500" 
         WindowStartupLocation="CenterScreen"
-        Background="#F8FAFC"
+        Background="Transparent"
         ShowInTaskbar="True"
-        WindowStyle="None" ResizeMode="NoResize">
+        WindowStyle="None" 
+        ResizeMode="NoResize"
+        AllowsTransparency="True">
 
     <Window.Resources>
-
         <!-- Main Action Button Style -->
         <Style x:Key="ActionButtonStyle" TargetType="Button">
             <Setter Property="Background" Value="#3B82F6"/>
@@ -72,43 +73,79 @@
                 </Setter.Value>
             </Setter>
         </Style>
-
-        
     </Window.Resources>
 
-    <Grid>
-        <Grid.RowDefinitions>
-            <RowDefinition Height="Auto"/>
+    <!-- Main Container with Border and Shadow -->
+    <Border Background="White" 
+            CornerRadius="12" 
+            BorderThickness="1"
+            BorderBrush="#D1D5DB"
+            Margin="10">
+        <Border.Effect>
+            <DropShadowEffect Color="#000000" 
+                            Direction="270"
+                            ShadowDepth="0" 
+                            BlurRadius="30" 
+                            Opacity="0.12"/>
+        </Border.Effect>
+
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <!-- Header -->
+                <RowDefinition Height="*"/>
+                <!-- Content -->
+                <RowDefinition Height="Auto"/>
+                <!-- Footer -->
+            </Grid.RowDefinitions>
+
             <!-- Header -->
-            <RowDefinition Height="*"/>
-            <!-- Content -->
-            <RowDefinition Height="Auto"/>
-            <!-- Footer -->
-        </Grid.RowDefinitions>
+            <Border Grid.Row="0" 
+                    Background="#F8FAFC" 
+                    BorderBrush="#E5E7EB" 
+                    BorderThickness="0,0,0,1" 
+                    Padding="24,20"
+                    CornerRadius="12,12,0,0">
+                <StackPanel>
+                    <TextBlock Text="Annulation d'Articles" 
+                              FontSize="20" 
+                              FontWeight="Bold" 
+                              Foreground="#1F2937" 
+                              Margin="0,0,0,6"/>
+                    <TextBlock Text="Sélectionnez les articles à annuler de cette opération" 
+                              FontSize="13" 
+                              Foreground="#6B7280"
+                              TextWrapping="Wrap"/>
+                </StackPanel>
+            </Border>
 
-        <!-- Header -->
-        <Border Grid.Row="0" Background="White" BorderBrush="#E5E7EB" BorderThickness="0,0,0,1" Padding="24,16">
-            <StackPanel>
-                <TextBlock Text="Annulation d'Articles" FontSize="20" FontWeight="Bold" Foreground="#1F2937" Margin="0,0,0,4"/>
-                <TextBlock Text="Sélectionnez les articles à annuler de cette opération" FontSize="14" Foreground="#6B7280"/>
-            </StackPanel>
-        </Border>
+            <!-- Articles List -->
+            <ScrollViewer Grid.Row="1" 
+                         VerticalScrollBarVisibility="Auto" 
+                         Padding="24"
+                         Background="White">
+                <StackPanel x:Name="ArticlesContainer">
+                    <!-- Articles will be added here dynamically -->
+                </StackPanel>
+            </ScrollViewer>
 
-        <!-- Articles List -->
-        <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto" Padding="24">
-            <StackPanel x:Name="ArticlesContainer">
-
-            </StackPanel>
-        </ScrollViewer>
-
-        <!-- Footer Buttons -->
-        <Border Grid.Row="2" Background="White" BorderBrush="#E5E7EB" BorderThickness="0,1,0,0" Padding="24,16">
-            <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
-                <Button Content="Confirmer" Style="{StaticResource ActionButtonStyle}" 
-                        Click="ConfirmerButton_Click" Margin="0,0,12,0"/>
-                <Button Content="Fermer" Style="{StaticResource CloseButtonStyle}" 
-                        Click="FermerButton_Click"/>
-            </StackPanel>
-        </Border>
-    </Grid>
+            <!-- Footer Buttons -->
+            <Border Grid.Row="2" 
+                    Background="#F9FAFB" 
+                    BorderBrush="#E5E7EB" 
+                    BorderThickness="0,1,0,0" 
+                    Padding="24,16"
+                    CornerRadius="0,0,12,12">
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+                    <Button Content="Confirmer" 
+                           Style="{StaticResource ActionButtonStyle}" 
+                           Click="ConfirmerButton_Click" 
+                           Margin="0,0,12,0"/>
+                    <Button Content="Fermer" 
+                           Style="{StaticResource CloseButtonStyle}" 
+                           Click="FermerButton_Click"/>
+                </StackPanel>
+            </Border>
+        </Grid>
+    </Border>
 </Window>

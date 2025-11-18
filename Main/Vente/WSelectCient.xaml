@@ -1,7 +1,7 @@
 ﻿<Window x:Class="GestionComerce.Main.Vente.WSelectCient"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        Title="Client Selection" 
+        Title="Sélection du Client" 
         Height="750"
         Width="900"
         WindowStartupLocation="CenterScreen"
@@ -121,7 +121,7 @@
             </Setter>
         </Style>
 
-        <!-- Modern TextBox Style -->
+        <!-- Modern TextBox Style - FIXED -->
         <Style x:Key="ModernTextBox" TargetType="TextBox">
             <Setter Property="Background" Value="White"/>
             <Setter Property="Foreground" Value="#0F172A"/>
@@ -131,6 +131,7 @@
             <Setter Property="FontSize" Value="14"/>
             <Setter Property="Height" Value="40"/>
             <Setter Property="VerticalContentAlignment" Value="Center"/>
+            <Setter Property="CaretBrush" Value="#3B82F6"/>
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="TextBox">
@@ -140,12 +141,15 @@
                                 BorderThickness="{TemplateBinding BorderThickness}"
                                 CornerRadius="6"
                                 SnapsToDevicePixels="True">
-                            <ScrollViewer x:Name="PART_ContentHost" 
-                                          Focusable="false"
-                                          HorizontalScrollBarVisibility="Hidden"
-                                          VerticalScrollBarVisibility="Hidden"
-                                          Margin="{TemplateBinding Padding}"
-                                          VerticalAlignment="Center"/>
+                            <Grid>
+                                <ScrollViewer x:Name="PART_ContentHost" 
+                                              Focusable="false"
+                                              HorizontalScrollBarVisibility="Hidden"
+                                              VerticalScrollBarVisibility="Hidden"
+                                              Margin="{TemplateBinding Padding}"
+                                              VerticalAlignment="Center"
+                                              Background="Transparent"/>
+                            </Grid>
                         </Border>
                         <ControlTemplate.Triggers>
                             <Trigger Property="IsMouseOver" Value="True">
@@ -156,8 +160,7 @@
                                 <Setter Property="BorderThickness" TargetName="border" Value="2"/>
                             </Trigger>
                             <Trigger Property="IsEnabled" Value="False">
-                                <Setter Property="Background" Value="#F8FAFC"/>
-                                <Setter Property="Foreground" Value="#94A3B8"/>
+                                <Setter Property="Background" TargetName="border" Value="#F8FAFC"/>
                             </Trigger>
                         </ControlTemplate.Triggers>
                     </ControlTemplate>
@@ -269,12 +272,12 @@
                     BorderThickness="0,0,0,1">
                 <Grid>
                     <StackPanel>
-                        <TextBlock Text="Client Selection" 
+                        <TextBlock Text="Sélection du Client" 
                                    FontSize="24" 
                                    FontWeight="SemiBold" 
                                    Foreground="#0F172A"
                                    Margin="0,0,0,6"/>
-                        <TextBlock Text="Search for an existing client, add a new one, or proceed without a client" 
+                        <TextBlock Text="Recherchez un client existant, ajoutez-en un nouveau, ou continuez sans client" 
                                    FontSize="14" 
                                    Foreground="#64748B"/>
                     </StackPanel>
@@ -306,7 +309,7 @@
                         <ColumnDefinition Width="Auto"/>
                     </Grid.ColumnDefinitions>
 
-                    <Border Grid.Column="0" Background="#F8FAFC" CornerRadius="6" 
+                    <Border Grid.Column="0" Background="White" CornerRadius="6" 
                             BorderBrush="#E2E8F0" BorderThickness="1" Height="40">
                         <Grid>
                             <Grid.ColumnDefinitions>
@@ -317,11 +320,14 @@
                                       Foreground="#94A3B8" Margin="12,0,8,0" 
                                       VerticalAlignment="Center"/>
                             <TextBox Grid.Column="1" Name="SearchTextBox" 
-                                    Background="Transparent" BorderThickness="0"
-                                    Padding="0,0,12,0" FontSize="14" 
+                                    Background="Transparent" 
+                                    BorderThickness="0"
+                                    Padding="0,0,12,0" 
+                                    FontSize="14" 
                                     VerticalAlignment="Center"
                                     VerticalContentAlignment="Center"
-                                    Foreground="#475569" 
+                                    Foreground="#0F172A"
+                                    CaretBrush="#3B82F6"
                                     TextChanged="SearchTextBox_TextChanged"
                                     MaxLength="100"/>
                         </Grid>
@@ -329,7 +335,7 @@
 
                     <Button Grid.Column="2"
                             Style="{StaticResource ModernButton}"
-                            Content="Search"
+                            Content="Rechercher"
                             Click="SearchButton_Click"
                             MinWidth="100"/>
                 </Grid>
@@ -349,32 +355,57 @@
 
                     <!-- Discount Input -->
                     <StackPanel Grid.Column="0">
-                        <TextBlock Text="Discount" 
-                                   FontSize="12" 
-                                   FontWeight="Medium" 
-                                   Foreground="#64748B" 
-                                   Margin="0,0,0,6"/>
+                        <TextBlock Text="Remise" 
+               FontSize="12" 
+               FontWeight="Medium" 
+               Foreground="#64748B" 
+               Margin="0,0,0,6"/>
                         <TextBox Name="Remise" 
-                                 Style="{StaticResource ModernTextBox}"
-                                 Width="140"
-                                 MaxLength="18"
-                                 PreviewTextInput="NumberOnly_PreviewTextInput"/>
+             Width="140"
+             Height="40"
+             MaxLength="18"
+             FontSize="14"
+             Padding="12,10"
+             Background="White"
+             Foreground="Black"
+             BorderBrush="#E2E8F0"
+             BorderThickness="1"
+             VerticalContentAlignment="Center"
+             PreviewTextInput="NumberOnly_PreviewTextInput">
+                            <TextBox.Resources>
+                                <Style TargetType="{x:Type Border}">
+                                    <Setter Property="CornerRadius" Value="6"/>
+                                </Style>
+                            </TextBox.Resources>
+                        </TextBox>
                     </StackPanel>
 
                     <!-- Credit Input -->
                     <StackPanel Grid.Column="2" x:Name="Creditt">
-                        <TextBlock Text="Credit" 
-                                   FontSize="12" 
-                                   FontWeight="Medium" 
-                                   Foreground="#64748B" 
-                                   Margin="0,0,0,6"/>
+                        <TextBlock Text="Crédit" 
+               FontSize="12" 
+               FontWeight="Medium" 
+               Foreground="#64748B" 
+               Margin="0,0,0,6"/>
                         <TextBox Name="Credittext" 
-                                 Style="{StaticResource ModernTextBox}"
-                                 Width="140"
-                                 MaxLength="18"
-                                 PreviewTextInput="NumberOnly_PreviewTextInput"/>
+             Width="140"
+             Height="40"
+             MaxLength="18"
+             FontSize="14"
+             Padding="12,10"
+             Background="White"
+             Foreground="Black"
+             BorderBrush="#E2E8F0"
+             BorderThickness="1"
+             VerticalContentAlignment="Center"
+             PreviewTextInput="NumberOnly_PreviewTextInput">
+                            <TextBox.Resources>
+                                <Style TargetType="{x:Type Border}">
+                                    <Setter Property="CornerRadius" Value="6"/>
+                                </Style>
+                            </TextBox.Resources>
+                        </TextBox>
                     </StackPanel>
-
                     <!-- New Client Button -->
                     <StackPanel Grid.Column="4" VerticalAlignment="Bottom">
                         <Button Name="AddClient"
@@ -384,7 +415,7 @@
                             <StackPanel Orientation="Horizontal">
                                 <TextBlock Text="+" FontSize="16" Margin="0,0,6,0" 
                                           VerticalAlignment="Center"/>
-                                <TextBlock Text="New Client" VerticalAlignment="Center"/>
+                                <TextBlock Text="Nouveau Client" VerticalAlignment="Center"/>
                             </StackPanel>
                         </Button>
                     </StackPanel>
@@ -398,7 +429,7 @@
                             <StackPanel Orientation="Horizontal">
                                 <TextBlock Text="⊘" FontSize="14" Margin="0,0,6,0" 
                                           VerticalAlignment="Center"/>
-                                <TextBlock Text="No Client" VerticalAlignment="Center"/>
+                                <TextBlock Text="Sans Client" VerticalAlignment="Center"/>
                             </StackPanel>
                         </Button>
                     </StackPanel>
@@ -425,7 +456,7 @@
                             Padding="20,16"
                             BorderBrush="#E2E8F0"
                             BorderThickness="0,0,0,1">
-                        <TextBlock Text="Search Results" 
+                        <TextBlock Text="Résultats de Recherche" 
                                    FontSize="14" 
                                    FontWeight="SemiBold" 
                                    Foreground="#475569"/>
@@ -456,13 +487,13 @@
 
                     <!-- Selected Client Info -->
                     <StackPanel Grid.Column="0" VerticalAlignment="Center">
-                        <TextBlock Text="Selected Client" 
+                        <TextBlock Text="Client Sélectionné" 
                                    FontSize="11" 
                                    FontWeight="Medium" 
                                    Foreground="#94A3B8"
                                    Margin="0,0,0,4"/>
                         <TextBlock Name="SelectedClient" 
-                                   Text="No client selected" 
+                                   Text="Aucun client sélectionné" 
                                    FontSize="14" 
                                    FontWeight="Medium" 
                                    Foreground="#475569"/>
@@ -471,13 +502,13 @@
                     <!-- Action Buttons -->
                     <StackPanel Grid.Column="1" Orientation="Horizontal">
                         <Button Style="{StaticResource SecondaryButton}"
-                                Content="Cancel"
+                                Content="Annuler"
                                 Click="CancelButton_Click"
                                 Margin="0,0,12,0"
                                 MinWidth="100"/>
                         <Button Name="ValidateButton"
                                 Style="{StaticResource ModernButton}"
-                                Content="Confirm"
+                                Content="Confirmer"
                                 Click="ValidateButton_Click"
                                 MinWidth="120"/>
                     </StackPanel>

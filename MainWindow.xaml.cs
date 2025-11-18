@@ -50,7 +50,7 @@ namespace GestionComerce
             }
 
             // STEP 2: Check expiry date
-            DateTime expiryDate = new DateTime(2026, 11, 6, 16, 20, 0);
+            DateTime expiryDate = new DateTime(2025, 12, 13, 0, 0, 0);
             if (DateTime.Now > expiryDate)
             {
                 System.Windows.MessageBox.Show(

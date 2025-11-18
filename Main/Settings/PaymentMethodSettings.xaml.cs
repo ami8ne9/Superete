@@ -32,9 +32,8 @@ namespace GestionComerce.Settings
                     }
                     CanEditPaymentMethod = r.ModifyPaymentMethod;
                     CanDeletePaymentMethod = r.DeletePaymentMethod;
-                    if(r.AddPaymentMethod == true && r.ModifyPaymentMethod == true && r.DeletePaymentMethod == true)
+                    if (r.AddPaymentMethod == true && r.ModifyPaymentMethod == true && r.DeletePaymentMethod == true)
                     {
-
                         LoadPaymentMethods();
                     }
                     break;
@@ -117,7 +116,6 @@ namespace GestionComerce.Settings
 
                 if (result > 0)
                 {
-
                     WCongratulations wCongratulations = new WCongratulations("Ajout succes", "l'Ajout a ete effectue avec succes", 1);
                     wCongratulations.ShowDialog();
 
@@ -155,8 +153,8 @@ namespace GestionComerce.Settings
                 var editDialog = new Window
                 {
                     Title = "Modifier la Méthode de Paiement",
-                    Width = 500,
-                    Height = 310,
+                    Width = 520,
+                    Height = 380,
                     WindowStartupLocation = WindowStartupLocation.CenterScreen,
                     ResizeMode = ResizeMode.NoResize,
                     Background = System.Windows.Media.Brushes.Transparent,
@@ -164,91 +162,120 @@ namespace GestionComerce.Settings
                     AllowsTransparency = true
                 };
 
-                // Main border with corner radius and shadow
-                var mainBorder = new Border
+                // Main border with corner radius and border
+                var outerBorder = new Border
                 {
                     Background = System.Windows.Media.Brushes.White,
-                    CornerRadius = new CornerRadius(16),
-                    Padding = new Thickness(30),
-                    Effect = new DropShadowEffect
-                    {
-                        Color = System.Windows.Media.Colors.Black,
-                        Opacity = 0.15,
-                        BlurRadius = 20,
-                        ShadowDepth = 4
-                    }
+                    CornerRadius = new CornerRadius(12),
+                    BorderThickness = new Thickness(1),
+                    BorderBrush = new System.Windows.Media.SolidColorBrush(System.Windows.Media.Color.FromRgb(209, 213, 219)),
+                    Margin = new Thickness(10)
+                };
+
+                var mainBorder = new Border
+                {
+                    Padding = new Thickness(30)
                 };
 
                 var stack = new StackPanel();
+
+                // Title
+                var titleBlock = new TextBlock
+                {
+                    Text = "Modifier la Méthode de Paiement",
+                    FontFamily = new System.Windows.Media.FontFamily("Segoe UI"),
+                    FontSize = 20,
+                    FontWeight = FontWeights.Bold,
+                    Foreground = new System.Windows.Media.SolidColorBrush(System.Windows.Media.Color.FromRgb(31, 41, 55)),
+                    Margin = new Thickness(0, 0, 0, 24)
+                };
 
                 // Name field
                 var nameLabel = new TextBlock
                 {
                     Text = "Nom de la méthode:",
                     FontFamily = new System.Windows.Media.FontFamily("Segoe UI"),
-                    FontSize = 14,
-                    FontWeight = FontWeights.SemiBold,
-                    Foreground = new System.Windows.Media.SolidColorBrush(System.Windows.Media.Color.FromRgb(31, 41, 55)),
-                    Margin = new Thickness(0, 0, 0, 8)
+                    FontSize = 13,
+                    FontWeight = FontWeights.Medium,
+                    Foreground = new System.Windows.Media.SolidColorBrush(System.Windows.Media.Color.FromRgb(107, 114, 128)),
+                    Margin = new Thickness(0, 0, 0, 6)
                 };
 
                 var nameTextBox = new TextBox
                 {
-                    Text = method.PaymentMethodName,
                     FontFamily = new System.Windows.Media.FontFamily("Segoe UI"),
                     FontSize = 14,
                     Padding = new Thickness(12),
+                    Height = 44,
                     Margin = new Thickness(0, 0, 0, 16),
-                    Background = new System.Windows.Media.SolidColorBrush(System.Windows.Media.Color.FromRgb(248, 250, 252)),
-                    BorderBrush = new System.Windows.Media.SolidColorBrush(System.Windows.Media.Color.FromRgb(226, 232, 240)),
+                    Background = new System.Windows.Media.SolidColorBrush(System.Windows.Media.Color.FromRgb(249, 250, 251)),
+                    BorderBrush = new System.Windows.Media.SolidColorBrush(System.Windows.Media.Color.FromRgb(229, 231, 235)),
                     BorderThickness = new Thickness(1),
-                    Foreground = new System.Windows.Media.SolidColorBrush(System.Windows.Media.Color.FromRgb(30, 41, 59))
+                    Foreground = new System.Windows.Media.SolidColorBrush(System.Windows.Media.Color.FromRgb(31, 41, 55)),
+                    VerticalContentAlignment = VerticalAlignment.Center
                 };
+
+                // Set the text AFTER creating the textbox and BEFORE applying template
+                nameTextBox.Text = method.PaymentMethodName;
+
+                // Apply simple rounded corner style without complex template
+                nameTextBox.BorderThickness = new Thickness(1);
+                nameTextBox.BorderBrush = new System.Windows.Media.SolidColorBrush(System.Windows.Media.Color.FromRgb(229, 231, 235));
+                nameTextBox.Background = new System.Windows.Media.SolidColorBrush(System.Windows.Media.Color.FromRgb(249, 250, 251));
 
                 // Image field
                 var imageLabel = new TextBlock
                 {
                     Text = "Image/Icône:",
                     FontFamily = new System.Windows.Media.FontFamily("Segoe UI"),
-                    FontSize = 14,
-                    FontWeight = FontWeights.SemiBold,
-                    Foreground = new System.Windows.Media.SolidColorBrush(System.Windows.Media.Color.FromRgb(31, 41, 55)),
-                    Margin = new Thickness(0, 0, 0, 8)
+                    FontSize = 13,
+                    FontWeight = FontWeights.Medium,
+                    Foreground = new System.Windows.Media.SolidColorBrush(System.Windows.Media.Color.FromRgb(107, 114, 128)),
+                    Margin = new Thickness(0, 0, 0, 6)
                 };
 
-                var imageGrid = new Grid { Margin = new Thickness(0, 0, 0, 20) };
+                var imageGrid = new Grid { Margin = new Thickness(0, 0, 0, 24) };
                 imageGrid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) });
                 imageGrid.ColumnDefinitions.Add(new ColumnDefinition { Width = GridLength.Auto });
 
                 var imageTextBox = new TextBox
                 {
-                    Text = method.ImagePath ?? "",
                     FontFamily = new System.Windows.Media.FontFamily("Segoe UI"),
                     FontSize = 14,
                     Padding = new Thickness(12),
+                    Height = 44,
                     IsReadOnly = true,
-                    Background = new System.Windows.Media.SolidColorBrush(System.Windows.Media.Color.FromRgb(248, 250, 252)),
-                    BorderBrush = new System.Windows.Media.SolidColorBrush(System.Windows.Media.Color.FromRgb(226, 232, 240)),
+                    Background = new System.Windows.Media.SolidColorBrush(System.Windows.Media.Color.FromRgb(249, 250, 251)),
+                    BorderBrush = new System.Windows.Media.SolidColorBrush(System.Windows.Media.Color.FromRgb(229, 231, 235)),
                     BorderThickness = new Thickness(1),
-                    Foreground = new System.Windows.Media.SolidColorBrush(System.Windows.Media.Color.FromRgb(107, 114, 128))
+                    Foreground = new System.Windows.Media.SolidColorBrush(System.Windows.Media.Color.FromRgb(107, 114, 128)),
+                    VerticalContentAlignment = VerticalAlignment.Center
                 };
+
+                // Set the text AFTER creating the textbox
+                imageTextBox.Text = method.ImagePath ?? "";
+
                 Grid.SetColumn(imageTextBox, 0);
 
                 var browsButton = new Button
                 {
-                    Content = "Parcourir...",
-                    Width = 110,
-                    Height = 38,
-                    Margin = new Thickness(10, 0, 0, 0),
+                    Content = "Parcourir",
+                    Width = 100,
+                    Height = 44,
+                    Margin = new Thickness(12, 0, 0, 0),
                     Background = new System.Windows.Media.SolidColorBrush(System.Windows.Media.Color.FromRgb(107, 114, 128)),
                     Foreground = System.Windows.Media.Brushes.White,
                     FontFamily = new System.Windows.Media.FontFamily("Segoe UI"),
-                    FontSize = 12,
+                    FontSize = 14,
                     FontWeight = FontWeights.SemiBold,
                     BorderThickness = new Thickness(0),
                     Cursor = System.Windows.Input.Cursors.Hand
                 };
-                ApplyButtonTemplateEdit(browsButton);
+
+                // Apply simple button style
+                browsButton.BorderThickness = new Thickness(0);
+                browsButton.Cursor = Cursors.Hand;
+
                 Grid.SetColumn(browsButton, 1);
 
                 browsButton.Click += (s, ev) =>
@@ -273,45 +300,46 @@ namespace GestionComerce.Settings
                 {
                     Orientation = Orientation.Horizontal,
                     HorizontalAlignment = HorizontalAlignment.Right,
-                    Margin = new Thickness(0, 20, 0, 0)
+                    Margin = new Thickness(0, 8, 0, 0)
                 };
 
                 var btnCancel = new Button
                 {
                     Content = "Annuler",
-                    Width = 110,
-                    Height = 38,
-                    Margin = new Thickness(0, 0, 10, 0),
-                    Background = new System.Windows.Media.SolidColorBrush(System.Windows.Media.Color.FromRgb(156, 163, 175)),
+                    Width = 100,
+                    Height = 44,
+                    Margin = new Thickness(0, 0, 12, 0),
+                    Background = new System.Windows.Media.SolidColorBrush(System.Windows.Media.Color.FromRgb(107, 114, 128)),
                     Foreground = System.Windows.Media.Brushes.White,
                     FontFamily = new System.Windows.Media.FontFamily("Segoe UI"),
-                    FontSize = 12,
+                    FontSize = 14,
                     FontWeight = FontWeights.SemiBold,
                     BorderThickness = new Thickness(0),
                     Cursor = System.Windows.Input.Cursors.Hand
                 };
-                ApplyButtonTemplateEdit(btnCancel);
+
                 btnCancel.Click += (s, ev) => editDialog.DialogResult = false;
 
                 var btnSave = new Button
                 {
                     Content = "Enregistrer",
-                    Width = 110,
-                    Height = 38,
-                    Background = new System.Windows.Media.SolidColorBrush(System.Windows.Media.Color.FromRgb(37, 99, 235)),
+                    Width = 120,
+                    Height = 44,
+                    Background = new System.Windows.Media.SolidColorBrush(System.Windows.Media.Color.FromRgb(16, 185, 129)),
                     Foreground = System.Windows.Media.Brushes.White,
                     FontFamily = new System.Windows.Media.FontFamily("Segoe UI"),
-                    FontSize = 12,
+                    FontSize = 14,
                     FontWeight = FontWeights.SemiBold,
                     BorderThickness = new Thickness(0),
                     Cursor = System.Windows.Input.Cursors.Hand
                 };
-                ApplyButtonTemplateEdit(btnSave);
+
                 btnSave.Click += (s, ev) => editDialog.DialogResult = true;
 
                 buttonPanel.Children.Add(btnCancel);
                 buttonPanel.Children.Add(btnSave);
 
+                stack.Children.Add(titleBlock);
                 stack.Children.Add(nameLabel);
                 stack.Children.Add(nameTextBox);
                 stack.Children.Add(imageLabel);
@@ -319,9 +347,15 @@ namespace GestionComerce.Settings
                 stack.Children.Add(buttonPanel);
 
                 mainBorder.Child = stack;
-                editDialog.Content = mainBorder;
-                nameTextBox.Focus();
-                nameTextBox.SelectAll();
+                outerBorder.Child = mainBorder;
+                editDialog.Content = outerBorder;
+
+                // Set focus after dialog loads
+                editDialog.Loaded += (s, ev) =>
+                {
+                    nameTextBox.Focus();
+                    nameTextBox.SelectAll();
+                };
 
                 if (editDialog.ShowDialog() == true)
                 {
@@ -357,7 +391,6 @@ namespace GestionComerce.Settings
                         }
                         else
                         {
-
                             WCongratulations wCongratulations = new WCongratulations("Modification échoué", "Modification n'a pas ete effectue ", 0);
                             wCongratulations.ShowDialog();
                         }
@@ -369,6 +402,27 @@ namespace GestionComerce.Settings
                     }
                 }
             }
+        }
+
+        private void ApplyRoundedTextBoxTemplate(TextBox textBox)
+        {
+            var template = new ControlTemplate(typeof(TextBox));
+            var factory = new FrameworkElementFactory(typeof(Border));
+
+            factory.SetValue(Border.BackgroundProperty, new TemplateBindingExtension(TextBox.BackgroundProperty));
+            factory.SetValue(Border.BorderBrushProperty, new TemplateBindingExtension(TextBox.BorderBrushProperty));
+            factory.SetValue(Border.BorderThicknessProperty, new TemplateBindingExtension(TextBox.BorderThicknessProperty));
+            factory.SetValue(Border.CornerRadiusProperty, new CornerRadius(6));
+
+            var scrollViewer = new FrameworkElementFactory(typeof(ScrollViewer));
+            scrollViewer.SetValue(ScrollViewer.NameProperty, "PART_ContentHost");
+            scrollViewer.SetValue(ScrollViewer.MarginProperty, new Thickness(12, 0, 12, 0));
+            scrollViewer.SetValue(ScrollViewer.VerticalAlignmentProperty, VerticalAlignment.Center);
+
+            factory.AppendChild(scrollViewer);
+            template.VisualTree = factory;
+
+            textBox.Template = template;
         }
 
         private void ApplyButtonTemplateEdit(Button button)
@@ -415,7 +469,7 @@ namespace GestionComerce.Settings
                         }
                         else
                         {
-                            WCongratulations wCongratulations = new WCongratulations("Modification échoué", "Modification n'a pas ete effectue ", 0);
+                            WCongratulations wCongratulations = new WCongratulations("Suppression échoué", "Suppression n'a pas ete effectue ", 0);
                             wCongratulations.ShowDialog();
                         }
                     }
@@ -432,6 +486,6 @@ namespace GestionComerce.Settings
         private void DgPaymentMethods_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             // Optional: Handle selection if needed
-        }
+        }
     }
 }

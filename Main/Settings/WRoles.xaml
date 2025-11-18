@@ -128,14 +128,14 @@
 
             <!-- Title Section -->
             <StackPanel Grid.Row="0">
-                <TextBlock Text="Role Management" 
-                           FontSize="24" 
-                           FontWeight="Bold" 
-                           Foreground="#111827"
-                           Margin="0,0,0,6"/>
-                <TextBlock Text="Manage user roles and permissions" 
-                           FontSize="14" 
-                           Foreground="#6B7280"/>
+                <TextBlock Text="Gestion des rôles" 
+               FontSize="24" 
+               FontWeight="Bold" 
+               Foreground="#111827"
+               Margin="0,0,0,6"/>
+                <TextBlock Text="Gérez les rôles utilisateurs et les permissions" 
+               FontSize="14" 
+               Foreground="#6B7280"/>
             </StackPanel>
 
             <!-- Roles Container with Border -->

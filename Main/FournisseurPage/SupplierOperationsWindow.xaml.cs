@@ -15,7 +15,7 @@ namespace GestionComerce.Main.FournisseurPage
         private User _user;
         private bool _isArticlesPanelVisible = false;
 
-        public SupplierOperationsWindow(MainWindow mainWindow, Fournisseur supplier,User u)
+        public SupplierOperationsWindow(MainWindow mainWindow, Fournisseur supplier, User u)
         {
             InitializeComponent();
             _mainWindow = mainWindow;
@@ -218,7 +218,7 @@ namespace GestionComerce.Main.FournisseurPage
             // Update summary for payment
             TotalArticlesText.Text = "1";
             TotalQuantityText.Text = "1";
-            TotalAmountText.Text = operation.PrixOperation.ToString("C2");
+            TotalAmountText.Text = $"{operation.PrixOperation:N2} DH";
 
             // Update operation info with reversed status
             string reversedText = operation.Reversed ? " (Reversed)" : "";
@@ -324,7 +324,7 @@ namespace GestionComerce.Main.FournisseurPage
             // Update UI
             TotalArticlesText.Text = totalArticles.ToString();
             TotalQuantityText.Text = totalQuantity.ToString();
-            TotalAmountText.Text = operation.PrixOperation.ToString("C2");
+            TotalAmountText.Text = $"{operation.PrixOperation:N2} DH";
 
             // Show additional operation details if available
             if (operation.Remise > 0)
@@ -338,7 +338,7 @@ namespace GestionComerce.Main.FournisseurPage
         {
             TotalArticlesText.Text = "0";
             TotalQuantityText.Text = "0";
-            TotalAmountText.Text = "0,00 €";
+            TotalAmountText.Text = "0,00 DH";
         }
 
         // Event handler for refresh button (if you have one in XAML)
