@@ -406,6 +406,18 @@ namespace GestionComerce.Main.Vente
                 }
 
                 // Print ticket if enabled (check if main.Ticket checkbox exists and is checked)
+                // Replace the ticket printing section in ValidateButton_Click with this:
+                foreach (CSingleArticle2 sa2 in main.SelectedArticles.Children)
+                {
+                    ticketArticles.Add(new TicketArticleData
+                    {
+                        ArticleName = sa2.a.ArticleName,
+                        Quantity = sa2.qte,
+                        UnitPrice = sa2.a.PrixVente,
+                        Total = sa2.a.PrixVente * sa2.qte,
+                        TVA = sa2.a.tva  // Add the TVA from the article
+                    });
+                }
                 if (main.Ticket != null && main.Ticket.IsChecked == true)
                 {
                     try
@@ -438,11 +450,37 @@ namespace GestionComerce.Main.Vente
                             paymentMethodName,
                             operationTypeLabel
                         );
-                        factureWindow.ShowDialog();
+
+                        // Show the dialog and wait for user decision
+                        bool? result = factureWindow.ShowDialog();
+
+                        // Check if user confirmed (clicked "Confirmer et Imprimer")
+                        if (result == true && factureWindow.ShouldPrint)
+                        {
+                            try
+                            {
+                                // Print the facture
+                                factureWindow.PrintFacture();
+                            }
+                            catch (Exception printEx)
+                            {
+                                MessageBox.Show("Erreur lors de l'impression: " + printEx.Message,
+                                    "Erreur d'impression", MessageBoxButton.OK, MessageBoxImage.Warning);
+                            }
+                        }
+                        else if (result == false)
+                        {
+                            // User cancelled - rollback the operation
+                            MessageBox.Show("Opération annulée par l'utilisateur.",
+                                "Opération annulée", MessageBoxButton.OK, MessageBoxImage.Information);
+
+                            ValidateButton.IsEnabled = true;
+                            return; // Exit without clearing cart or showing success
+                        }
                     }
                     catch (Exception ex)
                     {
-                        MessageBox.Show("Erreur lors de l'impression du ticket: " + ex.Message,
+                        MessageBox.Show("Erreur lors de l'affichage du ticket: " + ex.Message,
                             "Erreur", MessageBoxButton.OK, MessageBoxImage.Warning);
                     }
                 }
@@ -500,5 +538,6 @@ namespace GestionComerce.Main.Vente
         public int Quantity { get; set; }
         public decimal UnitPrice { get; set; }
         public decimal Total { get; set; }
+        public decimal TVA { get; set; }  // Add TVA property
     }
 }

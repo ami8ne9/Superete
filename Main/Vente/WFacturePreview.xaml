@@ -87,7 +87,8 @@
                                    Margin="0,0,0,5"/>
 
                             <!-- Client Info (if exists) -->
-                            <TextBlock Text="Client: Client Exemple" 
+                            <TextBlock x:Name="txtClientInfo"
+                                   Text="Client: Client Exemple" 
                                    FontSize="10" 
                                    TextAlignment="Left"
                                    Margin="0,5,0,2"/>
@@ -99,9 +100,9 @@
                             <Grid Margin="0,5,0,5">
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition Width="*"/>
-                                    <ColumnDefinition Width="40"/>
+                                    <ColumnDefinition Width="30"/>
+                                    <ColumnDefinition Width="50"/>
                                     <ColumnDefinition Width="60"/>
-                                    <ColumnDefinition Width="70"/>
                                 </Grid.ColumnDefinitions>
                                 <TextBlock Grid.Column="0" Text="ARTICLE" FontSize="9" FontWeight="Bold"/>
                                 <TextBlock Grid.Column="1" Text="QTE" FontSize="9" FontWeight="Bold" TextAlignment="Center"/>
@@ -110,113 +111,43 @@
                             </Grid>
 
                             <!-- Dotted Line -->
-                            <TextBlock Text="- - - - - - - - - - - - - - - - - - - - - - - - - -" 
+                            <TextBlock x:Name="articlesDivider" Text="- - - - - - - - - - - - - - - - - - - - - - - - - -" 
                                    FontSize="9" 
                                    Margin="0,0,0,5"/>
 
-                            <!-- Article 1 -->
-                            <Grid Margin="0,0,0,8">
-                                <Grid.RowDefinitions>
-                                    <RowDefinition Height="Auto"/>
-                                    <RowDefinition Height="Auto"/>
-                                </Grid.RowDefinitions>
-                                <TextBlock Grid.Row="0" 
-                                       Text="Article Exemple 1" 
-                                       FontSize="10" 
-                                       TextWrapping="Wrap"
-                                       Margin="0,0,0,2"/>
-                                <Grid Grid.Row="1">
-                                    <Grid.ColumnDefinitions>
-                                        <ColumnDefinition Width="*"/>
-                                        <ColumnDefinition Width="40"/>
-                                        <ColumnDefinition Width="60"/>
-                                        <ColumnDefinition Width="70"/>
-                                    </Grid.ColumnDefinitions>
-                                    <TextBlock Grid.Column="1" Text="2" FontSize="10" TextAlignment="Center"/>
-                                    <TextBlock Grid.Column="2" Text="50.00" FontSize="10" TextAlignment="Right"/>
-                                    <TextBlock Grid.Column="3" Text="100.00" FontSize="10" FontWeight="SemiBold" TextAlignment="Right"/>
-                                </Grid>
-                            </Grid>
+                            <!-- Articles will be inserted here dynamically -->
 
-                            <!-- Article 2 -->
-                            <Grid Margin="0,0,0,8">
-                                <Grid.RowDefinitions>
-                                    <RowDefinition Height="Auto"/>
-                                    <RowDefinition Height="Auto"/>
-                                </Grid.RowDefinitions>
-                                <TextBlock Grid.Row="0" 
-                                       Text="Article Exemple 2" 
-                                       FontSize="10" 
-                                       TextWrapping="Wrap"
-                                       Margin="0,0,0,2"/>
-                                <Grid Grid.Row="1">
-                                    <Grid.ColumnDefinitions>
-                                        <ColumnDefinition Width="*"/>
-                                        <ColumnDefinition Width="40"/>
-                                        <ColumnDefinition Width="60"/>
-                                        <ColumnDefinition Width="70"/>
-                                    </Grid.ColumnDefinitions>
-                                    <TextBlock Grid.Column="1" Text="1" FontSize="10" TextAlignment="Center"/>
-                                    <TextBlock Grid.Column="2" Text="75.00" FontSize="10" TextAlignment="Right"/>
-                                    <TextBlock Grid.Column="3" Text="75.00" FontSize="10" FontWeight="SemiBold" TextAlignment="Right"/>
-                                </Grid>
-                            </Grid>
-
-                            <!-- Article 3 -->
-                            <Grid Margin="0,0,0,8">
-                                <Grid.RowDefinitions>
-                                    <RowDefinition Height="Auto"/>
-                                    <RowDefinition Height="Auto"/>
-                                </Grid.RowDefinitions>
-                                <TextBlock Grid.Row="0" 
-                                       Text="Article Exemple 3" 
-                                       FontSize="10" 
-                                       TextWrapping="Wrap"
-                                       Margin="0,0,0,2"/>
-                                <Grid Grid.Row="1">
-                                    <Grid.ColumnDefinitions>
-                                        <ColumnDefinition Width="*"/>
-                                        <ColumnDefinition Width="40"/>
-                                        <ColumnDefinition Width="60"/>
-                                        <ColumnDefinition Width="70"/>
-                                    </Grid.ColumnDefinitions>
-                                    <TextBlock Grid.Column="1" Text="3" FontSize="10" TextAlignment="Center"/>
-                                    <TextBlock Grid.Column="2" Text="25.00" FontSize="10" TextAlignment="Right"/>
-                                    <TextBlock Grid.Column="3" Text="75.00" FontSize="10" FontWeight="SemiBold" TextAlignment="Right"/>
-                                </Grid>
-                            </Grid>
-
-                            <!-- Dotted Line -->
-                            <TextBlock Text="- - - - - - - - - - - - - - - - - - - - - - - - - -" 
+                            <!-- Dotted Line (after articles) -->
+                            <TextBlock x:Name="totalsTopDivider" Text="- - - - - - - - - - - - - - - - - - - - - - - - - -" 
                                    FontSize="9" 
                                    Margin="0,5,0,5"/>
 
                             <!-- Totals Section -->
-                            <Grid Margin="0,5,0,3">
+                            <Grid x:Name="gridSubtotal" Margin="0,5,0,3">
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition Width="*"/>
                                     <ColumnDefinition Width="80"/>
                                 </Grid.ColumnDefinitions>
                                 <TextBlock Grid.Column="0" Text="SOUS-TOTAL:" FontSize="11"/>
-                                <TextBlock Grid.Column="1" Text="250.00 DH" FontSize="11" FontWeight="SemiBold" TextAlignment="Right"/>
+                                <TextBlock Grid.Column="1" x:Name="txtSubtotal" Text="250.00 DH" FontSize="11" FontWeight="SemiBold" TextAlignment="Right"/>
                             </Grid>
 
-                            <Grid Margin="0,0,0,3">
+                            <Grid x:Name="gridRemise" Margin="0,0,0,3">
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition Width="*"/>
                                     <ColumnDefinition Width="80"/>
                                 </Grid.ColumnDefinitions>
                                 <TextBlock Grid.Column="0" Text="REMISE:" FontSize="11"/>
-                                <TextBlock Grid.Column="1" Text="-10.00 DH" FontSize="11" FontWeight="SemiBold" TextAlignment="Right"/>
+                                <TextBlock Grid.Column="1" x:Name="txtRemise" Text="-10.00 DH" FontSize="11" FontWeight="SemiBold" TextAlignment="Right"/>
                             </Grid>
 
-                            <Grid Margin="0,0,0,3">
+                            <Grid x:Name="gridTax" Margin="0,0,0,3">
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition Width="*"/>
                                     <ColumnDefinition Width="80"/>
                                 </Grid.ColumnDefinitions>
-                                <TextBlock Grid.Column="0" x:Name="txtTaxLabel" FontSize="11"/>
-                                <TextBlock Grid.Column="1" x:Name="txtTax" FontSize="11" FontWeight="SemiBold" TextAlignment="Right"/>
+                                <TextBlock Grid.Column="0" x:Name="txtTaxLabel" Text="TVA (20%):" FontSize="11"/>
+                                <TextBlock Grid.Column="1" x:Name="txtTax" Text="48.00 DH" FontSize="11" FontWeight="SemiBold" TextAlignment="Right"/>
                             </Grid>
 
                             <!-- Bold Separator -->
@@ -229,14 +160,15 @@
                                     <ColumnDefinition Width="100"/>
                                 </Grid.ColumnDefinitions>
                                 <TextBlock Grid.Column="0" Text="TOTAL:" FontSize="14" FontWeight="Bold"/>
-                                <TextBlock Grid.Column="1" x:Name="txtTotal" FontSize="14" FontWeight="Bold" TextAlignment="Right"/>
+                                <TextBlock Grid.Column="1" x:Name="txtTotal" Text="288.00 DH" FontSize="14" FontWeight="Bold" TextAlignment="Right"/>
                             </Grid>
 
                             <!-- Bold Separator -->
                             <Border BorderBrush="Black" BorderThickness="0,2,0,0" Margin="0,0,0,10"/>
 
                             <!-- Payment Method -->
-                            <TextBlock Text="Mode de paiement: ESPECE" 
+                            <TextBlock x:Name="txtPaymentMethod"
+                                   Text="Mode de paiement: ESPECE" 
                                    FontSize="10" 
                                    TextAlignment="Center"
                                    Margin="0,0,0,10"/>
@@ -261,7 +193,8 @@
                                    Margin="0,0,0,10"/>
 
                             <!-- Barcode placeholder or ID -->
-                            <TextBlock Text="* FAC-000001 *" 
+                            <TextBlock x:Name="txtBarcode"
+                                   Text="* FAC-000001 *" 
                                    FontSize="12" 
                                    FontFamily="Consolas"
                                    TextAlignment="Center"
@@ -272,32 +205,53 @@
                 </Border>
             </ScrollViewer>
 
-            <!-- Action Button -->
+            <!-- Action Buttons -->
             <Border Grid.Row="2" 
                 Background="White" 
                 Padding="15" 
                 BorderBrush="#CCCCCC" 
                 BorderThickness="0,1,0,0"
                 CornerRadius="0,0,12,12">
-                <Button x:Name="btnClose" 
-                    Content="FERMER" 
-                    Padding="40,12" 
-                    FontSize="13" 
-                    Background="#2C3E50" 
-                    Foreground="White" 
-                    FontWeight="SemiBold" 
-                    BorderThickness="0" 
-                    Cursor="Hand"
-                    HorizontalAlignment="Center"
-                    Click="BtnClose_Click">
-                    <Button.Template>
-                        <ControlTemplate TargetType="Button">
-                            <Border Background="{TemplateBinding Background}" CornerRadius="8">
-                                <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" Margin="{TemplateBinding Padding}"/>
-                            </Border>
-                        </ControlTemplate>
-                    </Button.Template>
-                </Button>
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                    <Button x:Name="btnConfirm" 
+                        Content="CONFIRMER ET IMPRIMER" 
+                        Padding="30,12" 
+                        FontSize="13" 
+                        Background="#27AE60" 
+                        Foreground="White" 
+                        FontWeight="SemiBold" 
+                        BorderThickness="0" 
+                        Cursor="Hand"
+                        Margin="0,0,10,0"
+                        Click="BtnConfirm_Click">
+                        <Button.Template>
+                            <ControlTemplate TargetType="Button">
+                                <Border Background="{TemplateBinding Background}" CornerRadius="8">
+                                    <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" Margin="{TemplateBinding Padding}"/>
+                                </Border>
+                            </ControlTemplate>
+                        </Button.Template>
+                    </Button>
+
+                    <Button x:Name="btnCancel" 
+                        Content="ANNULER" 
+                        Padding="30,12" 
+                        FontSize="13" 
+                        Background="#E74C3C" 
+                        Foreground="White" 
+                        FontWeight="SemiBold" 
+                        BorderThickness="0" 
+                        Cursor="Hand"
+                        Click="BtnCancel_Click">
+                        <Button.Template>
+                            <ControlTemplate TargetType="Button">
+                                <Border Background="{TemplateBinding Background}" CornerRadius="8">
+                                    <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" Margin="{TemplateBinding Padding}"/>
+                                </Border>
+                            </ControlTemplate>
+                        </Button.Template>
+                    </Button>
+                </StackPanel>
             </Border>
         </Grid>
     </Border>

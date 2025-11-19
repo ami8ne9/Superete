@@ -203,7 +203,6 @@
                         </Border>
                         <StackPanel VerticalAlignment="Center">
                             <TextBlock x:Name="CurrentUser" Text="User" FontFamily="Segoe UI" FontSize="13" FontWeight="SemiBold" Foreground="#1F2937"/>
-                            <TextBlock Text="Caissier" FontFamily="Segoe UI" FontSize="11" Foreground="#6B7280"/>
                         </StackPanel>
                     </StackPanel>
                 </Border>
