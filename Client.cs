@@ -19,7 +19,7 @@ namespace GestionComerce
         public string Code { get; set; }
         public bool Etat { get; set; }
 
-        private static readonly string ConnectionString = "Server=localhost\\SQLEXPRESS;Database=GESTIONCOMERCE;Trusted_Connection=True;";
+        private static readonly string ConnectionString = "Server=localhost\\SQLEXPRESS;Database=GESTIONCOMERCEP;Trusted_Connection=True;";
 
         public async Task<List<Client>> GetClientsAsync()
         {

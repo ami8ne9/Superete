@@ -24,7 +24,7 @@ namespace Superete
         public string LogoPath { get; set; } = "";
 
         private static readonly string ConnectionString =
-            "Server=localhost\\SQLEXPRESS;Database=GESTIONCOMERCE;Trusted_Connection=True;";
+            "Server=localhost\\SQLEXPRESS;Database=GESTIONCOMERCEP;Trusted_Connection=True;";
 
         // Get single active facture
         public async Task<Facture> GetFactureAsync()

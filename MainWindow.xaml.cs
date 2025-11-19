@@ -49,19 +49,19 @@ namespace GestionComerce
                 return;
             }
 
-            // STEP 2: Check expiry date
-            DateTime expiryDate = new DateTime(2025, 12, 13, 0, 0, 0);
-            if (DateTime.Now > expiryDate)
-            {
-                System.Windows.MessageBox.Show(
-                    "This version has expired.",
-                    "Expired",
-                    MessageBoxButton.OK,
-                    MessageBoxImage.Warning
-                );
-                System.Windows.Application.Current.Shutdown();
-                return;
-            }
+            //// STEP 2: Check expiry date
+            //DateTime expiryDate = new DateTime(2025, 12, 20, 0, 0, 0);
+            //if (DateTime.Now > expiryDate)
+            //{
+            //    System.Windows.MessageBox.Show(
+            //        "This version has expired.",
+            //        "Expired",
+            //        MessageBoxButton.OK,
+            //        MessageBoxImage.Warning
+            //    );
+            //    System.Windows.Application.Current.Shutdown();
+            //    return;
+            //}
 
             // STEP 3: Continue normal initialization
             InitializeComponent();

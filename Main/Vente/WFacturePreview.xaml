@@ -1,4 +1,4 @@
-﻿<Window x:Class="GestionComerce.Settings.WFacturePreview"
+﻿<Window x:Class="GestionComerce.Vente.WFacturePreview"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         Title="Aperçu du Ticket" Height="700" Width="400"

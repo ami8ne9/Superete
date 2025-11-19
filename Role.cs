@@ -89,7 +89,7 @@ namespace GestionComerce
         public bool ViewCreditFournisseur { get; set; }
 
         private static readonly string ConnectionString =
-			"Server=localhost\\SQLEXPRESS;Database=GESTIONCOMERCE;Trusted_Connection=True;";
+			"Server=localhost\\SQLEXPRESS;Database=GESTIONCOMERCEP;Trusted_Connection=True;";
 
         // ✅ Get All Roles
         public async Task<List<Role>> GetRolesAsync()

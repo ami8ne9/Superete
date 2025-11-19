@@ -14,7 +14,7 @@ namespace GestionComerce
         public string FamilleName { get; set; }
         public int NbrArticle { get; set; }
 
-        private static readonly string ConnectionString = "Server=localhost\\SQLEXPRESS;Database=GESTIONCOMERCE;Trusted_Connection=True;";
+        private static readonly string ConnectionString = "Server=localhost\\SQLEXPRESS;Database=GESTIONCOMERCEP;Trusted_Connection=True;";
 
         public async Task<List<Famille>> GetFamillesAsync()
         {

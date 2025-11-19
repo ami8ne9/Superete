@@ -3,7 +3,7 @@ using System.IO;
 using System.Windows;
 using System.Windows.Media.Imaging;
 
-namespace GestionComerce.Vente
+namespace GestionComerce.Settings
 {
     /// <summary>
     /// Preview window showing thermal receipt/ticket format (80mm style)

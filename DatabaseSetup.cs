@@ -9,7 +9,7 @@ namespace Superete
     {
         private const string DATABASE_NAME = "GESTIONCOMERCE";
         private const string MASTER_CONNECTION = "Server=localhost\\SQLEXPRESS;Database=master;Trusted_Connection=True;";
-        private const string APP_CONNECTION = "Server=localhost\\SQLEXPRESS;Database=GESTIONCOMERCE;Trusted_Connection=True;";
+        private const string APP_CONNECTION = "Server=localhost\\SQLEXPRESS;Database=GESTIONCOMERCEP;Trusted_Connection=True;";
 
         /// <summary>
         /// Checks if database exists and creates it if not

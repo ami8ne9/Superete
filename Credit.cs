@@ -18,7 +18,7 @@ namespace GestionComerce
         public bool Etat { get; set; }
 
         private static readonly string ConnectionString =
-            "Server=localhost\\SQLEXPRESS;Database=GESTIONCOMERCE;Trusted_Connection=True;";
+            "Server=localhost\\SQLEXPRESS;Database=GESTIONCOMERCEP;Trusted_Connection=True;";
 
         // CHANGE THIS if your real table name is different (e.g. "CreditClient")
         private const string TableName = "Credit";

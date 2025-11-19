@@ -12,7 +12,7 @@ namespace GestionComerce
         public string PaymentMethodName { get; set; }
         public string ImagePath { get; set; } // New property for image
 
-        private static readonly string ConnectionString = "Server=localhost\\SQLEXPRESS;Database=GESTIONCOMERCE;Trusted_Connection=True;";
+        private static readonly string ConnectionString = "Server=localhost\\SQLEXPRESS;Database=GESTIONCOMERCEP;Trusted_Connection=True;";
 
         // Get all payment methods
         public async Task<List<PaymentMethod>> GetPaymentMethodsAsync()

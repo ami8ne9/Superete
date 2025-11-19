@@ -18,7 +18,7 @@ namespace GestionComerce
         public string TermsAndConditions { get; set; }
         public string FooterText { get; set; }
 
-        private static readonly string ConnectionString = "Server=localhost\\SQLEXPRESS;Database=GESTIONCOMERCE;Trusted_Connection=True;";
+        private static readonly string ConnectionString = "Server=localhost\\SQLEXPRESS;Database=GESTIONCOMERCEP;Trusted_Connection=True;";
 
         // Get the current facture settings (should only be one row)
         public static async Task<FactureSettings> GetFactureSettingsAsync()
@@ -49,6 +49,48 @@ namespace GestionComerce
             }
 
             return settings;
+        }
+
+        // ADDED: Alias method for LoadSettingsAsync (calls GetFactureSettingsAsync)
+        // This is used by WSelectCient when printing tickets
+        public static async Task<FactureSettings> LoadSettingsAsync()
+        {
+            try
+            {
+                FactureSettings settings = await GetFactureSettingsAsync();
+
+                // If no settings found in database, return defaults
+                if (settings.FactureSettingsID == 0)
+                {
+                    settings.CompanyName = "NOM DE L'ENTREPRISE";
+                    settings.CompanyAddress = "Adresse de l'entreprise";
+                    settings.CompanyPhone = "0600000000";
+                    settings.CompanyEmail = "email@entreprise.ma";
+                    settings.LogoPath = "";
+                    settings.InvoicePrefix = "FAC-";
+                    settings.TaxPercentage = 20;
+                    settings.TermsAndConditions = "";
+                    settings.FooterText = "MERCI DE VOTRE VISITE";
+                }
+
+                return settings;
+            }
+            catch (Exception ex)
+            {
+                // If any error occurs, return default settings
+                return new FactureSettings
+                {
+                    CompanyName = "NOM DE L'ENTREPRISE",
+                    CompanyAddress = "Adresse de l'entreprise",
+                    CompanyPhone = "0600000000",
+                    CompanyEmail = "email@entreprise.ma",
+                    LogoPath = "",
+                    InvoicePrefix = "FAC-",
+                    TaxPercentage = 20,
+                    TermsAndConditions = "",
+                    FooterText = "MERCI DE VOTRE VISITE"
+                };
+            }
         }
 
         // Save or Update facture settings

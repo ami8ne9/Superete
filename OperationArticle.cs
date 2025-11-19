@@ -16,7 +16,7 @@ namespace GestionComerce
         public bool Etat { get; set; }
         public bool Reversed { get; set; } // ✅ new property
 
-        private static readonly string ConnectionString = "Server=localhost\\SQLEXPRESS;Database=GESTIONCOMERCE;Trusted_Connection=True;";
+        private static readonly string ConnectionString = "Server=localhost\\SQLEXPRESS;Database=GESTIONCOMERCEP;Trusted_Connection=True;";
 
         // ================== GET ==================
         public async Task<List<OperationArticle>> GetOperationArticlesAsync()

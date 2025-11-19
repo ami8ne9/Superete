@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace GestionComerce.Properties {
+namespace Superete.Properties {
     
     
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]

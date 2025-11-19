@@ -29,7 +29,7 @@ namespace GestionComerce
 
         public int FournisseurID { get; set; }
 
-        private static readonly string ConnectionString = "Server=localhost\\SQLEXPRESS;Database=GESTIONCOMERCE;Trusted_Connection=True;";
+        private static readonly string ConnectionString = "Server=localhost\\SQLEXPRESS;Database=GESTIONCOMERCEP;Trusted_Connection=True;";
 
         public async Task<List<Article>> GetArticlesAsync()
         {
