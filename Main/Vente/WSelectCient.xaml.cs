@@ -110,17 +110,17 @@ namespace GestionComerce.Main.Vente
                     selectedClientObj = lc.FirstOrDefault(c => c.ClientID == selected);
                 }
 
-                // Collect article data for ticket BEFORE any operations
-                foreach (CSingleArticle2 sa2 in main.SelectedArticles.Children)
-                {
-                    ticketArticles.Add(new TicketArticleData
-                    {
-                        ArticleName = sa2.a.ArticleName,
-                        Quantity = sa2.qte,
-                        UnitPrice = sa2.a.PrixVente,
-                        Total = sa2.a.PrixVente * sa2.qte
-                    });
-                }
+                //// Collect article data for ticket BEFORE any operations
+                //foreach (CSingleArticle2 sa2 in main.SelectedArticles.Children)
+                //{
+                //    ticketArticles.Add(new TicketArticleData
+                //    {
+                //        ArticleName = sa2.a.ArticleName,
+                //        Quantity = sa2.qte,
+                //        UnitPrice = sa2.a.PrixVente,
+                //        Total = sa2.a.PrixVente * sa2.qte
+                //    });
+                //}
 
                 if (Credit == 0) // VENTE COMPTANT
                 {
