@@ -14,7 +14,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-namespace Superete.Main.Facturation
+namespace GestionComerce.Main.Facturation.CreateFacture
 {
     /// <summary>
     /// Interaction logic for CSingleRowClient.xaml

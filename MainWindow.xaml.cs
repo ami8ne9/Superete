@@ -1,6 +1,7 @@
 ﻿using GestionComerce.Main;
 using GestionComerce.Main.ClientPage;
 using GestionComerce.Main.Facturation;
+using GestionComerce.Main.Facturation.CreateFacture;
 using GestionComerce.Main.FournisseurPage;
 using GestionComerce.Main.Inventory;
 using GestionComerce.Main.ProjectManagment;
@@ -218,7 +219,7 @@ namespace GestionComerce
         public void load_facturation(User u)
         {
             MainGrid.Children.Clear();
-            CMainFa loginPage = new CMainFa(u, this, null);
+            CMainIn loginPage = new CMainIn(u, this, null);
             loginPage.HorizontalAlignment = HorizontalAlignment.Stretch;
             loginPage.VerticalAlignment = VerticalAlignment.Stretch;
             loginPage.Margin = new Thickness(0);

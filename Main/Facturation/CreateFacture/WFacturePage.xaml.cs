@@ -16,60 +16,66 @@ using Microsoft.Win32;
 using System.Windows.Markup;
 using System.Printing;
 
-namespace Superete.Main.Facturation
+namespace GestionComerce.Main.Facturation.CreateFacture
 {
     public partial class WFacturePage : Window
     {
         public CMainFa main;
         Dictionary<string, string> FactureInfo;
 
-        public WFacturePage(CMainFa main, Dictionary<string, string> FactureInfo)
+        // Update the constructor to accept filtered articles
+        public WFacturePage(CMainFa main, Dictionary<string, string> FactureInfo, List<InvoiceArticle> invoiceArticles = null)
         {
             InitializeComponent();
-            List<List<OperationArticle>> ListListArts = new List<List<OperationArticle>>();
+            List<List<InvoiceArticle>> ListListArts = new List<List<InvoiceArticle>>();
             this.main = main;
             this.FactureInfo = FactureInfo;
 
-            if (main.OperationContainer.Children[0] is CSingleOperation sop)
-            {
-                List<OperationArticle> ListArts = new List<OperationArticle>();
-                bool skip = false;
-                foreach (OperationArticle oa in main.main.loa)
-                {
-                    if (oa.OperationID == sop.op.OperationID)
-                    {
-                        if (main.EtatFacture.IsEnabled == true)
-                        {
-                            if (main.EtatFacture.Text == "Normal")
-                            {
-                                if (oa.Reversed == true)
-                                {
-                                    continue;
-                                }
-                            }
-                            else
-                            {
-                                if (oa.Reversed == false)
-                                {
-                                    continue;
-                                }
-                            }
-                        }
-                        ListArts.Add(oa);
-                        if (ListArts.Count == 8 && skip == false)
-                        {
-                            ListListArts.Add(ListArts);
-                            ListArts = new List<OperationArticle>();
-                            skip = true;
-                        }
+            // Use provided invoiceArticles or fall back to main's data
+            List<InvoiceArticle> articlesToUse = invoiceArticles ?? (main?.InvoiceArticles ?? new List<InvoiceArticle>());
 
-                        if (ListArts.Count == 19)
+            if (articlesToUse != null && articlesToUse.Count > 0)
+            {
+                List<InvoiceArticle> ListArts = new List<InvoiceArticle>();
+                bool skip = false;
+
+                // Filter articles based on Reversed state
+                var filteredArticles = articlesToUse.Where(ia =>
+                {
+                    if (main.EtatFacture.IsEnabled == true)
+                    {
+                        if (main.EtatFacture.Text == "Normal")
                         {
-                            ListListArts.Add(ListArts);
-                            ListArts = new List<OperationArticle>();
+                            return !ia.Reversed;
+                        }
+                        else
+                        {
+                            return ia.Reversed;
                         }
                     }
+                    return true;
+                }).ToList();
+
+                // Filter out articles with quantity 0 ONLY for display
+                filteredArticles = filteredArticles.Where(ia => ia.Quantite > 0).ToList();
+
+                foreach (InvoiceArticle ia in filteredArticles)
+                {
+                    ListArts.Add(ia);
+                    if (ListArts.Count == 8 && skip == false)
+                    {
+                        ListListArts.Add(ListArts);
+                        ListArts = new List<InvoiceArticle>();
+                        skip = true;
+                    }
+
+                    if (ListArts.Count == 19)
+                    {
+                        ListListArts.Add(ListArts);
+                        ListArts = new List<InvoiceArticle>();
+                    }
                 }
+
                 if (ListArts.Count > 0)
                 {
                     ListListArts.Add(ListArts);
@@ -106,7 +112,7 @@ namespace Superete.Main.Facturation
             return header;
         }
 
-        public void LoadArticles(List<List<OperationArticle>> pages)
+        public void LoadArticles(List<List<InvoiceArticle>> pages)
         {
             FacturesContainer.Children.Clear();
             TotalPageCount = pages.Count;
@@ -181,13 +187,16 @@ namespace Superete.Main.Facturation
                 Canvas.SetTop(articlesContainer, top);
                 mainCanvas.Children.Add(articlesContainer);
 
-                foreach (var oa in currentPage)
+                foreach (var invoiceArticle in currentPage)
                 {
-                    var article = main.main.laa.FirstOrDefault(a => a.ArticleID == oa.ArticleID);
-                    double tvaRate = (double)article.tva;
-
+                    // Use InvoiceArticle properties directly
                     articlesContainer.Children.Add(
-                        CreateArticleRow(article.ArticleName, (double)article.PrixVente, oa.QteArticle, tvaRate)
+                        CreateArticleRow(
+                            invoiceArticle.ArticleName,
+                            (double)invoiceArticle.Prix,
+                            (double)invoiceArticle.Quantite,
+                            (double)invoiceArticle.TVA
+                        )
                     );
                 }
 

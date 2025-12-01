@@ -1,9 +1,9 @@
-﻿<UserControl x:Class="GestionComerce.Main.Facturation.CMainFa"
+﻿<UserControl x:Class="GestionComerce.Main.Facturation.CreateFacture.CMainFa"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-             mc:Ignorable="d" d:DesignWidth="800"
+             mc:Ignorable="d" d:DesignWidth="800" 
              Background="#F8FAFC">
 
     <UserControl.Resources>
@@ -209,7 +209,7 @@
                     </Grid.RowDefinitions>
 
                     <!-- Back Button -->
-                    <Button x:Name="btnBack"
+                    <!--<Button x:Name="btnBack"
                             Grid.Row="0"
                             Content="←"
                             FontSize="26"
@@ -244,7 +244,7 @@
                                 </Setter>
                             </Style>
                         </Button.Style>
-                    </Button>
+                    </Button>-->
 
                     <!-- Title with Icon -->
                     <Grid Grid.Row="1" HorizontalAlignment="Left">
@@ -342,9 +342,14 @@
                         <TextBlock Text="Type de Document" Style="{StaticResource FieldLabel}"/>
                         <ComboBox x:Name="cmbInvoiceType" 
                                   Style="{StaticResource ModernComboBox}"
-                                  SelectedIndex="0">
+                                  SelectedIndex="0" SelectionChanged="cmbInvoiceType_SelectionChanged">
                             <ComboBoxItem Content="Facture"/>
                             <ComboBoxItem Content="Belle"/>
+                            <ComboBoxItem Content="Pro Format"/>
+                            <ComboBoxItem Content="Expedition"/>
+                            <ComboBoxItem Content="Credit"/>
+                            <ComboBoxItem Content="Bon Commande"/>
+                            <ComboBoxItem Content="Bon Livraison"/>
                         </ComboBox>
                     </StackPanel>
                 </StackPanel>
@@ -616,8 +621,7 @@
                                     Style="{StaticResource ModernButtonStyle}"
                                     Background="{StaticResource SuccessBrush}"
                                     Foreground="White"
-                                    HorizontalAlignment="Right"
-                                    Click="btnSelectOperation_Click"/>
+                                    Click="btnSelectOperation_Click" Margin="467,0,0,0"/>
                         </Grid>
 
                         <!-- Operations Container -->

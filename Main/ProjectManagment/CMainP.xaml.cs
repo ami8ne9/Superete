@@ -211,13 +211,10 @@ namespace GestionComerce.Main.ProjectManagment
         {
             OperationsContent.Visibility = Visibility.Visible;
             MouvmentContent.Visibility = Visibility.Collapsed;
-            RapportContent.Visibility = Visibility.Collapsed;
             OperationsButton.Foreground = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#1E90FF"));
             OperationsButton.BorderBrush = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#1E90FF"));
             StockButton.Foreground = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#6B7280"));
             StockButton.BorderBrush = new SolidColorBrush((Color)ColorConverter.ConvertFromString("Transparent"));
-            Repportbtn.Foreground = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#6B7280"));
-            Repportbtn.BorderBrush = new SolidColorBrush((Color)ColorConverter.ConvertFromString("Transparent"));
         }
 
         private void StockButton_Click(object sender, RoutedEventArgs e)

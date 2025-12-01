@@ -1,5 +1,4 @@
 ﻿using GestionComerce.Main.Facturation;
-using Superete.Main.Facturation;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -293,7 +292,7 @@ namespace GestionComerce.Main.ProjectManagment
         private void Imprimer_Click(object sender, RoutedEventArgs e)
         {
             so.main.main.MainGrid.Children.Clear();
-            CMainFa cMainFa = new CMainFa(so.main.u, so.main.main, so.op);
+            CMainIn cMainFa = new CMainIn(so.main.u, so.main.main, so.op);
             cMainFa.HorizontalAlignment = HorizontalAlignment.Stretch;
             cMainFa.VerticalAlignment = VerticalAlignment.Stretch;
             cMainFa.Margin = new Thickness(0);
