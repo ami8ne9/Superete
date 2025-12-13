@@ -743,6 +743,25 @@
                                          VerticalContentAlignment="Top"
                                          VerticalScrollBarVisibility="Auto"
                                          Padding="16"/>
+                                <TextBlock Text="Object" Style="{StaticResource FieldLabel}"/>
+                                <TextBox x:Name="txtObject" Width="300" Style="{StaticResource ModernTextBox}"/>
+                                <TextBlock Text="Method de Payment" Style="{StaticResource FieldLabel}"/>
+                                <ComboBox x:Name="cmbPaymentMethod"
+                                      Style="{StaticResource ModernComboBox}"
+          SelectionChanged="cmbPaymentMethod_SelectionChanged"/>
+                                <Label x:Name="lblChequeReference" Content="Référence de Chèque:" 
+       Visibility="Collapsed"/>
+                                <TextBox x:Name="txtChequeReference" Style="{StaticResource ModernTextBox}"
+         Visibility="Collapsed"/>
+                                <TextBlock Text="Montant avec lettre" Style="{StaticResource FieldLabel}"/>
+                                <TextBox x:Name="txtAmountInLetters" Style="{StaticResource ModernTextBox}"
+         IsReadOnly="True" TextWrapping="Wrap" Height="60"/>
+                                <TextBlock Text="Nom que Donne la Facture:" Style="{StaticResource FieldLabel}"/>
+                                <TextBox x:Name="txtGivenBy" Style="{StaticResource ModernTextBox}"/>
+                                <TextBlock Text="Nom que Recoit la Facture:" Style="{StaticResource FieldLabel}"/>
+                                <TextBox x:Name="txtReceivedBy" Style="{StaticResource ModernTextBox}"/>
+                                <TextBlock Text="Référence de Client:" Style="{StaticResource FieldLabel}"/>
+                                <TextBox x:Name="txtClientReference" IsReadOnly="True" Style="{StaticResource ModernTextBox}" Height="27"/>
                             </StackPanel>
                         </Grid>
                     </StackPanel>

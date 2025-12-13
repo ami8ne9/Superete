@@ -19,6 +19,7 @@ namespace GestionComerce.Main.Facturation.CreateFacture
     {
         public CSingleOperation wso;
         Operation op;
+        private bool isExpeditionMode = false;
 
         public WMouvments(CSingleOperation wso, Operation op)
         {
@@ -26,9 +27,21 @@ namespace GestionComerce.Main.Facturation.CreateFacture
             this.wso = wso;
             this.op = op;
 
+            // Determine if we're in Expedition mode
+            string invoiceType = null;
+            if (wso.mainfa != null)
+            {
+                invoiceType = wso.mainfa.InvoiceType;
+            }
+            else if (wso.sc?.main != null)
+            {
+                invoiceType = wso.sc.main.InvoiceType;
+            }
+
+            isExpeditionMode = invoiceType == "Expedition";
+
             // Get the main reference - check both paths
             MainWindow main = null;
-
             if (wso.mainfa != null && wso.mainfa.main != null)
             {
                 // We're in the main view (CSingleOperation was added to CMainFa)
@@ -48,32 +61,64 @@ namespace GestionComerce.Main.Facturation.CreateFacture
 
             LoadMouvments(main);
 
-            // Show save button only for expedition invoices
+            // Show/hide expedition column
+            UpdateExpeditionColumnVisibility();
+
+            // Show save button and header for all invoice types
             UpdateSaveButtonVisibility();
+        }
+
+        // **CRITICAL FIX: Auto-save when window closes**
+        protected override void OnClosing(System.ComponentModel.CancelEventArgs e)
+        {
+            // Force save all quantities when window closes
+            ForceSaveAllQuantities();
+
+            base.OnClosing(e);
+        }
+
+        private void ForceSaveAllQuantities()
+        {
+            if (wso?.mainfa == null || op == null) return;
+
+            // Go through ALL mouvments and save their current state
+            foreach (var child in MouvmentsContainer.Children)
+            {
+                if (child is CSingleMouvment mouvment)
+                {
+                    try
+                    {
+                        mouvment.UpdateInvoiceArticle();
+                    }
+                    catch (Exception ex)
+                    {
+                        System.Diagnostics.Debug.WriteLine($"Error saving mouvment: {ex.Message}");
+                    }
+                }
+            }
+        }
+
+        private void UpdateExpeditionColumnVisibility()
+        {
+            if (isExpeditionMode)
+            {
+                TxtExpeditionTotalHeader.Text = "Qté Expédié";
+                TxtExpeditionTotalHeader.Visibility = Visibility.Visible;
+            }
+            else
+            {
+                TxtExpeditionTotalHeader.Visibility = Visibility.Collapsed;
+            }
         }
 
         private void UpdateSaveButtonVisibility()
         {
-            bool isExpedition = false;
+            // Always show save button and header
+            btnSaveExpedition.Visibility = Visibility.Visible;
+            HeaderGrid.Visibility = Visibility.Visible;
 
-            // Check both paths for invoice type
-            if (wso.mainfa != null && wso.mainfa.InvoiceType == "Expedition")
-            {
-                isExpedition = true;
-            }
-            else if (wso.sc?.main != null && wso.sc.main.InvoiceType == "Expedition")
-            {
-                isExpedition = true;
-            }
-
-            // Show/hide save button
-            btnSaveExpedition.Visibility = isExpedition ? Visibility.Visible : Visibility.Collapsed;
-
-            // Update window title for expedition
-            if (isExpedition)
-            {
-                this.Title = "Définir les quantités d'expédition";
-            }
+            // Update window title
+            this.Title = "Définir les quantités et prix";
         }
 
         public void LoadMouvments(MainWindow main)
@@ -121,8 +166,9 @@ namespace GestionComerce.Main.Facturation.CreateFacture
                 }
             }
 
-            MessageBox.Show("Quantités d'expédition enregistrées", "Succès",
+            MessageBox.Show("Quantités enregistrées", "Succès",
                 MessageBoxButton.OK, MessageBoxImage.Information);
+
             this.Close();
         }
     }

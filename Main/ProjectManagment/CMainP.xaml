@@ -193,8 +193,8 @@
                 Style="{StaticResource SecondaryButtonStyle}"
                 x:Name="RetourButton"
                 Click="RetourButton_Click"
-                Margin="16,8,16,8"
-                VerticalAlignment="Center"/>
+                Margin="16,0,0,0"
+                VerticalAlignment="Center" HorizontalAlignment="Left" Width="99"/>
 
                 <!-- Operations Button -->
                 <Button 

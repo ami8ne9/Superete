@@ -19,7 +19,6 @@ using System.Windows.Shapes;
 
 namespace GestionComerce.Main.Facturation.CreateFacture
 {
-    // Helper class to store article information for invoice calculations
     public class InvoiceArticle
     {
         public int OperationID { get; set; }
@@ -29,29 +28,52 @@ namespace GestionComerce.Main.Facturation.CreateFacture
         public decimal Quantite { get; set; }
         public decimal TVA { get; set; }
         public bool Reversed { get; set; }
+        public decimal InitialQuantity { get; set; }
 
         public decimal TotalHT => Prix * Quantite;
         public decimal MontantTVA => (TVA / 100) * TotalHT;
         public decimal TotalTTC => TotalHT + MontantTVA;
+        public decimal ExpeditionTotal { get; set; } = 0;
     }
 
-    /// <summary>
-    /// Interaction logic for CMainFa.xaml
-    /// </summary>
     public partial class CMainFa : UserControl
     {
         private const int ETAT_FACTURE_NORMAL = 0;
         private const int ETAT_FACTURE_REVERSED = 1;
 
         public MainWindow main;
-        User u;
+        public User u;
         private decimal currentTotalHT = 0;
-        public string InvoiceType = "Facture";
+        private string _invoiceType = "Facture";
 
-        // List to store all articles from selected operations
+        private Client _selectedClient;
+        public Client SelectedClient
+        {
+            get => _selectedClient;
+            set
+            {
+                _selectedClient = value;
+                UpdateClientFields();
+            }
+        }
+
+        public string InvoiceType
+        {
+            get
+            {
+                if (cmbInvoiceType?.SelectedItem is ComboBoxItem selectedItem)
+                {
+                    _invoiceType = selectedItem.Content?.ToString() ?? "Facture";
+                }
+                return _invoiceType;
+            }
+            set
+            {
+                _invoiceType = value;
+            }
+        }
+
         public List<InvoiceArticle> InvoiceArticles = new List<InvoiceArticle>();
-
-        // List to store selected operations
         public List<Operation> SelectedOperations = new List<Operation>();
 
         public CMainFa(User u, MainWindow main, CMainIn In, Operation op)
@@ -62,9 +84,9 @@ namespace GestionComerce.Main.Facturation.CreateFacture
             this.main = main;
             this.u = u;
 
-            // Initialize after all UI elements are loaded
-            this.Loaded += (s, e) =>
+            this.Loaded += async (s, e) =>
             {
+                await LoadPaymentMethods();
                 if (op != null)
                 {
                     InitializeWithOperation(op);
@@ -72,6 +94,283 @@ namespace GestionComerce.Main.Facturation.CreateFacture
             };
 
             LoadFacture();
+        }
+
+        private async Task LoadPaymentMethods()
+        {
+            try
+            {
+                PaymentMethod pm = new PaymentMethod();
+                List<PaymentMethod> methods = await pm.GetPaymentMethodsAsync();
+
+                if (cmbPaymentMethod != null)
+                {
+                    cmbPaymentMethod.Items.Clear();
+                    foreach (var method in methods)
+                    {
+                        ComboBoxItem item = new ComboBoxItem
+                        {
+                            Content = method.PaymentMethodName,
+                            Tag = method.PaymentMethodID
+                        };
+                        cmbPaymentMethod.Items.Add(item);
+                    }
+
+                    if (cmbPaymentMethod.Items.Count > 0)
+                    {
+                        cmbPaymentMethod.SelectedIndex = 0;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error loading payment methods: {ex.Message}", "Error",
+                    MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+        }
+
+        // Helper method to get client name based on your actual Client class structure
+        private string GetClientName(Client client)
+        {
+            if (client == null) return "";
+
+            // Try different possible property names
+            // You need to check what properties your Client class actually has
+            // Common property names for client name:
+            var properties = client.GetType().GetProperties();
+
+            // Look for properties that might contain the name
+            foreach (var prop in properties)
+            {
+                if (prop.Name.ToLower().Contains("name") ||
+                    prop.Name.ToLower().Contains("nom") ||
+                    prop.Name.ToLower().Contains("clientname") ||
+                    prop.Name.ToLower().Contains("fullname"))
+                {
+                    var value = prop.GetValue(client) as string;
+                    if (!string.IsNullOrEmpty(value))
+                        return value;
+                }
+            }
+
+            // Fallback to ToString() if no name property found
+            return client.ToString();
+        }
+
+        // Helper method to get client address
+        private string GetClientAddress(Client client)
+        {
+            if (client == null) return "";
+
+            var properties = client.GetType().GetProperties();
+
+            foreach (var prop in properties)
+            {
+                if (prop.Name.ToLower().Contains("address") ||
+                    prop.Name.ToLower().Contains("adress") ||
+                    prop.Name.ToLower().Contains("adresse"))
+                {
+                    var value = prop.GetValue(client) as string;
+                    if (!string.IsNullOrEmpty(value))
+                        return value;
+                }
+            }
+
+            return "";
+        }
+
+        // Helper method to get client VAT/TVA
+        private string GetClientVAT(Client client)
+        {
+            if (client == null) return "";
+
+            var properties = client.GetType().GetProperties();
+
+            foreach (var prop in properties)
+            {
+                if (prop.Name.ToLower().Contains("vat") ||
+                    prop.Name.ToLower().Contains("tva"))
+                {
+                    var value = prop.GetValue(client) as string;
+                    if (!string.IsNullOrEmpty(value))
+                        return value;
+                }
+            }
+
+            return "";
+        }
+
+        // Helper method to get client ICE
+        private string GetClientICE(Client client)
+        {
+            if (client == null) return "";
+
+            var properties = client.GetType().GetProperties();
+
+            foreach (var prop in properties)
+            {
+                if (prop.Name.ToLower().Contains("ice"))
+                {
+                    var value = prop.GetValue(client) as string;
+                    if (!string.IsNullOrEmpty(value))
+                        return value;
+                }
+            }
+
+            return "";
+        }
+
+        // Helper method to get client telephone
+        private string GetClientTelephone(Client client)
+        {
+            if (client == null) return "";
+
+            var properties = client.GetType().GetProperties();
+
+            foreach (var prop in properties)
+            {
+                if (prop.Name.ToLower().Contains("phone") ||
+                    prop.Name.ToLower().Contains("telephone") ||
+                    prop.Name.ToLower().Contains("tel"))
+                {
+                    var value = prop.GetValue(client) as string;
+                    if (!string.IsNullOrEmpty(value))
+                        return value;
+                }
+            }
+
+            return "";
+        }
+
+        // Helper method to get client EtatJuridique
+        private string GetClientEtatJuridique(Client client)
+        {
+            if (client == null) return "";
+
+            var properties = client.GetType().GetProperties();
+
+            foreach (var prop in properties)
+            {
+                if (prop.Name.ToLower().Contains("etat") ||
+                    prop.Name.ToLower().Contains("juridique") ||
+                    prop.Name.ToLower().Contains("etatjuridique"))
+                {
+                    var value = prop.GetValue(client) as string;
+                    if (!string.IsNullOrEmpty(value))
+                        return value;
+                }
+            }
+
+            return "";
+        }
+
+        // Helper method to get client IdSociete
+        private string GetClientIdSociete(Client client)
+        {
+            if (client == null) return "";
+
+            var properties = client.GetType().GetProperties();
+
+            foreach (var prop in properties)
+            {
+                if (prop.Name.ToLower().Contains("idsociete") ||
+                    prop.Name.ToLower().Contains("companyid") ||
+                    prop.Name.ToLower().Contains("idsociety"))
+                {
+                    var value = prop.GetValue(client) as string;
+                    if (!string.IsNullOrEmpty(value))
+                        return value;
+                }
+            }
+
+            return "";
+        }
+
+        private void UpdateClientFields()
+        {
+            if (_selectedClient != null)
+            {
+                txtClientName.Text = GetClientName(_selectedClient);
+                txtClientICE.Text = GetClientICE(_selectedClient);
+                txtClientVAT.Text = GetClientVAT(_selectedClient);
+                txtClientPhone.Text = GetClientTelephone(_selectedClient);
+                txtClientAddress.Text = GetClientAddress(_selectedClient);
+                txtClientEtatJuridique.Text = GetClientEtatJuridique(_selectedClient);
+                txtClientIdSociete.Text = GetClientIdSociete(_selectedClient);
+            }
+        }
+
+        private string ConvertToArabicLetters(decimal amount)
+        {
+            string[] ones = { "", "واحد", "اثنان", "ثلاثة", "أربعة", "خمسة", "ستة", "سبعة", "ثمانية", "تسعة" };
+            string[] tens = { "", "عشرة", "عشرون", "ثلاثون", "أربعون", "خمسون", "ستون", "سبعون", "ثمانون", "تسعون" };
+            string[] hundreds = { "", "مائة", "مائتان", "ثلاثمائة", "أربعمائة", "خمسمائة", "ستمائة", "سبعمائة", "ثمانمائة", "تسعمائة" };
+            string[] teens = { "عشرة", "أحد عشر", "اثنا عشر", "ثلاثة عشر", "أربعة عشر", "خمسة عشر",
+                             "ستة عشر", "سبعة عشر", "ثمانية عشر", "تسعة عشر" };
+
+            int integerPart = (int)amount;
+            int decimalPart = (int)((amount - integerPart) * 100);
+
+            string result = "";
+
+            // Process thousands
+            int thousands = integerPart / 1000;
+            if (thousands > 0)
+            {
+                if (thousands == 1)
+                    result += "ألف ";
+                else if (thousands == 2)
+                    result += "ألفان ";
+                else if (thousands <= 10)
+                    result += ones[thousands] + " آلاف ";
+                else
+                    result += ConvertHundreds(thousands) + " ألف ";
+            }
+
+            // Process remaining hundreds
+            int remainder = integerPart % 1000;
+            result += ConvertHundreds(remainder);
+
+            result += " درهم";
+
+            if (decimalPart > 0)
+            {
+                result += " و " + ConvertHundreds(decimalPart) + " سنتيم";
+            }
+
+            return result.Trim();
+        }
+
+        private string ConvertHundreds(int num)
+        {
+            string[] ones = { "", "واحد", "اثنان", "ثلاثة", "أربعة", "خمسة", "ستة", "سبعة", "ثمانية", "تسعة" };
+            string[] tens = { "", "عشرة", "عشرون", "ثلاثون", "أربعون", "خمسون", "ستون", "سبعون", "ثمانون", "تسعون" };
+            string[] hundreds = { "", "مائة", "مائتان", "ثلاثمائة", "أربعمائة", "خمسمائة", "ستمائة", "سبعمائة", "ثمانمائة", "تسعمائة" };
+            string[] teens = { "عشرة", "أحد عشر", "اثنا عشر", "ثلاثة عشر", "أربعة عشر", "خمسة عشر",
+                             "ستة عشر", "سبعة عشر", "ثمانية عشر", "تسعة عشر" };
+
+            string result = "";
+
+            int h = num / 100;
+            int t = (num % 100) / 10;
+            int o = num % 10;
+
+            if (h > 0)
+                result += hundreds[h] + " ";
+
+            if (t == 1)
+            {
+                result += teens[o];
+            }
+            else
+            {
+                if (t > 0)
+                    result += tens[t] + " ";
+                if (o > 0)
+                    result += ones[o] + " ";
+            }
+
+            return result.Trim();
         }
 
         private void InitializeWithOperation(Operation op)
@@ -102,10 +401,8 @@ namespace GestionComerce.Main.Facturation.CreateFacture
                 }
             }
 
-            // Add operation to selected operations and load its articles
             AddOperation(op);
 
-            // Display operation
             if (OperationContainer != null)
             {
                 CSingleOperation cSingleOperation = new CSingleOperation(this, null, op);
@@ -120,7 +417,6 @@ namespace GestionComerce.Main.Facturation.CreateFacture
 
         public void AddOperation(Operation op)
         {
-            // Check if operation already exists in main
             if (SelectedOperations.Any(o => o.OperationID == op.OperationID))
             {
                 MessageBox.Show(
@@ -132,11 +428,8 @@ namespace GestionComerce.Main.Facturation.CreateFacture
             }
 
             SelectedOperations.Add(op);
-
-            // Load articles from this operation
             LoadArticlesFromOperation(op);
 
-            // Only recalculate if UI is ready
             if (txtTotalAmount != null && txtTVAAmount != null)
             {
                 RecalculateTotals();
@@ -146,11 +439,14 @@ namespace GestionComerce.Main.Facturation.CreateFacture
         public void RemoveOperation(Operation op)
         {
             SelectedOperations.RemoveAll(o => o.OperationID == op.OperationID);
-
-            // Remove all articles from this operation
             InvoiceArticles.RemoveAll(ia => ia.OperationID == op.OperationID);
 
-            RecalculateTotals();
+            // **NEW: Don't call RecalculateTotals for Credit invoices**
+            string invoiceType = InvoiceType.ToLower();
+            if (invoiceType != "credit" && invoiceType != "cheque")
+            {
+                RecalculateTotals();
+            }
         }
 
         private void LoadArticlesFromOperation(Operation op)
@@ -165,20 +461,14 @@ namespace GestionComerce.Main.Facturation.CreateFacture
                     var article = main.la.FirstOrDefault(a => a.ArticleID == oa.ArticleID);
                     if (article != null)
                     {
-                        // Check if article already exists for this specific operation
                         var existingArticle = InvoiceArticles.FirstOrDefault(ia =>
                             ia.OperationID == op.OperationID &&
                             ia.ArticleID == article.ArticleID);
 
                         if (existingArticle != null)
-                        {
-                            // Article already exists for this operation, skip
                             continue;
-                        }
 
-                        // Determine initial quantity based on invoice type
                         decimal quantity = oa.QteArticle;
-
                         InvoiceArticle invoiceArticle = new InvoiceArticle
                         {
                             OperationID = op.OperationID,
@@ -187,19 +477,11 @@ namespace GestionComerce.Main.Facturation.CreateFacture
                             Prix = article.PrixVente,
                             Quantite = quantity,
                             TVA = article.tva,
-                            Reversed = oa.Reversed
+                            Reversed = oa.Reversed,
+                            InitialQuantity = oa.QteArticle
                         };
 
-                        // For regular invoices (not expedition), merge articles with same properties
-                        if (InvoiceType != "Expedition")
-                        {
-                            AddOrMergeArticle(invoiceArticle, true);
-                        }
-                        else
-                        {
-                            // For expedition invoices, add article separately
-                            InvoiceArticles.Add(invoiceArticle);
-                        }
+                        InvoiceArticles.Add(invoiceArticle);
                     }
                 }
             }
@@ -207,7 +489,7 @@ namespace GestionComerce.Main.Facturation.CreateFacture
 
         private void AddOrMergeArticle(InvoiceArticle newArticle, bool showMessage)
         {
-            // For regular invoices, find if same article exists (same ID, name, price, TVA, reversed status)
+            // Find if same article exists (same ID, name, price, TVA, reversed status)
             var existingArticle = InvoiceArticles.FirstOrDefault(ia =>
                 ia.ArticleID == newArticle.ArticleID &&
                 ia.ArticleName == newArticle.ArticleName &&
@@ -219,15 +501,7 @@ namespace GestionComerce.Main.Facturation.CreateFacture
             {
                 // Merge quantities
                 existingArticle.Quantite += newArticle.Quantite;
-
-                if (showMessage)
-                {
-                    MessageBox.Show(
-                        $"Quantité mise à jour pour {newArticle.ArticleName} : {existingArticle.Quantite}",
-                        "Quantité fusionnée",
-                        MessageBoxButton.OK,
-                        MessageBoxImage.Information);
-                }
+                existingArticle.InitialQuantity += newArticle.InitialQuantity;
             }
             else
             {
@@ -236,7 +510,7 @@ namespace GestionComerce.Main.Facturation.CreateFacture
             }
         }
 
-        // Public method to add articles directly (for WMouvments window)
+        // Public method to add articles directly
         public void AddArticlesToInvoice(List<InvoiceArticle> articles, bool showMessages = true)
         {
             if (InvoiceArticles == null)
@@ -311,9 +585,7 @@ namespace GestionComerce.Main.Facturation.CreateFacture
 
                 if (similarArticles.Count > 0)
                 {
-                    // This is a simplified approach - in reality you might need to track
-                    // which operation contributed what quantity
-                    // For now, we'll update the first matching article
+                    // This is a simplified approach
                     var articleToUpdate = similarArticles.First();
                     articleToUpdate.Quantite = newQuantity;
 
@@ -335,6 +607,14 @@ namespace GestionComerce.Main.Facturation.CreateFacture
                 txtApresRemiseAmount == null || txtTVARate == null)
                 return;
 
+            // **NEW: Skip recalculation for Credit invoices - they manage totals manually**
+            string invoiceType = InvoiceType.ToLower();
+            if (invoiceType == "credit" || invoiceType == "cheque")
+            {
+                System.Diagnostics.Debug.WriteLine("Skipping RecalculateTotals for Credit/Cheque invoice");
+                return;
+            }
+
             // For calculation, use only articles with quantity > 0
             var articlesForCalculation = InvoiceArticles.Where(ia => ia.Quantite > 0).ToList();
 
@@ -345,6 +625,7 @@ namespace GestionComerce.Main.Facturation.CreateFacture
             bool hasReversedItems = false;
             bool hasNormalItems = false;
 
+            // ... rest of the method remains the same
             // Filter articles based on EtatFacture selection
             foreach (var invoiceArticle in articlesForCalculation)
             {
@@ -568,7 +849,6 @@ namespace GestionComerce.Main.Facturation.CreateFacture
 
             if (textBox == null || string.IsNullOrWhiteSpace(textBox.Text))
             {
-                // Only recalculate if UI is ready
                 if (txtTotalAmount != null && txtTVAAmount != null)
                 {
                     RecalculateTotals();
@@ -592,7 +872,6 @@ namespace GestionComerce.Main.Facturation.CreateFacture
                 return;
             }
 
-            // Only recalculate if UI is ready
             if (txtTotalAmount != null && txtTVAAmount != null)
             {
                 RecalculateTotals();
@@ -734,42 +1013,128 @@ namespace GestionComerce.Main.Facturation.CreateFacture
             {
                 string dateValue = dpInvoiceDate?.SelectedDate?.ToString("dd/MM/yyyy") ?? DateTime.Now.ToString("dd/MM/yyyy");
 
-                Dictionary<string, string> FactureInfo = new Dictionary<string, string>()
-                {
-                    { "NFacture", txtInvoiceNumber?.Text ?? "" },
-                    { "Date", dateValue },
-                    { "Type", cmbInvoiceType?.Text ?? "" },
-                    { "NomU", txtUserName?.Text ?? "" },
-                    { "ICEU", txtUserICE?.Text ?? "" },
-                    { "VATU", txtUserVAT?.Text ?? "" },
-                    { "TelephoneU", txtUserPhone?.Text ?? "" },
-                    { "EtatJuridiqueU", txtUserEtatJuridique?.Text ?? "" },
-                    { "IdSocieteU", txtUserIdSociete?.Text ?? "" },
-                    { "SiegeEntrepriseU", cmbUserSiegeEntreprise?.Text ?? "" },
-                    { "AdressU", txtUserAddress?.Text ?? "" },
-                    { "NomC", txtClientName?.Text ?? "" },
-                    { "ICEC", txtClientICE?.Text ?? "" },
-                    { "VATC", txtClientVAT?.Text ?? "" },
-                    { "TelephoneC", txtClientPhone?.Text ?? "" },
-                    { "EtatJuridiqueC", txtClientEtatJuridique?.Text ?? "" },
-                    { "IdSocieteC", txtClientIdSociete?.Text ?? "" },
-                    { "SiegeEntrepriseC", cmbClientSiegeEntreprise?.Text ?? "" },
-                    { "AdressC", txtClientAddress?.Text ?? "" },
-                    { "EtatFature", EtatFacture?.Text ?? "" },
-                    { "Device", txtCurrency?.Text ?? "" },
-                    { "TVA", txtTVARate?.Text ?? "" },
-                    { "MontantTotal", txtTotalAmount?.Text ?? "" },
-                    { "MontantTVA", txtTVAAmount?.Text ?? "" },
-                    { "MontantApresTVA", txtApresTVAAmount?.Text ?? "" },
-                    { "MontantApresRemise", txtApresRemiseAmount?.Text ?? "" },
-                    { "IndexDeFacture", IndexFacture?.Text ?? "" },
-                    { "Description", txtDescription?.Text ?? "" },
-                    { "Logo", txtLogoPath?.Text ?? "" },
-                    { "Reversed", EtatFacture?.Text ?? "" },
-                    { "Remise", Remise?.Text ?? "" }
-                };
+                string paymentMethod = (cmbPaymentMethod?.SelectedItem as ComboBoxItem)?.Content?.ToString() ?? "";
+                string chequeReference = (paymentMethod.ToLower() == "cheque" && txtChequeReference != null)
+                    ? txtChequeReference.Text : "";
 
-                // Pass FILTERED articles (excluding quantity 0) to WFacturePage for display
+                // Calculate total from articles
+                decimal totalAmount = 0;
+                if (InvoiceArticles != null && InvoiceArticles.Count > 0)
+                {
+                    totalAmount = InvoiceArticles.Sum(ia => ia.TotalTTC);
+                }
+
+                // Get credit information
+                string creditClientName = "";
+                string creditMontant = "";
+                string creditRest = "";
+
+                string invoiceType = cmbInvoiceType?.Text ?? "";
+
+                // DEBUG: Add this to see what's happening
+                System.Diagnostics.Debug.WriteLine($"Invoice Type: {invoiceType}");
+                System.Diagnostics.Debug.WriteLine($"Selected Operations Count: {SelectedOperations.Count}");
+                System.Diagnostics.Debug.WriteLine($"Selected Client: {SelectedClient?.ToString()}");
+
+                // In the btnPreview_Click method, find the credit section and replace with:
+
+                if (invoiceType.ToLower() == "credit" && SelectedOperations.Count > 0)
+                {
+                    var operation = SelectedOperations.First();
+
+                    // Get client name from SelectedClient or from text box
+                    if (SelectedClient != null)
+                    {
+                        creditClientName = GetClientName(SelectedClient);
+                    }
+                    else if (!string.IsNullOrEmpty(txtClientName?.Text))
+                    {
+                        creditClientName = txtClientName.Text;
+                    }
+
+                    // **FIXED: Get amount from txtApresTVAAmount (which contains the sum of operation prices)**
+                    if (!string.IsNullOrEmpty(txtApresTVAAmount?.Text))
+                    {
+                        string cleanAmount = txtApresTVAAmount.Text.Replace("DH", "").Replace(" ", "").Trim();
+                        if (decimal.TryParse(cleanAmount, out decimal parsedAmount))
+                        {
+                            creditMontant = parsedAmount.ToString("0.00") + " DH";
+                        }
+                    }
+
+                    System.Diagnostics.Debug.WriteLine($"Credit Montant: {creditMontant}");
+                }
+
+                Dictionary<string, string> FactureInfo = new Dictionary<string, string>()
+        {
+            { "NFacture", txtInvoiceNumber?.Text ?? "" },
+            { "Date", dateValue },
+            { "Type", cmbInvoiceType?.Text ?? "" },
+            { "NomU", txtUserName?.Text ?? "" },
+            { "ICEU", txtUserICE?.Text ?? "" },
+            { "VATU", txtUserVAT?.Text ?? "" },
+            { "TelephoneU", txtUserPhone?.Text ?? "" },
+            { "EtatJuridiqueU", txtUserEtatJuridique?.Text ?? "" },
+            { "IdSocieteU", txtUserIdSociete?.Text ?? "" },
+            { "SiegeEntrepriseU", cmbUserSiegeEntreprise?.Text ?? "" },
+            { "AdressU", txtUserAddress?.Text ?? "" },
+            { "NomC", txtClientName?.Text ?? "" },
+            { "ICEC", txtClientICE?.Text ?? "" },
+            { "VATC", txtClientVAT?.Text ?? "" },
+            { "TelephoneC", txtClientPhone?.Text ?? "" },
+            { "EtatJuridiqueC", txtClientEtatJuridique?.Text ?? "" },
+            { "IdSocieteC", txtClientIdSociete?.Text ?? "" },
+            { "SiegeEntrepriseC", cmbClientSiegeEntreprise?.Text ?? "" },
+            { "AdressC", txtClientAddress?.Text ?? "" },
+            { "EtatFature", EtatFacture?.Text ?? "" },
+            { "Device", txtCurrency?.Text ?? "" },
+            { "TVA", txtTVARate?.Text ?? "" },
+            { "MontantTotal", txtTotalAmount?.Text ?? "" },
+            { "MontantTVA", txtTVAAmount?.Text ?? "" },
+            { "MontantApresTVA", txtApresTVAAmount?.Text ?? "" },
+            { "MontantApresRemise", totalAmount.ToString("0.00") },
+            { "IndexDeFacture", IndexFacture?.Text ?? "" },
+            { "Description", txtDescription?.Text ?? "" },
+            { "Logo", txtLogoPath?.Text ?? "" },
+            { "Reversed", EtatFacture?.Text ?? "" },
+            { "Remise", Remise?.Text ?? "" },
+            { "Object", txtObject?.Text ?? "" },
+            { "PaymentMethod", paymentMethod },
+            { "AmountInLetters", txtAmountInLetters?.Text ?? "" },
+            { "GivenBy", txtGivenBy?.Text ?? "" },
+            { "ReceivedBy", txtReceivedBy?.Text ?? "" },
+            { "ChequeReference", chequeReference },
+            { "ClientReference", txtClientReference?.Text ?? "" },
+            { "CreditClientName", creditClientName },
+            { "CreditMontant", creditMontant },
+            { "CreditRest", creditRest }
+        };
+
+                // DEBUG: Print credit values
+                System.Diagnostics.Debug.WriteLine($"FactureInfo CreditClientName: {FactureInfo["CreditClientName"]}");
+                System.Diagnostics.Debug.WriteLine($"FactureInfo CreditMontant: {FactureInfo["CreditMontant"]}");
+                System.Diagnostics.Debug.WriteLine($"FactureInfo CreditRest: {FactureInfo["CreditRest"]}");
+
+                // For credit/cheque invoices, ensure we have client info and amount in letters
+                if ((invoiceType == "Credit" || invoiceType == "Cheque") && SelectedClient != null)
+                {
+                    // Update client information from selected client
+                    FactureInfo["NomC"] = GetClientName(SelectedClient);
+                    FactureInfo["AdressC"] = GetClientAddress(SelectedClient);
+                    FactureInfo["VATC"] = GetClientVAT(SelectedClient);
+                    FactureInfo["TelephoneC"] = GetClientTelephone(SelectedClient);
+                    FactureInfo["ICEC"] = GetClientICE(SelectedClient);
+
+                    // Convert amount to Arabic letters for credit/cheque
+                    FactureInfo["AmountInLetters"] = ConvertToArabicLetters(totalAmount);
+
+                    // Set GivenBy to current user
+                    if (u != null)
+                    {
+                        FactureInfo["GivenBy"] = u.UserName ?? "";
+                    }
+                }
+
                 WFacturePage wFacturePage = new WFacturePage(this, FactureInfo, GetFilteredInvoiceArticles());
                 wFacturePage.ShowDialog();
             }
@@ -794,7 +1159,7 @@ namespace GestionComerce.Main.Facturation.CreateFacture
                 Random random = new Random();
                 int randomNumber = random.Next(10000, 99999);
 
-                string invoiceNumber = $"FAC-{year}{month}{day}-{randomNumber}";
+                string invoiceNumber = $"{year}{month}{day}-{randomNumber}"; // Removed "FAC-" prefix
 
                 txtInvoiceNumber.Text = invoiceNumber;
             }
@@ -806,7 +1171,6 @@ namespace GestionComerce.Main.Facturation.CreateFacture
 
         private void EtatFacture_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            // Only recalculate if UI is ready
             if (txtTotalAmount != null && txtTVAAmount != null)
             {
                 RecalculateTotals();
@@ -820,6 +1184,13 @@ namespace GestionComerce.Main.Facturation.CreateFacture
             SelectedOperations.Clear();
             InvoiceArticles.Clear();
 
+            // **NEW: Reset all totals when changing invoice type**
+            if (txtTotalAmount != null) txtTotalAmount.Text = "0.00 DH";
+            if (txtTVAAmount != null) txtTVAAmount.Text = "0.00 DH";
+            if (txtApresTVAAmount != null) txtApresTVAAmount.Text = "0.00 DH";
+            if (txtApresRemiseAmount != null) txtApresRemiseAmount.Text = "0.00 DH";
+            if (txtTVARate != null) txtTVARate.Text = "0.00";
+
             if (comboBox == null || comboBox.SelectedItem == null)
                 return;
 
@@ -828,6 +1199,203 @@ namespace GestionComerce.Main.Facturation.CreateFacture
             {
                 InvoiceType = selectedItem.Content.ToString();
             }
+        }
+
+        // Handle payment method change to show/hide cheque reference
+        private void cmbPaymentMethod_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (cmbPaymentMethod == null || txtChequeReference == null || lblChequeReference == null)
+                return;
+
+            ComboBoxItem selectedItem = cmbPaymentMethod.SelectedItem as ComboBoxItem;
+            if (selectedItem != null && selectedItem.Content.ToString().ToLower() == "cheque")
+            {
+                txtChequeReference.Visibility = Visibility.Visible;
+                lblChequeReference.Visibility = Visibility.Visible;
+            }
+            else
+            {
+                txtChequeReference.Visibility = Visibility.Collapsed;
+                lblChequeReference.Visibility = Visibility.Collapsed;
+                txtChequeReference.Text = "";
+            }
+        }
+
+        // Method to update or add article separately (used by other windows) - FIXED VERSION
+        public void UpdateOrAddArticleSeparate(int operationID, int articleID, string articleName,
+            decimal quantity, decimal price, decimal tva, decimal initialQuantity, decimal expeditionTotal = 0)
+        {
+            if (InvoiceArticles == null)
+            {
+                InvoiceArticles = new List<InvoiceArticle>();
+            }
+
+            // Debug logging
+            System.Diagnostics.Debug.WriteLine($"=== UpdateOrAddArticleSeparate called ===");
+            System.Diagnostics.Debug.WriteLine($"  OperationID: {operationID}, ArticleID: {articleID}");
+            System.Diagnostics.Debug.WriteLine($"  ArticleName: {articleName}, Quantity: {quantity}");
+            System.Diagnostics.Debug.WriteLine($"  Price: {price}, TVA: {tva}, ExpeditionTotal: {expeditionTotal}");
+            System.Diagnostics.Debug.WriteLine($"  InvoiceType: {InvoiceType}");
+
+            var existingArticle = InvoiceArticles.FirstOrDefault(ia =>
+                ia.OperationID == operationID &&
+                ia.ArticleID == articleID);
+
+            if (existingArticle != null)
+            {
+                // **CRITICAL FIX: For Expedition type, ALWAYS update quantity even if 0**
+                // **ALSO for regular invoices, always update when called**
+                existingArticle.Quantite = quantity;
+                existingArticle.Prix = price;
+                existingArticle.TVA = tva;
+                existingArticle.ExpeditionTotal = expeditionTotal;
+
+                System.Diagnostics.Debug.WriteLine($"  Updated existing article. New quantity: {quantity}");
+            }
+            else
+            {
+                // **CRITICAL FIX: For Expedition type, add article even if quantity is 0**
+                // For Expedition invoices, we need to keep track of ALL articles, even with 0 quantity
+                if (InvoiceType == "Expedition" || quantity > 0)
+                {
+                    var newArticle = new InvoiceArticle
+                    {
+                        OperationID = operationID,
+                        ArticleID = articleID,
+                        ArticleName = articleName,
+                        Quantite = quantity,
+                        Prix = price,
+                        TVA = tva,
+                        InitialQuantity = initialQuantity,
+                        ExpeditionTotal = expeditionTotal
+                    };
+
+                    InvoiceArticles.Add(newArticle);
+                    System.Diagnostics.Debug.WriteLine($"  Added new article with quantity: {quantity}");
+                }
+                else
+                {
+                    System.Diagnostics.Debug.WriteLine($"  Skipped adding article (quantity = 0 and not Expedition type)");
+                }
+            }
+
+            // Show current state for debugging
+            System.Diagnostics.Debug.WriteLine($"  Current InvoiceArticles count: {InvoiceArticles.Count}");
+            foreach (var article in InvoiceArticles.Where(a => a.OperationID == operationID && a.ArticleID == articleID))
+            {
+                System.Diagnostics.Debug.WriteLine($"    - Found: {article.ArticleName}: Quantity={article.Quantite}, ExpeditionTotal={article.ExpeditionTotal}");
+            }
+
+            RecalculateTotals();
+        }
+
+        // New method to handle Expedition article updates specifically
+        public void UpdateExpeditionArticle(int operationID, int articleID, string articleName,
+            decimal quantity, decimal expeditionTotal, decimal price, decimal tva, decimal initialQuantity)
+        {
+            if (InvoiceArticles == null)
+            {
+                InvoiceArticles = new List<InvoiceArticle>();
+            }
+
+            // For Expedition invoices, we need to handle this specially
+            var existingArticle = InvoiceArticles.FirstOrDefault(ia =>
+                ia.OperationID == operationID &&
+                ia.ArticleID == articleID);
+
+            System.Diagnostics.Debug.WriteLine($"=== UpdateExpeditionArticle ===");
+            System.Diagnostics.Debug.WriteLine($"  OperationID: {operationID}, ArticleID: {articleID}");
+            System.Diagnostics.Debug.WriteLine($"  Quantity: {quantity}, ExpeditionTotal: {expeditionTotal}");
+
+            if (existingArticle != null)
+            {
+                // Always update the quantity, even if it's 0
+                existingArticle.Quantite = quantity;
+                existingArticle.ExpeditionTotal = expeditionTotal;
+                existingArticle.Prix = price;
+                existingArticle.TVA = tva;
+                System.Diagnostics.Debug.WriteLine($"  Updated existing article: {existingArticle.ArticleName} = {quantity}");
+            }
+            else
+            {
+                // Add new article - for Expedition, we add even with 0 quantity
+                InvoiceArticles.Add(new InvoiceArticle
+                {
+                    OperationID = operationID,
+                    ArticleID = articleID,
+                    ArticleName = articleName,
+                    Quantite = quantity,
+                    Prix = price,
+                    TVA = tva,
+                    InitialQuantity = initialQuantity,
+                    ExpeditionTotal = expeditionTotal
+                });
+                System.Diagnostics.Debug.WriteLine($"  Added new article: {articleName} = {quantity}");
+            }
+
+            RecalculateTotals();
+        }
+
+        private void MergeIdenticalArticles()
+        {
+            if (InvoiceArticles == null || InvoiceArticles.Count == 0)
+                return;
+
+            var mergedArticles = new List<InvoiceArticle>();
+            var processedGroups = new HashSet<string>();
+
+            foreach (var article in InvoiceArticles)
+            {
+                string groupKey = $"{article.ArticleID}_{article.Prix}_{article.TVA}_{article.Reversed}";
+
+                if (processedGroups.Contains(groupKey))
+                    continue;
+
+                var similarArticles = InvoiceArticles
+                    .Where(ia => ia.ArticleID == article.ArticleID &&
+                                ia.Prix == article.Prix &&
+                                ia.TVA == article.TVA &&
+                                ia.Reversed == article.Reversed)
+                    .ToList();
+
+                if (similarArticles.Count > 1)
+                {
+                    var mergedArticle = new InvoiceArticle
+                    {
+                        OperationID = similarArticles.First().OperationID,
+                        ArticleID = article.ArticleID,
+                        ArticleName = article.ArticleName,
+                        Prix = article.Prix,
+                        TVA = article.TVA,
+                        Reversed = article.Reversed,
+                        Quantite = similarArticles.Sum(a => a.Quantite),
+                        InitialQuantity = similarArticles.Sum(a => a.InitialQuantity)
+                    };
+
+                    mergedArticles.Add(mergedArticle);
+                }
+                else
+                {
+                    mergedArticles.Add(similarArticles.First());
+                }
+
+                processedGroups.Add(groupKey);
+            }
+
+            InvoiceArticles.Clear();
+            InvoiceArticles.AddRange(mergedArticles);
+        }
+
+        // New method to force update all articles from CSingleMouvment controls
+        public void ForceUpdateArticlesFromOperation(int operationId)
+        {
+            System.Diagnostics.Debug.WriteLine($"=== ForceUpdateArticlesFromOperation called for OperationID: {operationId} ===");
+
+            // This method would be called from CSingleOperation when WMouvments closes
+            // It ensures all articles for this operation are properly updated
+
+            // For now, just recalculate totals
+            RecalculateTotals();
         }
     }
 }

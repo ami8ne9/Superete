@@ -1,13 +1,14 @@
-﻿using GestionComerce;
-using GestionComerce.Main.Facturation;
+﻿using GestionComerce.Main.Facturation;
 using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Data;
 using System.Windows.Documents;
+using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Xps;
@@ -22,27 +23,25 @@ namespace GestionComerce.Main.Facturation.CreateFacture
     {
         public CMainFa main;
         Dictionary<string, string> FactureInfo;
+        private InvoiceRepository _invoiceRepository;
 
-        // Update the constructor to accept filtered articles
         public WFacturePage(CMainFa main, Dictionary<string, string> FactureInfo, List<InvoiceArticle> invoiceArticles = null)
         {
             InitializeComponent();
-            List<List<InvoiceArticle>> ListListArts = new List<List<InvoiceArticle>>();
             this.main = main;
             this.FactureInfo = FactureInfo;
 
-            // Use provided invoiceArticles or fall back to main's data
+            _invoiceRepository = new InvoiceRepository("");
+
             List<InvoiceArticle> articlesToUse = invoiceArticles ?? (main?.InvoiceArticles ?? new List<InvoiceArticle>());
 
             if (articlesToUse != null && articlesToUse.Count > 0)
             {
-                List<InvoiceArticle> ListArts = new List<InvoiceArticle>();
-                bool skip = false;
-
-                // Filter articles based on Reversed state
+                // Filter articles based on Reversed state - WITH NULL CHECK (from old code)
                 var filteredArticles = articlesToUse.Where(ia =>
                 {
-                    if (main.EtatFacture.IsEnabled == true)
+                    // Check if main is not null AND EtatFacture is enabled
+                    if (main != null && main.EtatFacture != null && main.EtatFacture.IsEnabled == true)
                     {
                         if (main.EtatFacture.Text == "Normal")
                         {
@@ -53,52 +52,150 @@ namespace GestionComerce.Main.Facturation.CreateFacture
                             return ia.Reversed;
                         }
                     }
+                    // If main is null (viewing from history), show all articles
                     return true;
                 }).ToList();
 
-                // Filter out articles with quantity 0 ONLY for display
-                filteredArticles = filteredArticles.Where(ia => ia.Quantite > 0).ToList();
-
-                foreach (InvoiceArticle ia in filteredArticles)
+                // **FIX: Don't filter out 0 quantities for Expedition invoices**
+                string invoiceType = GetDictionaryValue("Type", "").ToLower();
+                if (invoiceType != "expedition")
                 {
-                    ListArts.Add(ia);
-                    if (ListArts.Count == 8 && skip == false)
-                    {
-                        ListListArts.Add(ListArts);
-                        ListArts = new List<InvoiceArticle>();
-                        skip = true;
-                    }
+                    // For non-expedition invoices, only show articles with quantity > 0
+                    filteredArticles = filteredArticles.Where(ia => ia.Quantite > 0).ToList();
+                }
+                // For expedition invoices, show ALL articles (even with 0 quantity)
 
-                    if (ListArts.Count == 19)
+                List<InvoiceArticle> mergedArticles = MergeArticlesForDisplay(filteredArticles);
+                List<List<InvoiceArticle>> paginatedArticles = PaginateArticles(mergedArticles);
+                LoadArticles(paginatedArticles);
+            }
+            else
+            {
+                LoadArticles(new List<List<InvoiceArticle>>());
+            }
+        }
+
+        private List<InvoiceArticle> MergeArticlesForDisplay(List<InvoiceArticle> articles)
+        {
+            var mergedArticles = new List<InvoiceArticle>();
+            var processedGroups = new HashSet<string>();
+
+            foreach (var article in articles)
+            {
+                string groupKey = $"{article.ArticleID}_{article.ArticleName}_{article.Prix}_{article.TVA}";
+
+                if (processedGroups.Contains(groupKey))
+                    continue;
+
+                var identicalArticles = articles
+                    .Where(ia => ia.ArticleID == article.ArticleID &&
+                                ia.ArticleName == article.ArticleName &&
+                                ia.Prix == article.Prix &&
+                                ia.TVA == article.TVA)
+                    .ToList();
+
+                if (identicalArticles.Count > 1)
+                {
+                    var mergedArticle = new InvoiceArticle
                     {
-                        ListListArts.Add(ListArts);
-                        ListArts = new List<InvoiceArticle>();
-                    }
+                        OperationID = identicalArticles.First().OperationID,
+                        ArticleID = article.ArticleID,
+                        ArticleName = article.ArticleName,
+                        Prix = article.Prix,
+                        TVA = article.TVA,
+                        Reversed = article.Reversed,
+                        Quantite = identicalArticles.Sum(a => a.Quantite),
+                        InitialQuantity = identicalArticles.Sum(a => a.InitialQuantity),
+                        ExpeditionTotal = identicalArticles.Sum(a => a.ExpeditionTotal)
+                    };
+
+                    mergedArticles.Add(mergedArticle);
+                }
+                else
+                {
+                    mergedArticles.Add(identicalArticles.First());
                 }
 
-                if (ListArts.Count > 0)
+                processedGroups.Add(groupKey);
+            }
+
+            return mergedArticles;
+        }
+
+        private List<List<InvoiceArticle>> PaginateArticles(List<InvoiceArticle> articles)
+        {
+            List<List<InvoiceArticle>> pages = new List<List<InvoiceArticle>>();
+            List<InvoiceArticle> currentPage = new List<InvoiceArticle>();
+            bool isFirstPage = true;
+
+            foreach (var article in articles)
+            {
+                currentPage.Add(article);
+
+                int pageLimit = isFirstPage ? 8 : 19;
+
+                if (currentPage.Count >= pageLimit)
                 {
-                    ListListArts.Add(ListArts);
+                    pages.Add(currentPage);
+                    currentPage = new List<InvoiceArticle>();
+                    isFirstPage = false;
                 }
             }
 
-            LoadArticles(ListListArts);
+            if (currentPage.Count > 0)
+            {
+                pages.Add(currentPage);
+            }
+
+            return pages;
         }
 
         int PageCounte = 1;
         int TotalPageCount = 1;
+
+        private string[] GetTemplateSet()
+        {
+            string invoiceType = GetDictionaryValue("Type", "").ToLower();
+
+            if (invoiceType == "expedition")
+            {
+                return new string[] { "1E.png", "2E.png", "3E.png", "4E.png" };
+            }
+            else if (invoiceType == "credit" || invoiceType == "cheque")
+            {
+                return new string[] { "check.png" };
+            }
+            else
+            {
+                return new string[] { "1.png", "2.png", "3.png", "4.png" };
+            }
+        }
+
+        private string GetInvoiceNumberLabel()
+        {
+            string invoiceType = GetDictionaryValue("Type", "").ToLower();
+
+            if (invoiceType == "credit")
+                return "Numéro : ";
+            else if (invoiceType == "bon commande" || invoiceType == "bon de commande")
+                return "Numéro : ";
+            else if (invoiceType == "bon livraison" || invoiceType == "bon de livraison")
+                return "Numéro : ";
+            else
+                return "Numéro : ";
+        }
 
         private TextBlock CreateTopRightHeader()
         {
             TextBlock header = new TextBlock
             {
                 Name = "txtDisplayType",
-                Text = GetDictionaryValue("txtDisplayType", ""),
+                Text = GetDictionaryValue("Type", ""),
                 FontSize = 50,
                 Background = new SolidColorBrush(Colors.White),
                 FontWeight = FontWeights.Bold,
                 Foreground = new SolidColorBrush(Color.FromRgb(0, 0, 0)),
-                Width = 400,
+                Width = 500,
                 Height = 100,
                 TextWrapping = TextWrapping.Wrap,
                 VerticalAlignment = VerticalAlignment.Top,
@@ -106,7 +203,7 @@ namespace GestionComerce.Main.Facturation.CreateFacture
                 TextAlignment = TextAlignment.Left
             };
 
-            Canvas.SetLeft(header, 80);
+            Canvas.SetLeft(header, 20);
             Canvas.SetTop(header, 50);
 
             return header;
@@ -115,10 +212,22 @@ namespace GestionComerce.Main.Facturation.CreateFacture
         public void LoadArticles(List<List<InvoiceArticle>> pages)
         {
             FacturesContainer.Children.Clear();
-            TotalPageCount = pages.Count;
+
+            string invoiceType = GetDictionaryValue("Type", "").ToLower();
+            bool isCheckType = (invoiceType == "credit" || invoiceType == "cheque");
+            bool isExpeditionType = (invoiceType == "expedition");
+
+            // For credit/check types, always create at least one page
+            if (isCheckType && (pages == null || pages.Count == 0))
+            {
+                pages = new List<List<InvoiceArticle>> { new List<InvoiceArticle>() };
+            }
+
+            // FIX: Handle empty pages for non-check types (from old code)
+            TotalPageCount = pages.Count > 0 ? pages.Count : 1;
             TotalPageNbr.Text = "/" + TotalPageCount.ToString();
 
-            string[] templates = { "1.png", "2.png", "3.png", "4.png" };
+            string[] templates = GetTemplateSet();
 
             for (int i = 0; i < pages.Count; i++)
             {
@@ -130,7 +239,7 @@ namespace GestionComerce.Main.Facturation.CreateFacture
 
                 Canvas mainCanvas = new Canvas
                 {
-                    Height = 1000,
+                    Height = (invoiceType == "credit") ? 750 : 1050,
                     Width = 720,
                     Name = $"Canvas{i + 1}",
                     Visibility = (i == 0) ? Visibility.Visible : Visibility.Collapsed
@@ -140,7 +249,7 @@ namespace GestionComerce.Main.Facturation.CreateFacture
                 {
                     Source = new BitmapImage(new Uri($"/Main/images/{template}", UriKind.Relative)),
                     Stretch = Stretch.Fill,
-                    Height = 1000,
+                    Height = (invoiceType == "credit") ? 750 : 1050,
                     Width = 720
                 };
                 mainCanvas.Children.Add(image);
@@ -153,59 +262,268 @@ namespace GestionComerce.Main.Facturation.CreateFacture
                     Grid logoContainer = CreateLogoPlaceholder();
                     mainCanvas.Children.Add(logoContainer);
 
-                    Grid headerGrid = CreateHeaderGrid();
+                    Grid headerGrid = CreateHeaderGrid(isCheckType);
                     mainCanvas.Children.Add(headerGrid);
 
-                    PopulateHeaderData(mainCanvas);
+                    PopulateHeaderData(mainCanvas, isCheckType);
+
+                    StackPanel objectPanel = CreateObjectPanel(isCheckType);
+                    mainCanvas.Children.Add(objectPanel);
+                    PopulateObjectData(objectPanel);
+
+                    if (invoiceType == "credit")
+                    {
+                        StackPanel creditPanel = CreateCreditInfoPanel();
+                        Canvas.SetLeft(creditPanel, 91);
+                        Canvas.SetTop(creditPanel, 430);
+                        mainCanvas.Children.Add(creditPanel);
+                        PopulateCreditData(creditPanel);
+                    }
                 }
 
                 if (isSinglePage || isLastPage)
                 {
-                    StackPanel summaryPanel = CreateSummaryPanel();
+                    StackPanel montantEnLettresPanel = CreateMontantEnLettresPanel(isCheckType);
+                    mainCanvas.Children.Add(montantEnLettresPanel);
+                    PopulateMontantEnLettresData(montantEnLettresPanel);
+
+                    StackPanel summaryPanel = CreateSummaryPanel(isCheckType);
                     mainCanvas.Children.Add(summaryPanel);
                     PopulateSummaryData(summaryPanel);
 
-                    StackPanel descriptionPanel = CreateDescriptionPanel();
-                    mainCanvas.Children.Add(descriptionPanel);
-                    PopulateDescriptionData(descriptionPanel);
+                    if (invoiceType == "bon livraison" || invoiceType == "bon de livraison")
+                    {
+                        StackPanel signaturePanel = CreateTransportSignaturePanel();
+                        Canvas.SetTop(signaturePanel, 920);
+                        mainCanvas.Children.Add(signaturePanel);
+                    }
                 }
 
-                (double top, double height) = GetStackPanelLayoutForTemplate(template);
-
-                StackPanel articlesContainer = new StackPanel
+                if (!isCheckType)
                 {
-                    Orientation = Orientation.Vertical,
-                    Background = new SolidColorBrush(Colors.White),
-                    Width = 562,
-                    Height = height,
-                    HorizontalAlignment = HorizontalAlignment.Center,
-                    VerticalAlignment = VerticalAlignment.Top,
-                    Name = "ArticlesContainer"
-                };
+                    (double top, double height) = GetStackPanelLayoutForTemplate(template);
 
-                Canvas.SetLeft(articlesContainer, 82);
-                Canvas.SetTop(articlesContainer, top);
-                mainCanvas.Children.Add(articlesContainer);
+                    StackPanel articlesContainer = new StackPanel
+                    {
+                        Orientation = Orientation.Vertical,
+                        Background = new SolidColorBrush(Colors.White),
+                        Width = 562,
+                        Height = height,
+                        HorizontalAlignment = HorizontalAlignment.Center,
+                        VerticalAlignment = VerticalAlignment.Top,
+                        Name = "ArticlesContainer"
+                    };
 
-                foreach (var invoiceArticle in currentPage)
-                {
-                    // Use InvoiceArticle properties directly
-                    articlesContainer.Children.Add(
-                        CreateArticleRow(
-                            invoiceArticle.ArticleName,
-                            (double)invoiceArticle.Prix,
-                            (double)invoiceArticle.Quantite,
-                            (double)invoiceArticle.TVA
-                        )
-                    );
+                    Canvas.SetLeft(articlesContainer, 82);
+                    Canvas.SetTop(articlesContainer, top);
+                    mainCanvas.Children.Add(articlesContainer);
+
+                    foreach (var invoiceArticle in currentPage)
+                    {
+                        bool showExpeditionTotal = isExpeditionType;
+
+                        articlesContainer.Children.Add(
+                            CreateArticleRow(
+                                invoiceArticle.ArticleName,
+                                (double)invoiceArticle.Prix,
+                                (double)invoiceArticle.Quantite,
+                                (double)invoiceArticle.TVA,
+                                (double)invoiceArticle.InitialQuantity,
+                                showExpeditionTotal
+                            )
+                        );
+                    }
                 }
 
                 StackPanel footerPanel = CreateFooterPanel();
+                Canvas.SetTop(footerPanel, isCheckType ? 680:980);
                 mainCanvas.Children.Add(footerPanel);
                 PopulateFooterData(footerPanel);
 
                 FacturesContainer.Children.Add(mainCanvas);
             }
+        }
+
+        private void PopulateCreditData(StackPanel panel)
+        {
+            string creditClientName = GetDictionaryValue("CreditClientName");
+            string creditMontant = GetDictionaryValue("CreditMontant");
+
+            SetTextBlockValue(panel, "txtCreditClientName", creditClientName);
+            SetTextBlockValue(panel, "txtCreditMontant", creditMontant);
+        }
+
+        private void PopulateObjectData(StackPanel panel)
+        {
+            TextBlock objectBlock = FindVisualChild<TextBlock>(panel, "txtDisplayObject");
+            if (objectBlock != null)
+            {
+                objectBlock.Text = GetDictionaryValue("Object");
+            }
+        }
+
+        private void PopulateMontantEnLettresData(StackPanel panel)
+        {
+            TextBlock descriptionBlock = FindVisualChild<TextBlock>(panel, "txtDescription");
+            if (descriptionBlock != null)
+            {
+                string description = GetDictionaryValue("Description");
+                if (string.IsNullOrWhiteSpace(description))
+                {
+                    descriptionBlock.Visibility = Visibility.Collapsed;
+                    var parent = descriptionBlock.Parent as StackPanel;
+                    if (parent?.Children.Count > 0 && parent.Children[0] is TextBlock label)
+                    {
+                        label.Visibility = Visibility.Collapsed;
+                    }
+                }
+                else
+                {
+                    descriptionBlock.Text = description;
+                }
+            }
+
+            TextBlock amountBlock = FindVisualChild<TextBlock>(panel, "txtDisplayAmountInLetters");
+            if (amountBlock != null)
+            {
+                amountBlock.Text = GetDictionaryValue("AmountInLetters");
+            }
+        }
+
+        private Grid CreateArticleRow(string name, double price, double actualQuantity, double tvaRate, double initialQuantity = 0, bool showExpeditionTotal = false)
+        {
+            Grid articleRow = new Grid
+            {
+                Width = 562,
+                Height = 18,
+                Margin = new Thickness(0, 3, 0, 3)
+            };
+
+            if (showExpeditionTotal)
+            {
+                articleRow.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1.5, GridUnitType.Star) });
+                articleRow.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) });
+                articleRow.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) });
+                articleRow.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(0.5, GridUnitType.Star) });
+                articleRow.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(0.7, GridUnitType.Star) });
+                articleRow.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(0.8, GridUnitType.Star) });
+            }
+            else
+            {
+                articleRow.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1.6, GridUnitType.Star) });
+                articleRow.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) });
+                articleRow.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(0.9, GridUnitType.Star) });
+                articleRow.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(0.6, GridUnitType.Star) });
+                articleRow.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(0.9, GridUnitType.Star) });
+            }
+
+            TextBlock nameBlock = new TextBlock
+            {
+                Text = name,
+                VerticalAlignment = VerticalAlignment.Center,
+                Margin = new Thickness(5, 0, 0, 0),
+                FontSize = 11,
+                TextTrimming = TextTrimming.CharacterEllipsis
+            };
+            TextBlock priceBlock = new TextBlock
+            {
+                Text = price.ToString("0.00"),
+                VerticalAlignment = VerticalAlignment.Center,
+                TextAlignment = TextAlignment.Center,
+                FontSize = 11
+            };
+
+            TextBlock qtyBlock = new TextBlock
+            {
+                Text = showExpeditionTotal ? initialQuantity.ToString("0.##") : actualQuantity.ToString("0.##"),
+                VerticalAlignment = VerticalAlignment.Center,
+                TextAlignment = TextAlignment.Center,
+                FontSize = 11
+            };
+
+            TextBlock tvaBlock = new TextBlock
+            {
+                Text = tvaRate.ToString("0.##") + "%",
+                VerticalAlignment = VerticalAlignment.Center,
+                TextAlignment = TextAlignment.Center,
+                FontSize = 11
+            };
+
+            int totalColumnIndex = showExpeditionTotal ? 5 : 4;
+
+            TextBlock totalBlock = new TextBlock
+            {
+                Text = (actualQuantity * price).ToString("0.00"),
+                VerticalAlignment = VerticalAlignment.Center,
+                TextAlignment = TextAlignment.Center,
+                FontSize = 11
+            };
+
+            Grid.SetColumn(nameBlock, 0);
+            Grid.SetColumn(priceBlock, 1);
+            Grid.SetColumn(qtyBlock, 2);
+            Grid.SetColumn(tvaBlock, 3);
+            Grid.SetColumn(totalBlock, totalColumnIndex);
+
+            articleRow.Children.Add(nameBlock);
+            articleRow.Children.Add(priceBlock);
+            articleRow.Children.Add(qtyBlock);
+            articleRow.Children.Add(tvaBlock);
+
+            if (showExpeditionTotal)
+            {
+                TextBlock expeditionBlock = new TextBlock
+                {
+                    Text = actualQuantity.ToString("0.##"),
+                    VerticalAlignment = VerticalAlignment.Center,
+                    TextAlignment = TextAlignment.Center,
+                    FontSize = 11
+                };
+                Grid.SetColumn(expeditionBlock, 4);
+                articleRow.Children.Add(expeditionBlock);
+            }
+
+            articleRow.Children.Add(totalBlock);
+
+            return articleRow;
+        }
+
+        private StackPanel CreateTransportSignaturePanel()
+        {
+            StackPanel signaturePanel = new StackPanel
+            {
+                Background = new SolidColorBrush(Colors.White),
+                Width = 350,
+                Height = 80,
+                HorizontalAlignment = HorizontalAlignment.Left,
+                VerticalAlignment = VerticalAlignment.Center
+            };
+
+            Canvas.SetLeft(signaturePanel, 82);
+            Canvas.SetTop(signaturePanel, 720);
+
+            TextBlock label = new TextBlock
+            {
+                Text = "Signature de Transport : ",
+                FontWeight = FontWeights.Bold,
+                FontSize = 14,
+                Foreground = new SolidColorBrush(Colors.Black),
+                Margin = new Thickness(5)
+            };
+
+            Border signatureBorder = new Border
+            {
+                Width = 340,
+                Height = 50,
+                BorderBrush = new SolidColorBrush(Colors.Gray),
+                BorderThickness = new Thickness(1),
+                Margin = new Thickness(5)
+            };
+
+            signaturePanel.Children.Add(label);
+            signaturePanel.Children.Add(signatureBorder);
+
+            return signaturePanel;
         }
 
         private Grid CreateLogoPlaceholder()
@@ -274,7 +592,7 @@ namespace GestionComerce.Main.Facturation.CreateFacture
             return FactureInfo.ContainsKey(key) ? FactureInfo[key] : defaultValue;
         }
 
-        private void PopulateHeaderData(Canvas canvas)
+        private void PopulateHeaderData(Canvas canvas, bool isCheckType)
         {
             SetTextBlockValue(canvas, "txtDisplayNom", GetDictionaryValue("NomC"));
             SetTextBlockValue(canvas, "txtDisplayICE", GetDictionaryValue("ICEC"));
@@ -287,59 +605,210 @@ namespace GestionComerce.Main.Facturation.CreateFacture
 
             SetTextBlockValue(canvas, "txtDisplayFacture", GetDictionaryValue("NFacture"));
             SetTextBlockValue(canvas, "txtDisplayDate", GetDictionaryValue("Date"));
+
+            SetTextBlockValue(canvas, "txtDisplayPaymentMethod", GetDictionaryValue("PaymentMethod"));
+            SetTextBlockValue(canvas, "txtDisplayGivenBy", GetDictionaryValue("GivenBy"));
+            SetTextBlockValue(canvas, "txtDisplayReceivedBy", GetDictionaryValue("ReceivedBy"));
             SetTextBlockValue(canvas, "txtDisplayEtatFacture", GetDictionaryValue("Reversed"));
             SetTextBlockValue(canvas, "txtDisplayDevice", GetDictionaryValue("Device"));
             SetTextBlockValue(canvas, "txtDisplayType", GetDictionaryValue("Type"));
             SetTextBlockValue(canvas, "txtDisplayIndex", GetDictionaryValue("IndexDeFacture"));
+
+            if (isCheckType)
+            {
+                SetTextBlockValue(canvas, "txtDisplayMontant", GetDictionaryValue("MontantApresRemise"));
+            }
+        }
+
+        private StackPanel CreateObjectPanel(bool isCheckType = false)
+        {
+            StackPanel panel = new StackPanel
+            {
+                Background = new SolidColorBrush(Colors.White),
+                Width = 544,
+                Height = 40,
+                HorizontalAlignment = HorizontalAlignment.Left,
+                VerticalAlignment = VerticalAlignment.Center
+            };
+
+            double topPosition = isCheckType ? 355 : 340;
+            Canvas.SetLeft(panel, 91);
+            Canvas.SetTop(panel, topPosition);
+
+            StackPanel objectPanel = new StackPanel
+            {
+                Orientation = Orientation.Horizontal,
+                Margin = new Thickness(5, 0, 5, 0)
+            };
+
+            TextBlock objectLabel = new TextBlock
+            {
+                Text = "Objet : ",
+                FontWeight = FontWeights.Bold,
+                FontSize = 14,
+                Foreground = new SolidColorBrush(Colors.Black),
+                VerticalAlignment = VerticalAlignment.Top
+            };
+
+            TextBlock objectValue = new TextBlock
+            {
+                Name = "txtDisplayObject",
+                Text = "",
+                FontSize = 12,
+                Foreground = new SolidColorBrush(Colors.Black),
+                Width = 480,
+                TextWrapping = TextWrapping.Wrap,
+                VerticalAlignment = VerticalAlignment.Top,
+                MaxHeight = 40
+            };
+
+            objectPanel.Children.Add(objectLabel);
+            objectPanel.Children.Add(objectValue);
+            panel.Children.Add(objectPanel);
+
+            return panel;
+        }
+
+        private StackPanel CreateMontantEnLettresPanel(bool isCheckType = false)
+        {
+            StackPanel panel = new StackPanel
+            {
+                Background = new SolidColorBrush(Colors.White),
+                Width = 350,
+                Height = isCheckType ? 170 : 200,
+                HorizontalAlignment = HorizontalAlignment.Left,
+                VerticalAlignment = VerticalAlignment.Center
+            };
+
+            double topPosition = isCheckType ? 500 : 700;
+            Canvas.SetLeft(panel, 72);
+            Canvas.SetTop(panel, topPosition);
+
+            StackPanel descriptionPanel = new StackPanel
+            {
+                Orientation = Orientation.Vertical,
+                Margin = new Thickness(5, 0, 5, 10)
+            };
+
+            TextBlock descriptionLabel = new TextBlock
+            {
+                Text = "Description : ",
+                FontWeight = FontWeights.Bold,
+                FontSize = 15,
+                Foreground = new SolidColorBrush(Colors.Black),
+                Width = 340,
+                VerticalAlignment = VerticalAlignment.Top
+            };
+
+            TextBlock descriptionValue = new TextBlock
+            {
+                Name = "txtDescription",
+                Text = "",
+                FontSize = 12,
+                Foreground = new SolidColorBrush(Colors.Black),
+                Width = 340,
+                TextWrapping = TextWrapping.Wrap,
+                VerticalAlignment = VerticalAlignment.Top,
+                MaxHeight = 80
+            };
+
+            descriptionPanel.Children.Add(descriptionLabel);
+            descriptionPanel.Children.Add(descriptionValue);
+            panel.Children.Add(descriptionPanel);
+
+            StackPanel amountPanel = new StackPanel
+            {
+                Orientation = Orientation.Vertical,
+                Margin = new Thickness(5, 0, 5, 0)
+            };
+
+            TextBlock amountLabel = new TextBlock
+            {
+                Text = "Montant en Lettres : ",
+                FontWeight = FontWeights.Bold,
+                FontSize = 14,
+                Foreground = new SolidColorBrush(Colors.Black),
+                Width = 340,
+                VerticalAlignment = VerticalAlignment.Top
+            };
+
+            TextBlock amountValue = new TextBlock
+            {
+                Name = "txtDisplayAmountInLetters",
+                Text = "",
+                FontSize = 12,
+                Foreground = new SolidColorBrush(Colors.Black),
+                Width = 340,
+                TextWrapping = TextWrapping.Wrap,
+                VerticalAlignment = VerticalAlignment.Top,
+                MaxHeight = 60
+            };
+
+            amountPanel.Children.Add(amountLabel);
+            amountPanel.Children.Add(amountValue);
+            panel.Children.Add(amountPanel);
+
+            return panel;
+        }
+
+        private StackPanel CreateInfoRowWithWrap(string label, string textBlockName, double labelWidth, double valueWidth, bool wrap = true)
+        {
+            StackPanel sp = new StackPanel
+            {
+                Orientation = Orientation.Horizontal,
+                Margin = new Thickness(0),
+                VerticalAlignment = VerticalAlignment.Top
+            };
+
+            sp.Children.Add(new TextBlock
+            {
+                Text = label,
+                FontSize = 14,
+                FontWeight = FontWeights.Bold,
+                Foreground = new SolidColorBrush(Color.FromRgb(45, 55, 72)),
+                Width = labelWidth,
+                VerticalAlignment = VerticalAlignment.Top,
+                Margin = new Thickness(0)
+            });
+
+            sp.Children.Add(new TextBlock
+            {
+                Name = textBlockName,
+                Text = "",
+                FontSize = 14,
+                Foreground = new SolidColorBrush(Color.FromRgb(45, 55, 72)),
+                VerticalAlignment = VerticalAlignment.Top,
+                TextWrapping = TextWrapping.Wrap,
+                Margin = new Thickness(0),
+                Width = valueWidth,
+                MaxHeight = 40,
+                TextTrimming = TextTrimming.CharacterEllipsis
+            });
+
+            return sp;
         }
 
         private void PopulateSummaryData(StackPanel panel)
         {
             if (panel.Children.Count >= 6)
             {
-                // Prix HT (uses MontantTotal from dictionary) - NO DH
                 if (panel.Children[0] is StackPanel sp0 && sp0.Children.Count >= 2 && sp0.Children[1] is TextBlock tb0)
                     tb0.Text = GetDictionaryValue("MontantTotal", "0.00");
 
-                // TVA Rate - NO DH
                 if (panel.Children[1] is StackPanel sp1 && sp1.Children.Count >= 2 && sp1.Children[1] is TextBlock tb1)
                     tb1.Text = GetDictionaryValue("TVA", "0.00") + " %";
 
-                // Valeur TVA (uses MontantTVA from dictionary) - NO DH
                 if (panel.Children[2] is StackPanel sp2 && sp2.Children.Count >= 2 && sp2.Children[1] is TextBlock tb2)
                     tb2.Text = GetDictionaryValue("MontantTVA", "0.00");
 
-                // Prix TTC (uses MontantApresTVA from dictionary) - NO DH
                 if (panel.Children[3] is StackPanel sp3 && sp3.Children.Count >= 2 && sp3.Children[1] is TextBlock tb3)
                     tb3.Text = GetDictionaryValue("MontantApresTVA", "0.00");
 
-                // Remise - KEEPS DH
                 if (panel.Children[4] is StackPanel sp4 && sp4.Children.Count >= 2 && sp4.Children[1] is TextBlock tb4)
                     tb4.Text = "- " + GetDictionaryValue("Remise", "0.00") + " DH";
 
-                // Prix Apres Remise (Final Total from dictionary) - NO DH
                 if (panel.Children[5] is StackPanel sp5 && sp5.Children.Count >= 2 && sp5.Children[1] is TextBlock tb5)
                     tb5.Text = GetDictionaryValue("MontantApresRemise", "0.00");
-            }
-        }
-
-        private void PopulateDescriptionData(StackPanel panel)
-        {
-            string description = GetDictionaryValue("Description");
-
-            if (string.IsNullOrWhiteSpace(description))
-            {
-                panel.Visibility = Visibility.Collapsed;
-                return;
-            }
-
-            foreach (UIElement child in panel.Children)
-            {
-                if (child is TextBlock tb && tb.Name == "txtDescription")
-                {
-                    tb.Text = description;
-                    break;
-                }
             }
         }
 
@@ -382,20 +851,20 @@ namespace GestionComerce.Main.Facturation.CreateFacture
             return null;
         }
 
-        private Grid CreateHeaderGrid()
+        private Grid CreateHeaderGrid(bool isCheckType = false)
         {
             Grid headerGrid = new Grid
             {
-                Background = new SolidColorBrush(Colors.White),
+                Background = new SolidColorBrush(Colors.Transparent),
                 Width = 544,
-                Height = 170,
+                Height = isCheckType ? 230 : 230,
                 HorizontalAlignment = HorizontalAlignment.Left,
                 VerticalAlignment = VerticalAlignment.Center,
                 Name = "ArticlesContainer"
             };
 
             Canvas.SetLeft(headerGrid, 91);
-            Canvas.SetTop(headerGrid, 173);
+            Canvas.SetTop(headerGrid, 190);
 
             headerGrid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1.88, GridUnitType.Star) });
             headerGrid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) });
@@ -417,47 +886,192 @@ namespace GestionComerce.Main.Facturation.CreateFacture
             StackPanel rightPanel = new StackPanel { Margin = new Thickness(0) };
             Grid.SetColumn(rightPanel, 1);
 
-            rightPanel.Children.Add(CreateInfoRow("N° Facture : ", "txtDisplayFacture", 90, true));
+            string invoiceNumberLabel = GetInvoiceNumberLabel();
+            rightPanel.Children.Add(CreateInfoRow(invoiceNumberLabel, "txtDisplayFacture", 70, true));
             rightPanel.Children.Add(CreateInfoRow("Date : ", "txtDisplayDate", 50, true));
+            rightPanel.Children.Add(CreateInfoRow("Mode de Paiement : ", "txtDisplayPaymentMethod", 135, true));
+            rightPanel.Children.Add(CreateInfoRow("Donné par : ", "txtDisplayGivenBy", 85, true));
+            rightPanel.Children.Add(CreateInfoRow("Reçu par : ", "txtDisplayReceivedBy", 75, true));
             rightPanel.Children.Add(CreateInfoRow("État Facture : ", "txtDisplayEtatFacture", 90, true));
             rightPanel.Children.Add(CreateInfoRow("Device : ", "txtDisplayDevice", 60, true));
             rightPanel.Children.Add(CreateInfoRow("Index : ", "txtDisplayIndex", 55, true));
+
+            if (isCheckType)
+            {
+                rightPanel.Children.Add(CreateInfoRow("Montant : ", "txtDisplayMontant", 65, true));
+            }
 
             headerGrid.Children.Add(rightPanel);
 
             return headerGrid;
         }
 
-        private StackPanel CreateSummaryPanel()
+        private StackPanel CreateInfoRow(string label, string textBlockName, double labelWidth, bool wrap = false)
         {
+            StackPanel sp = new StackPanel
+            {
+                Orientation = Orientation.Horizontal,
+                Margin = new Thickness(0)
+            };
+
+            sp.Children.Add(new TextBlock
+            {
+                Text = label,
+                FontSize = 14,
+                FontWeight = FontWeights.Bold,
+                Foreground = new SolidColorBrush(Color.FromRgb(45, 55, 72)),
+                Width = labelWidth,
+                VerticalAlignment = VerticalAlignment.Center,
+                Margin = new Thickness(0)
+            });
+
+            TextBlock valueBlock = new TextBlock
+            {
+                Name = textBlockName,
+                Text = "",
+                FontSize = 14,
+                Foreground = new SolidColorBrush(Color.FromRgb(45, 55, 72)),
+                VerticalAlignment = VerticalAlignment.Center,
+                Margin = new Thickness(0),
+                TextTrimming = TextTrimming.CharacterEllipsis
+            };
+
+            if (wrap)
+            {
+                valueBlock.TextWrapping = TextWrapping.Wrap;
+                valueBlock.MaxWidth = 150;
+            }
+
+            sp.Children.Add(valueBlock);
+
+            return sp;
+        }
+
+        private StackPanel CreateCreditInfoPanel()
+        {
+            StackPanel creditPanel = new StackPanel
+            {
+                Background = new SolidColorBrush(Colors.White),
+                Width = 544,
+                Height = 30,
+                HorizontalAlignment = HorizontalAlignment.Left,
+                VerticalAlignment = VerticalAlignment.Center,
+                Orientation = Orientation.Horizontal
+            };
+
+            TextBlock clientNameBlock = new TextBlock
+            {
+                Name = "txtCreditClientName",
+                Text = "",
+                FontSize = 14,
+                FontWeight = FontWeights.Bold,
+                Foreground = new SolidColorBrush(Color.FromRgb(45, 55, 72)),
+                VerticalAlignment = VerticalAlignment.Center,
+                TextAlignment = TextAlignment.Left,
+                Margin = new Thickness(10, 0, 10, 0),
+                Width = 350
+            };
+
+            TextBlock montantBlock = new TextBlock
+            {
+                Name = "txtCreditMontant",
+                Text = "",
+                FontSize = 14,
+                FontWeight = FontWeights.Bold,
+                Foreground = new SolidColorBrush(Color.FromRgb(45, 55, 72)),
+                VerticalAlignment = VerticalAlignment.Center,
+                TextAlignment = TextAlignment.Right,
+                Margin = new Thickness(10, 0, 10, 0),
+                Width = 150
+            };
+
+            creditPanel.Children.Add(clientNameBlock);
+            creditPanel.Children.Add(montantBlock);
+
+            return creditPanel;
+        }
+
+        private StackPanel CreateFooterInfoSection(string label, string textBlockName, double labelWidth)
+        {
+            StackPanel sp = new StackPanel
+            {
+                Orientation = Orientation.Horizontal,
+                Margin = new Thickness(0)
+            };
+
+            sp.Children.Add(new TextBlock
+            {
+                Text = label,
+                FontSize = 10,
+                Foreground = new SolidColorBrush(Color.FromRgb(45, 55, 72)),
+                Width = labelWidth,
+                VerticalAlignment = VerticalAlignment.Center
+            });
+
+            sp.Children.Add(new TextBlock
+            {
+                Name = textBlockName,
+                FontSize = 10,
+                Foreground = new SolidColorBrush(Color.FromRgb(45, 55, 72)),
+                VerticalAlignment = VerticalAlignment.Center,
+                TextTrimming = TextTrimming.CharacterEllipsis,
+                MaxWidth = 150
+            });
+
+            return sp;
+        }
+
+        private string GetTemplateForPage(int index, int totalPages, string[] templates)
+        {
+            if (totalPages == 1) return templates[0];
+            if (index == 0) return templates[1];
+            if (index == totalPages - 1) return templates[3];
+            return templates[2];
+        }
+
+        private (double top, double height) GetStackPanelLayoutForTemplate(string template)
+        {
+            switch (template)
+            {
+                case "1.png":
+                case "1E.png":
+                    return (420, 250);
+                case "2.png":
+                case "2E.png":
+                    return (465, 250);
+                case "3.png":
+                case "3E.png":
+                    return (190, 570);
+                case "4.png":
+                case "4E.png":
+                    return (75, 570);
+                default:
+                    return (100, 700);
+            }
+        }
+
+        private StackPanel CreateSummaryPanel(bool isCheckType = false)
+        {
+            string invoiceType = GetDictionaryValue("Type", "").ToLower();
             StackPanel summaryPanel = new StackPanel
             {
                 Background = new SolidColorBrush(Colors.White),
                 Width = 180,
                 Height = 140,
                 HorizontalAlignment = HorizontalAlignment.Left,
-                VerticalAlignment = VerticalAlignment.Center
+                VerticalAlignment = VerticalAlignment.Center,
+                Visibility = (invoiceType == "credit") ? Visibility.Collapsed : Visibility.Visible,
             };
 
+            double topPosition = isCheckType ? 650 : 700;
             Canvas.SetLeft(summaryPanel, 470);
-            Canvas.SetTop(summaryPanel, 670);
+            Canvas.SetTop(summaryPanel, topPosition);
 
-            // Prix HT (Montant Total)
             summaryPanel.Children.Add(CreateSummaryRow("Prix HT :", "0.00 DH", false));
-
-            // TVA Rate
             summaryPanel.Children.Add(CreateSummaryRow("TVA :", "0.00 %", false));
-
-            // Valeur TVA (Montant TVA)
             summaryPanel.Children.Add(CreateSummaryRow("Valeur TVA :", "0.00 DH", false));
-
-            // Prix TTC (Montant Apres TVA)
             summaryPanel.Children.Add(CreateSummaryRow("Prix TTC :", "0.00 DH", false));
-
-            // Remise
             summaryPanel.Children.Add(CreateSummaryRow("Remise :", "- 0.00 DH", false));
-
-            // Prix Apres Remise (Total - bold)
             summaryPanel.Children.Add(CreateSummaryRow("Total :", "0.00 DH", true));
 
             return summaryPanel;
@@ -498,47 +1112,6 @@ namespace GestionComerce.Main.Facturation.CreateFacture
             return row;
         }
 
-        private StackPanel CreateDescriptionPanel()
-        {
-            StackPanel descriptionPanel = new StackPanel
-            {
-                Background = new SolidColorBrush(Colors.White),
-                Width = 350,
-                Height = 240,
-                HorizontalAlignment = HorizontalAlignment.Left,
-                VerticalAlignment = VerticalAlignment.Center
-            };
-
-            Canvas.SetLeft(descriptionPanel, 82);
-            Canvas.SetTop(descriptionPanel, 670);
-
-            descriptionPanel.Children.Add(new TextBlock
-            {
-                Text = "Description : ",
-                FontWeight = FontWeights.Bold,
-                FontSize = 15,
-                Foreground = new SolidColorBrush(Colors.Black),
-                Width = 350,
-                TextWrapping = TextWrapping.Wrap,
-                VerticalAlignment = VerticalAlignment.Top,
-                Margin = new Thickness(5)
-            });
-
-            descriptionPanel.Children.Add(new TextBlock
-            {
-                Name = "txtDescription",
-                Text = "",
-                FontSize = 12,
-                Foreground = new SolidColorBrush(Colors.Black),
-                Width = 350,
-                TextWrapping = TextWrapping.Wrap,
-                VerticalAlignment = VerticalAlignment.Top,
-                Margin = new Thickness(5)
-            });
-
-            return descriptionPanel;
-        }
-
         private StackPanel CreateFooterPanel()
         {
             StackPanel footerPanel = new StackPanel
@@ -551,7 +1124,6 @@ namespace GestionComerce.Main.Facturation.CreateFacture
             };
 
             Canvas.SetLeft(footerPanel, 49);
-            Canvas.SetTop(footerPanel, 940);
 
             StackPanel firstRow = new StackPanel
             {
@@ -617,200 +1189,6 @@ namespace GestionComerce.Main.Facturation.CreateFacture
             return footerPanel;
         }
 
-        private StackPanel CreateInfoRow(string label, string textBlockName, double labelWidth, bool wrap = false)
-        {
-            StackPanel sp = new StackPanel
-            {
-                Orientation = Orientation.Horizontal,
-                Margin = new Thickness(0)
-            };
-
-            sp.Children.Add(new TextBlock
-            {
-                Text = label,
-                FontSize = 14,
-                FontWeight = FontWeights.Bold,
-                Foreground = new SolidColorBrush(Color.FromRgb(45, 55, 72)),
-                Width = labelWidth,
-                VerticalAlignment = VerticalAlignment.Center,
-                Margin = new Thickness(0)
-            });
-
-            TextBlock valueBlock = new TextBlock
-            {
-                Name = textBlockName,
-                Text = "",
-                FontSize = 14,
-                Foreground = new SolidColorBrush(Color.FromRgb(45, 55, 72)),
-                VerticalAlignment = VerticalAlignment.Center,
-                Margin = new Thickness(0),
-                TextTrimming = TextTrimming.CharacterEllipsis
-            };
-
-            if (wrap)
-            {
-                valueBlock.TextWrapping = TextWrapping.Wrap;
-                valueBlock.MaxWidth = 150;
-            }
-
-            sp.Children.Add(valueBlock);
-
-            return sp;
-        }
-
-        private StackPanel CreateInfoRowWithWrap(string label, string textBlockName, double labelWidth, double valueWidth)
-        {
-            StackPanel sp = new StackPanel
-            {
-                Orientation = Orientation.Horizontal,
-                Margin = new Thickness(0),
-                VerticalAlignment = VerticalAlignment.Top
-            };
-
-            sp.Children.Add(new TextBlock
-            {
-                Text = label,
-                FontSize = 14,
-                FontWeight = FontWeights.Bold,
-                Foreground = new SolidColorBrush(Color.FromRgb(45, 55, 72)),
-                Width = labelWidth,
-                VerticalAlignment = VerticalAlignment.Top,
-                Margin = new Thickness(0)
-            });
-
-            sp.Children.Add(new TextBlock
-            {
-                Name = textBlockName,
-                Text = "",
-                FontSize = 14,
-                Foreground = new SolidColorBrush(Color.FromRgb(45, 55, 72)),
-                VerticalAlignment = VerticalAlignment.Top,
-                TextWrapping = TextWrapping.Wrap,
-                Margin = new Thickness(0),
-                Width = valueWidth,
-                MaxHeight = 60,
-                TextTrimming = TextTrimming.CharacterEllipsis
-            });
-
-            return sp;
-        }
-
-        private StackPanel CreateFooterInfoSection(string label, string textBlockName, double labelWidth)
-        {
-            StackPanel sp = new StackPanel
-            {
-                Orientation = Orientation.Horizontal,
-                Margin = new Thickness(0)
-            };
-
-            sp.Children.Add(new TextBlock
-            {
-                Text = label,
-                FontSize = 10,
-                Foreground = new SolidColorBrush(Color.FromRgb(45, 55, 72)),
-                Width = labelWidth,
-                VerticalAlignment = VerticalAlignment.Center
-            });
-
-            sp.Children.Add(new TextBlock
-            {
-                Name = textBlockName,
-                FontSize = 10,
-                Foreground = new SolidColorBrush(Color.FromRgb(45, 55, 72)),
-                VerticalAlignment = VerticalAlignment.Center,
-                TextTrimming = TextTrimming.CharacterEllipsis,
-                MaxWidth = 150
-            });
-
-            return sp;
-        }
-
-        private string GetTemplateForPage(int index, int totalPages, string[] templates)
-        {
-            if (totalPages == 1) return templates[0];
-            if (index == 0) return templates[1];
-            if (index == totalPages - 1) return templates[3];
-            return templates[2];
-        }
-
-        private (double top, double height) GetStackPanelLayoutForTemplate(string template)
-        {
-            switch (template)
-            {
-                case "1.png":
-                    return (400, 250);
-                case "2.png":
-                    return (465, 250);
-                case "3.png":
-                    return (190, 570);
-                case "4.png":
-                    return (75, 570);
-                default:
-                    return (100, 700);
-            }
-        }
-
-        private Grid CreateArticleRow(string name, double price, double qty, double tvaRate)
-        {
-            Grid articleRow = new Grid
-            {
-                Width = 562,
-                Height = 20,
-                Margin = new Thickness(0, 5, 0, 5)
-            };
-
-            articleRow.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(2, GridUnitType.Star) });
-            articleRow.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) });
-            articleRow.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) });
-            articleRow.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(0.8, GridUnitType.Star) });
-            articleRow.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) });
-
-            TextBlock nameBlock = new TextBlock
-            {
-                Text = name,
-                VerticalAlignment = VerticalAlignment.Center,
-                Margin = new Thickness(5, 0, 0, 0)
-            };
-            TextBlock priceBlock = new TextBlock
-            {
-                Text = price.ToString("0.00"),
-                VerticalAlignment = VerticalAlignment.Center,
-                TextAlignment = TextAlignment.Center
-            };
-            TextBlock qtyBlock = new TextBlock
-            {
-                Text = qty.ToString("0.##"),
-                VerticalAlignment = VerticalAlignment.Center,
-                TextAlignment = TextAlignment.Center
-            };
-            TextBlock tvaBlock = new TextBlock
-            {
-                Text = tvaRate.ToString("0.##") + "%",
-                VerticalAlignment = VerticalAlignment.Center,
-                TextAlignment = TextAlignment.Center
-            };
-            TextBlock totalBlock = new TextBlock
-            {
-                Text = (qty * price).ToString("0.00"),
-                VerticalAlignment = VerticalAlignment.Center,
-                TextAlignment = TextAlignment.Center
-            };
-
-            Grid.SetColumn(nameBlock, 0);
-            Grid.SetColumn(priceBlock, 1);
-            Grid.SetColumn(qtyBlock, 2);
-            Grid.SetColumn(tvaBlock, 3);
-            Grid.SetColumn(totalBlock, 4);
-
-            articleRow.Children.Add(nameBlock);
-            articleRow.Children.Add(priceBlock);
-            articleRow.Children.Add(qtyBlock);
-            articleRow.Children.Add(tvaBlock);
-            articleRow.Children.Add(totalBlock);
-
-            return articleRow;
-        }
-
         private void Button_Click(object sender, RoutedEventArgs e)
         {
             this.Close();
@@ -847,6 +1225,229 @@ namespace GestionComerce.Main.Facturation.CreateFacture
         }
 
         private void btnPrint_Click(object sender, RoutedEventArgs e)
+        {
+            PrintInvoice();
+        }
+
+        private List<Invoice.InvoiceArticle> ConvertToInvoiceArticles(List<InvoiceArticle> articles)
+        {
+            var invoiceArticles = new List<Invoice.InvoiceArticle>();
+
+            foreach (var article in articles)
+            {
+                invoiceArticles.Add(new Invoice.InvoiceArticle
+                {
+                    OperationID = article.OperationID,
+                    ArticleID = article.ArticleID,
+                    ArticleName = article.ArticleName,
+                    PrixUnitaire = article.Prix,
+                    Quantite = article.Quantite,
+                    TVA = article.TVA,
+                    IsReversed = article.Reversed
+                });
+            }
+
+            return invoiceArticles;
+        }
+
+        private Invoice CreateInvoiceFromFactureInfo()
+        {
+            decimal.TryParse(CleanNumericValue(GetDictionaryValue("TVA")), out decimal tvaRate);
+            decimal.TryParse(CleanNumericValue(GetDictionaryValue("MontantTotal")), out decimal totalHT);
+            decimal.TryParse(CleanNumericValue(GetDictionaryValue("MontantTVA")), out decimal totalTVA);
+            decimal.TryParse(CleanNumericValue(GetDictionaryValue("MontantApresTVA")), out decimal totalTTC);
+            decimal.TryParse(CleanNumericValue(GetDictionaryValue("Remise")), out decimal remise);
+            decimal.TryParse(CleanNumericValue(GetDictionaryValue("MontantApresRemise")), out decimal totalAfterRemise);
+
+            int.TryParse(GetDictionaryValue("EtatFature"), out int etatFacture);
+            bool isReversed = GetDictionaryValue("Reversed", "").ToLower() == "reversed";
+
+            // Parse credit-specific fields
+            decimal.TryParse(CleanNumericValue(GetDictionaryValue("CreditMontant")), out decimal creditMontant);
+            string creditClientName = GetDictionaryValue("CreditClientName");
+
+            var invoice = new Invoice
+            {
+                InvoiceNumber = GetDictionaryValue("NFacture"),
+                InvoiceDate = DateTime.TryParse(GetDictionaryValue("Date"), out DateTime date) ? date : DateTime.Now,
+                InvoiceType = GetDictionaryValue("Type"),
+                InvoiceIndex = GetDictionaryValue("IndexDeFacture"),
+
+                Objet = GetDictionaryValue("Object"),
+                NumberLetters = GetDictionaryValue("AmountInLetters"),
+                NameFactureGiven = GetDictionaryValue("GivenBy"),
+                NameFactureReceiver = GetDictionaryValue("ReceivedBy"),
+                ReferenceClient = GetDictionaryValue("ClientReference"),
+                PaymentMethod = GetDictionaryValue("PaymentMethod"),
+
+                UserName = GetDictionaryValue("NomU"),
+                UserICE = GetDictionaryValue("ICEU"),
+                UserVAT = GetDictionaryValue("VATU"),
+                UserPhone = GetDictionaryValue("TelephoneU"),
+                UserAddress = GetDictionaryValue("AdressU"),
+                UserEtatJuridique = GetDictionaryValue("EtatJuridiqueU"),
+                UserIdSociete = GetDictionaryValue("IdSocieteU"),
+                UserSiegeEntreprise = GetDictionaryValue("SiegeEntrepriseU"),
+
+                ClientName = GetDictionaryValue("NomC"),
+                ClientICE = GetDictionaryValue("ICEC"),
+                ClientVAT = GetDictionaryValue("VATC"),
+                ClientPhone = GetDictionaryValue("TelephoneC"),
+                ClientAddress = GetDictionaryValue("AdressC"),
+                ClientEtatJuridique = GetDictionaryValue("EtatJuridiqueC"),
+                ClientIdSociete = GetDictionaryValue("IdSocieteC"),
+                ClientSiegeEntreprise = GetDictionaryValue("SiegeEntrepriseC"),
+
+                Currency = GetDictionaryValue("Device", "DH"),
+                TVARate = tvaRate,
+                TotalHT = totalHT,
+                TotalTVA = totalTVA,
+                TotalTTC = totalTTC,
+                Remise = remise,
+                TotalAfterRemise = totalAfterRemise,
+
+                // Add credit-specific fields
+                CreditClientName = creditClientName,
+                CreditMontant = creditMontant,
+
+                EtatFacture = etatFacture,
+                IsReversed = isReversed,
+
+                Description = GetDictionaryValue("Description"),
+                LogoPath = GetDictionaryValue("Logo"),
+
+                CreatedBy = main?.u?.UserID,
+                CreatedDate = DateTime.Now
+            };
+
+            if (main?.InvoiceArticles != null)
+            {
+                invoice.Articles = ConvertToInvoiceArticles(main.InvoiceArticles);
+            }
+
+            return invoice;
+        }
+
+        private string CleanNumericValue(string value)
+        {
+            if (string.IsNullOrEmpty(value))
+                return "0";
+
+            return new string(value.Where(c => char.IsDigit(c) || c == '.' || c == ',').ToArray())
+                .Replace(',', '.');
+        }
+
+        private async void btnSave_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                Save.IsEnabled = false;
+
+                Invoice invoice = CreateInvoiceFromFactureInfo();
+
+                // تحقق من رقم الفاتورة
+                bool exists = await _invoiceRepository.InvoiceNumberExistsAsync(invoice.InvoiceNumber);
+                if (exists)
+                {
+                    MessageBox.Show(
+                        $"Ce nombre de facture : {invoice.InvoiceNumber}, deja exist.",
+                        "Attention",
+                        MessageBoxButton.OK,
+                        MessageBoxImage.Warning);
+                    return;
+                }
+
+                int invoiceId = await _invoiceRepository.CreateInvoiceAsync(invoice);
+
+                if (invoiceId > 0)
+                {
+                    MessageBox.Show(
+                        $"Facture sauvegardée avec succès!\nNuméro: {invoice.InvoiceNumber}",
+                        "Succès",
+                        MessageBoxButton.OK,
+                        MessageBoxImage.Information);
+
+                    this.Close();
+                }
+                else
+                {
+                    MessageBox.Show(
+                        "Erreur lors de la sauvegarde de la facture.",
+                        "Erreur",
+                        MessageBoxButton.OK,
+                        MessageBoxImage.Error);
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(
+                    $"Erreur lors de la sauvegarde:\n{ex.Message}",
+                    "Erreur",
+                    MessageBoxButton.OK,
+                    MessageBoxImage.Error);
+            }
+            finally
+            {
+                Save.IsEnabled = true;
+            }
+        }
+
+        private async void btnSaveAndPrint_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                SaveAndPrint.IsEnabled = false;
+
+                Invoice invoice = CreateInvoiceFromFactureInfo();
+
+                // تحقق من رقم الفاتورة
+                bool exists = await _invoiceRepository.InvoiceNumberExistsAsync(invoice.InvoiceNumber);
+                if (exists)
+                {
+                    MessageBox.Show(
+                        $"رقم الفاتورة {invoice.InvoiceNumber} موجود مسبقاً!\nالرجاء استخدام رقم آخر.",
+                        "تنبيه",
+                        MessageBoxButton.OK,
+                        MessageBoxImage.Warning);
+                    return;
+                }
+
+                int invoiceId = await _invoiceRepository.CreateInvoiceAsync(invoice);
+
+                if (invoiceId > 0)
+                {
+                    MessageBox.Show(
+                        $"Facture sauvegardée avec succès!\nNuméro: {invoice.InvoiceNumber}",
+                        "Succès",
+                        MessageBoxButton.OK,
+                        MessageBoxImage.Information);
+
+                    PrintInvoice();
+                }
+                else
+                {
+                    MessageBox.Show(
+                        "Erreur lors de la sauvegarde de la facture.",
+                        "Erreur",
+                        MessageBoxButton.OK,
+                        MessageBoxImage.Error);
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(
+                    $"Erreur lors de la sauvegarde:\n{ex.Message}",
+                    "Erreur",
+                    MessageBoxButton.OK,
+                    MessageBoxImage.Error);
+            }
+            finally
+            {
+                SaveAndPrint.IsEnabled = true;
+            }
+        }
+
+        private void PrintInvoice()
         {
             try
             {
@@ -911,7 +1512,7 @@ namespace GestionComerce.Main.Facturation.CreateFacture
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Erreur: {ex.Message}", "Erreur", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show($"Erreur d'impression: {ex.Message}", "Erreur", MessageBoxButton.OK, MessageBoxImage.Error);
             }
             finally
             {

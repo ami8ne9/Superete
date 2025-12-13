@@ -26,7 +26,32 @@ namespace GestionComerce.Main.Facturation.CreateFacture
         Article article;
         CSingleOperation singleOp;
         private decimal expeditionQuantity = 0;
+        private decimal expeditionTotalQuantity = 0;
+        private decimal articlePrice = 0;
+        private decimal articleTVA = 0;
         private bool isOperationSelected = false;
+        private bool isExpeditionMode = false;
+
+        // ADD THESE PROPERTIES
+        public int ArticleIDValue
+        {
+            get
+            {
+                if (oa != null) return oa.ArticleID;
+                if (article != null) return article.ArticleID;
+                return 0;
+            }
+        }
+
+        public string ArticleNameValue
+        {
+            get
+            {
+                if (!string.IsNullOrEmpty(ArticleName.Text)) return ArticleName.Text;
+                if (article != null) return article.ArticleName;
+                return "Unknown Article";
+            }
+        }
 
         public CSingleMouvment(WMouvments ms, OperationArticle oa)
         {
@@ -70,6 +95,9 @@ namespace GestionComerce.Main.Facturation.CreateFacture
             {
                 article = foundArticle;
                 ArticleName.Text = article.ArticleName;
+                articlePrice = article.PrixVente;
+                articleTVA = article.tva;
+
                 if (oa.Reversed == true)
                 {
                     ArticleName.Text += " (Reversed)";
@@ -80,11 +108,10 @@ namespace GestionComerce.Main.Facturation.CreateFacture
                 ArticleName.Text = "Article not found (ID: " + oa.ArticleID + ")";
             }
 
-            // Handle Expedition type invoice
+            // Get invoice type and CMainFa reference
             string invoiceType = null;
             CMainFa mainfa = null;
 
-            // Get the CMainFa reference
             if (singleOp?.mainfa != null)
             {
                 mainfa = singleOp.mainfa;
@@ -96,72 +123,118 @@ namespace GestionComerce.Main.Facturation.CreateFacture
                 invoiceType = ms.wso.sc.main.InvoiceType;
             }
 
-            // Only show expedition controls if:
-            // 1. Invoice type is Expedition
-            // 2. Operation is selected (in CMainFa, not just in selection window)
-            if (invoiceType == "Expedition" && isOperationSelected)
+            isExpeditionMode = invoiceType == "Expedition";
+
+            // Show quantity editor for all invoice types when operation is selected
+            if (isOperationSelected)
             {
                 NbrArticleExpide.Visibility = Visibility.Visible;
                 NbrArticleExpide.IsEnabled = true;
+                TxtPrice.Visibility = Visibility.Visible;
+                TxtPrice.IsEnabled = true;
+                TxtTVA.Visibility = Visibility.Visible;
+                TxtTVA.IsEnabled = true;
+
+                // Show expedition total only in expedition mode
+                if (isExpeditionMode)
+                {
+                    TxtExpeditionTotal.Visibility = Visibility.Visible;
+                    TxtExpeditionTotal.IsEnabled = true;
+                }
+                else
+                {
+                    TxtExpeditionTotal.Visibility = Visibility.Collapsed;
+                }
 
                 // Try to get saved quantity from InvoiceArticles
-                decimal savedQuantity = GetSavedQuantityFromInvoiceArticles(mainfa);
+                var savedData = GetSavedDataFromInvoiceArticles(mainfa);
 
-                // Always use saved quantity if it exists (even if 0)
-                NbrArticleExpide.Text = savedQuantity.ToString();
-                expeditionQuantity = savedQuantity;
+                // Set quantity
+                NbrArticleExpide.Text = savedData.Quantity.ToString();
+                expeditionQuantity = savedData.Quantity;
+
+                // Set expedition total (only in expedition mode)
+                if (isExpeditionMode)
+                {
+                    decimal defaultExpeditionTotal = savedData.ExpeditionTotal > 0 ? savedData.ExpeditionTotal : oa.QteArticle;
+                    TxtExpeditionTotal.Text = defaultExpeditionTotal.ToString();
+                    expeditionTotalQuantity = defaultExpeditionTotal;
+                }
+
+                // Set price
+                TxtPrice.Text = savedData.Price.ToString("F2");
+                articlePrice = savedData.Price;
+
+                // Set TVA
+                TxtTVA.Text = savedData.TVA.ToString("F2");
+                articleTVA = savedData.TVA;
 
                 // Add event handlers
                 NbrArticleExpide.TextChanged += NbrArticleExpide_TextChanged;
                 NbrArticleExpide.PreviewTextInput += NbrArticleExpide_PreviewTextInput;
                 NbrArticleExpide.LostFocus += NbrArticleExpide_LostFocus;
+
+                TxtExpeditionTotal.TextChanged += TxtExpeditionTotal_TextChanged;
+                TxtExpeditionTotal.PreviewTextInput += TxtExpeditionTotal_PreviewTextInput;
+                TxtExpeditionTotal.LostFocus += TxtExpeditionTotal_LostFocus;
+
+                TxtPrice.TextChanged += TxtPrice_TextChanged;
+                TxtPrice.PreviewTextInput += TxtPrice_PreviewTextInput;
+                TxtPrice.LostFocus += TxtPrice_LostFocus;
+
+                TxtTVA.TextChanged += TxtTVA_TextChanged;
+                TxtTVA.PreviewTextInput += TxtTVA_PreviewTextInput;
+                TxtTVA.LostFocus += TxtTVA_LostFocus;
             }
             else
             {
                 NbrArticleExpide.Visibility = Visibility.Collapsed;
                 NbrArticleExpide.IsEnabled = false;
+                TxtExpeditionTotal.Visibility = Visibility.Collapsed;
+                TxtExpeditionTotal.IsEnabled = false;
+                TxtPrice.Visibility = Visibility.Collapsed;
+                TxtPrice.IsEnabled = false;
+                TxtTVA.Visibility = Visibility.Collapsed;
+                TxtTVA.IsEnabled = false;
             }
         }
 
-        // Get saved quantity from InvoiceArticles
-        private decimal GetSavedQuantityFromInvoiceArticles(CMainFa mainfa)
+        // Get saved data from InvoiceArticles
+        private (decimal Quantity, decimal ExpeditionTotal, decimal Price, decimal TVA) GetSavedDataFromInvoiceArticles(CMainFa mainfa)
         {
             if (mainfa?.InvoiceArticles == null || article == null || oa == null)
-                return oa?.QteArticle ?? 0;
+                return (oa?.QteArticle ?? 0, oa?.QteArticle ?? 0, articlePrice, articleTVA);
 
-            // For expedition invoices, look for exact match (OperationID + ArticleID)
-            if (mainfa.InvoiceType == "Expedition")
+            var invoiceArticle = mainfa.InvoiceArticles.FirstOrDefault(ia =>
+                ia.OperationID == oa.OperationID &&
+                ia.ArticleID == oa.ArticleID);
+
+            if (invoiceArticle != null)
             {
-                var invoiceArticle = mainfa.InvoiceArticles.FirstOrDefault(ia =>
-                    ia.OperationID == oa.OperationID &&
-                    ia.ArticleID == oa.ArticleID);
-
-                if (invoiceArticle != null)
-                {
-                    return invoiceArticle.Quantite;
-                }
-            }
-            else
-            {
-                // For regular invoices, look for article with same properties
-                var invoiceArticle = mainfa.InvoiceArticles.FirstOrDefault(ia =>
-                    ia.ArticleID == oa.ArticleID &&
-                    ia.ArticleName == article.ArticleName &&
-                    ia.Prix == article.PrixVente &&
-                    ia.TVA == article.tva);
-
-                if (invoiceArticle != null)
-                {
-                    return invoiceArticle.Quantite;
-                }
+                decimal expTotal = invoiceArticle.ExpeditionTotal > 0 ? invoiceArticle.ExpeditionTotal : oa.QteArticle;
+                return (invoiceArticle.Quantite, expTotal, invoiceArticle.Prix, invoiceArticle.TVA);
             }
 
-            // If not found, return default quantity
-            return oa.QteArticle;
+            return (oa.QteArticle, oa.QteArticle, articlePrice, articleTVA);
         }
 
         // Prevent non-numeric input
         private void NbrArticleExpide_PreviewTextInput(object sender, TextCompositionEventArgs e)
+        {
+            e.Handled = !char.IsDigit(e.Text, 0) && e.Text != "." && e.Text != ",";
+        }
+
+        private void TxtExpeditionTotal_PreviewTextInput(object sender, TextCompositionEventArgs e)
+        {
+            e.Handled = !char.IsDigit(e.Text, 0) && e.Text != "." && e.Text != ",";
+        }
+
+        private void TxtPrice_PreviewTextInput(object sender, TextCompositionEventArgs e)
+        {
+            e.Handled = !char.IsDigit(e.Text, 0) && e.Text != "." && e.Text != ",";
+        }
+
+        private void TxtTVA_PreviewTextInput(object sender, TextCompositionEventArgs e)
         {
             e.Handled = !char.IsDigit(e.Text, 0) && e.Text != "." && e.Text != ",";
         }
@@ -179,31 +252,24 @@ namespace GestionComerce.Main.Facturation.CreateFacture
 
             if (decimal.TryParse(text, out decimal enteredValue))
             {
-                if (enteredValue > oa.QteArticle)
+                if (isExpeditionMode && enteredValue > expeditionTotalQuantity)
                 {
-                    textBox.Text = oa.QteArticle.ToString();
-                    textBox.CaretIndex = textBox.Text.Length;
-                    expeditionQuantity = oa.QteArticle;
-
                     MessageBox.Show(
-                        $"La quantité ne peut pas dépasser {oa.QteArticle}",
+                        $"La quantité ne peut pas dépasser la quantité totale expédiée ({expeditionTotalQuantity})",
                         "Limite dépassée",
                         MessageBoxButton.OK,
                         MessageBoxImage.Warning
                     );
-                }
-                else if (enteredValue < 0)
-                {
-                    textBox.Text = "0";
+                    textBox.Text = expeditionTotalQuantity.ToString();
                     textBox.CaretIndex = textBox.Text.Length;
-                    expeditionQuantity = 0;
+                    expeditionQuantity = expeditionTotalQuantity;
                 }
                 else
                 {
                     expeditionQuantity = enteredValue;
 
-                    // Auto-update for expedition invoices
-                    if (singleOp?.mainfa?.InvoiceType == "Expedition" && isOperationSelected)
+                    // Auto-update for all invoice types when operation is selected
+                    if (isOperationSelected)
                     {
                         UpdateInvoiceArticle();
                     }
@@ -215,7 +281,7 @@ namespace GestionComerce.Main.Facturation.CreateFacture
                 textBox.CaretIndex = textBox.Text.Length;
                 expeditionQuantity = 0;
 
-                if (singleOp?.mainfa?.InvoiceType == "Expedition" && isOperationSelected)
+                if (isOperationSelected)
                 {
                     UpdateInvoiceArticle();
                 }
@@ -223,6 +289,170 @@ namespace GestionComerce.Main.Facturation.CreateFacture
         }
 
         private void NbrArticleExpide_LostFocus(object sender, RoutedEventArgs e)
+        {
+            if (isOperationSelected)
+            {
+                UpdateInvoiceArticle();
+            }
+        }
+
+        private void TxtExpeditionTotal_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            if (oa == null)
+                return;
+
+            TextBox textBox = sender as TextBox;
+            if (textBox == null || string.IsNullOrWhiteSpace(textBox.Text))
+                return;
+
+            string text = textBox.Text.Replace(',', '.');
+
+            if (decimal.TryParse(text, out decimal enteredValue))
+            {
+                if (enteredValue < 0)
+                {
+                    textBox.Text = "0";
+                    textBox.CaretIndex = textBox.Text.Length;
+                    expeditionTotalQuantity = 0;
+                }
+                else
+                {
+                    expeditionTotalQuantity = enteredValue;
+
+                    // Adjust current quantity if it exceeds new total
+                    if (expeditionQuantity > enteredValue)
+                    {
+                        expeditionQuantity = enteredValue;
+                        NbrArticleExpide.Text = enteredValue.ToString();
+                    }
+
+                    if (isOperationSelected)
+                    {
+                        UpdateInvoiceArticle();
+                    }
+                }
+            }
+            else
+            {
+                textBox.Text = "0";
+                textBox.CaretIndex = textBox.Text.Length;
+                expeditionTotalQuantity = 0;
+
+                if (isOperationSelected)
+                {
+                    UpdateInvoiceArticle();
+                }
+            }
+        }
+
+        private void TxtExpeditionTotal_LostFocus(object sender, RoutedEventArgs e)
+        {
+            if (isOperationSelected)
+            {
+                UpdateInvoiceArticle();
+            }
+        }
+
+        private void TxtPrice_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            TextBox textBox = sender as TextBox;
+            if (textBox == null || string.IsNullOrWhiteSpace(textBox.Text))
+                return;
+
+            string text = textBox.Text.Replace(',', '.');
+
+            if (decimal.TryParse(text, out decimal enteredValue))
+            {
+                if (enteredValue < 0)
+                {
+                    textBox.Text = "0";
+                    textBox.CaretIndex = textBox.Text.Length;
+                    articlePrice = 0;
+                }
+                else
+                {
+                    articlePrice = enteredValue;
+
+                    if (isOperationSelected)
+                    {
+                        UpdateInvoiceArticle();
+                    }
+                }
+            }
+            else
+            {
+                textBox.Text = "0";
+                textBox.CaretIndex = textBox.Text.Length;
+                articlePrice = 0;
+
+                if (isOperationSelected)
+                {
+                    UpdateInvoiceArticle();
+                }
+            }
+        }
+
+        private void TxtPrice_LostFocus(object sender, RoutedEventArgs e)
+        {
+            if (isOperationSelected)
+            {
+                UpdateInvoiceArticle();
+            }
+        }
+
+        private void TxtTVA_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            TextBox textBox = sender as TextBox;
+            if (textBox == null || string.IsNullOrWhiteSpace(textBox.Text))
+                return;
+
+            string text = textBox.Text.Replace(',', '.');
+
+            if (decimal.TryParse(text, out decimal enteredValue))
+            {
+                if (enteredValue < 0)
+                {
+                    textBox.Text = "0";
+                    textBox.CaretIndex = textBox.Text.Length;
+                    articleTVA = 0;
+                }
+                else if (enteredValue > 100)
+                {
+                    textBox.Text = "100";
+                    textBox.CaretIndex = textBox.Text.Length;
+                    articleTVA = 100;
+
+                    MessageBox.Show(
+                        "La TVA ne peut pas dépasser 100%",
+                        "Limite dépassée",
+                        MessageBoxButton.OK,
+                        MessageBoxImage.Warning
+                    );
+                }
+                else
+                {
+                    articleTVA = enteredValue;
+
+                    if (isOperationSelected)
+                    {
+                        UpdateInvoiceArticle();
+                    }
+                }
+            }
+            else
+            {
+                textBox.Text = "0";
+                textBox.CaretIndex = textBox.Text.Length;
+                articleTVA = 0;
+
+                if (isOperationSelected)
+                {
+                    UpdateInvoiceArticle();
+                }
+            }
+        }
+
+        private void TxtTVA_LostFocus(object sender, RoutedEventArgs e)
         {
             if (isOperationSelected)
             {
@@ -248,8 +478,11 @@ namespace GestionComerce.Main.Facturation.CreateFacture
             if (mainfa == null)
                 return;
 
-            // Get quantity from textbox
+            // Get values from textboxes
             decimal quantityToUse = expeditionQuantity;
+            decimal expeditionTotalToUse = expeditionTotalQuantity;
+            decimal priceToUse = articlePrice;
+            decimal tvaToUse = articleTVA;
 
             if (NbrArticleExpide.Visibility == Visibility.Visible)
             {
@@ -260,17 +493,36 @@ namespace GestionComerce.Main.Facturation.CreateFacture
                 }
             }
 
-            // Update in InvoiceArticles
-            if (mainfa.InvoiceType == "Expedition")
+            if (TxtExpeditionTotal.Visibility == Visibility.Visible)
             {
-                // For expedition, update specific article
-                mainfa.UpdateArticleQuantityForExpedition(oa.OperationID, oa.ArticleID, quantityToUse);
+                if (decimal.TryParse(TxtExpeditionTotal.Text.Replace(',', '.'), out decimal expTotal))
+                {
+                    expeditionTotalToUse = expTotal;
+                    expeditionTotalQuantity = expTotal;
+                }
             }
-            else
+
+            if (TxtPrice.Visibility == Visibility.Visible)
             {
-                // For regular invoices, update merged article
-                mainfa.UpdateArticleQuantity(oa.OperationID, oa.ArticleID, quantityToUse);
+                if (decimal.TryParse(TxtPrice.Text.Replace(',', '.'), out decimal price))
+                {
+                    priceToUse = price;
+                    articlePrice = price;
+                }
             }
+
+            if (TxtTVA.Visibility == Visibility.Visible)
+            {
+                if (decimal.TryParse(TxtTVA.Text.Replace(',', '.'), out decimal tva))
+                {
+                    tvaToUse = tva;
+                    articleTVA = tva;
+                }
+            }
+
+            // Update or add article - each operation article is separate
+            mainfa.UpdateOrAddArticleSeparate(oa.OperationID, oa.ArticleID, article.ArticleName,
+                quantityToUse, priceToUse, tvaToUse, oa.QteArticle, expeditionTotalToUse);
         }
     }
 }

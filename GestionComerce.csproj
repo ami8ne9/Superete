@@ -74,6 +74,7 @@
     <Compile Include="GlobalButtonWindow.xaml.cs">
       <DependentUpon>GlobalButtonWindow.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Invoice.cs" />
     <Compile Include="MachineLock.cs" />
     <Compile Include="Main\ClientPage\ClientFormWindow.xaml.cs">
       <DependentUpon>ClientFormWindow.xaml</DependentUpon>
@@ -128,6 +129,9 @@
     </Compile>
     <Compile Include="Main\Facturation\HistoriqueFacture\CMainHf.xaml.cs">
       <DependentUpon>CMainHf.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Main\Facturation\HistoriqueFacture\WEditInvoice.xaml.cs">
+      <DependentUpon>WEditInvoice.xaml</DependentUpon>
     </Compile>
     <Compile Include="Main\FournisseurPage\CMainF.xaml.cs">
       <DependentUpon>CMainF.xaml</DependentUpon>
@@ -394,6 +398,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Main\Facturation\HistoriqueFacture\CMainHf.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Main\Facturation\HistoriqueFacture\WEditInvoice.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -686,6 +694,14 @@
   <ItemGroup>
     <Resource Include="Main\images\A.png" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Resource Include="Main\images\1E.png" />
+    <Resource Include="Main\images\2E.png" />
+    <Resource Include="Main\images\3E.png" />
+    <Resource Include="Main\images\4E.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Main\images\check.png" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

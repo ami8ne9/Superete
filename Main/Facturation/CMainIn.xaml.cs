@@ -1,5 +1,4 @@
-﻿
-using GestionComerce;
+﻿using GestionComerce;
 using GestionComerce.Main.Facturation.CreateFacture;
 using GestionComerce.Main.Facturation.HistoriqueFacture;
 using System;
@@ -62,7 +61,7 @@ namespace GestionComerce.Main.Facturation
             CreeFacture.Foreground = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#6B7280"));
             CreeFacture.BorderBrush = new SolidColorBrush((Color)ColorConverter.ConvertFromString("Transparent"));
             ContentContainer.Children.Clear();
-            CMainHf loginPage = new CMainHf();
+            CMainHf loginPage = new CMainHf(user, main);
             loginPage.HorizontalAlignment = HorizontalAlignment.Stretch;
             loginPage.VerticalAlignment = VerticalAlignment.Stretch;
             loginPage.Margin = new Thickness(0);

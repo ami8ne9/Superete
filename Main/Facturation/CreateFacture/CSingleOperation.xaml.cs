@@ -29,18 +29,30 @@ namespace GestionComerce.Main.Facturation.CreateFacture
         public WSelectOperation sc;
         public CMainFa mainfa;
         public Operation op;
+        private bool isCreditMode;
 
-        public CSingleOperation(CMainFa mainfa, WSelectOperation sc, Operation op)
+        public CSingleOperation(CMainFa mainfa, WSelectOperation sc, Operation op, bool isCreditMode = false)
         {
             InitializeComponent();
             this.mainfa = mainfa;
             this.sc = sc;
             this.op = op;
+            this.isCreditMode = isCreditMode;
 
             // Initialize UI elements
             OperationPrice.Text = op.PrixOperation.ToString("0.00") + " DH";
             OperationDate.Text = op.DateOperation.ToString();
-            OperationType.Text = "Vente #" + op.OperationID.ToString();
+
+            // Set operation type label and side color based on mode
+            if (isCreditMode)
+            {
+                OperationType.Text = "Paiement #" + op.OperationID.ToString();
+                SideColor.Background = (SolidColorBrush)(new BrushConverter().ConvertFrom("#d3f705"));
+            }
+            else
+            {
+                OperationType.Text = "Vente #" + op.OperationID.ToString();
+            }
 
             if (op.Reversed == true)
             {
@@ -50,6 +62,12 @@ namespace GestionComerce.Main.Facturation.CreateFacture
 
             // Load client name
             LoadClientName();
+
+            // Hide articles button in Credit mode
+            if (isCreditMode)
+            {
+                btnArticle.Visibility = Visibility.Collapsed;
+            }
 
             // Add click handler for removal
             MyBorder.MouseLeftButtonDown += Border_MouseLeftButtonDown;
@@ -76,21 +94,17 @@ namespace GestionComerce.Main.Facturation.CreateFacture
             // Stop event propagation to prevent triggering border click
             e.Handled = true;
 
-            WMouvments wMouvments = new WMouvments(this, op);
-
-            // Handle the window closing to update quantities for expedition invoices
-            wMouvments.Closed += (s, args) =>
+            // Don't open articles in Credit mode
+            if (isCreditMode)
             {
-                // After WMouvments closes, check if we need to update InvoiceArticles
-                if (mainfa != null && mainfa.InvoiceType == "Expedition")
-                {
-                    // The quantities should already be updated by CSingleMouvment
-                    // Just recalculate totals
-                    mainfa.RecalculateTotals();
-                }
-            };
+                return;
+            }
 
+            WMouvments wMouvments = new WMouvments(this, op);
             wMouvments.ShowDialog();
+
+            // Recalculate totals after window closes
+            mainfa?.RecalculateTotals();
         }
 
         private void Border_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
@@ -141,40 +155,100 @@ namespace GestionComerce.Main.Facturation.CreateFacture
                 return;
             }
 
-            // Add operation to main
-            sc.main.AddOperation(op);
-
-            // Update operation state based on reversed status
-            if (op.Reversed == true)
+            // **NEW: Handle Credit operations specially - ADD to existing total**
+            if (isCreditMode)
             {
-                sc.main.EtatFacture.SelectedIndex = ETAT_FACTURE_REVERSED;
-                sc.main.EtatFacture.IsEnabled = false;
+                // Get current total from txtApresTVAAmount
+                decimal currentTotal = 0;
+                if (sc.main.txtApresTVAAmount != null && !string.IsNullOrEmpty(sc.main.txtApresTVAAmount.Text))
+                {
+                    string cleanAmount = sc.main.txtApresTVAAmount.Text.Replace("DH", "").Replace(" ", "").Trim();
+                    decimal.TryParse(cleanAmount, out currentTotal);
+                }
+
+                // **ADD operation price to existing total**
+                decimal newTotal = currentTotal + op.PrixOperation;
+
+                System.Diagnostics.Debug.WriteLine($"=== Adding Credit Operation ===");
+                System.Diagnostics.Debug.WriteLine($"  Current Total: {currentTotal}");
+                System.Diagnostics.Debug.WriteLine($"  Operation Price: {op.PrixOperation}");
+                System.Diagnostics.Debug.WriteLine($"  New Total: {newTotal}");
+
+                // Update the total amount (TTC)
+                if (sc.main.txtApresTVAAmount != null)
+                {
+                    sc.main.txtApresTVAAmount.Text = newTotal.ToString("0.00") + " DH";
+                }
+
+                // Update total HT as well
+                if (sc.main.txtTotalAmount != null)
+                {
+                    sc.main.txtTotalAmount.Text = newTotal.ToString("0.00") + " DH";
+                }
+
+                // Update CreditMontant (same as total)
+                if (sc.main.txtApresRemiseAmount != null)
+                {
+                    sc.main.txtApresRemiseAmount.Text = newTotal.ToString("0.00") + " DH";
+                }
+
+                // Get client name for credit display
+                string clientName = "";
+                var client = sc.main.main.lc?.FirstOrDefault(c => c.ClientID == op.ClientID);
+                if (client != null)
+                {
+                    clientName = client.Nom;
+                }
+
+                // Store client info
+                if (sc.main.txtClientName != null)
+                {
+                    sc.main.txtClientName.Text = clientName;
+                }
             }
             else
             {
-                sc.main.EtatFacture.SelectedIndex = ETAT_FACTURE_NORMAL;
-                sc.main.EtatFacture.IsEnabled = false;
+                // Normal operation handling (non-credit)
+                // Add operation to main BEFORE checking reversed status
+                sc.main.AddOperation(op);
 
-                // Check for partial reversals
-                foreach (OperationArticle oa in sc.main.main.loa)
+                if (op.Reversed == true)
                 {
-                    if (oa.OperationID == op.OperationID && oa.Reversed == true)
+                    sc.main.EtatFacture.SelectedIndex = ETAT_FACTURE_REVERSED;
+                    sc.main.EtatFacture.IsEnabled = false;
+                }
+                else
+                {
+                    sc.main.EtatFacture.SelectedIndex = ETAT_FACTURE_NORMAL;
+                    sc.main.EtatFacture.IsEnabled = false;
+
+                    // Check for partial reversals
+                    foreach (OperationArticle oa in sc.main.main.loa)
                     {
-                        sc.main.EtatFacture.IsEnabled = true;
-                        break;
+                        if (oa.OperationID == op.OperationID && oa.Reversed == true)
+                        {
+                            sc.main.EtatFacture.IsEnabled = true;
+                            break;
+                        }
                     }
+                }
+
+                // Display discount
+                if (sc.main.Remise != null)
+                {
+                    sc.main.Remise.Text = op.Remise.ToString("0.00");
                 }
             }
 
-            // Add this control to the main operation container
-            CSingleOperation newControl = new CSingleOperation(sc.main, null, op);
-            sc.main.OperationContainer.Children.Add(newControl);
-
-            // Display discount
-            if (sc.main.Remise != null)
+            // For credit mode, we still need to add to SelectedOperations list
+            if (isCreditMode)
             {
-                sc.main.Remise.Text = op.Remise.ToString("0.00");
+                sc.main.SelectedOperations.Add(op);
             }
+
+            // Add this control to the main operation container
+            CSingleOperation newControl = new CSingleOperation(sc.main, null, op, isCreditMode);
+            sc.main.OperationContainer.Children.Add(newControl);
 
             // Clear the selection window's operations container
             sc.OperationsContainer.Children.Clear();
@@ -196,6 +270,44 @@ namespace GestionComerce.Main.Facturation.CreateFacture
 
             if (result == MessageBoxResult.Yes)
             {
+                // **NEW: Handle Credit operations specially - SUBTRACT from existing total**
+                if (isCreditMode)
+                {
+                    // Get current total
+                    decimal currentTotal = 0;
+                    if (mainfa.txtApresTVAAmount != null && !string.IsNullOrEmpty(mainfa.txtApresTVAAmount.Text))
+                    {
+                        string cleanAmount = mainfa.txtApresTVAAmount.Text.Replace("DH", "").Replace(" ", "").Trim();
+                        decimal.TryParse(cleanAmount, out currentTotal);
+                    }
+
+                    // **SUBTRACT operation price from existing total**
+                    decimal newTotal = Math.Max(0, currentTotal - op.PrixOperation); // Ensure it doesn't go negative
+
+                    System.Diagnostics.Debug.WriteLine($"=== Removing Credit Operation ===");
+                    System.Diagnostics.Debug.WriteLine($"  Current Total: {currentTotal}");
+                    System.Diagnostics.Debug.WriteLine($"  Operation Price: {op.PrixOperation}");
+                    System.Diagnostics.Debug.WriteLine($"  New Total: {newTotal}");
+
+                    // Update the total amount (TTC)
+                    if (mainfa.txtApresTVAAmount != null)
+                    {
+                        mainfa.txtApresTVAAmount.Text = newTotal.ToString("0.00") + " DH";
+                    }
+
+                    // Update total HT as well
+                    if (mainfa.txtTotalAmount != null)
+                    {
+                        mainfa.txtTotalAmount.Text = newTotal.ToString("0.00") + " DH";
+                    }
+
+                    // Update CreditMontant (same as total)
+                    if (mainfa.txtApresRemiseAmount != null)
+                    {
+                        mainfa.txtApresRemiseAmount.Text = newTotal.ToString("0.00") + " DH";
+                    }
+                }
+
                 // Remove operation from main
                 mainfa.RemoveOperation(op);
 

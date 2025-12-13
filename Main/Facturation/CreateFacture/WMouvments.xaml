@@ -3,8 +3,8 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         Title="Rechercher"
         SizeToContent="Height"
-        MaxHeight="400"
-        Width="500"
+        MaxHeight="500"
+        Width="800"
         WindowStartupLocation="CenterScreen"
         Background="Transparent"
         WindowStyle="None"
@@ -83,6 +83,7 @@
             <Grid>
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
                     <RowDefinition Height="*"/>
                     <RowDefinition Height="Auto"/>
                 </Grid.RowDefinitions>
@@ -104,8 +105,80 @@
                             Click="btnClose_Click_1"/>
                 </Grid>
 
+                <!-- Column Headers -->
+                <Grid x:Name="HeaderGrid" 
+                      Grid.Row="1" 
+                      Margin="40,0,40,10"
+                      Background="#F7FAFC"
+                      Height="35">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="90"/>
+                        <ColumnDefinition Width="90"/>
+                        <ColumnDefinition Width="90"/>
+                        <ColumnDefinition Width="90"/>
+                        <ColumnDefinition Width="90"/>
+                    </Grid.ColumnDefinitions>
+
+                    <!-- Article Name Header -->
+                    <TextBlock Grid.Column="0"
+                               Text="Article"
+                               FontSize="12"
+                               FontWeight="SemiBold"
+                               Foreground="#4A5568"
+                               VerticalAlignment="Center"
+                               Margin="20,0,0,0"/>
+
+                    <!-- Price Header -->
+                    <TextBlock Grid.Column="1"
+                               Text="Prix"
+                               FontSize="12"
+                               FontWeight="SemiBold"
+                               Foreground="#4A5568"
+                               VerticalAlignment="Center"
+                               HorizontalAlignment="Center"/>
+
+                    <!-- TVA Header -->
+                    <TextBlock Grid.Column="2"
+                               Text="TVA %"
+                               FontSize="12"
+                               FontWeight="SemiBold"
+                               Foreground="#4A5568"
+                               VerticalAlignment="Center"
+                               HorizontalAlignment="Center"/>
+
+                    <!-- Quantity Header -->
+                    <TextBlock Grid.Column="3"
+                               Text="Quantité"
+                               FontSize="12"
+                               FontWeight="SemiBold"
+                               Foreground="#4A5568"
+                               VerticalAlignment="Center"
+                               HorizontalAlignment="Center"/>
+
+                    <!-- Expedition Total Header (only visible in Expedition mode) -->
+                    <TextBlock x:Name="TxtExpeditionTotalHeader"
+                               Grid.Column="4"
+                               Text="Qté Totale"
+                               FontSize="12"
+                               FontWeight="SemiBold"
+                               Foreground="#4A5568"
+                               VerticalAlignment="Center"
+                               HorizontalAlignment="Center"
+                               Visibility="Collapsed"/>
+
+                    <!-- Initial Quantity Header -->
+                    <TextBlock Grid.Column="5"
+                               Text="Qté Initiale"
+                               FontSize="12"
+                               FontWeight="SemiBold"
+                               Foreground="#4A5568"
+                               VerticalAlignment="Center"
+                               HorizontalAlignment="Center"/>
+                </Grid>
+
                 <!-- ScrollViewer with Empty StackPanel -->
-                <ScrollViewer Grid.Row="1" 
+                <ScrollViewer Grid.Row="2" 
                              VerticalScrollBarVisibility="Auto"
                              Margin="20,0,20,10">
                     <StackPanel x:Name="MouvmentsContainer">
@@ -113,20 +186,20 @@
                     </StackPanel>
                 </ScrollViewer>
 
-                <!-- Footer with Save Button (Visible only for Expedition) -->
-                <Border Grid.Row="2" 
+                <!-- Footer with Save Button -->
+                <Border Grid.Row="3" 
                         Background="#F7FAFC" 
                         Padding="20,10"
                         BorderBrush="#E2E8F0"
                         BorderThickness="0,1,0,0">
                     <StackPanel Orientation="Horizontal" 
                                 HorizontalAlignment="Right">
-                        <!-- Save Expedition Button -->
+                        <!-- Save Button -->
                         <Button x:Name="btnSaveExpedition"
-                                Content="Enregistrer Expédition"
+                                Content="Enregistrer"
                                 Style="{StaticResource SaveButton}"
                                 Click="btnSaveExpedition_Click"
-                                Visibility="Collapsed"/>
+                                Visibility="Visible"/>
                     </StackPanel>
                 </Border>
             </Grid>

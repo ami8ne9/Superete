@@ -118,45 +118,118 @@ TextAlignment="Center"/>
                             </Style>
                         </Button.Style>
                     </Button>
-
-                    <!-- Print Button -->
-                    <Button x:Name="btnPrint"
-            Content="Imprimer ou Enregister PDF"
-            Background="#38B2AC"
-            Foreground="White"
-            BorderThickness="0"
-            FontSize="14"
-            FontWeight="SemiBold"
-            Cursor="Hand"
-            Padding="16,10"
-            Margin="0,0,8,0" Click="btnPrint_Click">
+                    <Button x:Name="Save"
+    Content="Enregistrer"
+    Background="Green"
+    Foreground="White"
+    BorderThickness="0"
+    FontSize="14"
+    FontWeight="SemiBold"
+    Cursor="Hand"
+    Padding="16,10"
+    Margin="0,0,8,0" 
+    Click="btnSave_Click">
                         <Button.Style>
                             <Style TargetType="Button">
                                 <Setter Property="Template">
                                     <Setter.Value>
                                         <ControlTemplate TargetType="Button">
                                             <Border Background="{TemplateBinding Background}"
-                                    CornerRadius="6"
-                                    Padding="{TemplateBinding Padding}">
+            CornerRadius="6"
+            Padding="{TemplateBinding Padding}">
                                                 <ContentPresenter HorizontalAlignment="Center" 
-                                                VerticalAlignment="Center"/>
+                        VerticalAlignment="Center"/>
                                             </Border>
                                         </ControlTemplate>
                                     </Setter.Value>
                                 </Setter>
                                 <Style.Triggers>
                                     <Trigger Property="IsMouseOver" Value="True">
-                                        <Setter Property="Background" Value="#319795"/>
+                                        <Setter Property="Background" Value="#CBD5E0"/>
                                     </Trigger>
                                     <Trigger Property="IsPressed" Value="True">
-                                        <Setter Property="Background" Value="#2C7A7B"/>
+                                        <Setter Property="Background" Value="#A0AEC0"/>
                                     </Trigger>
                                 </Style.Triggers>
                             </Style>
                         </Button.Style>
                     </Button>
 
-                    <!-- Save as PDF Button -->
+                    <Button x:Name="btnPrint"
+    Content="Imprimer"
+    Background="#38B2AC"
+    Foreground="White"
+    BorderThickness="0"
+    FontSize="14"
+    FontWeight="SemiBold"
+    Cursor="Hand"
+    Padding="16,10"
+    Margin="0,0,8,0" 
+    Click="btnPrint_Click">
+                        <!-- ... style remains same ... -->
+                        <Button.Style>
+                            <Style TargetType="Button">
+                                <Setter Property="Template">
+                                    <Setter.Value>
+                                        <ControlTemplate TargetType="Button">
+                                            <Border Background="{TemplateBinding Background}"
+CornerRadius="6"
+Padding="{TemplateBinding Padding}">
+                                                <ContentPresenter HorizontalAlignment="Center" 
+            VerticalAlignment="Center"/>
+                                            </Border>
+                                        </ControlTemplate>
+                                    </Setter.Value>
+                                </Setter>
+                                <Style.Triggers>
+                                    <Trigger Property="IsMouseOver" Value="True">
+                                        <Setter Property="Background" Value="#CBD5E0"/>
+                                    </Trigger>
+                                    <Trigger Property="IsPressed" Value="True">
+                                        <Setter Property="Background" Value="#A0AEC0"/>
+                                    </Trigger>
+                                </Style.Triggers>
+                            </Style>
+                        </Button.Style>
+                    </Button>
+
+                    <Button x:Name="SaveAndPrint"
+    Content="Enregistrer et Imprimer"
+    Background="Blue"
+    Foreground="White"
+    BorderThickness="0"
+    FontSize="14"
+    FontWeight="SemiBold"
+    Cursor="Hand"
+    Padding="16,10"
+    Margin="0,0,8,0" 
+    Click="btnSaveAndPrint_Click">
+                        <!-- ... style remains same ... -->
+                        <Button.Style>
+                            <Style TargetType="Button">
+                                <Setter Property="Template">
+                                    <Setter.Value>
+                                        <ControlTemplate TargetType="Button">
+                                            <Border Background="{TemplateBinding Background}"
+CornerRadius="6"
+Padding="{TemplateBinding Padding}">
+                                                <ContentPresenter HorizontalAlignment="Center" 
+            VerticalAlignment="Center"/>
+                                            </Border>
+                                        </ControlTemplate>
+                                    </Setter.Value>
+                                </Setter>
+                                <Style.Triggers>
+                                    <Trigger Property="IsMouseOver" Value="True">
+                                        <Setter Property="Background" Value="#CBD5E0"/>
+                                    </Trigger>
+                                    <Trigger Property="IsPressed" Value="True">
+                                        <Setter Property="Background" Value="#A0AEC0"/>
+                                    </Trigger>
+                                </Style.Triggers>
+                            </Style>
+                        </Button.Style>
+                    </Button>
 
                     <!-- Close Button -->
                     <Button Content="✕" 
