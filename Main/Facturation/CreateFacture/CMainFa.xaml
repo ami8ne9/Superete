@@ -754,7 +754,7 @@
                                 <TextBox x:Name="txtChequeReference" Style="{StaticResource ModernTextBox}"
          Visibility="Collapsed"/>
                                 <TextBlock Text="Montant avec lettre" Style="{StaticResource FieldLabel}"/>
-                                <TextBox x:Name="txtAmountInLetters" Style="{StaticResource ModernTextBox}"
+                                <TextBox x:Name="txtAmountInLetters" Style="{StaticResource ModernTextBox}" Padding="0"
          IsReadOnly="True" TextWrapping="Wrap" Height="60"/>
                                 <TextBlock Text="Nom que Donne la Facture:" Style="{StaticResource FieldLabel}"/>
                                 <TextBox x:Name="txtGivenBy" Style="{StaticResource ModernTextBox}"/>

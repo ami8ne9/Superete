@@ -236,11 +236,6 @@ namespace GestionComerce.Main.Inventory
                     MessageBox.Show("Le prix mp doit être Superieure ou égal au prix d'achat.");
                     return;
                 }
-                if (Convert.ToInt32(Quantite.Text) == 0)
-                {
-                    MessageBox.Show("Donner une quantite.");
-                    return;
-                }
 
                 if (ArticleName.Text != a.ArticleName && Code.Text == a.Code.ToString())
                 {
@@ -311,17 +306,21 @@ namespace GestionComerce.Main.Inventory
 
                 if (a.Quantite != Convert.ToInt32(Quantite.Text))
                 {
-                    Operation Operation = new Operation();
-                    Operation.OperationType = "ModificationQu";
-                    Operation.PrixOperation = (a.Quantite - Convert.ToInt32(Quantite.Text)) * a.PrixAchat;
-                    Operation.UserID = main.u.UserID;
+                    // Only create operation if the OLD quantity was greater than 0
+                    if (a.Quantite > 0)
+                    {
+                        Operation Operation = new Operation();
+                        Operation.OperationType = "ModificationQu";
+                        Operation.PrixOperation = (a.Quantite - Convert.ToInt32(Quantite.Text)) * a.PrixAchat;
+                        Operation.UserID = main.u.UserID;
 
-                    int idd = await Operation.InsertOperationAsync();
-                    OperationArticle ofa = new OperationArticle();
-                    ofa.ArticleID = a.ArticleID;
-                    ofa.OperationID = idd;
-                    ofa.QteArticle = Convert.ToInt32(a.Quantite);
-                    await ofa.InsertOperationArticleAsync();
+                        int idd = await Operation.InsertOperationAsync();
+                        OperationArticle ofa = new OperationArticle();
+                        ofa.ArticleID = a.ArticleID;
+                        ofa.OperationID = idd;
+                        ofa.QteArticle = Convert.ToInt32(a.Quantite); // Old quantity
+                        await ofa.InsertOperationArticleAsync();
+                    }
                     a.Quantite = Convert.ToInt32(Quantite.Text);
                 }
 

@@ -95,9 +95,7 @@ namespace GestionComerce.Main.Vente
                 // Disable button to prevent double-click
                 ValidateButton.IsEnabled = false;
 
-                // Variables to store operation data for ticket printing
-                int operationId = 0;
-                DateTime operationDate = DateTime.Now;
+                // Variables to store operation data
                 Client selectedClientObj = null;
                 List<TicketArticleData> ticketArticles = new List<TicketArticleData>();
                 decimal remiseValue = 0;
@@ -110,94 +108,31 @@ namespace GestionComerce.Main.Vente
                     selectedClientObj = lc.FirstOrDefault(c => c.ClientID == selected);
                 }
 
-                //// Collect article data for ticket BEFORE any operations
-                //foreach (CSingleArticle2 sa2 in main.SelectedArticles.Children)
-                //{
-                //    ticketArticles.Add(new TicketArticleData
-                //    {
-                //        ArticleName = sa2.a.ArticleName,
-                //        Quantity = sa2.qte,
-                //        UnitPrice = sa2.a.PrixVente,
-                //        Total = sa2.a.PrixVente * sa2.qte
-                //    });
-                //}
+                // Collect article data for ticket BEFORE any operations
+                foreach (CSingleArticle2 sa2 in main.SelectedArticles.Children)
+                {
+                    ticketArticles.Add(new TicketArticleData
+                    {
+                        ArticleName = sa2.a.ArticleName,
+                        Quantity = sa2.qte,
+                        UnitPrice = sa2.a.PrixVente,
+                        Total = sa2.a.PrixVente * sa2.qte,
+                        TVA = sa2.a.tva
+                    });
+                }
 
+                // Validate inputs based on Credit type
                 if (Credit == 0) // VENTE COMPTANT
                 {
                     operationTypeLabel = "VENTE COMPTANT";
-                    Operation Operation = new Operation();
-                    Operation.OperationType = "VenteCa";
-                    Operation.PrixOperation = main.TotalNett;
-                    Operation.PaymentMethodID = MethodID;
                     if (Remise.Text != "")
                     {
-                        Operation.Remise = Convert.ToDecimal(Remise.Text);
-                        remiseValue = Operation.Remise;
-                        if (Operation.Remise > Operation.PrixOperation)
+                        remiseValue = Convert.ToDecimal(Remise.Text);
+                        if (remiseValue > main.TotalNett)
                         {
-                            MessageBox.Show("la remise est plus grande que le total.");
+                            MessageBox.Show("La remise est plus grande que le total.");
                             ValidateButton.IsEnabled = true;
                             return;
-                        }
-                    }
-                    Operation.UserID = main.u.UserID;
-                    if (selected == 0)
-                    {
-                        Operation.ClientID = null;
-                        operationId = await Operation.InsertOperationAsync();
-                        foreach (CSingleArticle2 sa2 in main.SelectedArticles.Children)
-                        {
-                            OperationArticle oca = new OperationArticle();
-                            oca.ArticleID = sa2.a.ArticleID;
-                            oca.OperationID = operationId;
-                            oca.QteArticle = Convert.ToInt32(sa2.qte);
-
-                            await oca.InsertOperationArticleAsync();
-                            sa2.a.Quantite -= Convert.ToInt32(sa2.qte);
-                            await sa2.a.UpdateArticleAsync();
-                            foreach (Article ar in main.la)
-                            {
-                                if (ar.ArticleID == sa2.a.ArticleID)
-                                {
-                                    main.la[main.la.IndexOf(ar)].Quantite = sa2.a.Quantite;
-                                    if (ar.Quantite == 0)
-                                    {
-                                        ar.DeleteArticleAsync();
-                                        main.la.Remove(ar);
-                                    }
-                                    main.LoadArticles(main.la);
-                                    break;
-                                }
-                            }
-                        }
-                    }
-                    else
-                    {
-                        Operation.ClientID = selected;
-                        operationId = await Operation.InsertOperationAsync();
-                        foreach (CSingleArticle2 sa2 in main.SelectedArticles.Children)
-                        {
-                            OperationArticle oca = new OperationArticle();
-                            oca.ArticleID = sa2.a.ArticleID;
-                            oca.OperationID = operationId;
-                            oca.QteArticle = Convert.ToInt32(sa2.qte);
-                            await oca.InsertOperationArticleAsync();
-                            sa2.a.Quantite -= Convert.ToInt32(sa2.qte);
-                            await sa2.a.UpdateArticleAsync();
-                            foreach (Article ar in main.la)
-                            {
-                                if (ar.ArticleID == sa2.a.ArticleID)
-                                {
-                                    main.la[main.la.IndexOf(ar)].Quantite = sa2.a.Quantite;
-                                    if (ar.Quantite == 0)
-                                    {
-                                        ar.DeleteArticleAsync();
-                                        main.la.Remove(ar);
-                                    }
-                                    main.LoadArticles(main.la);
-                                    break;
-                                }
-                            }
                         }
                     }
                 }
@@ -222,81 +157,20 @@ namespace GestionComerce.Main.Vente
                     if (Remise.Text != "")
                     {
                         remiseValue = Convert.ToDecimal(Remise.Text);
-                        if (creditValue > Convert.ToDecimal(main.TotalNett) - remiseValue)
+                        if (creditValue > main.TotalNett - remiseValue)
                         {
-                            MessageBox.Show("la valeur de crédit est plus grande que le total moins la remise.");
+                            MessageBox.Show("La valeur de crédit est plus grande que le total moins la remise.");
                             ValidateButton.IsEnabled = true;
                             return;
                         }
                     }
                     else
                     {
-                        if (creditValue > Convert.ToDecimal(main.TotalNett))
+                        if (creditValue > main.TotalNett)
                         {
-                            MessageBox.Show("la valeur de crédit est plus grande que le total.");
+                            MessageBox.Show("La valeur de crédit est plus grande que le total.");
                             ValidateButton.IsEnabled = true;
                             return;
-                        }
-                    }
-                    int creditId = 0;
-                    bool creditExists = false;
-                    Credit Credit = new Credit();
-                    List<Credit> lcc = await Credit.GetCreditsAsync();
-                    foreach (Credit cc in lcc)
-                    {
-                        if (cc.ClientID == selected)
-                        {
-                            cc.Total += creditValue;
-                            await cc.UpdateCreditAsync();
-                            creditExists = true;
-                            creditId = cc.CreditID;
-                            break;
-                        }
-                    }
-                    if (!creditExists)
-                    {
-                        Credit newCredit = new Credit();
-                        newCredit.ClientID = selected;
-                        newCredit.Total = creditValue;
-                        creditId = await newCredit.InsertCreditAsync();
-                    }
-
-                    Operation Operation = new Operation();
-                    Operation.OperationType = "Vente50";
-                    Operation.PaymentMethodID = MethodID;
-                    Operation.PrixOperation = main.TotalNett;
-                    Operation.CreditValue = creditValue;
-                    Operation.CreditID = creditId;
-                    if (Remise.Text != "")
-                    {
-                        Operation.Remise = remiseValue;
-                    }
-                    Operation.UserID = main.u.UserID;
-                    Operation.ClientID = selected;
-
-                    operationId = await Operation.InsertOperationAsync();
-                    foreach (CSingleArticle2 sa2 in main.SelectedArticles.Children)
-                    {
-                        OperationArticle oca = new OperationArticle();
-                        oca.ArticleID = sa2.a.ArticleID;
-                        oca.OperationID = operationId;
-                        oca.QteArticle = Convert.ToInt32(sa2.qte);
-                        await oca.InsertOperationArticleAsync();
-                        sa2.a.Quantite -= Convert.ToInt32(sa2.qte);
-                        await sa2.a.UpdateArticleAsync();
-                        foreach (Article ar in main.la)
-                        {
-                            if (ar.ArticleID == sa2.a.ArticleID)
-                            {
-                                main.la[main.la.IndexOf(ar)].Quantite = sa2.a.Quantite;
-                                if (ar.Quantite == 0)
-                                {
-                                    ar.DeleteArticleAsync();
-                                    main.la.Remove(ar);
-                                }
-                                main.LoadArticles(main.la);
-                                break;
-                            }
                         }
                     }
                 }
@@ -312,112 +186,25 @@ namespace GestionComerce.Main.Vente
                     if (Remise.Text != "")
                     {
                         remiseValue = Convert.ToDecimal(Remise.Text);
-                        if (remiseValue > Convert.ToDecimal(main.TotalNett))
+                        if (remiseValue > main.TotalNett)
                         {
-                            MessageBox.Show("la remise est plus grande que le total.");
+                            MessageBox.Show("La remise est plus grande que le total.");
                             ValidateButton.IsEnabled = true;
                             return;
                         }
                     }
-                    int creditId = 0;
-                    bool creditExists = false;
-                    Credit Credit = new Credit();
-                    List<Credit> lcc = await Credit.GetCreditsAsync();
-                    Operation Operation = new Operation();
-                    Operation.PaymentMethodID = MethodID;
 
-                    foreach (Credit cc in lcc)
-                    {
-                        if (cc.ClientID == selected)
-                        {
-                            if (Remise.Text != "")
-                            {
-                                cc.Total += Convert.ToDecimal(main.TotalNett) - remiseValue;
-                                creditValue = main.TotalNett - remiseValue;
-                                Operation.CreditValue = creditValue;
-                            }
-                            else
-                            {
-                                cc.Total += Convert.ToDecimal(main.TotalNett);
-                                creditValue = main.TotalNett;
-                                Operation.CreditValue = main.TotalNett;
-                            }
-                            await cc.UpdateCreditAsync();
-                            creditExists = true;
-                            creditId = cc.CreditID;
-                            break;
-                        }
-                    }
-
-                    if (!creditExists)
-                    {
-                        Credit newCredit = new Credit();
-                        newCredit.ClientID = selected;
-                        if (Remise.Text != "")
-                        {
-                            newCredit.Total = Convert.ToDecimal(main.TotalNett) - remiseValue;
-                            creditValue = main.TotalNett - remiseValue;
-                            Operation.CreditValue = creditValue;
-                        }
-                        else
-                        {
-                            newCredit.Total = Convert.ToDecimal(main.TotalNett);
-                            creditValue = main.TotalNett;
-                            Operation.CreditValue = main.TotalNett;
-                        }
-                        creditId = await newCredit.InsertCreditAsync();
-                    }
-
-                    Operation.OperationType = "VenteCr";
-                    Operation.PrixOperation = main.TotalNett;
-                    Operation.CreditID = creditId;
                     if (Remise.Text != "")
                     {
-                        Operation.Remise = remiseValue;
+                        creditValue = main.TotalNett - remiseValue;
                     }
-                    Operation.UserID = main.u.UserID;
-                    Operation.ClientID = selected;
-
-                    operationId = await Operation.InsertOperationAsync();
-                    foreach (CSingleArticle2 sa2 in main.SelectedArticles.Children)
+                    else
                     {
-                        OperationArticle oca = new OperationArticle();
-                        oca.ArticleID = sa2.a.ArticleID;
-                        oca.OperationID = operationId;
-                        oca.QteArticle = Convert.ToInt32(sa2.qte);
-                        await oca.InsertOperationArticleAsync();
-                        sa2.a.Quantite -= Convert.ToInt32(sa2.qte);
-                        await sa2.a.UpdateArticleAsync();
-                        foreach (Article ar in main.la)
-                        {
-                            if (ar.ArticleID == sa2.a.ArticleID)
-                            {
-                                main.la[main.la.IndexOf(ar)].Quantite = sa2.a.Quantite;
-                                if (ar.Quantite == 0)
-                                {
-                                    ar.DeleteArticleAsync();
-                                    main.la.Remove(ar);
-                                }
-                                main.LoadArticles(main.la);
-                                break;
-                            }
-                        }
+                        creditValue = main.TotalNett;
                     }
                 }
 
-                // Print ticket if enabled (check if main.Ticket checkbox exists and is checked)
-                // Replace the ticket printing section in ValidateButton_Click with this:
-                foreach (CSingleArticle2 sa2 in main.SelectedArticles.Children)
-                {
-                    ticketArticles.Add(new TicketArticleData
-                    {
-                        ArticleName = sa2.a.ArticleName,
-                        Quantity = sa2.qte,
-                        UnitPrice = sa2.a.PrixVente,
-                        Total = sa2.a.PrixVente * sa2.qte,
-                        TVA = sa2.a.tva  // Add the TVA from the article
-                    });
-                }
+                // Show preview window BEFORE doing any database operations
                 if (main.Ticket != null && main.Ticket.IsChecked == true)
                 {
                     try
@@ -437,11 +224,11 @@ namespace GestionComerce.Main.Vente
                             paymentMethodName = paymentMethod.PaymentMethodName;
                         }
 
-                        // Open ticket preview window
+                        // Open ticket preview window with temporary operation ID
                         WFacturePreview factureWindow = new WFacturePreview(
                             settings,
-                            operationId,
-                            operationDate,
+                            0, // Temporary ID - will be replaced after operation is saved
+                            DateTime.Now,
                             selectedClientObj,
                             ticketArticles,
                             main.TotalNett,
@@ -454,34 +241,239 @@ namespace GestionComerce.Main.Vente
                         // Show the dialog and wait for user decision
                         bool? result = factureWindow.ShowDialog();
 
-                        // Check if user confirmed (clicked "Confirmer et Imprimer")
-                        if (result == true && factureWindow.ShouldPrint)
+                        // Check if user cancelled
+                        if (result == false || !factureWindow.ShouldPrint)
                         {
-                            try
-                            {
-                                // Print the facture
-                                factureWindow.PrintFacture();
-                            }
-                            catch (Exception printEx)
-                            {
-                                MessageBox.Show("Erreur lors de l'impression: " + printEx.Message,
-                                    "Erreur d'impression", MessageBoxButton.OK, MessageBoxImage.Warning);
-                            }
-                        }
-                        else if (result == false)
-                        {
-                            // User cancelled - rollback the operation
+                            // User cancelled - do NOT proceed with operation
                             MessageBox.Show("Opération annulée par l'utilisateur.",
                                 "Opération annulée", MessageBoxButton.OK, MessageBoxImage.Information);
 
                             ValidateButton.IsEnabled = true;
-                            return; // Exit without clearing cart or showing success
+                            return; // Exit without doing any database operations
                         }
+
+                        // User confirmed - proceed with database operations
                     }
                     catch (Exception ex)
                     {
                         MessageBox.Show("Erreur lors de l'affichage du ticket: " + ex.Message,
                             "Erreur", MessageBoxButton.OK, MessageBoxImage.Warning);
+                        ValidateButton.IsEnabled = true;
+                        return;
+                    }
+                }
+
+                // NOW perform all database operations after confirmation
+                int operationId = 0;
+
+                if (Credit == 0) // VENTE COMPTANT
+                {
+                    Operation Operation = new Operation();
+                    Operation.OperationType = "VenteCa";
+                    Operation.PrixOperation = main.TotalNett;
+                    Operation.PaymentMethodID = MethodID;
+                    if (remiseValue > 0)
+                    {
+                        Operation.Remise = remiseValue;
+                    }
+                    Operation.UserID = main.u.UserID;
+                    Operation.ClientID = selected == 0 ? (int?)null : selected;
+
+                    operationId = await Operation.InsertOperationAsync();
+
+                    foreach (CSingleArticle2 sa2 in main.SelectedArticles.Children)
+                    {
+                        OperationArticle oca = new OperationArticle();
+                        oca.ArticleID = sa2.a.ArticleID;
+                        oca.OperationID = operationId;
+                        oca.QteArticle = Convert.ToInt32(sa2.qte);
+
+                        await oca.InsertOperationArticleAsync();
+                        sa2.a.Quantite -= Convert.ToInt32(sa2.qte);
+                        await sa2.a.UpdateArticleAsync();
+
+                        foreach (Article ar in main.la)
+                        {
+                            if (ar.ArticleID == sa2.a.ArticleID)
+                            {
+                                main.la[main.la.IndexOf(ar)].Quantite = sa2.a.Quantite;
+                                
+                                main.LoadArticles(main.la);
+                                break;
+                            }
+                        }
+                    }
+                }
+                else if (Credit == 1) // VENTE PARTIELLE
+                {
+                    int creditId = 0;
+                    bool creditExists = false;
+                    Credit Credit = new Credit();
+                    List<Credit> lcc = await Credit.GetCreditsAsync();
+
+                    foreach (Credit cc in lcc)
+                    {
+                        if (cc.ClientID == selected)
+                        {
+                            cc.Total += creditValue;
+                            await cc.UpdateCreditAsync();
+                            creditExists = true;
+                            creditId = cc.CreditID;
+                            break;
+                        }
+                    }
+
+                    if (!creditExists)
+                    {
+                        Credit newCredit = new Credit();
+                        newCredit.ClientID = selected;
+                        newCredit.Total = creditValue;
+                        creditId = await newCredit.InsertCreditAsync();
+                    }
+
+                    Operation Operation = new Operation();
+                    Operation.OperationType = "Vente50";
+                    Operation.PaymentMethodID = MethodID;
+                    Operation.PrixOperation = main.TotalNett;
+                    Operation.CreditValue = creditValue;
+                    Operation.CreditID = creditId;
+                    if (remiseValue > 0)
+                    {
+                        Operation.Remise = remiseValue;
+                    }
+                    Operation.UserID = main.u.UserID;
+                    Operation.ClientID = selected;
+
+                    operationId = await Operation.InsertOperationAsync();
+
+                    foreach (CSingleArticle2 sa2 in main.SelectedArticles.Children)
+                    {
+                        OperationArticle oca = new OperationArticle();
+                        oca.ArticleID = sa2.a.ArticleID;
+                        oca.OperationID = operationId;
+                        oca.QteArticle = Convert.ToInt32(sa2.qte);
+                        await oca.InsertOperationArticleAsync();
+                        sa2.a.Quantite -= Convert.ToInt32(sa2.qte);
+                        await sa2.a.UpdateArticleAsync();
+
+                        foreach (Article ar in main.la)
+                        {
+                            if (ar.ArticleID == sa2.a.ArticleID)
+                            {
+                                main.la[main.la.IndexOf(ar)].Quantite = sa2.a.Quantite;
+                                
+                                main.LoadArticles(main.la);
+                                break;
+                            }
+                        }
+                    }
+                }
+                else // VENTE À CRÉDIT (Credit == 2)
+                {
+                    int creditId = 0;
+                    bool creditExists = false;
+                    Credit Credit = new Credit();
+                    List<Credit> lcc = await Credit.GetCreditsAsync();
+                    Operation Operation = new Operation();
+                    Operation.PaymentMethodID = MethodID;
+
+                    foreach (Credit cc in lcc)
+                    {
+                        if (cc.ClientID == selected)
+                        {
+                            cc.Total += creditValue;
+                            Operation.CreditValue = creditValue;
+                            await cc.UpdateCreditAsync();
+                            creditExists = true;
+                            creditId = cc.CreditID;
+                            break;
+                        }
+                    }
+
+                    if (!creditExists)
+                    {
+                        Credit newCredit = new Credit();
+                        newCredit.ClientID = selected;
+                        newCredit.Total = creditValue;
+                        creditId = await newCredit.InsertCreditAsync();
+                        Operation.CreditValue = creditValue;
+                    }
+
+                    Operation.OperationType = "VenteCr";
+                    Operation.PrixOperation = main.TotalNett;
+                    Operation.CreditID = creditId;
+                    if (remiseValue > 0)
+                    {
+                        Operation.Remise = remiseValue;
+                    }
+                    Operation.UserID = main.u.UserID;
+                    Operation.ClientID = selected;
+
+                    operationId = await Operation.InsertOperationAsync();
+
+                    foreach (CSingleArticle2 sa2 in main.SelectedArticles.Children)
+                    {
+                        OperationArticle oca = new OperationArticle();
+                        oca.ArticleID = sa2.a.ArticleID;
+                        oca.OperationID = operationId;
+                        oca.QteArticle = Convert.ToInt32(sa2.qte);
+                        await oca.InsertOperationArticleAsync();
+                        sa2.a.Quantite -= Convert.ToInt32(sa2.qte);
+                        await sa2.a.UpdateArticleAsync();
+
+                        foreach (Article ar in main.la)
+                        {
+                            if (ar.ArticleID == sa2.a.ArticleID)
+                            {
+                                main.la[main.la.IndexOf(ar)].Quantite = sa2.a.Quantite;
+                                
+                                main.LoadArticles(main.la);
+                                break;
+                            }
+                        }
+                    }
+                }
+
+                // Print ticket if user confirmed earlier
+                if (main.Ticket != null && main.Ticket.IsChecked == true)
+                {
+                    try
+                    {
+                        // Load facture settings again
+                        FactureSettings settings = await FactureSettings.LoadSettingsAsync();
+                        if (settings == null)
+                        {
+                            settings = new FactureSettings();
+                        }
+
+                        string paymentMethodName = "Espèces";
+                        var paymentMethod = main.main.lp.FirstOrDefault(p => p.PaymentMethodID == MethodID);
+                        if (paymentMethod != null)
+                        {
+                            paymentMethodName = paymentMethod.PaymentMethodName;
+                        }
+
+                        // Create preview window with actual operation ID
+                        WFacturePreview factureWindow = new WFacturePreview(
+                            settings,
+                            operationId,
+                            DateTime.Now,
+                            selectedClientObj,
+                            ticketArticles,
+                            main.TotalNett,
+                            remiseValue,
+                            creditValue,
+                            paymentMethodName,
+                            operationTypeLabel
+                        );
+
+                        // Print directly without showing dialog again
+                        factureWindow.PrintFacture();
+                    }
+                    catch (Exception printEx)
+                    {
+                        MessageBox.Show("Erreur lors de l'impression: " + printEx.Message,
+                            "Erreur d'impression", MessageBoxButton.OK, MessageBoxImage.Warning);
                     }
                 }
 
@@ -494,6 +486,29 @@ namespace GestionComerce.Main.Vente
 
                 WCongratulations wCongratulations = new WCongratulations("Opération réussie", "Opération a été effectuée avec succès", 1);
                 wCongratulations.ShowDialog();
+
+                // **NEW: Check if Facture checkbox is checked and navigate to CMainIn with the operation**
+                if (main.Facture != null && main.Facture.IsChecked == true)
+                {
+                    try
+                    {
+                        // Get the operation object that was just created
+                        Operation op = new Operation();
+                        List<Operation> operations = await op.GetOperationsAsync();
+                        Operation createdOperation = operations.FirstOrDefault(o => o.OperationID == operationId);
+
+                        if (createdOperation != null)
+                        {
+                            // Navigate to CMainIn with the operation
+                            main.main.load_facture(main.u, createdOperation);
+                        }
+                    }
+                    catch (Exception navEx)
+                    {
+                        MessageBox.Show("Erreur lors de la navigation vers la facture: " + navEx.Message,
+                            "Erreur", MessageBoxButton.OK, MessageBoxImage.Warning);
+                    }
+                }
 
                 this.Close();
             }

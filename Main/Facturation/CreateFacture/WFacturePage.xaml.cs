@@ -165,6 +165,11 @@ namespace GestionComerce.Main.Facturation.CreateFacture
             {
                 return new string[] { "check.png" };
             }
+            else if (invoiceType == "bon livraison" || invoiceType == "bon de livraison")
+            {
+                // Use templates 10 and 13 for Bon de Livraison
+                return new string[] { "10.png", "2.png", "3.png", "13.png" };
+            }
             else
             {
                 return new string[] { "1.png", "2.png", "3.png", "4.png" };
@@ -291,12 +296,12 @@ namespace GestionComerce.Main.Facturation.CreateFacture
                     mainCanvas.Children.Add(summaryPanel);
                     PopulateSummaryData(summaryPanel);
 
-                    if (invoiceType == "bon livraison" || invoiceType == "bon de livraison")
-                    {
-                        StackPanel signaturePanel = CreateTransportSignaturePanel();
-                        Canvas.SetTop(signaturePanel, 920);
-                        mainCanvas.Children.Add(signaturePanel);
-                    }
+                    //if (invoiceType == "bon livraison" || invoiceType == "bon de livraison")
+                    //{
+                    //    StackPanel signaturePanel = CreateTransportSignaturePanel();
+                    //    Canvas.SetTop(signaturePanel, 920);
+                    //    mainCanvas.Children.Add(signaturePanel);
+                    //}
                 }
 
                 if (!isCheckType)
@@ -1035,6 +1040,7 @@ namespace GestionComerce.Main.Facturation.CreateFacture
             {
                 case "1.png":
                 case "1E.png":
+                case "10.png":  // Add Bon de Livraison first page
                     return (420, 250);
                 case "2.png":
                 case "2E.png":
@@ -1044,6 +1050,7 @@ namespace GestionComerce.Main.Facturation.CreateFacture
                     return (190, 570);
                 case "4.png":
                 case "4E.png":
+                case "13.png":  // Add Bon de Livraison last page
                     return (75, 570);
                 default:
                     return (100, 700);

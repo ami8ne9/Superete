@@ -76,6 +76,8 @@ namespace GestionComerce.Main.Facturation.CreateFacture
         public List<InvoiceArticle> InvoiceArticles = new List<InvoiceArticle>();
         public List<Operation> SelectedOperations = new List<Operation>();
 
+        // Update the CMainFa constructor in CMainFa.xaml.cs to automatically set the client
+
         public CMainFa(User u, MainWindow main, CMainIn In, Operation op)
         {
             InitializeComponent();
@@ -87,9 +89,28 @@ namespace GestionComerce.Main.Facturation.CreateFacture
             this.Loaded += async (s, e) =>
             {
                 await LoadPaymentMethods();
+
                 if (op != null)
                 {
                     InitializeWithOperation(op);
+
+                    // **NEW: Automatically set the client if the operation has one**
+                    if (op.ClientID.HasValue && op.ClientID.Value > 0)
+                    {
+                        // Find the client from the main window's client list
+                        Client operationClient = main.lc?.FirstOrDefault(c => c.ClientID == op.ClientID.Value);
+
+                        if (operationClient != null)
+                        {
+                            // Set the selected client
+                            SelectedClient = operationClient;
+
+                            // Update the UI fields
+                            UpdateClientFields();
+
+                            System.Diagnostics.Debug.WriteLine($"Auto-selected client: {GetClientName(operationClient)}");
+                        }
+                    }
                 }
             };
 
@@ -372,6 +393,127 @@ namespace GestionComerce.Main.Facturation.CreateFacture
 
             return result.Trim();
         }
+        private string ConvertToFrenchLetters(decimal amount)
+        {
+            string[] ones = { "", "un", "deux", "trois", "quatre", "cinq", "six", "sept", "huit", "neuf",
+                      "dix", "onze", "douze", "treize", "quatorze", "quinze", "seize",
+                      "dix-sept", "dix-huit", "dix-neuf" };
+
+            string[] tens = { "", "", "vingt", "trente", "quarante", "cinquante", "soixante", "soixante", "quatre-vingt", "quatre-vingt" };
+
+            int integerPart = (int)amount;
+            int decimalPart = (int)((amount - integerPart) * 100);
+
+            string result = "";
+
+            // Traiter les milliers
+            int thousands = integerPart / 1000;
+            if (thousands > 0)
+            {
+                if (thousands == 1)
+                    result += "mille ";
+                else
+                    result += ConvertHundredsFrench(thousands) + " mille ";
+            }
+
+            // Traiter le reste (centaines, dizaines, unités)
+            int remainder = integerPart % 1000;
+            result += ConvertHundredsFrench(remainder);
+
+            // Ajouter "dirhams" avec accord
+            if (integerPart > 1)
+                result += " dirhams";
+            else if (integerPart == 1)
+                result += " dirham";
+            else
+                result += " dirham";
+
+            // Ajouter les centimes si présents
+            if (decimalPart > 0)
+            {
+                result += " et " + ConvertHundredsFrench(decimalPart);
+                if (decimalPart > 1)
+                    result += " centimes";
+                else
+                    result += " centime";
+            }
+
+            return result.Trim();
+        }
+        private string ConvertHundredsFrench(int num)
+        {
+            if (num == 0) return "";
+
+            string[] ones = { "", "un", "deux", "trois", "quatre", "cinq", "six", "sept", "huit", "neuf",
+                      "dix", "onze", "douze", "treize", "quatorze", "quinze", "seize",
+                      "dix-sept", "dix-huit", "dix-neuf" };
+
+            string[] tens = { "", "", "vingt", "trente", "quarante", "cinquante", "soixante", "soixante", "quatre-vingt", "quatre-vingt" };
+
+            string result = "";
+
+            // Centaines
+            int h = num / 100;
+            if (h > 0)
+            {
+                if (h == 1)
+                    result += "cent ";
+                else
+                    result += ones[h] + " cent ";
+
+                // Accord de "cent" au pluriel si pas suivi d'autres chiffres
+                if (num % 100 == 0 && h > 1)
+                    result = result.TrimEnd() + "s ";
+            }
+
+            int remainder = num % 100;
+
+            // Nombres de 1 à 19
+            if (remainder < 20)
+            {
+                result += ones[remainder];
+            }
+            else
+            {
+                int t = remainder / 10;
+                int o = remainder % 10;
+
+                // Cas spéciaux pour 70-79 et 90-99
+                if (t == 7) // 70-79
+                {
+                    result += "soixante";
+                    if (o == 1)
+                        result += " et onze";
+                    else if (o == 11)
+                        result += "-onze";
+                    else
+                        result += "-" + ones[10 + o];
+                }
+                else if (t == 9) // 90-99
+                {
+                    result += "quatre-vingt";
+                    if (o == 0)
+                        result += "s";
+                    else
+                        result += "-" + ones[10 + o];
+                }
+                else // 20-69, 80-89
+                {
+                    result += tens[t];
+
+                    if (o == 1 && (t == 2 || t == 3 || t == 4 || t == 5 || t == 6))
+                        result += " et un";
+                    else if (o > 0)
+                        result += "-" + ones[o];
+                    else if (t == 8) // quatre-vingts
+                        result += "s";
+                }
+            }
+
+            return result.Trim();
+        }
+
+        // Replace the InitializeWithOperation method in CMainFa.xaml.cs
 
         private void InitializeWithOperation(Operation op)
         {
@@ -398,6 +540,18 @@ namespace GestionComerce.Main.Facturation.CreateFacture
                             }
                         }
                     }
+                }
+            }
+
+            // **NEW: Auto-select client if operation has one**
+            if (op.ClientID.HasValue && op.ClientID.Value > 0 && main?.lc != null)
+            {
+                Client operationClient = main.lc.FirstOrDefault(c => c.ClientID == op.ClientID.Value);
+
+                if (operationClient != null)
+                {
+                    SelectedClient = operationClient;
+                    UpdateClientFields();
                 }
             }
 
@@ -602,20 +756,20 @@ namespace GestionComerce.Main.Facturation.CreateFacture
 
         public void RecalculateTotals()
         {
-            // Check if UI elements are initialized
+            // Vérifier si les éléments UI sont initialisés
             if (txtTotalAmount == null || txtTVAAmount == null || txtApresTVAAmount == null ||
                 txtApresRemiseAmount == null || txtTVARate == null)
                 return;
 
-            // **NEW: Skip recalculation for Credit invoices - they manage totals manually**
+            // **NOUVEAU: Ignorer le recalcul pour les factures Crédit - elles gèrent les totaux manuellement**
             string invoiceType = InvoiceType.ToLower();
             if (invoiceType == "credit" || invoiceType == "cheque")
             {
-                System.Diagnostics.Debug.WriteLine("Skipping RecalculateTotals for Credit/Cheque invoice");
+                System.Diagnostics.Debug.WriteLine("Recalcul ignoré pour facture Crédit/Chèque");
                 return;
             }
 
-            // For calculation, use only articles with quantity > 0
+            // Pour le calcul, utiliser uniquement les articles avec quantité > 0
             var articlesForCalculation = InvoiceArticles.Where(ia => ia.Quantite > 0).ToList();
 
             decimal totalHT = 0;
@@ -625,8 +779,7 @@ namespace GestionComerce.Main.Facturation.CreateFacture
             bool hasReversedItems = false;
             bool hasNormalItems = false;
 
-            // ... rest of the method remains the same
-            // Filter articles based on EtatFacture selection
+            // Filtrer les articles selon la sélection EtatFacture
             foreach (var invoiceArticle in articlesForCalculation)
             {
                 if (invoiceArticle.Reversed)
@@ -643,10 +796,10 @@ namespace GestionComerce.Main.Facturation.CreateFacture
                 }
             }
 
-            // Enable Remise only when there are BOTH reversed AND normal items
+            // Activer Remise uniquement quand il y a des articles
             if (Remise != null)
             {
-                if (hasReversedItems && hasNormalItems)
+                if (hasNormalItems || hasReversedItems)
                 {
                     Remise.IsEnabled = true;
                 }
@@ -657,7 +810,7 @@ namespace GestionComerce.Main.Facturation.CreateFacture
                 }
             }
 
-            // Get remise value
+            // Obtenir la valeur de la remise
             decimal remiseValue = 0;
             if (Remise != null && !string.IsNullOrWhiteSpace(Remise.Text))
             {
@@ -665,12 +818,25 @@ namespace GestionComerce.Main.Facturation.CreateFacture
                 decimal.TryParse(cleanedRemise, out remiseValue);
             }
 
-            // Update displayed amounts based on selected state
+            // Mettre à jour les montants affichés selon l'état sélectionné
             if (EtatFacture != null && EtatFacture.SelectedIndex == ETAT_FACTURE_REVERSED && hasReversedItems)
             {
                 currentTotalHT = totalHTReversed;
+
+                // Validate remise against reversed total
+                if (remiseValue > totalHTReversed)
+                {
+                    remiseValue = 0;
+                    if (Remise != null)
+                    {
+                        Remise.TextChanged -= Remise_TextChanged;
+                        Remise.Text = "";
+                        Remise.TextChanged += Remise_TextChanged;
+                    }
+                }
+
                 decimal totalAfterRemise = totalHTReversed - remiseValue;
-                decimal tvaAfterRemise = (totalTVAReversed / totalHTReversed) * totalAfterRemise;
+                decimal tvaAfterRemise = totalHTReversed > 0 ? (totalTVAReversed / totalHTReversed) * totalAfterRemise : 0;
 
                 txtTotalAmount.Text = totalHTReversed.ToString("0.00") + " DH";
                 txtTVAAmount.Text = tvaAfterRemise.ToString("0.00") + " DH";
@@ -683,6 +849,19 @@ namespace GestionComerce.Main.Facturation.CreateFacture
             else
             {
                 currentTotalHT = totalHT;
+
+                // Validate remise against normal total
+                if (remiseValue > totalHT)
+                {
+                    remiseValue = 0;
+                    if (Remise != null)
+                    {
+                        Remise.TextChanged -= Remise_TextChanged;
+                        Remise.Text = "";
+                        Remise.TextChanged += Remise_TextChanged;
+                    }
+                }
+
                 decimal totalAfterRemise = totalHT - remiseValue;
                 decimal tvaAfterRemise = totalHT > 0 ? (totalTVA / totalHT) * totalAfterRemise : 0;
 
@@ -694,7 +873,11 @@ namespace GestionComerce.Main.Facturation.CreateFacture
                 decimal tvaPercentage = totalHT > 0 ? (totalTVA / totalHT) * 100 : 0;
                 txtTVARate.Text = tvaPercentage.ToString("0.00");
             }
+
+            // **NOUVEAU: Mettre à jour le montant en lettres après recalcul des totaux**
+            UpdateAmountInLetters();
         }
+
 
         // Get filtered articles for WFacturePage (exclude articles with quantity 0)
         public List<InvoiceArticle> GetFilteredInvoiceArticles()
@@ -784,12 +967,17 @@ namespace GestionComerce.Main.Facturation.CreateFacture
                 {
                     txtApresRemiseAmount.Text = totalWithTVA.ToString("0.00") + " DH";
                 }
+
+                // **NOUVEAU: Mettre à jour le montant en lettres**
+                UpdateAmountInLetters();
             }
             catch (Exception ex)
             {
-                System.Diagnostics.Debug.WriteLine($"Error in txtTotalAmount_TextChanged: {ex.Message}");
+                System.Diagnostics.Debug.WriteLine($"Erreur dans txtTotalAmount_TextChanged: {ex.Message}");
             }
         }
+
+
 
         private void txtTVARate_TextChanged(object sender, TextChangedEventArgs e)
         {
@@ -841,17 +1029,27 @@ namespace GestionComerce.Main.Facturation.CreateFacture
 
             if (txtApresRemiseAmount != null)
                 txtApresRemiseAmount.Text = totalWithTVA.ToString("0.00") + " DH";
+
+            // **NOUVEAU: Mettre à jour le montant en lettres**
+            UpdateAmountInLetters();
         }
+
+
 
         private void Remise_TextChanged(object sender, TextChangedEventArgs e)
         {
             TextBox textBox = sender as TextBox;
 
-            if (textBox == null || string.IsNullOrWhiteSpace(textBox.Text))
+            if (textBox == null)
+                return;
+
+            // If empty, reset to 0 and recalculate
+            if (string.IsNullOrWhiteSpace(textBox.Text))
             {
-                if (txtTotalAmount != null && txtTVAAmount != null)
+                if (txtTotalAmount != null && txtTVAAmount != null && txtApresRemiseAmount != null)
                 {
-                    RecalculateTotals();
+                    // Recalculate without discount
+                    RecalculateWithRemise(0);
                 }
                 return;
             }
@@ -861,20 +1059,83 @@ namespace GestionComerce.Main.Facturation.CreateFacture
             if (!decimal.TryParse(cleanedText, out decimal remiseValue))
                 return;
 
-            if (remiseValue > currentTotalHT)
+            // Get the current total HT
+            decimal totalHT = 0;
+            if (txtTotalAmount != null && !string.IsNullOrWhiteSpace(txtTotalAmount.Text))
             {
+                string cleanedTotal = CleanNumericInput(txtTotalAmount.Text);
+                decimal.TryParse(cleanedTotal, out totalHT);
+            }
+
+            // Validate: remise cannot be greater than total
+            if (remiseValue > totalHT)
+            {
+                // Remove the last character and reset caret position
                 if (textBox.Text.Length > 0)
                 {
                     int caretPosition = textBox.CaretIndex;
+                    textBox.TextChanged -= Remise_TextChanged; // Temporarily remove handler
                     textBox.Text = textBox.Text.Remove(textBox.Text.Length - 1);
                     textBox.CaretIndex = Math.Min(caretPosition, textBox.Text.Length);
+                    textBox.TextChanged += Remise_TextChanged; // Re-add handler
                 }
+
+                MessageBox.Show(
+                    $"La remise ne peut pas dépasser le montant total ({totalHT:0.00} DH).",
+                    "Remise invalide",
+                    MessageBoxButton.OK,
+                    MessageBoxImage.Warning);
                 return;
             }
 
-            if (txtTotalAmount != null && txtTVAAmount != null)
+            // Recalculate with the new discount
+            RecalculateWithRemise(remiseValue);
+        }
+        private void RecalculateWithRemise(decimal remiseValue)
+        {
+            if (txtTotalAmount == null || txtTVARate == null || txtTVAAmount == null ||
+                txtApresTVAAmount == null || txtApresRemiseAmount == null)
+                return;
+
+            try
             {
-                RecalculateTotals();
+                // Get total HT
+                string cleanedTotal = CleanNumericInput(txtTotalAmount.Text);
+                if (!decimal.TryParse(cleanedTotal, out decimal totalHT))
+                    return;
+
+                // Get TVA rate
+                string cleanedTVA = CleanNumericInput(txtTVARate.Text);
+                if (!decimal.TryParse(cleanedTVA, out decimal tvaRate))
+                    tvaRate = 0;
+
+                // Calculate total after discount
+                decimal totalAfterRemise = totalHT - remiseValue;
+
+                // Calculate TVA on the discounted amount
+                decimal tvaMultiplier = tvaRate * 0.01m;
+                decimal tvaAmount = totalAfterRemise * tvaMultiplier;
+
+                // Calculate final total with TVA
+                decimal totalWithTVA = totalAfterRemise + tvaAmount;
+
+                // Update all fields
+                txtTVAAmount.Text = tvaAmount.ToString("0.00") + " DH";
+                txtApresTVAAmount.Text = (totalHT + tvaAmount).ToString("0.00") + " DH";
+                txtApresRemiseAmount.Text = totalWithTVA.ToString("0.00") + " DH";
+
+                // Update amount in letters
+                UpdateAmountInLetters();
+
+                System.Diagnostics.Debug.WriteLine($"Recalculated with Remise: {remiseValue:0.00}");
+                System.Diagnostics.Debug.WriteLine($"  Total HT: {totalHT:0.00}");
+                System.Diagnostics.Debug.WriteLine($"  After Remise: {totalAfterRemise:0.00}");
+                System.Diagnostics.Debug.WriteLine($"  TVA Amount: {tvaAmount:0.00}");
+                System.Diagnostics.Debug.WriteLine($"  Final Total: {totalWithTVA:0.00}");
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"Error in RecalculateWithRemise: {ex.Message}");
             }
         }
 
@@ -1008,7 +1269,17 @@ namespace GestionComerce.Main.Facturation.CreateFacture
                 MessageBox.Show("There is no operation selected", "Warning", MessageBoxButton.OK, MessageBoxImage.Warning);
                 return;
             }
+            if (InvoiceArticles != null && InvoiceArticles.Count > 0)
+            {
+                bool allQuantitiesZero = InvoiceArticles.All(ia => ia.Quantite == 0);
 
+                if (allQuantitiesZero)
+                {
+                    MessageBox.Show("Tous les articles ont une quantité de 0. Veuillez ajouter au moins un article avec une quantité supérieure à 0.",
+                        "Avertissement", MessageBoxButton.OK, MessageBoxImage.Warning);
+                    return;
+                }
+            }
             try
             {
                 string dateValue = dpInvoiceDate?.SelectedDate?.ToString("dd/MM/yyyy") ?? DateTime.Now.ToString("dd/MM/yyyy");
@@ -1384,6 +1655,29 @@ namespace GestionComerce.Main.Facturation.CreateFacture
 
             InvoiceArticles.Clear();
             InvoiceArticles.AddRange(mergedArticles);
+        }
+        private void UpdateAmountInLetters()
+        {
+            if (txtAmountInLetters == null || txtApresRemiseAmount == null)
+                return;
+
+            try
+            {
+                // Obtenir le montant total après remise
+                string amountText = txtApresRemiseAmount.Text.Replace("DH", "").Replace(" ", "").Trim();
+
+                if (decimal.TryParse(amountText, out decimal amount))
+                {
+                    string amountInFrench = ConvertToFrenchLetters(amount);
+                    txtAmountInLetters.Text = amountInFrench;
+
+                    System.Diagnostics.Debug.WriteLine($"Montant en lettres mis à jour: {amountInFrench}");
+                }
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"Erreur lors de la mise à jour du montant en lettres: {ex.Message}");
+            }
         }
 
         // New method to force update all articles from CSingleMouvment controls

@@ -95,7 +95,17 @@ namespace GestionComerce
                     w.Close();
             }
         }
+        public void load_facture(User u, Operation op)
+        {
+            MainGrid.Children.Clear();
 
+            CMainIn factureControl = new CMainIn(u, this, op);
+            factureControl.HorizontalAlignment = HorizontalAlignment.Stretch;
+            factureControl.VerticalAlignment = VerticalAlignment.Stretch;
+            factureControl.Margin = new Thickness(0);
+
+            MainGrid.Children.Add(factureControl);
+        }
         public async void load_main(User u)
         {
             List<User> lu = await u.GetUsersAsync();

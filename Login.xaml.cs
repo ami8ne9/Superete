@@ -28,6 +28,7 @@ namespace GestionComerce
         {
             InitializeComponent();
             this.main = main;
+
             Btn0.Click += NumericButton_Click;
             Btn1.Click += NumericButton_Click;
             Btn2.Click += NumericButton_Click;
@@ -40,7 +41,14 @@ namespace GestionComerce
             Btn9.Click += NumericButton_Click;
             BtnClear.Click += BtnClear_Click;
             BtnDelete.Click += BtnDelete_Click;
+
+            // Add KeyDown event handler for Enter key
+            PasswordInput.KeyDown += PasswordInput_KeyDown_Enter;
+
+            // Set focus to password input when control loads
+            this.Loaded += (s, e) => PasswordInput.Focus();
         }
+
         MainWindow main;
 
         private void NumericButton_Click(object sender, RoutedEventArgs e)
@@ -66,6 +74,7 @@ namespace GestionComerce
                 PasswordInput.Password = passwordBuilder.ToString();
             }
         }
+
         private void PasswordInput_PreviewTextInput(object sender, TextCompositionEventArgs e)
         {
             // Only allow digits
@@ -79,13 +88,19 @@ namespace GestionComerce
             {
                 e.Handled = true;
             }
-
-            //// Block Ctrl+V (paste)
-            //if ((Keyboard.Modifiers & ModifierKeys.Control) == ModifierKeys.Control && e.Key == Key.V)
-            //{
-            //    e.Handled = true;
-            //}
         }
+
+        // New method to handle Enter key press
+        private void PasswordInput_KeyDown_Enter(object sender, KeyEventArgs e)
+        {
+            if (e.Key == Key.Enter)
+            {
+                // Trigger the login button click
+                BtnEnter_Click(sender, e);
+                e.Handled = true;
+            }
+        }
+
         private async void BtnEnter_Click(object sender, RoutedEventArgs e)
         {
             if (PasswordInput.Password == "")
@@ -93,13 +108,14 @@ namespace GestionComerce
                 MessageBox.Show("write a password");
                 return;
             }
+
             User u = new User();
-            List<User> lu=await u.GetUsersAsync();
+            List<User> lu = await u.GetUsersAsync();
+
             foreach (User user in lu)
             {
                 if (user.Code.ToString() == PasswordInput.Password)
                 {
-
                     main.load_main(user);
                     return;
                 }
@@ -108,7 +124,6 @@ namespace GestionComerce
             passwordBuilder.Clear();
             PasswordInput.Password = string.Empty;
             MessageBox.Show("Wrong Code");
-
         }
 
         private void BtnShutdown_Click(object sender, RoutedEventArgs e)

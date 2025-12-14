@@ -289,14 +289,12 @@ namespace GestionComerce.Main.ProjectManagment
                 
         }
 
+        // Replace the existing Imprimer_Click method in WPlus.xaml.cs with this:
+
         private void Imprimer_Click(object sender, RoutedEventArgs e)
         {
-            so.main.main.MainGrid.Children.Clear();
-            CMainIn cMainFa = new CMainIn(so.main.u, so.main.main, so.op);
-            cMainFa.HorizontalAlignment = HorizontalAlignment.Stretch;
-            cMainFa.VerticalAlignment = VerticalAlignment.Stretch;
-            cMainFa.Margin = new Thickness(0);
-            so.main.main.MainGrid.Children.Add(cMainFa);
+            // Use the centralized load_facture method from MainWindow
+            so.main.main.load_facture(so.main.u, so.op);
             this.Close();
         }
     }

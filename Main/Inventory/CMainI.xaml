@@ -578,7 +578,29 @@
                     <!--<ScrollViewer Grid.Row="1" 
                                   VerticalScrollBarVisibility="Auto"
                                   Margin="0,0,0,12">-->
-                    <StackPanel x:Name="ArticlesContainer" Margin="12" Grid.Row="1" />
+                    <!-- Table Content -->
+                    <StackPanel Margin="12" Grid.Row="1">
+                        <StackPanel x:Name="ArticlesContainer" />
+
+                        <!-- View More Button -->
+                        <Button x:Name="ViewMoreButton"
+                Height="48"
+                Style="{StaticResource SecondaryButtonStyle}"
+                Click="ViewMoreButton_Click"
+                Margin="12,16,12,12"
+                Visibility="Collapsed">
+                            <StackPanel Orientation="Horizontal">
+                                <Path Data="M19 9L12 16L5 9"
+                      Stroke="{StaticResource TextSecondary}"
+                      StrokeThickness="2"
+                      Width="18" Height="18"
+                      Margin="0,0,10,0" Stretch="Fill"/>
+                                <TextBlock Text="Voir Plus (10 Articles)" 
+                          FontWeight="Medium" 
+                          FontSize="14"/>
+                            </StackPanel>
+                        </Button>
+                    </StackPanel>
                     <!--</ScrollViewer>-->
                 </Grid>
             </Border>

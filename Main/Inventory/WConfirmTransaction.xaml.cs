@@ -119,10 +119,10 @@ namespace GestionComerce.Main.Inventory
                     FinalTotal.Text = FinalTotal.Text + " DH";
                     return;
                 }
+
                 //New Article
                 if (ar != null)
                 {
-
                     if (s == 0)
                     {
                         Operation Operation = new Operation();
@@ -181,15 +181,12 @@ namespace GestionComerce.Main.Inventory
                         }
                         int creditId = 0;
                         bool creditExists = false;
-                        //import Credit
                         Credit Credit = new Credit();
                         List<Credit> lff = await Credit.GetCreditsAsync();
-                        //if there is no credit with Fournisseur id create a new one
                         foreach (Credit ff in lff)
                         {
                             if (ff.FournisseurID == a.FournisseurID)
                             {
-
                                 ff.Total += Convert.ToDecimal(CreditInput.Text);
                                 await ff.UpdateCreditAsync();
                                 creditExists = true;
@@ -197,19 +194,15 @@ namespace GestionComerce.Main.Inventory
                                 break;
                             }
                         }
-                        //else update the credit value
                         if (!creditExists)
                         {
-                            MessageBox.Show("Creating new credit");
                             Credit newCredit = new Credit();
                             newCredit.FournisseurID = a.FournisseurID;
                             newCredit.Total = Convert.ToDecimal(CreditInput.Text);
                             creditId = await newCredit.InsertCreditAsync();
-
                         }
 
                         Operation Operation = new Operation();
-
                         Operation.PaymentMethodID = methodID;
                         Operation.OperationType = "Achat50";
                         Operation.PrixOperation = (a.PrixAchat * a.Quantite);
@@ -235,7 +228,6 @@ namespace GestionComerce.Main.Inventory
                     }
                     else
                     {
-
                         if (Remise.Text != "")
                         {
                             if (Convert.ToDecimal(Remise.Text) > Convert.ToDecimal(a.PrixAchat * a.Quantite))
@@ -246,10 +238,8 @@ namespace GestionComerce.Main.Inventory
                         }
                         int creditId = 0;
                         bool creditExists = false;
-                        //import Credit
                         Credit Credit = new Credit();
                         List<Credit> lcc = await Credit.GetCreditsAsync();
-                        //if there is no credit with Fournisseur id create a new one
                         Operation Operation = new Operation();
                         Operation.PaymentMethodID = methodID;
                         foreach (Credit cf in lcc)
@@ -272,7 +262,6 @@ namespace GestionComerce.Main.Inventory
                                 break;
                             }
                         }
-                        //else update the credit value
                         if (!creditExists)
                         {
                             Credit newCredit = new Credit();
@@ -289,8 +278,6 @@ namespace GestionComerce.Main.Inventory
                             }
                             creditId = await newCredit.InsertCreditAsync();
                         }
-
-
 
                         Operation.OperationType = "AchatCr";
                         Operation.PrixOperation = a.PrixAchat * a.Quantite;
@@ -315,20 +302,22 @@ namespace GestionComerce.Main.Inventory
                         this.Close();
                     }
                     ar.la.Add(a);
-                    List<Article> la1 = ar.la;
-                    ar.main.LoadArticles(la1);
-                    ar.ea?.LoadArticles(la1);
+                    this.Closed += (s, args) =>
+                    {
+                        List<Article> la1 = ar.la;
+                        ar.main.LoadArticles(la1);
+                        ar.ea?.LoadArticles(la1);
+                    };
                     ar.Close();
                 }
+
                 //Add Quantity
                 if (aq != null)
                 {
-
                     if (s == 0)
                     {
                         Operation Operation = new Operation();
                         Operation.PaymentMethodID = methodID;
-
                         Operation.OperationType = "AchatCa";
                         Operation.PrixOperation = a.PrixAchat * aq.qte;
                         if (Remise.Text != "")
@@ -379,15 +368,12 @@ namespace GestionComerce.Main.Inventory
                         }
                         int creditId = 0;
                         bool creditExists = false;
-                        //import Credit
                         Credit Credit = new Credit();
                         List<Credit> lff = await Credit.GetCreditsAsync();
-                        //if there is no credit with Fournisseur id create a new one
                         foreach (Credit ff in lff)
                         {
                             if (ff.FournisseurID == a.FournisseurID)
                             {
-
                                 ff.Total += Convert.ToDecimal(CreditInput.Text);
                                 await ff.UpdateCreditAsync();
                                 creditExists = true;
@@ -395,19 +381,16 @@ namespace GestionComerce.Main.Inventory
                                 break;
                             }
                         }
-                        //else update the credit value
                         if (!creditExists)
                         {
                             Credit newCredit = new Credit();
                             newCredit.FournisseurID = a.FournisseurID;
                             newCredit.Total = Convert.ToDecimal(CreditInput.Text);
                             creditId = await newCredit.InsertCreditAsync();
-
                         }
 
                         Operation Operation = new Operation();
                         Operation.PaymentMethodID = methodID;
-
                         Operation.OperationType = "Achat50";
                         Operation.PrixOperation = (a.PrixAchat * aq.qte);
                         Operation.CreditValue = Convert.ToDecimal(CreditInput.Text);
@@ -430,7 +413,6 @@ namespace GestionComerce.Main.Inventory
                         ofa.QteArticle = Convert.ToInt32(aq.qte);
                         await ofa.InsertOperationArticleAsync();
 
-
                         this.Close();
                     }
                     else
@@ -445,12 +427,10 @@ namespace GestionComerce.Main.Inventory
                         }
                         int creditId = 0;
                         bool creditExists = false;
-                        //import Credit
                         Credit Credit = new Credit();
                         List<Credit> lcc = await Credit.GetCreditsAsync();
                         Operation Operation = new Operation();
                         Operation.PaymentMethodID = methodID;
-                        //if there is no credit with Fournisseur id create a new one
                         foreach (Credit cf in lcc)
                         {
                             if (cf.FournisseurID == a.FournisseurID)
@@ -471,7 +451,6 @@ namespace GestionComerce.Main.Inventory
                                 break;
                             }
                         }
-                        //else update the credit value
                         if (!creditExists)
                         {
                             Credit newCredit = new Credit();
@@ -488,9 +467,6 @@ namespace GestionComerce.Main.Inventory
                             }
                             creditId = await newCredit.InsertCreditAsync();
                         }
-
-
-
 
                         Operation.OperationType = "AchatCr";
                         Operation.PrixOperation = a.PrixAchat * aq.qte;
@@ -516,12 +492,14 @@ namespace GestionComerce.Main.Inventory
 
                         this.Close();
                     }
-                    aq.sa.Main.LoadArticles(aq.ns.main.main.la);
-                    aq.sa.ea.LoadArticles(aq.ns.main.main.la);
+                    this.Closed += (s, args) =>
+                    {
+                        aq.sa.Main.LoadArticles(aq.ns.main.main.la);
+                        aq.sa.ea?.LoadArticles(aq.ns.main.main.la);
+                    };
                     aq.Close();
-
-
                 }
+
                 //Add Multiple Articles
                 if (ama != null)
                 {
@@ -544,6 +522,7 @@ namespace GestionComerce.Main.Inventory
                         Operation.UserID = ama.main.u.UserID;
                         Operation.FournisseurID = ama.fo.FournisseurID;
                         int idd = await Operation.InsertOperationAsync();
+
                         for (int i = ama.ArticlesContainer.Children.Count - 1; i >= 0; i--)
                         {
                             if (ama.ArticlesContainer.Children[i] is CSingleRowArticle csra)
@@ -551,23 +530,20 @@ namespace GestionComerce.Main.Inventory
                                 if (csra.Fournisseur.Text == "Nouvelle Article")
                                 {
                                     OperationArticle ofa = new OperationArticle();
-
                                     int id = await csra.a.InsertArticleAsync();
                                     csra.a.ArticleID = id;
                                     ama.main.la.Add(csra.a);
-
                                     ofa.ArticleID = csra.a.ArticleID;
                                     ofa.OperationID = idd;
                                     ofa.QteArticle = Convert.ToInt32(csra.a.Quantite);
                                     await ofa.InsertOperationArticleAsync();
-
                                 }
                                 else if (csra.Fournisseur.Text == "Ajout de quantite")
                                 {
                                     OperationArticle ofa = new OperationArticle();
                                     csra.Quantite.Text = csra.Quantite.Text.Replace("x", "");
                                     csra.a.Quantite += Convert.ToInt32(csra.Quantite.Text);
-                                    csra.a.UpdateArticleAsync();
+                                    await csra.a.UpdateArticleAsync();
                                     ofa.ArticleID = csra.a.ArticleID;
                                     ofa.OperationID = idd;
                                     ofa.QteArticle = Convert.ToInt32(csra.Quantite.Text);
@@ -575,8 +551,6 @@ namespace GestionComerce.Main.Inventory
                                 }
                             }
                         }
-
-
                     }
                     else if (s == 1)
                     {
@@ -602,17 +576,16 @@ namespace GestionComerce.Main.Inventory
                                 return;
                             }
                         }
+
                         int creditId = 0;
                         bool creditExists = false;
-                        //import Credit
                         Credit Credit = new Credit();
                         List<Credit> lff = await Credit.GetCreditsAsync();
-                        //if there is no credit with Fournisseur id create a new one
+
                         foreach (Credit ff in lff)
                         {
                             if (ff.FournisseurID == ama.fo.FournisseurID)
                             {
-
                                 ff.Total += Convert.ToDecimal(CreditInput.Text);
                                 await ff.UpdateCreditAsync();
                                 creditExists = true;
@@ -620,14 +593,13 @@ namespace GestionComerce.Main.Inventory
                                 break;
                             }
                         }
-                        //else update the credit value
+
                         if (!creditExists)
                         {
                             Credit newCredit = new Credit();
                             newCredit.FournisseurID = ama.fo.FournisseurID;
                             newCredit.Total = Convert.ToDecimal(CreditInput.Text);
                             creditId = await newCredit.InsertCreditAsync();
-
                         }
 
                         Operation Operation = new Operation();
@@ -645,7 +617,7 @@ namespace GestionComerce.Main.Inventory
                         Operation.FournisseurID = ama.fo.FournisseurID;
 
                         int idd = await Operation.InsertOperationAsync();
-                        //Start here
+
                         for (int i = ama.ArticlesContainer.Children.Count - 1; i >= 0; i--)
                         {
                             if (ama.ArticlesContainer.Children[i] is CSingleRowArticle csra)
@@ -653,23 +625,20 @@ namespace GestionComerce.Main.Inventory
                                 if (csra.Fournisseur.Text == "Nouvelle Article")
                                 {
                                     OperationArticle ofa = new OperationArticle();
-
                                     int id = await csra.a.InsertArticleAsync();
-                                    ama.main.la.Add(csra.a);
                                     csra.a.ArticleID = id;
-
+                                    ama.main.la.Add(csra.a);
                                     ofa.ArticleID = csra.a.ArticleID;
                                     ofa.OperationID = idd;
                                     ofa.QteArticle = Convert.ToInt32(csra.a.Quantite);
                                     await ofa.InsertOperationArticleAsync();
-
                                 }
                                 else if (csra.Fournisseur.Text == "Ajout de quantite")
                                 {
                                     OperationArticle ofa = new OperationArticle();
                                     csra.Quantite.Text = csra.Quantite.Text.Replace("x", "");
                                     csra.a.Quantite += Convert.ToInt32(csra.Quantite.Text);
-                                    csra.a.UpdateArticleAsync();
+                                    await csra.a.UpdateArticleAsync();
                                     ofa.ArticleID = csra.a.ArticleID;
                                     ofa.OperationID = idd;
                                     ofa.QteArticle = Convert.ToInt32(csra.Quantite.Text);
@@ -677,7 +646,6 @@ namespace GestionComerce.Main.Inventory
                                 }
                             }
                         }
-
                     }
                     else
                     {
@@ -689,14 +657,14 @@ namespace GestionComerce.Main.Inventory
                                 return;
                             }
                         }
+
                         int creditId = 0;
                         bool creditExists = false;
-                        //import Credit
                         Credit Credit = new Credit();
                         List<Credit> lcc = await Credit.GetCreditsAsync();
                         Operation Operation = new Operation();
                         Operation.PaymentMethodID = methodID;
-                        //if there is no credit with Fournisseur id create a new one
+
                         foreach (Credit cf in lcc)
                         {
                             if (cf.FournisseurID == ama.fo.FournisseurID)
@@ -717,7 +685,7 @@ namespace GestionComerce.Main.Inventory
                                 break;
                             }
                         }
-                        //else update the credit value
+
                         if (!creditExists)
                         {
                             Credit newCredit = new Credit();
@@ -735,9 +703,6 @@ namespace GestionComerce.Main.Inventory
                             creditId = await newCredit.InsertCreditAsync();
                         }
 
-
-
-
                         Operation.OperationType = "AchatCr";
                         Operation.PrixOperation = Subtotall;
                         Operation.CreditID = creditId;
@@ -751,7 +716,6 @@ namespace GestionComerce.Main.Inventory
 
                         int idd = await Operation.InsertOperationAsync();
 
-
                         for (int i = ama.ArticlesContainer.Children.Count - 1; i >= 0; i--)
                         {
                             if (ama.ArticlesContainer.Children[i] is CSingleRowArticle csra)
@@ -759,23 +723,20 @@ namespace GestionComerce.Main.Inventory
                                 if (csra.Fournisseur.Text == "Nouvelle Article")
                                 {
                                     OperationArticle ofa = new OperationArticle();
-
                                     int id = await csra.a.InsertArticleAsync();
                                     csra.a.ArticleID = id;
                                     ama.main.la.Add(csra.a);
-
                                     ofa.ArticleID = csra.a.ArticleID;
                                     ofa.OperationID = idd;
                                     ofa.QteArticle = Convert.ToInt32(csra.a.Quantite);
                                     await ofa.InsertOperationArticleAsync();
-
                                 }
                                 else if (csra.Fournisseur.Text == "Ajout de quantite")
                                 {
                                     OperationArticle ofa = new OperationArticle();
                                     csra.Quantite.Text = csra.Quantite.Text.Replace("x", "");
                                     csra.a.Quantite += Convert.ToInt32(csra.Quantite.Text);
-                                    csra.a.UpdateArticleAsync();
+                                    await csra.a.UpdateArticleAsync();
                                     ofa.ArticleID = csra.a.ArticleID;
                                     ofa.OperationID = idd;
                                     ofa.QteArticle = Convert.ToInt32(csra.Quantite.Text);
@@ -784,14 +745,29 @@ namespace GestionComerce.Main.Inventory
                             }
                         }
                     }
+
+                    // Close WAddMultipleArticles window first
+                    ama.Close();
+
+                    // Close this confirmation window
+                    this.Close();
+
+                    // Show congratulations
+                    WCongratulations wCongratulations = new WCongratulations("Opération réussie", "Opération a ete effectue avec succes", 1);
+                    wCongratulations.ShowDialog();
+
+                    // Refresh the articles list AFTER showing congratulations
                     ama.main.LoadArticles(ama.main.la);
+
+                    return;
                 }
-                WCongratulations wCongratulations = new WCongratulations("Opération réussie", "Opération a ete effectue avec succes",1);
-                wCongratulations.ShowDialog();
+
+                // Show congratulations for ar and aq only
+                WCongratulations wCongratulations2 = new WCongratulations("Opération réussie", "Opération a ete effectue avec succes", 1);
+                wCongratulations2.ShowDialog();
             }
             catch (Exception ex)
             {
-
                 WCongratulations wCongratulations = new WCongratulations("Opération échoué", "Opération n'a pas ete effectue ", 0);
                 wCongratulations.ShowDialog();
             }

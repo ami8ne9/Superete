@@ -703,5 +703,9 @@
   <ItemGroup>
     <Resource Include="Main\images\check.png" />
   </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Main\images\10.png" />
+    <Resource Include="Main\images\13.png" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

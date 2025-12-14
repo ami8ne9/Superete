@@ -322,7 +322,8 @@
                         </Border>
 
                         <!-- Ticket Checkbox -->
-                        <CheckBox x:Name="Ticket" IsChecked="True" Margin="0,0,0,16" >
+                        <StackPanel Orientation="Horizontal">
+                        <CheckBox x:Name="Ticket" IsChecked="True" Margin="0,0,10,16" >
                             <CheckBox.Template>
                                 <ControlTemplate TargetType="CheckBox">
                                     <StackPanel Orientation="Horizontal">
@@ -341,7 +342,26 @@
                                 </ControlTemplate>
                             </CheckBox.Template>
                         </CheckBox>
-
+                        <CheckBox x:Name="Facture" IsChecked="True" Margin="0,0,0,16" >
+                            <CheckBox.Template>
+                                <ControlTemplate TargetType="CheckBox">
+                                    <StackPanel Orientation="Horizontal">
+                                        <Border x:Name="Border" Width="20" Height="20" CornerRadius="6" BorderBrush="#E5E7EB" BorderThickness="2" Background="White" Margin="0,0,10,0">
+                                            <Path x:Name="CheckMark" Data="M0 5 L7 12 L15 0" Stroke="#2563EB" StrokeThickness="2" Visibility="Collapsed" Stretch="Uniform"/>
+                                        </Border>
+                                        <TextBlock Text="Imprimer le Facture" FontFamily="Segoe UI" FontSize="14" Foreground="#1F2937" VerticalAlignment="Center"/>
+                                    </StackPanel>
+                                    <ControlTemplate.Triggers>
+                                        <Trigger Property="IsChecked" Value="True">
+                                            <Setter TargetName="CheckMark" Property="Visibility" Value="Visible"/>
+                                            <Setter TargetName="Border" Property="Background" Value="#EFF6FF"/>
+                                            <Setter TargetName="Border" Property="BorderBrush" Value="#2563EB"/>
+                                        </Trigger>
+                                    </ControlTemplate.Triggers>
+                                </ControlTemplate>
+                            </CheckBox.Template>
+                        </CheckBox>
+                        </StackPanel>
                         <!-- Payment Buttons -->
                         <Grid>
                             <Grid.ColumnDefinitions>
