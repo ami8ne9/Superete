@@ -39,7 +39,7 @@ namespace GestionComerce.Main.Settings
             {
                 if (r.RoleID == u.RoleID)
                 {
-                    if (r.ViewUsers == false && r.AddUsers==false)
+                    if (r.ViewUsers == false && r.AddUsers == false)
                     {
                         UserManagementBtn.IsEnabled = false;
                         ResetButtonStyles();
@@ -134,6 +134,18 @@ namespace GestionComerce.Main.Settings
             ContentGrid.Children.Add(PaimentSettings);
         }
 
+        private void ParametreGeneraux_Click(object sender, RoutedEventArgs e)
+        {
+            // Reset all button styles
+            ResetButtonStyles();
+
+            // Set Paramètres Généraux button as active
+            ParametreGeneraux.Style = (Style)FindResource("ActiveNavigationItemStyle");
+
+            // Load Paramètres Généraux Control
+            LoadParametresGeneraux();
+        }
+
         private void APropos_Click(object sender, RoutedEventArgs e)
         {
             // Reset all button styles
@@ -166,6 +178,23 @@ namespace GestionComerce.Main.Settings
             ContentGrid.Children.Add(factureSettings);
         }
 
+        private void LoadParametresGeneraux()
+        {
+            ContentGrid.Children.Clear();
+
+            // Récupérer la connection string depuis ton application
+            string connectionString = "Server=localhost\\SQLEXPRESS;Database=GESTIONCOMERCEP;Trusted_Connection=True;";
+
+            // Créer l'instance du contrôle Paramètres Généraux
+            Superete.Main.Settings.ParametresGenerauxControl parametresControl =
+                new Superete.Main.Settings.ParametresGenerauxControl(u.UserID, connectionString);
+
+            parametresControl.HorizontalAlignment = HorizontalAlignment.Stretch;
+            parametresControl.VerticalAlignment = VerticalAlignment.Stretch;
+            parametresControl.Margin = new Thickness(0);
+            ContentGrid.Children.Add(parametresControl);
+        }
+
         private void LoadAProposDeNous()
         {
             ContentGrid.Children.Clear();
@@ -183,6 +212,7 @@ namespace GestionComerce.Main.Settings
             UserManagementBtn.Style = normalStyle;
             ConfigurationBtn.Style = normalStyle;
             DatabaseSettingsBtn.Style = normalStyle;
+            ParametreGeneraux.Style = normalStyle;
             AProposBtn.Style = normalStyle;
         }
 

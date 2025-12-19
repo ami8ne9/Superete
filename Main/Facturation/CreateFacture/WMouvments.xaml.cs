@@ -121,19 +121,21 @@ namespace GestionComerce.Main.Facturation.CreateFacture
             this.Title = "Définir les quantités et prix";
         }
 
-        public void LoadMouvments(MainWindow main)
+        public async void LoadMouvments(MainWindow main)
         {
             MouvmentsContainer.Children.Clear();
 
-            // Check if main.loa exists
-            if (main.loa == null)
+            // Load ALL OperationArticles from database (including those linked to deleted articles)
+            List<OperationArticle> allOperationArticles = await LoadAllOperationArticlesFromDatabaseAsync();
+
+            if (allOperationArticles == null || allOperationArticles.Count == 0)
             {
-                MessageBox.Show("No articles found for this operation", "Information", MessageBoxButton.OK, MessageBoxImage.Information);
+                MessageBox.Show("No articles found in database", "Information", MessageBoxButton.OK, MessageBoxImage.Information);
                 return;
             }
 
             // Filter articles for this operation
-            var operationArticles = main.loa
+            var operationArticles = allOperationArticles
                 .Where(oa => oa.OperationID == op.OperationID)
                 .ToList();
 
@@ -145,8 +147,29 @@ namespace GestionComerce.Main.Facturation.CreateFacture
 
             foreach (OperationArticle oa in operationArticles)
             {
+                // CSingleMouvment will now load the article from database (including deleted ones)
                 CSingleMouvment csm = new CSingleMouvment(this, oa);
                 MouvmentsContainer.Children.Add(csm);
+            }
+        }
+
+        // Load ALL OperationArticles from database
+        private async Task<List<OperationArticle>> LoadAllOperationArticlesFromDatabaseAsync()
+        {
+            try
+            {
+                OperationArticle tempOA = new OperationArticle();
+
+                // Use GetAllOperationArticlesAsync to get all operation articles
+                var allArticles = await tempOA.GetAllOperationArticlesAsync();
+
+                return allArticles;
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error loading operation articles: {ex.Message}", "Database Error",
+                    MessageBoxButton.OK, MessageBoxImage.Error);
+                return new List<OperationArticle>();
             }
         }
 

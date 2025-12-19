@@ -72,42 +72,58 @@ namespace GestionComerce.Main.Facturation.CreateFacture
 
             ArticleQuantity.Text = oa.QteArticle.ToString();
 
-            // Load article information
-            Article foundArticle = null;
-            MainWindow main = null;
+            // Load article information and initialize UI - NOW LOADS FROM DATABASE INCLUDING DELETED ARTICLES
+            InitializeAsync();
+        }
 
-            // Get the main window reference
-            if (singleOp?.mainfa?.main != null)
+        // NEW METHOD: Initialize async - Load article from database and setup UI
+        private async void InitializeAsync()
+        {
+            try
             {
-                main = singleOp.mainfa.main;
-            }
-            else if (ms?.wso?.sc?.main?.main != null)
-            {
-                main = ms.wso.sc.main.main;
-            }
+                // Load ALL articles from database (including deleted ones)
+                Article tempArticle = new Article();
+                List<Article> allArticles = await tempArticle.GetAllArticlesAsync();
 
-            if (main?.la != null)
-            {
-                foundArticle = main.la.FirstOrDefault(a => a.ArticleID == oa.ArticleID);
-            }
+                // Find the article matching this OperationArticle
+                Article foundArticle = allArticles.FirstOrDefault(a => a.ArticleID == oa.ArticleID);
 
-            if (foundArticle != null)
-            {
-                article = foundArticle;
-                ArticleName.Text = article.ArticleName;
-                articlePrice = article.PrixVente;
-                articleTVA = article.tva;
-
-                if (oa.Reversed == true)
+                if (foundArticle != null)
                 {
-                    ArticleName.Text += " (Reversed)";
-                }
-            }
-            else
-            {
-                ArticleName.Text = "Article not found (ID: " + oa.ArticleID + ")";
-            }
+                    article = foundArticle;
+                    ArticleName.Text = article.ArticleName;
+                    articlePrice = article.PrixVente;
+                    articleTVA = article.tva;
 
+                    // Add indicator if article is deleted
+                    if (article.Etat == false)
+                    {
+                        ArticleName.Text += " (Supprimé)";
+                    }
+
+                    if (oa.Reversed == true)
+                    {
+                        ArticleName.Text += " (Reversed)";
+                    }
+                }
+                else
+                {
+                    ArticleName.Text = "Article not found (ID: " + oa.ArticleID + ")";
+                }
+
+                // NOW setup the UI after article is loaded
+                InitializeUIControls();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error loading article: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                ArticleName.Text = "Error loading article (ID: " + oa.ArticleID + ")";
+            }
+        }
+
+        // Initialize UI controls after article is loaded
+        private void InitializeUIControls()
+        {
             // Get invoice type and CMainFa reference
             string invoiceType = null;
             CMainFa mainfa = null;

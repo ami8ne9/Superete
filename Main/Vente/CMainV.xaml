@@ -5,6 +5,25 @@
 
     <UserControl.Resources>
         <!-- Professional Card Style -->
+        <SolidColorBrush x:Key="PrimaryDark" Color="#1E293B"/>
+        <SolidColorBrush x:Key="PrimaryBlue" Color="#3B82F6"/>
+        <SolidColorBrush x:Key="AccentCyan" Color="#06B6D4"/>
+        <SolidColorBrush x:Key="AccentPurple" Color="#8B5CF6"/>
+        <SolidColorBrush x:Key="SuccessGreen" Color="#10B981"/>
+        <SolidColorBrush x:Key="WarningOrange" Color="#F59E0B"/>
+        <SolidColorBrush x:Key="DangerRed" Color="#EF4444"/>
+        <SolidColorBrush x:Key="BackgroundLight" Color="#F8FAFC"/>
+        <SolidColorBrush x:Key="SurfaceWhite" Color="#FFFFFF"/>
+        <SolidColorBrush x:Key="BorderLight" Color="#E2E8F0"/>
+        <SolidColorBrush x:Key="TextPrimary" Color="#0F172A"/>
+        <SolidColorBrush x:Key="TextSecondary" Color="#64748B"/>
+        <SolidColorBrush x:Key="TextTertiary" Color="#94A3B8"/>
+
+        <!-- Premium Shadows -->
+        <DropShadowEffect x:Key="ShadowSm" BlurRadius="8" ShadowDepth="0" Color="#000000" Opacity="0.04"/>
+        <DropShadowEffect x:Key="ShadowMd" BlurRadius="20" ShadowDepth="0" Color="#000000" Opacity="0.06"/>
+        <DropShadowEffect x:Key="ShadowLg" BlurRadius="32" ShadowDepth="0" Color="#000000" Opacity="0.08"/>
+        <DropShadowEffect x:Key="ShadowXl" BlurRadius="48" ShadowDepth="0" Color="#000000" Opacity="0.1"/>
         <Style x:Key="CardStyle" TargetType="Border">
             <Setter Property="Background" Value="White"/>
             <Setter Property="CornerRadius" Value="12"/>
@@ -44,6 +63,159 @@
                                 <Setter Property="Background" Value="#F3F4F6"/>
                             </Trigger>
                         </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!-- Toggle Button Style -->
+        <Style x:Key="ToggleButtonStyle" TargetType="Button" BasedOn="{StaticResource ModernButtonStyle}">
+            <Setter Property="Background" Value="White"/>
+            <Setter Property="BorderBrush" Value="#E5E7EB"/>
+            <Setter Property="Foreground" Value="#1F2937"/>
+            <Setter Property="FontSize" Value="12"/>
+            <Setter Property="Padding" Value="12,8"/>
+            <Setter Property="Cursor" Value="Hand"/>
+        </Style>
+
+        <Style x:Key="ActiveToggleButtonStyle" TargetType="Button" BasedOn="{StaticResource ToggleButtonStyle}">
+            <Setter Property="Background" Value="#EFF6FF"/>
+            <Setter Property="BorderBrush" Value="#2563EB"/>
+            <Setter Property="Foreground" Value="#2563EB"/>
+        </Style>
+
+
+        <Style x:Key="ModernComboBoxItemStyle" TargetType="ComboBoxItem">
+            <Setter Property="Background" Value="White"/>
+            <Setter Property="Foreground" Value="#1F2937"/>
+            <Setter Property="FontFamily" Value="Segoe UI"/>
+            <Setter Property="FontSize" Value="13"/>
+            <Setter Property="Padding" Value="12,8"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="ComboBoxItem">
+                        <Border Background="{TemplateBinding Background}" 
+                        Padding="{TemplateBinding Padding}">
+                            <ContentPresenter/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter Property="Background" Value="#F9FAFB"/>
+                                <Setter Property="Foreground" Value="#2563EB"/>
+                            </Trigger>
+                            <Trigger Property="IsSelected" Value="True">
+                                <Setter Property="Background" Value="#EFF6FF"/>
+                                <Setter Property="Foreground" Value="#2563EB"/>
+                                <Setter Property="FontWeight" Value="SemiBold"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+        <Style x:Key="ModernComboBoxStyle" TargetType="ComboBox">
+            <Setter Property="Background" Value="{StaticResource SurfaceWhite}"/>
+            <Setter Property="Foreground" Value="{StaticResource TextPrimary}"/>
+            <Setter Property="BorderBrush" Value="{StaticResource BorderLight}"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="Padding" Value="14,0"/>
+            <Setter Property="FontSize" Value="14"/>
+            <Setter Property="FontFamily" Value="Segoe UI"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="ComboBox">
+                        <Grid>
+                            <ToggleButton x:Name="ToggleButton"
+                                Focusable="false"
+                                IsChecked="{Binding Path=IsDropDownOpen, Mode=TwoWay, RelativeSource={RelativeSource TemplatedParent}}"
+                                ClickMode="Press"
+                                Background="{TemplateBinding Background}"
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="{TemplateBinding BorderThickness}">
+                                <ToggleButton.Template>
+                                    <ControlTemplate TargetType="ToggleButton">
+                                        <Border x:Name="border"
+                                        Background="{TemplateBinding Background}"
+                                        BorderBrush="{TemplateBinding BorderBrush}"
+                                        BorderThickness="{TemplateBinding BorderThickness}"
+                                        CornerRadius="10">
+                                            <Grid>
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition/>
+                                                    <ColumnDefinition Width="32"/>
+                                                </Grid.ColumnDefinitions>
+                                                <ContentPresenter Grid.Column="0"
+                                                        Margin="14,0,0,0"
+                                                        HorizontalAlignment="Left"
+                                                        VerticalAlignment="Center"/>
+                                                <Path Grid.Column="1"
+                                            x:Name="Arrow"
+                                            Data="M0,0 L4,4 L8,0"
+                                            Stroke="{StaticResource TextSecondary}"
+                                            StrokeThickness="2"
+                                            HorizontalAlignment="Center"
+                                            VerticalAlignment="Center"
+                                            RenderTransformOrigin="0.5,0.5">
+                                                    <Path.RenderTransform>
+                                                        <RotateTransform Angle="0"/>
+                                                    </Path.RenderTransform>
+                                                </Path>
+                                            </Grid>
+                                        </Border>
+                                        <ControlTemplate.Triggers>
+                                            <Trigger Property="IsChecked" Value="True">
+                                                <Setter TargetName="border" Property="BorderBrush" Value="{StaticResource PrimaryBlue}"/>
+                                                <Trigger.EnterActions>
+                                                    <BeginStoryboard>
+                                                        <Storyboard>
+                                                            <DoubleAnimation Storyboard.TargetName="Arrow"
+                                                                   Storyboard.TargetProperty="(Path.RenderTransform).(RotateTransform.Angle)"
+                                                                   To="180"
+                                                                   Duration="0:0:0.2"/>
+                                                        </Storyboard>
+                                                    </BeginStoryboard>
+                                                </Trigger.EnterActions>
+                                                <Trigger.ExitActions>
+                                                    <BeginStoryboard>
+                                                        <Storyboard>
+                                                            <DoubleAnimation Storyboard.TargetName="Arrow"
+                                                                   Storyboard.TargetProperty="(Path.RenderTransform).(RotateTransform.Angle)"
+                                                                   To="0"
+                                                                   Duration="0:0:0.2"/>
+                                                        </Storyboard>
+                                                    </BeginStoryboard>
+                                                </Trigger.ExitActions>
+                                            </Trigger>
+                                        </ControlTemplate.Triggers>
+                                    </ControlTemplate>
+                                </ToggleButton.Template>
+                            </ToggleButton>
+                            <ContentPresenter x:Name="ContentSite"
+                                    IsHitTestVisible="False"
+                                    Content="{TemplateBinding SelectionBoxItem}"
+                                    ContentTemplate="{TemplateBinding SelectionBoxItemTemplate}"
+                                    Margin="14,0,32,0"
+                                    VerticalAlignment="Center"
+                                    HorizontalAlignment="Left"/>
+                            <Popup x:Name="Popup"
+                         Placement="Bottom"
+                         IsOpen="{TemplateBinding IsDropDownOpen}"
+                         AllowsTransparency="True"
+                         Focusable="False"
+                         PopupAnimation="Fade">
+                                <Border Background="{StaticResource SurfaceWhite}"
+                              BorderBrush="{StaticResource BorderLight}"
+                              BorderThickness="1"
+                              CornerRadius="10"
+                              Margin="0,4,0,0"
+                              MinWidth="{TemplateBinding ActualWidth}"
+                              Effect="{StaticResource ShadowLg}">
+                                    <ScrollViewer Margin="4,6" MaxHeight="300">
+                                        <StackPanel IsItemsHost="True"/>
+                                    </ScrollViewer>
+                                </Border>
+                            </Popup>
+                        </Grid>
                     </ControlTemplate>
                 </Setter.Value>
             </Setter>
@@ -249,7 +421,7 @@
                         </Grid>
 
                         <!-- Items List -->
-                        <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto">
+                        <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto" >
                             <Grid>
                                 <StackPanel x:Name="SelectedArticles"/>
 
@@ -286,23 +458,21 @@
                 <Border Grid.Row="1" Style="{StaticResource CardStyle}">
                     <StackPanel>
                         <!-- Payment Method -->
-                        <!-- Payment Method -->
-                        <!-- Payment Method -->
                         <TextBlock Text="Méthode de Paiement" FontFamily="Segoe UI" FontSize="13" FontWeight="SemiBold" Foreground="#111827" Margin="0,0,0,10"/>
                         <Border Background="White" 
-        BorderBrush="#E5E7EB" 
-        BorderThickness="1" 
-        CornerRadius="8" 
-        Height="44">
+                                BorderBrush="#E5E7EB" 
+                                BorderThickness="1" 
+                                CornerRadius="8" 
+                                Height="44">
                             <ComboBox x:Name="PaymentMethodComboBox" SelectedIndex="0"
-              FontSize="14" 
-              FontFamily="Segoe UI"
-              Foreground="#1F2937"
-              Margin="0"
-              BorderThickness="0"
-              Background="Transparent"
-              VerticalContentAlignment="Center"
-              Padding="12,0">
+                                      FontSize="14" 
+                                      FontFamily="Segoe UI"
+                                      Foreground="#1F2937"
+                                      Margin="0"
+                                      BorderThickness="0"
+                                      Background="Transparent"
+                                      VerticalContentAlignment="Center"
+                                      Padding="12,0">
                                 <ComboBox.Resources>
                                     <Style TargetType="ComboBoxItem">
                                         <Setter Property="Padding" Value="12,10"/>
@@ -323,44 +493,44 @@
 
                         <!-- Ticket Checkbox -->
                         <StackPanel Orientation="Horizontal">
-                        <CheckBox x:Name="Ticket" IsChecked="True" Margin="0,0,10,16" >
-                            <CheckBox.Template>
-                                <ControlTemplate TargetType="CheckBox">
-                                    <StackPanel Orientation="Horizontal">
-                                        <Border x:Name="Border" Width="20" Height="20" CornerRadius="6" BorderBrush="#E5E7EB" BorderThickness="2" Background="White" Margin="0,0,10,0">
-                                            <Path x:Name="CheckMark" Data="M0 5 L7 12 L15 0" Stroke="#2563EB" StrokeThickness="2" Visibility="Collapsed" Stretch="Uniform"/>
-                                        </Border>
-                                        <TextBlock Text="Imprimer le Ticket" FontFamily="Segoe UI" FontSize="14" Foreground="#1F2937" VerticalAlignment="Center"/>
-                                    </StackPanel>
-                                    <ControlTemplate.Triggers>
-                                        <Trigger Property="IsChecked" Value="True">
-                                            <Setter TargetName="CheckMark" Property="Visibility" Value="Visible"/>
-                                            <Setter TargetName="Border" Property="Background" Value="#EFF6FF"/>
-                                            <Setter TargetName="Border" Property="BorderBrush" Value="#2563EB"/>
-                                        </Trigger>
-                                    </ControlTemplate.Triggers>
-                                </ControlTemplate>
-                            </CheckBox.Template>
-                        </CheckBox>
-                        <CheckBox x:Name="Facture" IsChecked="True" Margin="0,0,0,16" >
-                            <CheckBox.Template>
-                                <ControlTemplate TargetType="CheckBox">
-                                    <StackPanel Orientation="Horizontal">
-                                        <Border x:Name="Border" Width="20" Height="20" CornerRadius="6" BorderBrush="#E5E7EB" BorderThickness="2" Background="White" Margin="0,0,10,0">
-                                            <Path x:Name="CheckMark" Data="M0 5 L7 12 L15 0" Stroke="#2563EB" StrokeThickness="2" Visibility="Collapsed" Stretch="Uniform"/>
-                                        </Border>
-                                        <TextBlock Text="Imprimer le Facture" FontFamily="Segoe UI" FontSize="14" Foreground="#1F2937" VerticalAlignment="Center"/>
-                                    </StackPanel>
-                                    <ControlTemplate.Triggers>
-                                        <Trigger Property="IsChecked" Value="True">
-                                            <Setter TargetName="CheckMark" Property="Visibility" Value="Visible"/>
-                                            <Setter TargetName="Border" Property="Background" Value="#EFF6FF"/>
-                                            <Setter TargetName="Border" Property="BorderBrush" Value="#2563EB"/>
-                                        </Trigger>
-                                    </ControlTemplate.Triggers>
-                                </ControlTemplate>
-                            </CheckBox.Template>
-                        </CheckBox>
+                            <CheckBox x:Name="Ticket" IsChecked="True" Margin="0,0,10,16" >
+                                <CheckBox.Template>
+                                    <ControlTemplate TargetType="CheckBox">
+                                        <StackPanel Orientation="Horizontal">
+                                            <Border x:Name="Border" Width="20" Height="20" CornerRadius="6" BorderBrush="#E5E7EB" BorderThickness="2" Background="White" Margin="0,0,10,0">
+                                                <Path x:Name="CheckMark" Data="M0 5 L7 12 L15 0" Stroke="#2563EB" StrokeThickness="2" Visibility="Collapsed" Stretch="Uniform"/>
+                                            </Border>
+                                            <TextBlock Text="Imprimer le Ticket" FontFamily="Segoe UI" FontSize="14" Foreground="#1F2937" VerticalAlignment="Center"/>
+                                        </StackPanel>
+                                        <ControlTemplate.Triggers>
+                                            <Trigger Property="IsChecked" Value="True">
+                                                <Setter TargetName="CheckMark" Property="Visibility" Value="Visible"/>
+                                                <Setter TargetName="Border" Property="Background" Value="#EFF6FF"/>
+                                                <Setter TargetName="Border" Property="BorderBrush" Value="#2563EB"/>
+                                            </Trigger>
+                                        </ControlTemplate.Triggers>
+                                    </ControlTemplate>
+                                </CheckBox.Template>
+                            </CheckBox>
+                            <CheckBox x:Name="Facture" IsChecked="True" Margin="0,0,0,16" >
+                                <CheckBox.Template>
+                                    <ControlTemplate TargetType="CheckBox">
+                                        <StackPanel Orientation="Horizontal">
+                                            <Border x:Name="Border" Width="20" Height="20" CornerRadius="6" BorderBrush="#E5E7EB" BorderThickness="2" Background="White" Margin="0,0,10,0">
+                                                <Path x:Name="CheckMark" Data="M0 5 L7 12 L15 0" Stroke="#2563EB" StrokeThickness="2" Visibility="Collapsed" Stretch="Uniform"/>
+                                            </Border>
+                                            <TextBlock Text="Imprimer le Facture" FontFamily="Segoe UI" FontSize="14" Foreground="#1F2937" VerticalAlignment="Center"/>
+                                        </StackPanel>
+                                        <ControlTemplate.Triggers>
+                                            <Trigger Property="IsChecked" Value="True">
+                                                <Setter TargetName="CheckMark" Property="Visibility" Value="Visible"/>
+                                                <Setter TargetName="Border" Property="Background" Value="#EFF6FF"/>
+                                                <Setter TargetName="Border" Property="BorderBrush" Value="#2563EB"/>
+                                            </Trigger>
+                                        </ControlTemplate.Triggers>
+                                    </ControlTemplate>
+                                </CheckBox.Template>
+                            </CheckBox>
                         </StackPanel>
                         <!-- Payment Buttons -->
                         <Grid>
@@ -402,11 +572,13 @@
             <Grid Grid.Column="2">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
                     <RowDefinition Height="*"/>
                 </Grid.RowDefinitions>
 
+
                 <!-- Search & Product Info -->
-                <Border Grid.Row="0" Style="{StaticResource CardStyle}" Margin="0,0,0,16">
+                <Border Grid.Row="1" Style="{StaticResource CardStyle}" Margin="0,0,0,16">
                     <Grid>
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="*"/>
@@ -472,7 +644,8 @@
                 </Border>
 
                 <!-- Products Grid -->
-                <Border Grid.Row="1" Style="{StaticResource CardStyle}">
+                <!-- Products Grid -->
+                <Border Grid.Row="2" Background="White" CornerRadius="12" Padding="20" Effect="{StaticResource ShadowMd}">
                     <Grid>
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="180"/>
@@ -502,18 +675,115 @@
                             </Grid.RowDefinitions>
 
                             <!-- Products Header -->
+                            <!-- Products Header with Toolbar -->
+                            <!-- Dans CMainV.xaml, modifiez la section Products Header (Grid.Row="0") pour ajouter le ComboBox de taille -->
+                            <!-- Remplacez la section Grid.Column définitions par : -->
+
                             <Grid Grid.Row="0" Margin="0,0,0,16">
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition Width="*"/>
                                     <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="8"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="8"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="8"/>
+                                    <ColumnDefinition Width="Auto"/>
                                 </Grid.ColumnDefinitions>
+
                                 <TextBlock Grid.Column="0" Text="Produits" FontFamily="Segoe UI" FontSize="16" FontWeight="Bold" Foreground="#111827" VerticalAlignment="Center"/>
-                                <Button Grid.Column="1" Content="Voir Tout" Background="White" BorderBrush="#E5E7EB" BorderThickness="1" 
-                                        Padding="16,8" FontSize="13" FontWeight="SemiBold" Cursor="Hand" Click="Button_Click">
+
+                                <!-- Layout Toggle Buttons -->
+                                <StackPanel Grid.Column="1" Orientation="Horizontal">
+                                    <Button x:Name="RowLayoutButton" 
+                Content="Vue Liste" 
+                Style="{StaticResource ActiveToggleButtonStyle}"
+                Click="LayoutToggleButton_Click">
+                                        <Button.Template>
+                                            <ControlTemplate TargetType="Button">
+                                                <Border Background="{TemplateBinding Background}" 
+                            BorderBrush="{TemplateBinding BorderBrush}" 
+                            BorderThickness="{TemplateBinding BorderThickness}" 
+                            CornerRadius="6,0,0,6"
+                            Padding="10,6">
+                                                    <StackPanel Orientation="Horizontal">
+                                                        <Path Data="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z" 
+                                  Fill="{TemplateBinding Foreground}" 
+                                  Stretch="Uniform" 
+                                  Width="12" 
+                                  Height="12" 
+                                  Margin="0,0,4,0"/>
+                                                        <TextBlock Text="{TemplateBinding Content}" 
+                                       FontSize="12"
+                                       VerticalAlignment="Center"/>
+                                                    </StackPanel>
+                                                </Border>
+                                            </ControlTemplate>
+                                        </Button.Template>
+                                    </Button>
+                                    <Button x:Name="CardLayoutButton" 
+                Content="Vue Cartes" 
+                Style="{StaticResource ToggleButtonStyle}"
+                Click="LayoutToggleButton_Click">
+                                        <Button.Template>
+                                            <ControlTemplate TargetType="Button">
+                                                <Border Background="{TemplateBinding Background}" 
+                            BorderBrush="{TemplateBinding BorderBrush}" 
+                            BorderThickness="{TemplateBinding BorderThickness}" 
+                            CornerRadius="0,6,6,0"
+                            Padding="10,6">
+                                                    <StackPanel Orientation="Horizontal">
+                                                        <Path Data="M4 8h4V4H4v4zm6 12h4v-4h-4v4zm-6 0h4v-4H4v4zm0-6h4v-4H4v4zm6 0h4v-4h-4v4zm6-10v4h4V4h-4zm-6 4h4V4h-4v4zm6 6h4v-4h-4v4zm0 6h4v-4h-4v4z" 
+                                  Fill="{TemplateBinding Foreground}" 
+                                  Stretch="Uniform" 
+                                  Width="12" 
+                                  Height="12" 
+                                  Margin="0,0,4,0"/>
+                                                        <TextBlock Text="{TemplateBinding Content}" 
+                                       FontSize="12"
+                                       VerticalAlignment="Center"/>
+                                                    </StackPanel>
+                                                </Border>
+                                            </ControlTemplate>
+                                        </Button.Template>
+                                    </Button>
+                                </StackPanel>
+
+                                <!-- Icon Size ComboBox -->
+                                <ComboBox x:Name="IconSizeComboBox"
+              Grid.Column="3"
+              Style="{StaticResource ModernComboBoxStyle}"
+              Width="160"
+              SelectionChanged="IconSizeComboBox_SelectionChanged">
+                                    <ComboBoxItem Content="Grandes icônes" Style="{StaticResource ModernComboBoxItemStyle}"/>
+                                    <ComboBoxItem Content="Moyennes icônes" Style="{StaticResource ModernComboBoxItemStyle}"/>
+                                    <ComboBoxItem Content="Petites icônes" Style="{StaticResource ModernComboBoxItemStyle}"/>
+                                </ComboBox>
+
+                                <!-- Sorting ComboBox -->
+                                <ComboBox x:Name="SortComboBox" 
+              Grid.Column="5"
+              Style="{StaticResource ModernComboBoxStyle}"
+              Width="200"
+              SelectionChanged="SortComboBox_SelectionChanged"
+              SelectedIndex="0">
+                                    <ComboBoxItem Content="Nom (A-Z)" Style="{StaticResource ModernComboBoxItemStyle}"/>
+                                    <ComboBoxItem Content="Nom (Z-A)" Style="{StaticResource ModernComboBoxItemStyle}"/>
+                                    <ComboBoxItem Content="Prix croissant" Style="{StaticResource ModernComboBoxItemStyle}"/>
+                                    <ComboBoxItem Content="Prix décroissant" Style="{StaticResource ModernComboBoxItemStyle}"/>
+                                    <ComboBoxItem Content="Quantité croissante" Style="{StaticResource ModernComboBoxItemStyle}"/>
+                                    <ComboBoxItem Content="Quantité décroissante" Style="{StaticResource ModernComboBoxItemStyle}"/>
+                                    <ComboBoxItem Content="Plus récent au plus ancien" Style="{StaticResource ModernComboBoxItemStyle}"/>
+                                    <ComboBoxItem Content="Plus ancien au plus récent" Style="{StaticResource ModernComboBoxItemStyle}"/>
+                                </ComboBox>
+
+                                <!-- Voir Tout Button -->
+                                <Button Grid.Column="7" Content="Voir Tout" Background="White" BorderBrush="#E5E7EB" BorderThickness="1" 
+            Padding="16,8" FontSize="13" FontWeight="SemiBold" Cursor="Hand" Click="Button_Click">
                                     <Button.Template>
                                         <ControlTemplate TargetType="Button">
                                             <Border Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" 
-                                                    BorderThickness="{TemplateBinding BorderThickness}" CornerRadius="8" Padding="{TemplateBinding Padding}">
+                        BorderThickness="{TemplateBinding BorderThickness}" CornerRadius="8" Padding="{TemplateBinding Padding}">
                                                 <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
                                             </Border>
                                             <ControlTemplate.Triggers>
@@ -527,18 +797,28 @@
                                 </Button>
                             </Grid>
 
-                            <!-- Products Table -->
-                            <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto">
+                            <!-- Products Display Area -->
+                            <ScrollViewer Grid.Row="1" 
+                                          VerticalScrollBarVisibility="Auto" 
+                                          HorizontalScrollBarVisibility="Auto">
                                 <Grid>
                                     <Grid.RowDefinitions>
                                         <RowDefinition Height="Auto"/>
                                         <RowDefinition Height="*"/>
                                     </Grid.RowDefinitions>
 
-                                    <!-- Table Header -->
-                                    <Border Grid.Row="0" Background="#F9FAFB" CornerRadius="8" Padding="12,10" Margin="0,0,0,8">
+                                    <!-- Table Header (visible only in row layout) -->
+                                    <!-- Table Header (visible only in row layout) -->
+                                    <Border x:Name="TableHeader" 
+        Grid.Row="0" 
+        Background="#F9FAFB" 
+        CornerRadius="8" 
+        Padding="12,10" 
+        Margin="0,0,0,8"
+        Visibility="Visible">
                                         <Grid>
                                             <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="50" MinWidth="50"/>
                                                 <ColumnDefinition Width="80" MinWidth="80"/>
                                                 <ColumnDefinition Width="2*" MinWidth="150"/>
                                                 <ColumnDefinition Width="80" MinWidth="80"/>
@@ -550,20 +830,21 @@
                                                 <ColumnDefinition Width="100" MinWidth="100"/>
                                             </Grid.ColumnDefinitions>
 
-                                            <TextBlock Grid.Column="0" Text="ID" FontFamily="Segoe UI" FontSize="12" FontWeight="Bold" Foreground="#6B7280" Padding="8,0"/>
-                                            <TextBlock Grid.Column="1" Text="Nom du Produit" FontFamily="Segoe UI" FontSize="12" FontWeight="Bold" Foreground="#6B7280" Padding="8,0"/>
-                                            <TextBlock Grid.Column="2" Text="Stock" FontFamily="Segoe UI" FontSize="12" FontWeight="Bold" Foreground="#6B7280" Padding="8,0" TextAlignment="Right"/>
-                                            <TextBlock Grid.Column="3" Text="Achat" FontFamily="Segoe UI" FontSize="12" FontWeight="Bold" Foreground="#6B7280" Padding="8,0" TextAlignment="Right"/>
-                                            <TextBlock Grid.Column="4" Text="Vente" FontFamily="Segoe UI" FontSize="12" FontWeight="Bold" Foreground="#6B7280" Padding="8,0" TextAlignment="Right"/>
-                                            <TextBlock Grid.Column="5" Text="Marché" FontFamily="Segoe UI" FontSize="12" FontWeight="Bold" Foreground="#6B7280" Padding="8,0" TextAlignment="Right"/>
-                                            <TextBlock Grid.Column="6" Text="Famille" FontFamily="Segoe UI" FontSize="12" FontWeight="Bold" Foreground="#6B7280" Padding="8,0"/>
-                                            <TextBlock Grid.Column="7" Text="Fournisseur" FontFamily="Segoe UI" FontSize="12" FontWeight="Bold" Foreground="#6B7280" Padding="8,0"/>
-                                            <TextBlock Grid.Column="8" Text="Code" FontFamily="Segoe UI" FontSize="12" FontWeight="Bold" Foreground="#6B7280" Padding="8,0"/>
+                                            <TextBlock Grid.Column="0" Text="Image" FontFamily="Segoe UI" FontSize="12" FontWeight="Bold" Foreground="#6B7280" Padding="8,0"/>
+                                            <TextBlock Grid.Column="1" Text="ID" FontFamily="Segoe UI" FontSize="12" FontWeight="Bold" Foreground="#6B7280" Padding="8,0"/>
+                                            <TextBlock Grid.Column="2" Text="Nom du Produit" FontFamily="Segoe UI" FontSize="12" FontWeight="Bold" Foreground="#6B7280" Padding="8,0"/>
+                                            <TextBlock Grid.Column="3" Text="Stock" FontFamily="Segoe UI" FontSize="12" FontWeight="Bold" Foreground="#6B7280" Padding="8,0" TextAlignment="Right"/>
+                                            <TextBlock Grid.Column="4" Text="Achat" FontFamily="Segoe UI" FontSize="12" FontWeight="Bold" Foreground="#6B7280" Padding="8,0" TextAlignment="Right"/>
+                                            <TextBlock Grid.Column="5" Text="Vente" FontFamily="Segoe UI" FontSize="12" FontWeight="Bold" Foreground="#6B7280" Padding="8,0" TextAlignment="Right"/>
+                                            <TextBlock Grid.Column="6" Text="Marché" FontFamily="Segoe UI" FontSize="12" FontWeight="Bold" Foreground="#6B7280" Padding="8,0" TextAlignment="Right"/>
+                                            <TextBlock Grid.Column="7" Text="Famille" FontFamily="Segoe UI" FontSize="12" FontWeight="Bold" Foreground="#6B7280" Padding="8,0"/>
+                                            <TextBlock Grid.Column="8" Text="Fournisseur" FontFamily="Segoe UI" FontSize="12" FontWeight="Bold" Foreground="#6B7280" Padding="8,0"/>
+                                            <TextBlock Grid.Column="9" Text="Code" FontFamily="Segoe UI" FontSize="12" FontWeight="Bold" Foreground="#6B7280" Padding="8,0"/>
                                         </Grid>
                                     </Border>
 
-                                    <!-- Table Content -->
-                                    <StackPanel Grid.Row="1" x:Name="ArticlesContainer"/>
+                                    <!-- Container for articles (row or card layout) -->
+                                    <StackPanel x:Name="ArticlesContainer" Grid.Row="1"/>
                                 </Grid>
                             </ScrollViewer>
                         </Grid>

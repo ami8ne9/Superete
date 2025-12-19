@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Data.SqlClient;
 using System.Security.Cryptography.X509Certificates;
 using System.Threading.Tasks;
@@ -19,15 +20,16 @@ namespace GestionComerce
         public string ArticleName { get; set; }
         public bool Etat { get; set; }
         public DateTime? Date { get; set; }
-        public DateTime? DateExpiration { get; set; }  // Make it nullable
+        public DateTime? DateExpiration { get; set; }
         public string marque { get; set; }
         public decimal tva { get; set; }
         public string numeroLot { get; set; }
         public string bonlivraison { get; set; }
         public DateTime? DateLivraison { get; set; }
-
-
         public int FournisseurID { get; set; }
+
+        // NEW: Image property
+        public byte[] ArticleImage { get; set; }
 
         private static readonly string ConnectionString = "Server=localhost\\SQLEXPRESS;Database=GESTIONCOMERCEP;Trusted_Connection=True;";
 
@@ -62,6 +64,7 @@ namespace GestionComerce
                             numeroLot = reader["numeroLot"] == DBNull.Value ? string.Empty : reader["numeroLot"].ToString(),
                             bonlivraison = reader["bonlivraison"] == DBNull.Value ? string.Empty : reader["bonlivraison"].ToString(),
                             DateLivraison = reader["DateLivraison"] == DBNull.Value ? (DateTime?)null : Convert.ToDateTime(reader["DateLivraison"]),
+                            ArticleImage = reader["ArticleImage"] == DBNull.Value ? null : (byte[])reader["ArticleImage"],
                             Etat = Convert.ToBoolean(reader["Etat"])
                         };
                         articles.Add(article);
@@ -70,6 +73,7 @@ namespace GestionComerce
             }
             return articles;
         }
+
         public async Task<List<Article>> GetAllArticlesAsync()
         {
             var articles = new List<Article>();
@@ -101,6 +105,7 @@ namespace GestionComerce
                             numeroLot = reader["numeroLot"] == DBNull.Value ? string.Empty : reader["numeroLot"].ToString(),
                             bonlivraison = reader["bonlivraison"] == DBNull.Value ? string.Empty : reader["bonlivraison"].ToString(),
                             DateLivraison = reader["DateLivraison"] == DBNull.Value ? (DateTime?)null : Convert.ToDateTime(reader["DateLivraison"]),
+                            ArticleImage = reader["ArticleImage"] == DBNull.Value ? null : (byte[])reader["ArticleImage"],
                             Etat = Convert.ToBoolean(reader["Etat"])
                         };
                         articles.Add(article);
@@ -112,8 +117,8 @@ namespace GestionComerce
 
         public async Task<int> InsertArticleAsync()
         {
-            string query = "INSERT INTO Article (Quantite, PrixAchat, PrixVente, PrixMP, FamillyID, Code, FournisseurID, ArticleName, Date, DateExpiration, marque, tva, numeroLot, bonlivraison, DateLivraison) " +
-                "VALUES (@Quantite, @PrixAchat, @PrixVente, @PrixMP, @FamillyID, @Code, @FournisseurID, @ArticleName, @Date, @DateExpiration, @marque, @tva, @numeroLot, @bonlivraison, @DateLivraison); SELECT SCOPE_IDENTITY();";
+            string query = "INSERT INTO Article (Quantite, PrixAchat, PrixVente, PrixMP, FamillyID, Code, FournisseurID, ArticleName, Date, DateExpiration, marque, tva, numeroLot, bonlivraison, DateLivraison, ArticleImage) " +
+                "VALUES (@Quantite, @PrixAchat, @PrixVente, @PrixMP, @FamillyID, @Code, @FournisseurID, @ArticleName, @Date, @DateExpiration, @marque, @tva, @numeroLot, @bonlivraison, @DateLivraison, @ArticleImage); SELECT SCOPE_IDENTITY();";
 
             using (SqlConnection connection = new SqlConnection(ConnectionString))
             {
@@ -131,11 +136,9 @@ namespace GestionComerce
                         cmd.Parameters.AddWithValue("@FournisseurID", this.FournisseurID);
                         cmd.Parameters.AddWithValue("@ArticleName", this.ArticleName ?? string.Empty);
 
-                        // Handle nullable Date
                         cmd.Parameters.AddWithValue("@Date",
                             this.Date.HasValue ? (object)this.Date.Value : DBNull.Value);
 
-                        // Handle nullable DateExpiration
                         cmd.Parameters.AddWithValue("@DateExpiration",
                             this.DateExpiration.HasValue ? (object)this.DateExpiration.Value : DBNull.Value);
 
@@ -144,9 +147,18 @@ namespace GestionComerce
                         cmd.Parameters.AddWithValue("@numeroLot", this.numeroLot ?? string.Empty);
                         cmd.Parameters.AddWithValue("@bonlivraison", this.bonlivraison ?? string.Empty);
 
-                        // Handle nullable DateLiv
                         cmd.Parameters.AddWithValue("@DateLivraison",
                             this.DateLivraison.HasValue ? (object)this.DateLivraison.Value : DBNull.Value);
+
+                        // FIXED: Explicitly specify SqlDbType for the image parameter
+                        if (this.ArticleImage != null && this.ArticleImage.Length > 0)
+                        {
+                            cmd.Parameters.Add("@ArticleImage", SqlDbType.VarBinary, -1).Value = this.ArticleImage;
+                        }
+                        else
+                        {
+                            cmd.Parameters.Add("@ArticleImage", SqlDbType.VarBinary, -1).Value = DBNull.Value;
+                        }
 
                         object result = await cmd.ExecuteScalarAsync();
                         int id = Convert.ToInt32(result);
@@ -184,6 +196,7 @@ namespace GestionComerce
                 }
             }
         }
+
         public async Task<int> BringBackArticleAsync()
         {
             string query = "UPDATE Article SET Etat=1 WHERE ArticleID=@ArticleID";
@@ -223,7 +236,8 @@ namespace GestionComerce
                "tva=@tva, " +
                "numeroLot=@numeroLot, " +
                "bonlivraison=@bonlivraison, " +
-               "DateLivraison=@DateLivraison " +
+               "DateLivraison=@DateLivraison, " +
+               "ArticleImage=@ArticleImage " +
                "WHERE ArticleID=@ArticleID";
 
             using (SqlConnection connection = new SqlConnection(ConnectionString))
@@ -242,11 +256,9 @@ namespace GestionComerce
                         cmd.Parameters.AddWithValue("@ArticleName", this.ArticleName ?? string.Empty);
                         cmd.Parameters.AddWithValue("@ArticleID", this.ArticleID);
 
-                        // Handle nullable Date
                         cmd.Parameters.AddWithValue("@Date",
                             this.Date.HasValue ? (object)this.Date.Value : DBNull.Value);
 
-                        // Handle nullable DateExpiration
                         cmd.Parameters.AddWithValue("@DateExpiration",
                             this.DateExpiration.HasValue ? (object)this.DateExpiration.Value : DBNull.Value);
 
@@ -255,9 +267,18 @@ namespace GestionComerce
                         cmd.Parameters.AddWithValue("@numeroLot", this.numeroLot ?? string.Empty);
                         cmd.Parameters.AddWithValue("@bonlivraison", this.bonlivraison ?? string.Empty);
 
-                        // Handle nullable DateLiv
                         cmd.Parameters.AddWithValue("@DateLivraison",
                             this.DateLivraison.HasValue ? (object)this.DateLivraison.Value : DBNull.Value);
+
+                        // FIXED: Explicitly specify SqlDbType for the image parameter
+                        if (this.ArticleImage != null && this.ArticleImage.Length > 0)
+                        {
+                            cmd.Parameters.Add("@ArticleImage", SqlDbType.VarBinary, -1).Value = this.ArticleImage;
+                        }
+                        else
+                        {
+                            cmd.Parameters.Add("@ArticleImage", SqlDbType.VarBinary, -1).Value = DBNull.Value;
+                        }
 
                         await cmd.ExecuteNonQueryAsync();
                         return 1;

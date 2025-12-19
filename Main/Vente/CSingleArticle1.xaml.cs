@@ -1,61 +1,72 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.IO;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
-using System.Windows.Media;
 using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 
 namespace GestionComerce.Main.Vente
 {
-    /// <summary>
-    /// Interaction logic for CSingleArticle1.xaml
-    /// </summary>
     public partial class CSingleArticle1 : UserControl
     {
-        public CSingleArticle1(Article a, CMainV mainv, List<Famille> lf, List<Fournisseur> lfo, int s)
+        CMainV mainv;
+        public Article a;
+        List<Famille> lf;
+        List<Fournisseur> lfo; private string iconSize;
+
+        public CSingleArticle1(Article a, CMainV mainv, List<Famille> lf, List<Fournisseur> lfo, int s, string iconSize = "Moyennes")
         {
             InitializeComponent();
-            ArticleID.Text = a.ArticleID.ToString();
-            ArticleName.Text = a.ArticleName;
-            PrixVente.Text = a.PrixVente.ToString("F2");
-            Quantite.Text = a.Quantite.ToString();
-            PrixAchat.Text = a.PrixAchat.ToString("F2");
-            PrixMP.Text = a.PrixMP.ToString("F2");
 
+            this.a = a;
+            this.mainv = mainv;
+            this.lf = lf;
+            this.lfo = lfo;
+            this.iconSize = iconSize;
+
+            // Load article image
+            LoadArticleImage();
+
+            // Set common data
+            string familleName = "";
             foreach (Famille f in lf)
             {
                 if (f.FamilleID == a.FamillyID)
                 {
-                    Famille.Text = f.FamilleName;
+                    familleName = f.FamilleName;
                     break;
                 }
             }
 
+            string fournisseurName = "";
             foreach (Fournisseur fo in lfo)
             {
                 if (a.FournisseurID == fo.FournisseurID)
                 {
-                    FournisseurName.Text = fo.Nom;
+                    fournisseurName = fo.Nom;
                     break;
                 }
             }
 
-            Code.Text = a.Code.ToString();
-            this.mainv = mainv;
-            this.a = a;
-            this.lf = lf;
-            this.lfo = lfo;
-
-            if (s == 1)
+            if (s == 0) // Row layout (normal)
             {
+                ApplyRowLayout();
+
+                ArticleID.Text = a.ArticleID.ToString();
+                ArticleName.Text = a.ArticleName;
+                PrixVente.Text = a.PrixVente.ToString("F2") + " DH";
+                Quantite.Text = a.Quantite.ToString();
+                PrixAchat.Text = a.PrixAchat.ToString("F2") + " DH";
+                PrixMP.Text = a.PrixMP.ToString("F2") + " DH";
+                Famille.Text = familleName;
+                FournisseurName.Text = fournisseurName;
+                Code.Text = a.Code.ToString();
+            }
+            else if (s == 1) // Row layout (compact - for selected article preview)
+            {
+                ApplyRowLayout();
+
                 ArticleID.Visibility = Visibility.Collapsed;
                 ArticleIDC.Width = new GridLength(0);
                 PrixAchat.Visibility = Visibility.Collapsed;
@@ -66,12 +77,14 @@ namespace GestionComerce.Main.Vente
                 PrixMPC.Width = new GridLength(0);
                 Famille.Visibility = Visibility.Collapsed;
                 FamilleC.Width = new GridLength(0);
+                ImageColumnRow.Width = new GridLength(0);
 
                 ArticleIDC.MinWidth = 0;
                 PrixAchatC.MinWidth = 0;
                 PrixVenteC.MinWidth = 0;
                 PrixMPC.MinWidth = 0;
                 FamilleC.MinWidth = 0;
+                ImageColumnRow.MinWidth = 0;
 
                 ArticleNameC.MinWidth = 30;
                 QuantiteC.MinWidth = 30;
@@ -82,17 +95,191 @@ namespace GestionComerce.Main.Vente
                 QuantiteC.Width = new GridLength(1, GridUnitType.Star);
                 FournisseurNameC.Width = new GridLength(1, GridUnitType.Star);
                 CodeC.Width = new GridLength(1, GridUnitType.Star);
+
+                ArticleName.Text = a.ArticleName;
+                Quantite.Text = a.Quantite.ToString();
+                FournisseurName.Text = fournisseurName;
+                Code.Text = a.Code.ToString();
+            }
+            else if (s == 2) // Card layout
+            {
+                ApplyCardLayout();
+
+                CardArticleName.Text = a.ArticleName;
+                CardPrixAchat.Text = a.PrixAchat.ToString("F2") + " DH";
+                CardPrixVente.Text = a.PrixVente.ToString("F2") + " DH";
+                CardFournisseur.Text = fournisseurName;
+                CardFamille.Text = familleName;
+                CardCode.Text = a.Code.ToString();
+                CardQuantite.Text = a.Quantite.ToString();
             }
         }
 
-        CMainV mainv;
-        public Article a;
-        List<Famille> lf;
-        List<Fournisseur> lfo;
-
-        private void ArticleClicked(object sender, RoutedEventArgs e)
+        private void ApplyRowLayout()
         {
-            // Check if article already exists in cart
+            this.Width = double.NaN;
+            this.Height = 48;
+            this.Margin = new Thickness(0, 0, 0, 0);
+
+            RowLayout.Visibility = Visibility.Visible;
+            CardLayout.Visibility = Visibility.Collapsed;
+        }
+
+        private void ApplyCardLayout()
+        {
+            // Définir les dimensions selon la taille
+            int cardHeight = 0;
+            int imageHeight = 0;
+            int cardWidth = 0;
+
+            switch (iconSize)
+            {
+                case "Grandes":
+                    cardHeight = 320;
+                    imageHeight = 160;
+                    cardWidth = 300; // Set width for large icons
+                    break;
+                case "Moyennes":
+                    cardHeight = 310;
+                    imageHeight = 140;
+                    cardWidth = 0; // Let grid handle it
+                    break;
+                case "Petites":
+                    cardHeight = 180;
+                    imageHeight = 100;
+                    cardWidth = 0; // Let grid handle it
+                    break;
+                default:
+                    cardHeight = 340;
+                    imageHeight = 140;
+                    cardWidth = 0;
+                    break;
+            }
+
+            // Set width only for Grandes, otherwise let Grid handle it
+            // Set width for Grandes, otherwise let Grid handle it
+            if (iconSize == "Grandes")
+            {
+                this.Width = 590; // Fixed width for large icons
+                this.HorizontalAlignment = HorizontalAlignment.Center;
+            }
+            else
+            {
+                this.Width = double.NaN; // Auto width for Moyennes and Petites
+                this.HorizontalAlignment = HorizontalAlignment.Stretch;
+            }
+            this.Height = cardHeight;
+
+            // Don't set Width - let Grid handle it with Star sizing
+            this.Height = cardHeight;
+            this.HorizontalAlignment = HorizontalAlignment.Stretch;
+
+            // Mettre à jour la hauteur de la section image dans le Grid
+            if (CardLayout != null && CardLayout.Child is Grid cardGrid)
+            {
+                if (cardGrid.RowDefinitions.Count > 0)
+                {
+                    cardGrid.RowDefinitions[0].Height = new GridLength(imageHeight);
+                }
+            }
+
+            RowLayout.Visibility = Visibility.Collapsed;
+            CardLayout.Visibility = Visibility.Visible;
+
+            // Hide/show elements based on size
+            UpdateCardVisibility();
+        }
+
+        private void UpdateCardVisibility()
+        {
+            if (CardLayout?.Child is Grid cardGrid && cardGrid.Children.Count > 1)
+            {
+                var infoPanel = cardGrid.Children[1] as StackPanel;
+                if (infoPanel != null)
+                {
+                    // For small icons, show only image, name, and prices
+                    if (iconSize == "Petites")
+                    {
+                        // Hide detailed information panels
+                        foreach (UIElement child in infoPanel.Children)
+                        {
+                            if (child is StackPanel panel)
+                            {
+                                // Check the name of the panel
+                                if (panel.Name == "FournisseurPanel" || panel.Name == "StockPanel")
+                                {
+                                    panel.Visibility = Visibility.Collapsed;
+                                }
+                                else
+                                {
+                                    panel.Visibility = Visibility.Visible;
+                                }
+                            }
+                            else if (child is Grid grid)
+                            {
+                                // Hide famille/code grid for small icons
+                                if (grid.Name == "FamilleCodeGrid")
+                                {
+                                    grid.Visibility = Visibility.Collapsed;
+                                }
+                                else if (grid.Name == "PricesGrid")
+                                {
+                                    grid.Visibility = Visibility.Visible;
+                                }
+                            }
+                            else if (child is TextBlock)
+                            {
+                                // Keep article name visible
+                                child.Visibility = Visibility.Visible;
+                            }
+                        }
+                    }
+                    else
+                    {
+                        // Show all information for medium and large icons
+                        foreach (UIElement child in infoPanel.Children)
+                        {
+                            child.Visibility = Visibility.Visible;
+                        }
+                    }
+                }
+            }
+        }
+
+        private void LoadArticleImage()
+        {
+            try
+            {
+                if (a.ArticleImage != null && a.ArticleImage.Length > 0)
+                {
+                    BitmapImage bitmap = new BitmapImage();
+                    bitmap.BeginInit();
+                    bitmap.StreamSource = new MemoryStream(a.ArticleImage);
+                    bitmap.CacheOption = BitmapCacheOption.OnLoad;
+                    bitmap.EndInit();
+
+                    RowArticleImage.Source = bitmap;
+                    CardArticleImage.Source = bitmap;
+                }
+            }
+            catch
+            {
+                // Image loading failed, leave empty
+            }
+        }
+
+        private void ArticleClicked(object sender, MouseButtonEventArgs e)
+        {
+            if (a.Quantite <= 0)
+            {
+                MessageBox.Show(
+                    $"L'article '{a.ArticleName}' n'a plus de stock disponible.\n\nQuantité en stock : 0",
+                    "Stock Insuffisant",
+                    MessageBoxButton.OK,
+                    MessageBoxImage.Warning);
+                return;
+            }
+
             foreach (UIElement element in mainv.SelectedArticles.Children)
             {
                 if (element is CSingleArticle2 item)
@@ -115,7 +302,6 @@ namespace GestionComerce.Main.Vente
                 }
             }
 
-            // Add new article to cart
             mainv.TotalNett += a.PrixVente;
             mainv.TotalNet.Text = mainv.TotalNett.ToString("F2") + " DH";
             mainv.NbrA += 1;

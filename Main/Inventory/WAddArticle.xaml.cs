@@ -1,9 +1,13 @@
-﻿using System;
+﻿using Superete;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using Microsoft.Win32;
+using System.IO;
+using System.Windows.Media.Imaging;
 
 namespace GestionComerce.Main.Inventory
 {
@@ -17,12 +21,20 @@ namespace GestionComerce.Main.Inventory
         public CMainI main;
         public WExistingArticles ea;
         WNouveauStock ns;
+        private byte[] selectedImageBytes = null;
 
         public WAddArticle(Article a, List<Article> la, List<Famille> lf, List<Fournisseur> lfo, CMainI main, int s, WExistingArticles ea, WNouveauStock ns)
         {
             InitializeComponent();
+            if (a == null)
+            {
+                a = new Article(); // Create new article if null
+            }
             this.a = a;
-            this.la = la;
+
+            // CRITICAL: Always use main.la to ensure we're working with the same list
+            this.la = main.la;
+
             this.lf = lf;
             this.lfo = lfo;
             this.s = s;
@@ -33,7 +45,7 @@ namespace GestionComerce.Main.Inventory
             LoadFamillies(lf, 0);
             LoadFournisseurs(lfo, 0);
             LoadPayments(main.main.lp);
-
+            SelectDefaultPaymentMethod();
             // Set default dates
             DateArticle.SelectedDate = DateTime.Now;
             DateLivraison.SelectedDate = DateTime.Now;
@@ -67,36 +79,53 @@ namespace GestionComerce.Main.Inventory
             FamilliesList.SelectedIndex = 0;
             List<Fournisseur> lfoo = new List<Fournisseur>();
 
-           if (s == 0) // Edit mode
-{
-    ButtonsContainer.Visibility = Visibility.Collapsed;
-    EnregistrerButton.Visibility = Visibility.Visible;
-    HeaderText.Text = "Modifier Article Existante";
+            if (s == 0) // Edit mode
+            {
+                ButtonsContainer.Visibility = Visibility.Collapsed;
+                EnregistrerButton.Visibility = Visibility.Visible;
+                HeaderText.Text = "Modifier Article Existante";
 
-    Code.Text = a.Code.ToString();
-    ArticleName.Text = a.ArticleName;
-    PrixV.Text = a.PrixVente.ToString("0.00");
-    PrixA.Text = a.PrixAchat.ToString("0.00");
-    PrixMP.Text = a.PrixMP.ToString("0.00");
-    Quantite.Text = a.Quantite.ToString();
+                Code.Text = a.Code.ToString();
+                ArticleName.Text = a.ArticleName;
+                PrixV.Text = a.PrixVente.ToString("0.00");
+                PrixA.Text = a.PrixAchat.ToString("0.00");
+                PrixMP.Text = a.PrixMP.ToString("0.00");
+                Quantite.Text = a.Quantite.ToString();
 
-    // Load new fields
-    Marque.Text = a.marque ?? string.Empty;
-    TVA.Text = a.tva.ToString("0.00");
-    NumeroLot.Text = a.numeroLot ?? string.Empty;
-    BonLivraison.Text = a.bonlivraison ?? string.Empty;
+                // Load new fields
+                Marque.Text = a.marque ?? string.Empty;
+                TVA.Text = a.tva.ToString("0.00");
+                NumeroLot.Text = a.numeroLot ?? string.Empty;
+                BonLivraison.Text = a.bonlivraison ?? string.Empty;
 
-    // Handle nullable dates
-    if (a.Date.HasValue)
-        DateArticle.SelectedDate = a.Date.Value;
-    
-    if (a.DateLivraison.HasValue)
-        DateLivraison.SelectedDate = a.DateLivraison.Value;
-    
-    if (a.DateExpiration.HasValue)
-        DateExpiration.SelectedDate = a.DateExpiration.Value;
+                // Handle nullable dates
+                if (a.Date.HasValue)
+                    DateArticle.SelectedDate = a.Date.Value;
 
-    // ... rest of your code for loading fournisseurs and families
+                if (a.DateLivraison.HasValue)
+                    DateLivraison.SelectedDate = a.DateLivraison.Value;
+
+                if (a.DateExpiration.HasValue)
+                    DateExpiration.SelectedDate = a.DateExpiration.Value;
+
+                // Load image if exists
+                if (a.ArticleImage != null && a.ArticleImage.Length > 0)
+                {
+                    selectedImageBytes = a.ArticleImage;
+                    try
+                    {
+                        BitmapImage bitmap = new BitmapImage();
+                        bitmap.BeginInit();
+                        bitmap.StreamSource = new MemoryStream(a.ArticleImage);
+                        bitmap.CacheOption = BitmapCacheOption.OnLoad;
+                        bitmap.EndInit();
+                        ArticleImagePreview.Source = bitmap;
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show($"Erreur lors du chargement de l'image: {ex.Message}");
+                    }
+                }
 
                 foreach (Article ar in la)
                 {
@@ -148,6 +177,37 @@ namespace GestionComerce.Main.Inventory
             }
         }
 
+        private void SelectImageButton_Click(object sender, RoutedEventArgs e)
+        {
+            OpenFileDialog openFileDialog = new OpenFileDialog
+            {
+                Filter = "Image files (*.jpg, *.jpeg, *.png, *.bmp)|*.jpg;*.jpeg;*.png;*.bmp",
+                Title = "Sélectionner une image"
+            };
+
+            if (openFileDialog.ShowDialog() == true)
+            {
+                try
+                {
+                    // Read image as bytes
+                    selectedImageBytes = File.ReadAllBytes(openFileDialog.FileName);
+
+                    // Display preview
+                    BitmapImage bitmap = new BitmapImage();
+                    bitmap.BeginInit();
+                    bitmap.UriSource = new Uri(openFileDialog.FileName);
+                    bitmap.DecodePixelWidth = 200; // Optimize for display
+                    bitmap.EndInit();
+
+                    ArticleImagePreview.Source = bitmap;
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show($"Erreur lors du chargement de l'image: {ex.Message}");
+                }
+            }
+        }
+
         private void AddSupplierButton_Click(object sender, RoutedEventArgs e)
         {
             WAddFournisseur wAddFournisseur = new WAddFournisseur(main.main, null);
@@ -159,6 +219,37 @@ namespace GestionComerce.Main.Inventory
             wAddFournisseur.ShowDialog();
         }
 
+        // ADD THIS METHOD
+        private void SelectDefaultPaymentMethod()
+        {
+            try
+            {
+                // Get user's default payment method from settings
+                var parametres = ParametresGeneraux.ObtenirParametresParUserId(main.u.UserID, "Server=localhost\\SQLEXPRESS;Database=GESTIONCOMERCEP;Trusted_Connection=True;");
+
+                if (parametres != null && !string.IsNullOrEmpty(parametres.MethodePaiementParDefaut))
+                {
+                    // Find and select the matching payment method
+                    for (int i = 0; i < PaymentMethodComboBox.Items.Count; i++)
+                    {
+                        if (PaymentMethodComboBox.Items[i] is ComboBoxItem item)
+                        {
+                            if (item.Content.ToString() == parametres.MethodePaiementParDefaut)
+                            {
+                                PaymentMethodComboBox.SelectedIndex = i;
+                                break;
+                            }
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                // If it fails, just leave it unselected
+            }
+        }
+
+        // ADD THIS METHOD
         public void LoadFournisseurs(List<Fournisseur> lfo, int i)
         {
             FournisseurList.Items.Clear();
@@ -172,6 +263,7 @@ namespace GestionComerce.Main.Inventory
             }
         }
 
+        // ADD THIS METHOD
         public void LoadFamillies(List<Famille> lf, int i)
         {
             FamilliesList.Items.Clear();
@@ -185,12 +277,18 @@ namespace GestionComerce.Main.Inventory
             }
         }
 
+        // ADD THIS METHOD
         public void LoadPayments(List<PaymentMethod> lp)
         {
             PaymentMethodComboBox.Items.Clear();
-            foreach (PaymentMethod a in lp)
+            foreach (PaymentMethod pm in lp)
             {
-                PaymentMethodComboBox.Items.Add(a.PaymentMethodName);
+                ComboBoxItem item = new ComboBoxItem
+                {
+                    Content = pm.PaymentMethodName,
+                    Tag = pm.PaymentMethodID
+                };
+                PaymentMethodComboBox.Items.Add(item);
             }
         }
 
@@ -295,14 +393,17 @@ namespace GestionComerce.Main.Inventory
                 a.PrixAchat = Convert.ToDecimal(PrixA.Text);
                 a.PrixMP = Convert.ToDecimal(PrixMP.Text);
 
-                // Update new fields - CORRECTED
+                // ADD THIS LINE: Update the image when editing
+                a.ArticleImage = selectedImageBytes ?? a.ArticleImage;
+
+                // Update new fields
                 a.marque = string.IsNullOrWhiteSpace(Marque.Text) ? null : Marque.Text;
                 a.tva = string.IsNullOrWhiteSpace(TVA.Text) ? 0 : Convert.ToDecimal(TVA.Text);
                 a.numeroLot = string.IsNullOrWhiteSpace(NumeroLot.Text) ? null : NumeroLot.Text;
                 a.bonlivraison = string.IsNullOrWhiteSpace(BonLivraison.Text) ? null : BonLivraison.Text;
                 a.Date = DateArticle.SelectedDate ?? DateTime.Now;
-                a.DateLivraison = DateLivraison.SelectedDate;  // FIXED: Get FROM DatePicker
-                a.DateExpiration = DateExpiration.SelectedDate;  // Get FROM DatePicker
+                a.DateLivraison = DateLivraison.SelectedDate;
+                a.DateExpiration = DateExpiration.SelectedDate;
 
                 if (a.Quantite != Convert.ToInt32(Quantite.Text))
                 {
@@ -370,6 +471,7 @@ namespace GestionComerce.Main.Inventory
                 wCongratulations.ShowDialog();
             }
         }
+
         private void CancelButton_Click(object sender, RoutedEventArgs e)
         {
             this.Close();
@@ -479,6 +581,9 @@ namespace GestionComerce.Main.Inventory
             a.PrixMP = Convert.ToDecimal(PrixMP.Text);
             a.Quantite = Convert.ToInt32(Quantite.Text);
 
+            // ADD THIS LINE: Copy the selected image to the article
+            a.ArticleImage = selectedImageBytes;
+
             // New fields
             a.marque = string.IsNullOrWhiteSpace(Marque.Text) ? null : Marque.Text;
             a.tva = string.IsNullOrWhiteSpace(TVA.Text) ? 0 : Convert.ToDecimal(TVA.Text);
@@ -507,6 +612,15 @@ namespace GestionComerce.Main.Inventory
             }
         }
 
+        private int GetSelectedPaymentMethodID()
+        {
+            if (PaymentMethodComboBox.SelectedItem is ComboBoxItem selectedItem)
+            {
+                return (int)selectedItem.Tag;
+            }
+            return 0;
+        }
+
         private void CashButton_Click(object sender, RoutedEventArgs e)
         {
             if (!ValidateRequiredFields()) return;
@@ -519,11 +633,12 @@ namespace GestionComerce.Main.Inventory
                 MessageBox.Show("Veuillez selectionner un fournisseur ");
                 return;
             }
-            if (PaymentMethodComboBox.Text == "")
+            if (PaymentMethodComboBox.SelectedItem == null)
             {
                 MessageBox.Show("Veuillez selectionner un mode de paiement, si il y aacun method de payment ajouter la depuis parametres ");
                 return;
             }
+
 
             foreach (Article aa in la)
             {
@@ -568,15 +683,7 @@ namespace GestionComerce.Main.Inventory
                 }
             }
 
-            int MethodID = 0;
-            foreach (PaymentMethod p in main.main.lp)
-            {
-                if (p.PaymentMethodName == PaymentMethodComboBox.SelectedValue)
-                {
-                    MethodID = p.PaymentMethodID;
-                }
-            }
-
+            int MethodID = GetSelectedPaymentMethodID();
             WConfirmTransaction w = new WConfirmTransaction(this, null, null, a, 0, MethodID);
             w.ShowDialog();
         }
@@ -593,7 +700,7 @@ namespace GestionComerce.Main.Inventory
                 MessageBox.Show("Veuillez selectionner un fournisseur ");
                 return;
             }
-            if (PaymentMethodComboBox.Text == "")
+            if (PaymentMethodComboBox.SelectedItem == null)
             {
                 MessageBox.Show("Veuillez selectionner un mode de paiement, si il y aacun method de payment ajouter la depuis parametres ");
                 return;
@@ -642,15 +749,7 @@ namespace GestionComerce.Main.Inventory
                 }
             }
 
-            int MethodID = 0;
-            foreach (PaymentMethod p in main.main.lp)
-            {
-                if (p.PaymentMethodName == PaymentMethodComboBox.SelectedValue)
-                {
-                    MethodID = p.PaymentMethodID;
-                }
-            }
-
+            int MethodID = GetSelectedPaymentMethodID();
             WConfirmTransaction w = new WConfirmTransaction(this, null, null, a, 1, MethodID);
             w.ShowDialog();
         }
@@ -667,7 +766,7 @@ namespace GestionComerce.Main.Inventory
                 MessageBox.Show("Veuillez selectionner un fournisseur ");
                 return;
             }
-            if (PaymentMethodComboBox.Text == "")
+            if (PaymentMethodComboBox.SelectedItem == null)
             {
                 MessageBox.Show("Veuillez selectionner un mode de paiement, si il y aacun method de payment ajouter la depuis parametres ");
                 return;
@@ -716,15 +815,7 @@ namespace GestionComerce.Main.Inventory
                 }
             }
 
-            int MethodID = 0;
-            foreach (PaymentMethod p in main.main.lp)
-            {
-                if (p.PaymentMethodName == PaymentMethodComboBox.SelectedValue)
-                {
-                    MethodID = p.PaymentMethodID;
-                }
-            }
-
+            int MethodID = GetSelectedPaymentMethodID();
             WConfirmTransaction w = new WConfirmTransaction(this, null, null, a, 2, MethodID);
             w.ShowDialog();
         }

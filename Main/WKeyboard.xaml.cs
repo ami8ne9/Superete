@@ -16,11 +16,50 @@ namespace GestionComerce
         private bool isCapsLockOn = false;
         private bool isDragging = false;
         private Point dragStartPoint;
+        private int _currentUserId;
+        private static bool _autoShowEnabled = false;
 
         private static WKeyboard _instance;
         private DispatcherTimer enableTimer;
+        private void UpdateAutoShowBehavior()
+        {
+            try
+            {
+                var parametres = Superete.ParametresGeneraux.ObtenirParametresParUserId(_currentUserId, "Server=localhost\\SQLEXPRESS;Database=GESTIONCOMERCEP;Trusted_Connection=True;");
 
-        public static void ShowKeyboard()
+                if (parametres != null && parametres.AfficherClavier == "Oui")
+                {
+                    _autoShowEnabled = true;
+                    StartListeningForFocus();
+                }
+                else
+                {
+                    _autoShowEnabled = false;
+                }
+            }
+            catch
+            {
+                _autoShowEnabled = false;
+            }
+        }
+
+        private void StartListeningForFocus()
+        {
+            // This will be triggered when text inputs get focus
+            EventManager.RegisterClassHandler(typeof(System.Windows.Controls.TextBox),
+                System.Windows.Controls.TextBox.GotFocusEvent,
+                new RoutedEventHandler(TextBox_GotFocus));
+        }
+
+        private void TextBox_GotFocus(object sender, RoutedEventArgs e)
+        {
+            if (_autoShowEnabled && _instance != null)
+            {
+                _instance.Show();
+                _instance.Activate();
+            }
+        }
+        public static void ShowKeyboard(int userId = 0)
         {
             if (_instance == null)
             {
@@ -30,10 +69,14 @@ namespace GestionComerce
             }
             else
             {
-                _instance.Activate();
+                // Don't steal focus - just make it visible if hidden
+                if (!_instance.IsVisible)
+                {
+                    _instance.Show();
+                }
+                // Don't call Activate() - that steals focus
             }
         }
-
         public WKeyboard()
         {
             InitializeComponent();

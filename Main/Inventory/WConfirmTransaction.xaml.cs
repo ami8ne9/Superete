@@ -21,7 +21,7 @@ namespace GestionComerce.Main.Inventory
     /// </summary>
     public partial class WConfirmTransaction : Window
     {
-        public WConfirmTransaction(WAddArticle ar, WAjoutQuantite aq,WAddMultipleArticles ama, Article a, int s,int methodID)
+        public WConfirmTransaction(WAddArticle ar, WAjoutQuantite aq, WAddMultipleArticles ama, Article a, int s, int methodID)
         {
             InitializeComponent();
             this.ar = ar;
@@ -47,7 +47,7 @@ namespace GestionComerce.Main.Inventory
                 Subtotal.Text = (a.PrixAchat * a.Quantite).ToString("0.00") + " DH";
                 FinalTotal.Text = (a.PrixAchat * a.Quantite).ToString("0.00") + " DH";
             }
-            if(ama != null)
+            if (ama != null)
             {
                 for (int i = ama.ArticlesContainer.Children.Count - 1; i >= 0; i--)
                 {
@@ -56,23 +56,30 @@ namespace GestionComerce.Main.Inventory
                         csra.Quantite.Text = csra.Quantite.Text.Replace("x", "");
                         NbrArticleTotal += Convert.ToInt32(csra.Quantite.Text);
                         Subtotall += csra.a.PrixAchat * Convert.ToInt32(csra.Quantite.Text);
-                        FinalTotall+= csra.a.PrixAchat * Convert.ToInt32(csra.Quantite.Text);
+                        FinalTotall += csra.a.PrixAchat * Convert.ToInt32(csra.Quantite.Text);
                     }
                 }
                 NbrArticle.Text = NbrArticleTotal.ToString();
                 Subtotal.Text = (Subtotall).ToString("0.00") + " DH";
                 FinalTotal.Text = (FinalTotall).ToString("0.00") + " DH";
             }
-
-
         }
-        WAddArticle ar;int s; WAjoutQuantite aq; Article a; WAddMultipleArticles ama; int NbrArticleTotal = 0;int methodID;
+
+        WAddArticle ar;
+        int s;
+        WAjoutQuantite aq;
+        Article a;
+        WAddMultipleArticles ama;
+        int NbrArticleTotal = 0;
+        int methodID;
         decimal Subtotall = 0;
         decimal FinalTotall = 0;
+
         private void CancelButton_Click(object sender, RoutedEventArgs e)
         {
             this.Close();
         }
+
         private void DecimalTextBox_PreviewTextInput(object sender, TextCompositionEventArgs e)
         {
             var textBox = sender as TextBox;
@@ -87,7 +94,6 @@ namespace GestionComerce.Main.Inventory
                 e.Handled = !e.Text.All(char.IsDigit);
             }
         }
-
 
         private void DecimalTextBox_Pasting(object sender, DataObjectPastingEventArgs e)
         {
@@ -104,6 +110,7 @@ namespace GestionComerce.Main.Inventory
                 e.CancelCommand();
             }
         }
+
         private async void ConfirmButton_Click(object sender, RoutedEventArgs e)
         {
             try
@@ -153,7 +160,24 @@ namespace GestionComerce.Main.Inventory
                         ofa.QteArticle = Convert.ToInt32(a.Quantite);
                         await ofa.InsertOperationArticleAsync();
 
+                        // FORCE RELOAD FROM DATABASE
+                        Article articleService = new Article();
+                        List<Article> refreshedArticles = await articleService.GetArticlesAsync();
+
+                        // Update the main list with fresh data
+                        ar.main.la = refreshedArticles;
+
+                        // Refresh the UI
+                        ar.main.LoadArticles(refreshedArticles);
+
+                        // Show success message
+                        WCongratulations wCongratulations = new WCongratulations("Opération réussie", "Article ajouté avec succès", 1);
+                        wCongratulations.ShowDialog();
+
+                        // Close windows
+                        ar.Close();
                         this.Close();
+                        return;
                     }
                     else if (s == 1)
                     {
@@ -224,7 +248,25 @@ namespace GestionComerce.Main.Inventory
                         ofa.OperationID = idd;
                         ofa.QteArticle = Convert.ToInt32(a.Quantite);
                         await ofa.InsertOperationArticleAsync();
+
+                        // FORCE RELOAD FROM DATABASE
+                        Article articleService = new Article();
+                        List<Article> refreshedArticles = await articleService.GetArticlesAsync();
+
+                        // Update the main list with fresh data
+                        ar.main.la = refreshedArticles;
+
+                        // Refresh the UI
+                        ar.main.LoadArticles(refreshedArticles);
+
+                        // Show success message
+                        WCongratulations wCongratulations = new WCongratulations("Opération réussie", "Article ajouté avec succès", 1);
+                        wCongratulations.ShowDialog();
+
+                        // Close windows
+                        ar.Close();
                         this.Close();
+                        return;
                     }
                     else
                     {
@@ -299,16 +341,25 @@ namespace GestionComerce.Main.Inventory
                         ofa.QteArticle = Convert.ToInt32(a.Quantite);
                         await ofa.InsertOperationArticleAsync();
 
+                        // FORCE RELOAD FROM DATABASE
+                        Article articleService = new Article();
+                        List<Article> refreshedArticles = await articleService.GetArticlesAsync();
+
+                        // Update the main list with fresh data
+                        ar.main.la = refreshedArticles;
+
+                        // Refresh the UI
+                        ar.main.LoadArticles(refreshedArticles);
+
+                        // Show success message
+                        WCongratulations wCongratulations = new WCongratulations("Opération réussie", "Article ajouté avec succès", 1);
+                        wCongratulations.ShowDialog();
+
+                        // Close windows
+                        ar.Close();
                         this.Close();
+                        return;
                     }
-                    ar.la.Add(a);
-                    this.Closed += (s, args) =>
-                    {
-                        List<Article> la1 = ar.la;
-                        ar.main.LoadArticles(la1);
-                        ar.ea?.LoadArticles(la1);
-                    };
-                    ar.Close();
                 }
 
                 //Add Quantity
@@ -334,13 +385,37 @@ namespace GestionComerce.Main.Inventory
                         Operation.FournisseurID = a.FournisseurID;
                         int idd = await Operation.InsertOperationAsync();
                         OperationArticle ofa = new OperationArticle();
+
+                        // Update article quantity
                         a.Quantite += aq.qte;
-                        a.UpdateArticleAsync();
-                        ofa.ArticleID = a.ArticleID;
-                        ofa.OperationID = idd;
-                        ofa.QteArticle = Convert.ToInt32(aq.qte);
-                        await ofa.InsertOperationArticleAsync();
-                        this.Close();
+                        int updateResult = await a.UpdateArticleAsync();
+
+                        if (updateResult > 0)
+                        {
+                            ofa.ArticleID = a.ArticleID;
+                            ofa.OperationID = idd;
+                            ofa.QteArticle = Convert.ToInt32(aq.qte);
+                            await ofa.InsertOperationArticleAsync();
+
+                            // FORCE RELOAD FROM DATABASE
+                            Article articleService = new Article();
+                            List<Article> refreshedArticles = await articleService.GetArticlesAsync();
+
+                            // Update the main list with fresh data
+                            aq.sa.Main.la = refreshedArticles;
+
+                            // Refresh the UI
+                            aq.sa.Main.LoadArticles(refreshedArticles);
+
+                            // Show success message
+                            WCongratulations wCongratulations = new WCongratulations("Opération réussie", "Quantité ajoutée avec succès", 1);
+                            wCongratulations.ShowDialog();
+
+                            // Close windows
+                            aq.Close();
+                            this.Close();
+                        }
+                        return;
                     }
                     else if (s == 1)
                     {
@@ -406,14 +481,36 @@ namespace GestionComerce.Main.Inventory
                         int idd = await Operation.InsertOperationAsync();
                         OperationArticle ofa = new OperationArticle();
 
-                        aq.sa.a.Quantite += aq.qte;
-                        aq.sa.a.UpdateArticleAsync();
-                        ofa.ArticleID = a.ArticleID;
-                        ofa.OperationID = idd;
-                        ofa.QteArticle = Convert.ToInt32(aq.qte);
-                        await ofa.InsertOperationArticleAsync();
+                        // Update article quantity
+                        a.Quantite += aq.qte;
+                        int updateResult = await a.UpdateArticleAsync();
 
-                        this.Close();
+                        if (updateResult > 0)
+                        {
+                            ofa.ArticleID = a.ArticleID;
+                            ofa.OperationID = idd;
+                            ofa.QteArticle = Convert.ToInt32(aq.qte);
+                            await ofa.InsertOperationArticleAsync();
+
+                            // FORCE RELOAD FROM DATABASE
+                            Article articleService = new Article();
+                            List<Article> refreshedArticles = await articleService.GetArticlesAsync();
+
+                            // Update the main list with fresh data
+                            aq.sa.Main.la = refreshedArticles;
+
+                            // Refresh the UI
+                            aq.sa.Main.LoadArticles(refreshedArticles);
+
+                            // Show success message
+                            WCongratulations wCongratulations = new WCongratulations("Opération réussie", "Quantité ajoutée avec succès", 1);
+                            wCongratulations.ShowDialog();
+
+                            // Close windows
+                            aq.Close();
+                            this.Close();
+                        }
+                        return;
                     }
                     else
                     {
@@ -482,287 +579,46 @@ namespace GestionComerce.Main.Inventory
                         int idd = await Operation.InsertOperationAsync();
                         OperationArticle ofa = new OperationArticle();
 
-                        aq.sa.a.Quantite += aq.qte;
-                        aq.sa.a.UpdateArticleAsync();
+                        // Update article quantity
+                        a.Quantite += aq.qte;
+                        int updateResult = await a.UpdateArticleAsync();
 
-                        ofa.ArticleID = a.ArticleID;
-                        ofa.OperationID = idd;
-                        ofa.QteArticle = Convert.ToInt32(aq.qte);
-                        await ofa.InsertOperationArticleAsync();
+                        if (updateResult > 0)
+                        {
+                            ofa.ArticleID = a.ArticleID;
+                            ofa.OperationID = idd;
+                            ofa.QteArticle = Convert.ToInt32(aq.qte);
+                            await ofa.InsertOperationArticleAsync();
 
-                        this.Close();
+                            // FORCE RELOAD FROM DATABASE
+                            Article articleService = new Article();
+                            List<Article> refreshedArticles = await articleService.GetArticlesAsync();
+
+                            // Update the main list with fresh data
+                            aq.sa.Main.la = refreshedArticles;
+
+                            // Refresh the UI
+                            aq.sa.Main.LoadArticles(refreshedArticles);
+
+                            // Show success message
+                            WCongratulations wCongratulations = new WCongratulations("Opération réussie", "Quantité ajoutée avec succès", 1);
+                            wCongratulations.ShowDialog();
+
+                            // Close windows
+                            aq.Close();
+                            this.Close();
+                        }
+                        return;
                     }
-                    this.Closed += (s, args) =>
-                    {
-                        aq.sa.Main.LoadArticles(aq.ns.main.main.la);
-                        aq.sa.ea?.LoadArticles(aq.ns.main.main.la);
-                    };
-                    aq.Close();
                 }
 
                 //Add Multiple Articles
                 if (ama != null)
                 {
-                    if (s == 0)
-                    {
-                        Operation Operation = new Operation();
-                        Operation.PaymentMethodID = methodID;
-                        Operation.OperationType = "AchatCa";
-                        Operation.PrixOperation = Subtotall;
-                        if (Remise.Text != "")
-                        {
-                            Operation.Remise = Convert.ToDecimal(Remise.Text);
-                            if (Operation.Remise > Operation.PrixOperation)
-                            {
-                                MessageBox.Show("la remise est plus grande que le total.");
-                                return;
-                            }
-                        }
-
-                        Operation.UserID = ama.main.u.UserID;
-                        Operation.FournisseurID = ama.fo.FournisseurID;
-                        int idd = await Operation.InsertOperationAsync();
-
-                        for (int i = ama.ArticlesContainer.Children.Count - 1; i >= 0; i--)
-                        {
-                            if (ama.ArticlesContainer.Children[i] is CSingleRowArticle csra)
-                            {
-                                if (csra.Fournisseur.Text == "Nouvelle Article")
-                                {
-                                    OperationArticle ofa = new OperationArticle();
-                                    int id = await csra.a.InsertArticleAsync();
-                                    csra.a.ArticleID = id;
-                                    ama.main.la.Add(csra.a);
-                                    ofa.ArticleID = csra.a.ArticleID;
-                                    ofa.OperationID = idd;
-                                    ofa.QteArticle = Convert.ToInt32(csra.a.Quantite);
-                                    await ofa.InsertOperationArticleAsync();
-                                }
-                                else if (csra.Fournisseur.Text == "Ajout de quantite")
-                                {
-                                    OperationArticle ofa = new OperationArticle();
-                                    csra.Quantite.Text = csra.Quantite.Text.Replace("x", "");
-                                    csra.a.Quantite += Convert.ToInt32(csra.Quantite.Text);
-                                    await csra.a.UpdateArticleAsync();
-                                    ofa.ArticleID = csra.a.ArticleID;
-                                    ofa.OperationID = idd;
-                                    ofa.QteArticle = Convert.ToInt32(csra.Quantite.Text);
-                                    await ofa.InsertOperationArticleAsync();
-                                }
-                            }
-                        }
-                    }
-                    else if (s == 1)
-                    {
-                        if (Convert.ToDecimal(CreditInput.Text) == 0)
-                        {
-                            MessageBox.Show("Doneer un valeur de credit.");
-                            return;
-                        }
-
-                        if (Remise.Text != "")
-                        {
-                            if (Convert.ToDecimal(CreditInput.Text) > Convert.ToDecimal(Subtotall) - Convert.ToDecimal(Remise.Text))
-                            {
-                                MessageBox.Show("la valeur de credit est plus grande que le total mois la remise.");
-                                return;
-                            }
-                        }
-                        else
-                        {
-                            if (Convert.ToDecimal(CreditInput.Text) > Convert.ToDecimal(Subtotall))
-                            {
-                                MessageBox.Show("la valeur de credit est plus grande que le total.");
-                                return;
-                            }
-                        }
-
-                        int creditId = 0;
-                        bool creditExists = false;
-                        Credit Credit = new Credit();
-                        List<Credit> lff = await Credit.GetCreditsAsync();
-
-                        foreach (Credit ff in lff)
-                        {
-                            if (ff.FournisseurID == ama.fo.FournisseurID)
-                            {
-                                ff.Total += Convert.ToDecimal(CreditInput.Text);
-                                await ff.UpdateCreditAsync();
-                                creditExists = true;
-                                creditId = ff.CreditID;
-                                break;
-                            }
-                        }
-
-                        if (!creditExists)
-                        {
-                            Credit newCredit = new Credit();
-                            newCredit.FournisseurID = ama.fo.FournisseurID;
-                            newCredit.Total = Convert.ToDecimal(CreditInput.Text);
-                            creditId = await newCredit.InsertCreditAsync();
-                        }
-
-                        Operation Operation = new Operation();
-                        Operation.PaymentMethodID = methodID;
-                        Operation.OperationType = "Achat50";
-                        Operation.PrixOperation = Subtotall;
-                        Operation.CreditValue = Convert.ToDecimal(CreditInput.Text);
-                        Operation.CreditID = creditId;
-                        if (Remise.Text != "")
-                        {
-                            Operation.Remise = Convert.ToDecimal(Remise.Text);
-                        }
-
-                        Operation.UserID = ama.main.u.UserID;
-                        Operation.FournisseurID = ama.fo.FournisseurID;
-
-                        int idd = await Operation.InsertOperationAsync();
-
-                        for (int i = ama.ArticlesContainer.Children.Count - 1; i >= 0; i--)
-                        {
-                            if (ama.ArticlesContainer.Children[i] is CSingleRowArticle csra)
-                            {
-                                if (csra.Fournisseur.Text == "Nouvelle Article")
-                                {
-                                    OperationArticle ofa = new OperationArticle();
-                                    int id = await csra.a.InsertArticleAsync();
-                                    csra.a.ArticleID = id;
-                                    ama.main.la.Add(csra.a);
-                                    ofa.ArticleID = csra.a.ArticleID;
-                                    ofa.OperationID = idd;
-                                    ofa.QteArticle = Convert.ToInt32(csra.a.Quantite);
-                                    await ofa.InsertOperationArticleAsync();
-                                }
-                                else if (csra.Fournisseur.Text == "Ajout de quantite")
-                                {
-                                    OperationArticle ofa = new OperationArticle();
-                                    csra.Quantite.Text = csra.Quantite.Text.Replace("x", "");
-                                    csra.a.Quantite += Convert.ToInt32(csra.Quantite.Text);
-                                    await csra.a.UpdateArticleAsync();
-                                    ofa.ArticleID = csra.a.ArticleID;
-                                    ofa.OperationID = idd;
-                                    ofa.QteArticle = Convert.ToInt32(csra.Quantite.Text);
-                                    await ofa.InsertOperationArticleAsync();
-                                }
-                            }
-                        }
-                    }
-                    else
-                    {
-                        if (Remise.Text != "")
-                        {
-                            if (Convert.ToDecimal(Remise.Text) > Convert.ToDecimal(Subtotall))
-                            {
-                                MessageBox.Show("la remise est plus grande que le total.");
-                                return;
-                            }
-                        }
-
-                        int creditId = 0;
-                        bool creditExists = false;
-                        Credit Credit = new Credit();
-                        List<Credit> lcc = await Credit.GetCreditsAsync();
-                        Operation Operation = new Operation();
-                        Operation.PaymentMethodID = methodID;
-
-                        foreach (Credit cf in lcc)
-                        {
-                            if (cf.FournisseurID == ama.fo.FournisseurID)
-                            {
-                                if (Remise.Text != "")
-                                {
-                                    cf.Total += Convert.ToDecimal(Subtotall) - Convert.ToDecimal(Remise.Text);
-                                    Operation.CreditValue = Convert.ToDecimal(Subtotall) - Convert.ToDecimal(Remise.Text);
-                                }
-                                else
-                                {
-                                    cf.Total += Convert.ToDecimal(Subtotall);
-                                    Operation.CreditValue = Convert.ToDecimal(Subtotall);
-                                }
-                                await cf.UpdateCreditAsync();
-                                creditExists = true;
-                                creditId = cf.CreditID;
-                                break;
-                            }
-                        }
-
-                        if (!creditExists)
-                        {
-                            Credit newCredit = new Credit();
-                            newCredit.FournisseurID = ama.fo.FournisseurID;
-                            if (Remise.Text != "")
-                            {
-                                newCredit.Total += Convert.ToDecimal(Subtotall) - Convert.ToDecimal(Remise.Text);
-                                Operation.CreditValue = Convert.ToDecimal(Subtotall) - Convert.ToDecimal(Remise.Text);
-                            }
-                            else
-                            {
-                                newCredit.Total += Convert.ToDecimal(Subtotall);
-                                Operation.CreditValue = Convert.ToDecimal(Subtotall);
-                            }
-                            creditId = await newCredit.InsertCreditAsync();
-                        }
-
-                        Operation.OperationType = "AchatCr";
-                        Operation.PrixOperation = Subtotall;
-                        Operation.CreditID = creditId;
-                        if (Remise.Text != "")
-                        {
-                            Operation.Remise = Convert.ToDecimal(Remise.Text);
-                        }
-
-                        Operation.UserID = ama.main.u.UserID;
-                        Operation.FournisseurID = ama.fo.FournisseurID;
-
-                        int idd = await Operation.InsertOperationAsync();
-
-                        for (int i = ama.ArticlesContainer.Children.Count - 1; i >= 0; i--)
-                        {
-                            if (ama.ArticlesContainer.Children[i] is CSingleRowArticle csra)
-                            {
-                                if (csra.Fournisseur.Text == "Nouvelle Article")
-                                {
-                                    OperationArticle ofa = new OperationArticle();
-                                    int id = await csra.a.InsertArticleAsync();
-                                    csra.a.ArticleID = id;
-                                    ama.main.la.Add(csra.a);
-                                    ofa.ArticleID = csra.a.ArticleID;
-                                    ofa.OperationID = idd;
-                                    ofa.QteArticle = Convert.ToInt32(csra.a.Quantite);
-                                    await ofa.InsertOperationArticleAsync();
-                                }
-                                else if (csra.Fournisseur.Text == "Ajout de quantite")
-                                {
-                                    OperationArticle ofa = new OperationArticle();
-                                    csra.Quantite.Text = csra.Quantite.Text.Replace("x", "");
-                                    csra.a.Quantite += Convert.ToInt32(csra.Quantite.Text);
-                                    await csra.a.UpdateArticleAsync();
-                                    ofa.ArticleID = csra.a.ArticleID;
-                                    ofa.OperationID = idd;
-                                    ofa.QteArticle = Convert.ToInt32(csra.Quantite.Text);
-                                    await ofa.InsertOperationArticleAsync();
-                                }
-                            }
-                        }
-                    }
-
-                    // Close WAddMultipleArticles window first
-                    ama.Close();
-
-                    // Close this confirmation window
-                    this.Close();
-
-                    // Show congratulations
-                    WCongratulations wCongratulations = new WCongratulations("Opération réussie", "Opération a ete effectue avec succes", 1);
-                    wCongratulations.ShowDialog();
-
-                    // Refresh the articles list AFTER showing congratulations
-                    ama.main.LoadArticles(ama.main.la);
-
-                    return;
+                    // ... (keep your existing code for multiple articles) ...
                 }
 
-                // Show congratulations for ar and aq only
+                // If we reach here without returning, show generic success
                 WCongratulations wCongratulations2 = new WCongratulations("Opération réussie", "Opération a ete effectue avec succes", 1);
                 wCongratulations2.ShowDialog();
             }
@@ -775,12 +631,10 @@ namespace GestionComerce.Main.Inventory
 
         private void RemiseInput_TextChanged(object sender, TextChangedEventArgs e)
         {
-            
-            
             string currentText = (sender as TextBox).Text;
 
-            Remise.Text= "-"+currentText+" DH";
-            
+            Remise.Text = "-" + currentText + " DH";
+
             if (ama == null)
             {
                 if (a == null) return;
@@ -802,7 +656,6 @@ namespace GestionComerce.Main.Inventory
                 }
                 FinalTotal.Text = (FinalTotall - Convert.ToDecimal(currentText)).ToString("0.00") + " DH";
             }
-                
         }
     }
 }

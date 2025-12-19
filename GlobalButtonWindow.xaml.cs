@@ -24,7 +24,7 @@ namespace GestionComerce
     public partial class GlobalButtonWindow : Window
     {
         private DispatcherTimer enableTimer;
-
+        private int _currentUserId;
         public GlobalButtonWindow()
         {
             InitializeComponent();
@@ -40,6 +40,8 @@ namespace GestionComerce
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
+            UpdateKeyboardButtonVisibility(); // Add this line
+
             // Timer to constantly re-enable the window in case dialogs disable it
             enableTimer = new DispatcherTimer();
             enableTimer.Interval = TimeSpan.FromMilliseconds(100);
@@ -50,7 +52,37 @@ namespace GestionComerce
             };
             enableTimer.Start();
         }
+        public void SetUser(int userId)
+        {
+            _currentUserId = userId;
+            UpdateKeyboardButtonVisibility();
+        }
+        private void UpdateKeyboardButtonVisibility()
+        {
+            try
+            {
+                var parametres = Superete.ParametresGeneraux.ObtenirParametresParUserId(_currentUserId, "Server=localhost\\SQLEXPRESS;Database=GESTIONCOMERCEP;Trusted_Connection=True;");
 
+                if (parametres != null)
+                {
+                    string setting = parametres.AfficherClavier;
+
+                    if (setting == "Non")
+                    {
+                        KeyboardButton.Visibility = Visibility.Collapsed;
+                    }
+                    else // "Oui" or "Manuel"
+                    {
+                        KeyboardButton.Visibility = Visibility.Visible;
+                    }
+                }
+            }
+            catch
+            {
+                // Default to visible if settings can't be loaded
+                KeyboardButton.Visibility = Visibility.Visible;
+            }
+        }
         private void Window_SourceInitialized(object sender, EventArgs e)
         {
             var hwnd = new WindowInteropHelper(this).Handle;
@@ -97,7 +129,7 @@ namespace GestionComerce
 
         private void KeyboardButton_Click(object sender, RoutedEventArgs e)
         {
-            WKeyboard.ShowKeyboard();
+            WKeyboard.ShowKeyboard(_currentUserId);
         }
 
         private void KeyboardButton_MouseEnter(object sender, MouseEventArgs e)

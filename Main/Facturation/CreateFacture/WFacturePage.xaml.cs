@@ -24,12 +24,15 @@ namespace GestionComerce.Main.Facturation.CreateFacture
         public CMainFa main;
         Dictionary<string, string> FactureInfo;
         private InvoiceRepository _invoiceRepository;
+        private bool _hideEmptyLabels = false;
 
         public WFacturePage(CMainFa main, Dictionary<string, string> FactureInfo, List<InvoiceArticle> invoiceArticles = null)
         {
             InitializeComponent();
             this.main = main;
             this.FactureInfo = FactureInfo;
+
+            LoadEmptyLabelsSetting();
 
             _invoiceRepository = new InvoiceRepository("");
 
@@ -74,7 +77,28 @@ namespace GestionComerce.Main.Facturation.CreateFacture
                 LoadArticles(new List<List<InvoiceArticle>>());
             }
         }
+        private void LoadEmptyLabelsSetting()
+        {
+            try
+            {
+                if (main?.u != null)
+                {
+                    var parametres = Superete.ParametresGeneraux.ObtenirParametresParUserId(
+                        main.u.UserID,
+                        "Server=localhost\\SQLEXPRESS;Database=GESTIONCOMERCEP;Trusted_Connection=True;"
+                    );
 
+                    if (parametres != null)
+                    {
+                        _hideEmptyLabels = parametres.MasquerEtiquettesVides;
+                    }
+                }
+            }
+            catch
+            {
+                _hideEmptyLabels = false;
+            }
+        }
         private List<InvoiceArticle> MergeArticlesForDisplay(List<InvoiceArticle> articles)
         {
             var mergedArticles = new List<InvoiceArticle>();
@@ -364,6 +388,12 @@ namespace GestionComerce.Main.Facturation.CreateFacture
             if (objectBlock != null)
             {
                 objectBlock.Text = GetDictionaryValue("Object");
+
+                // ADD THIS: Hide if empty
+                if (_hideEmptyLabels && string.IsNullOrWhiteSpace(objectBlock.Text))
+                {
+                    panel.Visibility = Visibility.Collapsed;
+                }
             }
         }
 
@@ -623,6 +653,19 @@ namespace GestionComerce.Main.Facturation.CreateFacture
             {
                 SetTextBlockValue(canvas, "txtDisplayMontant", GetDictionaryValue("MontantApresRemise"));
             }
+
+            // ADD THIS: Hide empty labels in header grid
+            Grid headerGrid = FindVisualChild<Grid>(canvas, "ArticlesContainer");
+            if (headerGrid != null)
+            {
+                foreach (UIElement child in headerGrid.Children)
+                {
+                    if (child is StackPanel panel)
+                    {
+                        HideEmptyLabelsInPanel(panel);
+                    }
+                }
+            }
         }
 
         private StackPanel CreateObjectPanel(bool isCheckType = false)
@@ -762,7 +805,8 @@ namespace GestionComerce.Main.Facturation.CreateFacture
             {
                 Orientation = Orientation.Horizontal,
                 Margin = new Thickness(0),
-                VerticalAlignment = VerticalAlignment.Top
+                VerticalAlignment = VerticalAlignment.Top,
+                Name = $"row_{textBlockName}"
             };
 
             sp.Children.Add(new TextBlock
@@ -773,7 +817,8 @@ namespace GestionComerce.Main.Facturation.CreateFacture
                 Foreground = new SolidColorBrush(Color.FromRgb(45, 55, 72)),
                 Width = labelWidth,
                 VerticalAlignment = VerticalAlignment.Top,
-                Margin = new Thickness(0)
+                Margin = new Thickness(0),
+                Name = $"lbl_{textBlockName}"
             });
 
             sp.Children.Add(new TextBlock
@@ -827,6 +872,15 @@ namespace GestionComerce.Main.Facturation.CreateFacture
             SetTextBlockValue(panel, "txtDisplayIdSocieteU", GetDictionaryValue("IdSocieteU"));
             SetTextBlockValue(panel, "txtDisplaySeigeU", GetDictionaryValue("SiegeEntrepriseU"));
             SetTextBlockValue(panel, "txtDisplayAdresseU", GetDictionaryValue("AdressU"));
+
+            // ADD THIS: Hide empty labels in footer
+            foreach (UIElement child in panel.Children)
+            {
+                if (child is StackPanel row)
+                {
+                    HideEmptyLabelsInPanel(row);
+                }
+            }
         }
 
         private void SetTextBlockValue(DependencyObject parent, string name, string value)
@@ -916,7 +970,8 @@ namespace GestionComerce.Main.Facturation.CreateFacture
             StackPanel sp = new StackPanel
             {
                 Orientation = Orientation.Horizontal,
-                Margin = new Thickness(0)
+                Margin = new Thickness(0),
+                Name = $"row_{textBlockName}"
             };
 
             sp.Children.Add(new TextBlock
@@ -927,7 +982,8 @@ namespace GestionComerce.Main.Facturation.CreateFacture
                 Foreground = new SolidColorBrush(Color.FromRgb(45, 55, 72)),
                 Width = labelWidth,
                 VerticalAlignment = VerticalAlignment.Center,
-                Margin = new Thickness(0)
+                Margin = new Thickness(0),
+                Name = $"lbl_{textBlockName}"
             });
 
             TextBlock valueBlock = new TextBlock
@@ -1001,7 +1057,8 @@ namespace GestionComerce.Main.Facturation.CreateFacture
             StackPanel sp = new StackPanel
             {
                 Orientation = Orientation.Horizontal,
-                Margin = new Thickness(0)
+                Margin = new Thickness(0),
+                Name = $"row_{textBlockName}"
             };
 
             sp.Children.Add(new TextBlock
@@ -1010,7 +1067,8 @@ namespace GestionComerce.Main.Facturation.CreateFacture
                 FontSize = 10,
                 Foreground = new SolidColorBrush(Color.FromRgb(45, 55, 72)),
                 Width = labelWidth,
-                VerticalAlignment = VerticalAlignment.Center
+                VerticalAlignment = VerticalAlignment.Center,
+                Name = $"lbl_{textBlockName}"
             });
 
             sp.Children.Add(new TextBlock
@@ -1024,6 +1082,33 @@ namespace GestionComerce.Main.Facturation.CreateFacture
             });
 
             return sp;
+        }
+        private void HideEmptyLabelsInPanel(Panel panel)
+        {
+            if (!_hideEmptyLabels) return;
+
+            foreach (UIElement child in panel.Children)
+            {
+                if (child is StackPanel row)
+                {
+                    // Check if this row has a value TextBlock
+                    TextBlock valueBlock = null;
+                    foreach (UIElement rowChild in row.Children)
+                    {
+                        if (rowChild is TextBlock tb && !tb.Name.StartsWith("lbl_"))
+                        {
+                            valueBlock = tb;
+                            break;
+                        }
+                    }
+
+                    // Hide the entire row if value is empty
+                    if (valueBlock != null && string.IsNullOrWhiteSpace(valueBlock.Text))
+                    {
+                        row.Visibility = Visibility.Collapsed;
+                    }
+                }
+            }
         }
 
         private string GetTemplateForPage(int index, int totalPages, string[] templates)

@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
+using Superete;
 
 namespace GestionComerce.Main.Inventory
 {
@@ -15,10 +17,14 @@ namespace GestionComerce.Main.Inventory
         public User u;
         public List<Fournisseur> lfo;
         public List<Article> la;
-
-        private const int ARTICLES_PER_PAGE = 10;
+        private int cardsPerRow = 7; // Default for moyenne taille
+        private string currentIconSize = "Moyennes";
+        private int articlesPerPage = 12;
         private int currentlyLoadedCount = 0;
         private List<Article> filteredArticles;
+        private bool isCardLayout = false; // Track current layout mode
+        private string currentSortCriteria = "Plus récent au plus ancien"; // Default sort
+        private ParametresGeneraux _parametres;
 
         public CMainI(User u, List<Article> la, List<Famille> lf, List<Fournisseur> lfo, MainWindow main)
         {
@@ -29,6 +35,9 @@ namespace GestionComerce.Main.Inventory
             this.la = la;
             this.lfo = lfo;
             this.filteredArticles = new List<Article>();
+
+            // Charger les paramètres utilisateur
+            ChargerParametres();
 
             foreach (Role r in main.lr)
             {
@@ -56,14 +65,205 @@ namespace GestionComerce.Main.Inventory
             }
         }
 
+        /// <summary>
+        /// Charge les paramètres généraux de l'utilisateur
+        /// </summary>
+        private void ChargerParametres()
+        {
+            try
+            {
+                string connectionString = "Server=localhost\\SQLEXPRESS;Database=GESTIONCOMERCEP;Trusted_Connection=True;";
+                _parametres = ParametresGeneraux.ObtenirOuCreerParametres(u.UserID, connectionString);
+
+                // SI LES PARAMETRES VIENNENT D'ÊTRE CRÉÉS, FORCER LES BONNES VALEURS PAR DÉFAUT
+                if (_parametres != null)
+                {
+                    bool needsUpdate = false;
+
+                    // Forcer VueParDefaut à "Row" si ce n'est pas déjà le cas
+                    if (string.IsNullOrEmpty(_parametres.VueParDefaut) || _parametres.VueParDefaut == "Cartes" || _parametres.VueParDefaut == "Moyennes")
+                    {
+                        _parametres.VueParDefaut = "Row";
+                        needsUpdate = true;
+                    }
+
+                    // Forcer TrierParDefaut à "Plus récent au plus ancien" si ce n'est pas déjà le cas
+                    if (string.IsNullOrEmpty(_parametres.TrierParDefaut) || _parametres.TrierParDefaut != "Plus récent au plus ancien")
+                    {
+                        _parametres.TrierParDefaut = "Plus récent au plus ancien";
+                        needsUpdate = true;
+                    }
+
+                    // Si on a modifié quelque chose, sauvegarder
+                    if (needsUpdate)
+                    {
+                        _parametres.MettreAJourParametres(connectionString);
+                    }
+                }
+
+                // Appliquer les paramètres
+                AppliquerParametres();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Erreur lors du chargement des paramètres : {ex.Message}",
+                    "Avertissement", MessageBoxButton.OK, MessageBoxImage.Warning);
+                _parametres = null;
+            }
+        }
+
+        /// <summary>
+        /// Applique les paramètres chargés à l'interface
+        /// </summary>
+        private void AppliquerParametres()
+        {
+            if (_parametres == null) return;
+
+            try
+            {
+                // 1. Appliquer la Vue par défaut (Cartes ou Row)
+                // FORCE DEFAULT TO ROW IF EMPTY OR INVALID
+                string vueParDefaut = string.IsNullOrEmpty(_parametres.VueParDefaut) ? "Row" : _parametres.VueParDefaut;
+
+                if (vueParDefaut == "Cartes")
+                {
+                    isCardLayout = true;
+                    if (CardLayoutButton != null && RowLayoutButton != null)
+                    {
+                        CardLayoutButton.Style = (Style)FindResource("ActiveToggleButtonStyle");
+                        RowLayoutButton.Style = (Style)FindResource("ToggleButtonStyle");
+                    }
+                    if (TableHeader != null)
+                    {
+                        TableHeader.Visibility = Visibility.Collapsed;
+                    }
+                    // Show IconSizeComboBox for card layout
+                    if (IconSizeComboBox != null)
+                    {
+                        IconSizeComboBox.Visibility = Visibility.Visible;
+                    }
+                }
+                else // "Row"
+                {
+                    isCardLayout = false;
+                    if (CardLayoutButton != null && RowLayoutButton != null)
+                    {
+                        RowLayoutButton.Style = (Style)FindResource("ActiveToggleButtonStyle");
+                        CardLayoutButton.Style = (Style)FindResource("ToggleButtonStyle");
+                    }
+                    if (TableHeader != null)
+                    {
+                        TableHeader.Visibility = Visibility.Visible;
+                    }
+                    // Hide IconSizeComboBox for row layout
+                    if (IconSizeComboBox != null)
+                    {
+                        IconSizeComboBox.Visibility = Visibility.Collapsed;
+                    }
+                }
+
+                // 2. Appliquer le Tri par défaut
+                // FORCE DEFAULT TO "Plus récent au plus ancien" IF EMPTY
+                string trierParDefaut = string.IsNullOrEmpty(_parametres.TrierParDefaut) ? "Plus récent au plus ancien" : _parametres.TrierParDefaut;
+                currentSortCriteria = trierParDefaut;
+
+                if (SortComboBox != null && SortComboBox.Items.Count > 0)
+                {
+                    for (int i = 0; i < SortComboBox.Items.Count; i++)
+                    {
+                        if (SortComboBox.Items[i] is ComboBoxItem item)
+                        {
+                            string itemContent = item.Content.ToString();
+                            if (itemContent == trierParDefaut)
+                            {
+                                SortComboBox.SelectedIndex = i;
+                                break;
+                            }
+                        }
+                    }
+                }
+
+                // 3. Appliquer la Taille des Icônes
+                if (!string.IsNullOrEmpty(_parametres.TailleIcones))
+                {
+                    currentIconSize = _parametres.TailleIcones;
+
+                    if (IconSizeComboBox != null && IconSizeComboBox.Items.Count > 0)
+                    {
+                        switch (_parametres.TailleIcones)
+                        {
+                            case "Grandes":
+                                IconSizeComboBox.SelectedIndex = 0;
+                                cardsPerRow = 6;
+                                articlesPerPage = 12;
+                                break;
+                            case "Moyennes":
+                                IconSizeComboBox.SelectedIndex = 1;
+                                cardsPerRow = 8;
+                                articlesPerPage = 14;
+                                break;
+                            case "Petites":
+                                IconSizeComboBox.SelectedIndex = 2;
+                                cardsPerRow = 12;
+                                articlesPerPage = 22;
+                                break;
+                            default:
+                                IconSizeComboBox.SelectedIndex = 1;
+                                cardsPerRow = 8;
+                                articlesPerPage = 14;
+                                break;
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"Erreur lors de l'application des paramètres : {ex.Message}");
+            }
+        }
+        private void IconSizeComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (IconSizeComboBox.SelectedItem is ComboBoxItem selectedItem)
+            {
+                string selectedSize = selectedItem.Content.ToString();
+
+                // Mettre à jour currentIconSize et cardsPerRow
+                if (selectedSize.Contains("Grandes"))
+                {
+                    currentIconSize = "Grandes";
+                    cardsPerRow = 6;
+                    articlesPerPage = 12;
+                }
+                else if (selectedSize.Contains("Moyennes"))
+                {
+                    currentIconSize = "Moyennes";
+                    cardsPerRow = 7;
+                    articlesPerPage = 14;
+                }
+                else if (selectedSize.Contains("Petites"))
+                {
+                    currentIconSize = "Petites";
+                    cardsPerRow = 11;
+                    articlesPerPage = 22;
+                }
+
+                // Recharger l'affichage si on a des articles
+                if (la != null && la.Count > 0)
+                {
+                    RefreshArticlesList(la, false);
+                }
+            }
+        }
+
+
         // Main public method - called from other windows
         public void LoadArticles(List<Article> la)
         {
+            // SIMPLE FIX: Just refresh with the provided list
+            this.la = la;
             RefreshArticlesList(la, false);
         }
 
-        // Internal refresh method
-        // Internal refresh method
         // Internal refresh method
         private void RefreshArticlesList(List<Article> la, bool resetPagination)
         {
@@ -73,12 +273,14 @@ namespace GestionComerce.Main.Inventory
                 {
                     if (r.ViewArticle == true)
                     {
-                        // Update the list reference
                         this.la = la;
 
-                        // Filter articles with Etat == true
+                        // Apply sorting to the list
+                        var sortedList = ApplySorting(la);
+
                         filteredArticles = new List<Article>();
-                        foreach (Article a in la)
+
+                        foreach (Article a in sortedList)
                         {
                             if (a.Etat)
                             {
@@ -86,57 +288,67 @@ namespace GestionComerce.Main.Inventory
                             }
                         }
 
-                        // Store the previous count BEFORE clearing
                         int previousCount = resetPagination ? 0 : currentlyLoadedCount;
-
-                        // Clear the container
                         ArticlesContainer.Children.Clear();
-
-                        // Update total stats
                         UpdateTotalStats();
 
-                        // Determine how many articles to load
                         int articlesToLoad;
                         if (resetPagination || previousCount == 0)
                         {
-                            // Initial load or reset - load first page only
-                            articlesToLoad = Math.Min(ARTICLES_PER_PAGE, filteredArticles.Count);
+                            articlesToLoad = Math.Min(articlesPerPage, filteredArticles.Count);
                         }
                         else
                         {
-                            // Keep showing the same number as before (or more if we added articles)
                             articlesToLoad = Math.Min(previousCount, filteredArticles.Count);
                         }
 
-                        // Load the articles
-                        for (int i = 0; i < articlesToLoad; i++)
-                        {
-                            Article a = filteredArticles[i];
-                            CSingleArticleI ar = new CSingleArticleI(a, la, this, lf, lfo);
-                            ArticlesContainer.Children.Add(ar);
-                        }
-
                         currentlyLoadedCount = articlesToLoad;
-                        UpdateViewMoreButtonVisibility();
+                        RefreshCurrentView();
                     }
                     break;
                 }
             }
         }
 
+        // Apply sorting based on current sort criteria
+        private List<Article> ApplySorting(List<Article> articles)
+        {
+            switch (currentSortCriteria)
+            {
+                case "Nom (A-Z)":
+                    return articles.OrderBy(a => a.ArticleName).ToList();
+
+                case "Nom (Z-A)":
+                    return articles.OrderByDescending(a => a.ArticleName).ToList();
+
+                case "Prix croissant":
+                    return articles.OrderBy(a => a.PrixVente).ToList();
+
+                case "Prix décroissant":
+                    return articles.OrderByDescending(a => a.PrixVente).ToList();
+
+                case "Quantité croissante":
+                    return articles.OrderBy(a => a.Quantite).ToList();
+
+                case "Quantité décroissante":
+                    return articles.OrderByDescending(a => a.Quantite).ToList();
+
+                case "Plus récent au plus ancien":
+                    return articles.OrderByDescending(a => a.Date ?? DateTime.MinValue).ToList();
+
+                case "Plus ancien au plus récent":
+                    return articles.OrderBy(a => a.Date ?? DateTime.MaxValue).ToList();
+
+                default:
+                    return articles;
+            }
+        }
+
         private void LoadMoreArticles()
         {
-            int articlesToLoad = Math.Min(ARTICLES_PER_PAGE, filteredArticles.Count - currentlyLoadedCount);
-
-            for (int i = currentlyLoadedCount; i < currentlyLoadedCount + articlesToLoad; i++)
-            {
-                Article a = filteredArticles[i];
-                CSingleArticleI ar = new CSingleArticleI(a, la, this, lf, lfo);
-                ArticlesContainer.Children.Add(ar);
-            }
-
+            int articlesToLoad = Math.Min(articlesPerPage, filteredArticles.Count - currentlyLoadedCount);
             currentlyLoadedCount += articlesToLoad;
-            UpdateViewMoreButtonVisibility();
+            RefreshCurrentView();
         }
 
         private void UpdateViewMoreButtonVisibility()
@@ -147,6 +359,122 @@ namespace GestionComerce.Main.Inventory
                     ? Visibility.Visible
                     : Visibility.Collapsed;
             }
+        }
+
+        private void LayoutToggleButton_Click(object sender, RoutedEventArgs e)
+        {
+            Button clickedButton = sender as Button;
+
+            if (clickedButton == RowLayoutButton)
+            {
+                isCardLayout = false;
+                RowLayoutButton.Style = (Style)FindResource("ActiveToggleButtonStyle");
+                CardLayoutButton.Style = (Style)FindResource("ToggleButtonStyle");
+                TableHeader.Visibility = Visibility.Visible;
+                IconSizeComboBox.Visibility = Visibility.Collapsed; // Hide icon size selector
+            }
+            else if (clickedButton == CardLayoutButton)
+            {
+                isCardLayout = true;
+                CardLayoutButton.Style = (Style)FindResource("ActiveToggleButtonStyle");
+                RowLayoutButton.Style = (Style)FindResource("ToggleButtonStyle");
+                TableHeader.Visibility = Visibility.Collapsed;
+                IconSizeComboBox.Visibility = Visibility.Visible; // Show icon size selector
+            }
+
+            LoadArticles(la);
+        }
+
+        // Sorting ComboBox selection changed
+        private void SortComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (SortComboBox.SelectedItem is ComboBoxItem selectedItem)
+            {
+                currentSortCriteria = selectedItem.Content.ToString();
+
+                // Refresh the list with new sorting
+                if (la != null && la.Count > 0)
+                {
+                    RefreshArticlesList(la, false);
+                }
+            }
+        }
+
+        private void RefreshCurrentView()
+        {
+            ArticlesContainer.Children.Clear();
+
+            if (isCardLayout)
+            {
+                // Determine cards per row based on size
+                int cardsPerRow = 0;
+                switch (currentIconSize)
+                {
+                    case "Grandes":
+                        cardsPerRow = 6;
+                        break;
+                    case "Moyennes":
+                        cardsPerRow = 7;
+                        break;
+                    case "Petites":
+                        cardsPerRow = 11;
+                        break;
+                }
+
+                // Create Grid for proper layout
+                var grid = new Grid();
+
+                // Calculate rows needed
+                int articlesToShow = Math.Min(currentlyLoadedCount, filteredArticles.Count);
+                int totalRows = (int)Math.Ceiling((double)articlesToShow / cardsPerRow);
+
+                // Add row definitions
+                for (int i = 0; i < totalRows; i++)
+                {
+                    grid.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });
+                }
+
+                // Add column definitions
+                for (int i = 0; i < cardsPerRow; i++)
+                {
+                    grid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) });
+                }
+
+                // Add articles to grid
+                for (int i = 0; i < articlesToShow; i++)
+                {
+                    Article a = filteredArticles[i];
+                    int row = i / cardsPerRow;
+                    int col = i % cardsPerRow;
+
+                    CSingleArticleI ar = new CSingleArticleI(a, la, this, lf, lfo, true, currentIconSize);
+                    ar.HorizontalAlignment = HorizontalAlignment.Stretch;
+                    ar.VerticalAlignment = VerticalAlignment.Top;
+                    ar.MaxWidth = currentIconSize == "Petites" ? 140 : (currentIconSize == "Grandes" ? 300 : 270);
+                    ar.HorizontalAlignment = HorizontalAlignment.Center;
+
+                    Grid.SetRow(ar, row);
+                    Grid.SetColumn(ar, col);
+
+                    grid.Children.Add(ar);
+                }
+
+                ArticlesContainer.Children.Add(grid);
+            }
+            else
+            {
+                // Row layout - direct children
+                int articlesToShow = Math.Min(currentlyLoadedCount, filteredArticles.Count);
+
+                for (int i = 0; i < articlesToShow; i++)
+                {
+                    Article a = filteredArticles[i];
+                    CSingleArticleI ar = new CSingleArticleI(a, la, this, lf, lfo, false);
+                    ArticlesContainer.Children.Add(ar);
+                }
+            }
+
+            UpdateViewMoreButtonVisibility();
         }
 
         private void UpdateTotalStats()
@@ -240,6 +568,10 @@ namespace GestionComerce.Main.Inventory
                         filteredArticles.Add(a);
                     }
                 }
+
+                // Apply sorting to filtered results
+                filteredArticles = ApplySorting(filteredArticles);
+
                 currentlyLoadedCount = 0;
                 ArticlesContainer.Children.Clear();
                 LoadMoreArticles();
@@ -306,6 +638,9 @@ namespace GestionComerce.Main.Inventory
                     filteredArticles.Add(a);
                 }
             }
+
+            // Apply sorting to filtered results
+            filteredArticles = ApplySorting(filteredArticles);
 
             // Reset and load filtered results with pagination
             currentlyLoadedCount = 0;

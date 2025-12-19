@@ -145,6 +145,11 @@
                             Tag="&#xE1C3;" Content="Méthode de Paiement" Click="PaimentMehode_Click"/>
                 <Button x:Name="AProposBtn" Style="{StaticResource NavigationItemStyle}" 
                             Tag="&#xE946;" Content="À propos de nous" Click="APropos_Click"/>
+                <Button x:Name="ParametreGeneraux" 
+        Style="{StaticResource NavigationItemStyle}" 
+        Tag="&#xE90F;" 
+        Content="Preference " 
+        Click="ParametreGeneraux_Click"/>
             </StackPanel>
         </Border>
         <Grid Grid.Column="1" x:Name="ContentGrid" Background="{StaticResource HoverBrush}"/>

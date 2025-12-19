@@ -202,6 +202,9 @@
     <Compile Include="Main\Settings\CAproposDeNous.xaml.cs">
       <DependentUpon>CAproposDeNous.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Main\Settings\ParametresGenerauxControl.xaml.cs">
+      <DependentUpon>ParametresGenerauxControl.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Main\Vente\WFacturePreview.xaml.cs">
       <DependentUpon>WFacturePreview.xaml</DependentUpon>
     </Compile>
@@ -303,6 +306,7 @@
     </Compile>
     <Compile Include="Operation.cs" />
     <Compile Include="OperationArticle.cs" />
+    <Compile Include="ParametresGeneraux.cs" />
     <Compile Include="PaymentMethod.cs" />
     <Compile Include="Role.cs" />
     <Compile Include="User.cs" />
@@ -494,6 +498,10 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Include="Main\Settings\CAproposDeNous.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Main\Settings\ParametresGenerauxControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

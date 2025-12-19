@@ -51,7 +51,7 @@ namespace GestionComerce
             }
 
             // STEP 2: Check expiry date
-            DateTime expiryDate = new DateTime(2025, 12, 20, 0, 0, 0);
+            DateTime expiryDate = new DateTime(2026, 12, 20, 0, 0, 0);
             if (DateTime.Now > expiryDate)
             {
                 System.Windows.MessageBox.Show(
@@ -154,6 +154,13 @@ namespace GestionComerce
             loginPage.VerticalAlignment = VerticalAlignment.Stretch;
             loginPage.Margin = new Thickness(0);
             MainGrid.Children.Add(loginPage);
+
+            // ADD THESE LINES:
+            var app = Application.Current as App;
+            if (app != null)
+            {
+                app.SetUserForKeyboard(u.UserID);
+            }
         }
 
         public void load_settings(User u)

@@ -12,13 +12,13 @@ namespace GestionComerce
         public int ArticleID { get; set; }
         public int OperationID { get; set; }
         public int QteArticle { get; set; }
-        public DateTime Date{ get; set; }
+        public DateTime Date { get; set; }
         public bool Etat { get; set; }
-        public bool Reversed { get; set; } // ✅ new property
+        public bool Reversed { get; set; }
 
         private static readonly string ConnectionString = "Server=localhost\\SQLEXPRESS;Database=GESTIONCOMERCEP;Trusted_Connection=True;";
 
-        // ================== GET ==================
+        // ================== GET (Active Only - Etat=1) ==================
         public async Task<List<OperationArticle>> GetOperationArticlesAsync()
         {
             var list = new List<OperationArticle>();
@@ -39,7 +39,37 @@ namespace GestionComerce
                             OperationID = Convert.ToInt32(reader["OperationID"]),
                             QteArticle = Convert.ToInt32(reader["QteArticle"]),
                             Etat = reader["Etat"] == DBNull.Value ? true : Convert.ToBoolean(reader["Etat"]),
-                            Reversed = reader["Reversed"] == DBNull.Value ? false : Convert.ToBoolean(reader["Reversed"]) // ✅
+                            Reversed = reader["Reversed"] == DBNull.Value ? false : Convert.ToBoolean(reader["Reversed"])
+                        });
+                    }
+                }
+            }
+            return list;
+        }
+
+        // ================== GET ALL (Including Deleted - No Etat Filter) ==================
+        public async Task<List<OperationArticle>> GetAllOperationArticlesAsync()
+        {
+            var list = new List<OperationArticle>();
+            // NO Etat filter - gets ALL operation articles including deleted ones
+            string query = "SELECT * FROM OperationArticle";
+
+            using (SqlConnection connection = new SqlConnection(ConnectionString))
+            {
+                await connection.OpenAsync();
+                using (SqlCommand cmd = new SqlCommand(query, connection))
+                using (SqlDataReader reader = await cmd.ExecuteReaderAsync())
+                {
+                    while (await reader.ReadAsync())
+                    {
+                        list.Add(new OperationArticle
+                        {
+                            OperationArticleID = Convert.ToInt32(reader["OperationArticleID"]),
+                            ArticleID = Convert.ToInt32(reader["ArticleID"]),
+                            OperationID = Convert.ToInt32(reader["OperationID"]),
+                            QteArticle = Convert.ToInt32(reader["QteArticle"]),
+                            Etat = reader["Etat"] == DBNull.Value ? true : Convert.ToBoolean(reader["Etat"]),
+                            Reversed = reader["Reversed"] == DBNull.Value ? false : Convert.ToBoolean(reader["Reversed"])
                         });
                     }
                 }
@@ -147,7 +177,7 @@ namespace GestionComerce
                     {
                         cmd.Parameters.AddWithValue("@OperationArticleID", this.OperationArticleID);
                         await cmd.ExecuteNonQueryAsync();
-                        this.Reversed = true; // reflect change in object
+                        this.Reversed = true;
                         return 1;
                     }
                     catch (Exception err)
