@@ -73,15 +73,16 @@ namespace Superete.Main.Settings
                 {
                     bool needsUpdate = false;
 
-                    // Forcer VueParDefaut à "Row" si ce n'est pas déjà le cas
-                    if (string.IsNullOrEmpty(_parametresActuels.VueParDefaut) || _parametresActuels.VueParDefaut == "Cartes" || _parametresActuels.VueParDefaut == "Moyennes")
+                    // Forcer VueParDefaut à "Row" seulement si vide ou valeur invalide
+                    if (string.IsNullOrEmpty(_parametresActuels.VueParDefaut) ||
+                        (_parametresActuels.VueParDefaut != "Row" && _parametresActuels.VueParDefaut != "Cartes"))
                     {
                         _parametresActuels.VueParDefaut = "Row";
                         needsUpdate = true;
                     }
 
-                    // Forcer TrierParDefaut à "Plus récent au plus ancien" si ce n'est pas déjà le cas
-                    if (string.IsNullOrEmpty(_parametresActuels.TrierParDefaut) || _parametresActuels.TrierParDefaut != "Plus récent au plus ancien")
+                    // Forcer TrierParDefaut à "Plus récent au plus ancien" SEULEMENT si vide
+                    if (string.IsNullOrEmpty(_parametresActuels.TrierParDefaut))
                     {
                         _parametresActuels.TrierParDefaut = "Plus récent au plus ancien";
                         needsUpdate = true;

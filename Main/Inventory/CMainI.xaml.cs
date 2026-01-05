@@ -80,15 +80,16 @@ namespace GestionComerce.Main.Inventory
                 {
                     bool needsUpdate = false;
 
-                    // Forcer VueParDefaut à "Row" si ce n'est pas déjà le cas
-                    if (string.IsNullOrEmpty(_parametres.VueParDefaut) || _parametres.VueParDefaut == "Cartes" || _parametres.VueParDefaut == "Moyennes")
+                    // Forcer VueParDefaut à "Row" seulement si vide ou valeur invalide
+                    if (string.IsNullOrEmpty(_parametres.VueParDefaut) ||
+                        (_parametres.VueParDefaut != "Row" && _parametres.VueParDefaut != "Cartes"))
                     {
                         _parametres.VueParDefaut = "Row";
                         needsUpdate = true;
                     }
 
-                    // Forcer TrierParDefaut à "Plus récent au plus ancien" si ce n'est pas déjà le cas
-                    if (string.IsNullOrEmpty(_parametres.TrierParDefaut) || _parametres.TrierParDefaut != "Plus récent au plus ancien")
+                    // Forcer TrierParDefaut à "Plus récent au plus ancien" SEULEMENT si vide
+                    if (string.IsNullOrEmpty(_parametres.TrierParDefaut))
                     {
                         _parametres.TrierParDefaut = "Plus récent au plus ancien";
                         needsUpdate = true;
@@ -111,10 +112,6 @@ namespace GestionComerce.Main.Inventory
                 _parametres = null;
             }
         }
-
-        /// <summary>
-        /// Applique les paramètres chargés à l'interface
-        /// </summary>
         private void AppliquerParametres()
         {
             if (_parametres == null) return;

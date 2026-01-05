@@ -95,9 +95,6 @@ namespace GestionComerce.Main.Vente
         /// <summary>
         /// Charge les paramètres généraux et applique les valeurs par défaut
         /// </summary>
-        /// <summary>
-        /// Charge les paramètres généraux et applique les valeurs par défaut
-        /// </summary>
         private void ChargerParametres()
         {
             try
@@ -113,15 +110,16 @@ namespace GestionComerce.Main.Vente
                 {
                     bool needsUpdate = false;
 
-                    // Forcer VueParDefaut à "Row" si ce n'est pas déjà le cas
-                    if (string.IsNullOrEmpty(_parametres.VueParDefaut) || _parametres.VueParDefaut == "Cartes" || _parametres.VueParDefaut == "Moyennes")
+                    // Forcer VueParDefaut à "Row" seulement si vide ou valeur invalide
+                    if (string.IsNullOrEmpty(_parametres.VueParDefaut) ||
+                        (_parametres.VueParDefaut != "Row" && _parametres.VueParDefaut != "Cartes"))
                     {
                         _parametres.VueParDefaut = "Row";
                         needsUpdate = true;
                     }
 
-                    // Forcer TrierParDefaut à "Plus récent au plus ancien" si ce n'est pas déjà le cas
-                    if (string.IsNullOrEmpty(_parametres.TrierParDefaut) || _parametres.TrierParDefaut != "Plus récent au plus ancien")
+                    // Forcer TrierParDefaut à "Plus récent au plus ancien" SEULEMENT si vide
+                    if (string.IsNullOrEmpty(_parametres.TrierParDefaut))
                     {
                         _parametres.TrierParDefaut = "Plus récent au plus ancien";
                         needsUpdate = true;
